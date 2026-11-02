@@ -1,27 +1,26 @@
-# Interface desktop e demonstração
+# Frontend — Sprint 01
 
-A interface React/TypeScript usa apenas comandos Tauri quando executada no aplicativo. O backend é a fonte dos estados, das coletas, das baselines e da fila de notificações. A UI atualiza o dashboard a cada dez segundos; não dispara um segundo agendador de coleta.
+A interface ativa corresponde somente à fundação autorizada. O protótipo anterior permanece em `archive/prototype/` e não faz parte da aplicação nem da seleção de testes.
 
-## Fluxos
+## Estrutura
 
-- Visão geral: capacidade de 30 planilhas, cadastro por URL/ID, script IDs explicitamente autorizados, busca, verificação manual e resumo de falhas.
-- Cadastro: requer confirmação de consulta somente leitura; nunca aprova baseline implicitamente.
-- Baseline: solicita prévia, mostra JSON completo, requer checkbox de revisão e envia o fingerprint opaco da coleta para aprovação. Uma falha não fecha o diálogo nem declara sucesso.
-- Histórico: mantém diferenças por caminho, filtra tipo e compara valor anterior/atual em diálogo.
-- Apps Script: lista projetos autorizados e mudanças de fonte/manifest; explica análise estática sem execução.
-- Notificações: mostra uma entrada por diferença, tentativas e estado informado pelo backend. Reprocessar não significa entrega bem-sucedida por si só.
-- Configurações: client ID desktop, conexão/desconexão Google, modo de dados e intervalo. A troca de modo recarrega o dashboard e usa os bancos separados pelo backend.
-- Exportação: backend fornece o caminho de relatório local; o frontend não solicita caminhos arbitrários.
-- Remoção: requer digitar o nome, arquiva acompanhamento no backend e não altera arquivos Google.
+- `src/pages/`: Dashboard, Planilhas, Histórico e Configurações.
+- `src/components/`: composição de tabelas/estados/eventos e componentes shadcn/ui locais.
+- `src/hooks/useFoundation.ts`: leitura inicial e salvamento de preferências, com estados de erro e progresso.
+- `src/services/foundation.ts`: os únicos comandos nativos são `foundation_get_dashboard` e `foundation_save_settings`.
+- `src/types/foundation.ts`: DTOs compartilhados pela UI.
+- `src/fixtures.ts`: exemplos sintéticos para a prévia do navegador.
 
-## Demonstração no navegador
+React e TypeScript estrito usam Vite, Tailwind CSS 4 e componentes shadcn/ui baseados em Radix UI (Dialog, Switch e Slot), class-variance-authority, clsx e tailwind-merge. `components.json` registra aliases; `@/` resolve para `src/`. Não há CDN, fontes externas nem scripts remotos. O Tailwind procura classes apenas em `src/`, excluindo o protótipo arquivado.
 
-`npm run dev` sem Tauri habilita somente um adaptador em memória, com aviso persistente. Os nomes, snapshots e alterações são fictícios, a sessão se perde ao recarregar e a conta permanece desconectada. Google, exportação para disco e notificações Windows retornam indisponibilidade explícita. Os testes do adaptador demonstrativo não constituem evidência de integração Google ou do backend Rust.
+## Limites da entrega
 
-## Acessibilidade e apresentação
+O selo de demonstração permanece visível também no aplicativo Windows. Os estados Online, Offline, Verificando e Indeterminado ilustram a especificação. Uma alteração comum de valor aparece em exemplo Online e no histórico fictício. Nenhuma avaliação Google, conexão OAuth, aprovação real de baseline, análise real de Apps Script ou notificação de produção é executada.
 
-Layout responsivo, navegação com nome acessível mesmo quando reduzida a ícones, rótulos nos formulários, foco visível, diálogos com captura/restauração de foco e fechamento por Escape. Erros e progresso são anunciados por regiões de status; botões bloqueiam ações repetidas durante operações. Preferência por movimento reduzido desativa animações. Não há CDN, fontes externas ou scripts remotos.
+Dashboard resume fixtures; Planilhas permite busca/filtro e uma prévia didática de baseline; Histórico mostra data, arquivo, categoria e diagnóstico fictícios; Configurações salva intervalo de 60–300 segundos no SQLite pelo backend. Histórico de 90 dias e inicialização com Windows desativada permanecem definidos para esta etapa. Salvar o intervalo não inicia um agendador.
 
-## Verificações locais
+No navegador, os mesmos fluxos usam memória e perdem alterações ao recarregar. No desktop, a persistência é SQLite, através dos comandos locais. O frontend recusa respostas sem a marcação explícita `is_demo`.
 
-`npm test` cobre aprovação explícita da baseline, cadastro e deduplicação de scripts, comparação de valores, remoção confirmada, ausência de falsos sucessos Google/notificações, rejeição de fingerprints inválidos, capacidade de 30 e evento/fila por diferença no adaptador de demonstração. `npm run build` faz checagem TypeScript estrita e bundle de produção. Resultados efetivamente executados em `docs/evidence/frontend-tests.log` e `frontend-build.log`.
+## Verificação
+
+Os scripts `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` e `npm run format:check` verificam o código ativo. Vitest inclui somente `src/**/*.test.{ts,tsx}`; testes arquivados não são executados. Os testes cobrem quatro telas, rótulo DEMO, quatro estados, alteração permitida mantendo Online, diálogo baseline sem aprovação, Escape/restauração de foco, preferências via bridge mock, filtros, limites e ausência de comandos Google. Os resultados efetivamente executados estão em `docs/evidence/sprint01/frontend-*.log`.

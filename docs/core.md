@@ -1,3 +1,5 @@
+> DOCUMENTO HISTÓRICO DO PROTÓTIPO. Este texto descreve código arquivado, não a fundação ativa nem uma integração real homologada. Consulte [requisitos atuais](requirements.md), [arquitetura](architecture.md) e [progresso](progress.md). A versão original permanece em `archive/prototype/` e no commit `ffcaa49`.
+
 # Núcleo local e contrato de coleta
 
 O núcleo Rust usa SQLite (`Store`) como fonte de verdade. Não contém acesso Google, não executa Apps Script e não envia dados para serviços externos. O adaptador coleta todas as respostas exigidas e somente então entrega `Snapshot` à transação de persistência.

@@ -1,47 +1,80 @@
-# Sheets Monitor
+# Sheets Monitor — fundação desktop
 
-Aplicativo local para acompanhar até 30 planilhas Google e scripts Apps Script autorizados. React + TypeScript, Tauri 2, Rust e SQLite. Interface em português.
+Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-O diretório inicial estava vazio. [Requisitos provisórios](docs/requirements.md) registram o contrato recebido; o `requirements.md` original citado não foi fornecido.
+A entrega atual é a **Sprint 01 da especificação v1.0**: fundação local com dados sintéticos. Dashboard, Planilhas, Histórico e Configurações não representam verificações Google. Login, monitoramento real, bandeja, autostart e instalador pertencem às sprints seguintes.
 
 ## Executar
 
-Windows 11, Node.js e Rust estável. Para o build padrão, instale Microsoft C++ Build Tools com Desktop development with C++ e Windows SDK; WebView2 deve estar disponível. Consulte os [pré-requisitos oficiais Tauri](https://v2.tauri.app/start/prerequisites/).
+Pré-requisitos e versões em [docs/environment.md](docs/environment.md). Para configurar/verificar o ambiente:
+
+```powershell
+.\scripts\bootstrap.ps1
+.\scripts\doctor.ps1
+```
+
+Instalar dependências e abrir a prévia de desenvolvimento:
 
 ```powershell
 npm ci
-npm test
-npm run build
-cargo test --manifest-path src-tauri/Cargo.toml --lib
+npm run dev
+```
+
+A prévia no navegador usa exemplos em memória. Para abrir o aplicativo Tauri durante o desenvolvimento:
+
+```powershell
+. .\scripts\environment-common.ps1
+Update-ProcessToolPath
+Import-CppEnvironment (Get-CppInstallation)
 npm run tauri dev
 ```
 
-`npm run dev` abre somente a prévia web com dados sintéticos em memória. A integração Google e a persistência SQLite pertencem ao aplicativo desktop. A prévia não representa uma sessão real do Windows/Google.
+Para compilar e executar o desktop com arquivos estáticos incorporados, sem precisar do Vite em execução:
 
 ```powershell
-npm run tauri build
+npm run build
+.\scripts\check-rust.ps1 -Task build
+.\src-tauri\target\x86_64-pc-windows-msvc\debug\sheets-monitor.exe
 ```
 
-O empacotamento NSIS gera instalador em `src-tauri/target/release/bundle/nsis/`. A versão local não é assinada. Nenhum servidor hospedado é necessário.
+O build de fundação usa `custom-protocol`, incorpora `dist/` e não gera instalador. O produto não exige servidor próprio ou webapp hospedado. npm e seu lockfile são o caminho reproduzível desta sprint; pnpm está disponível no ambiente, sem migração implícita do lockfile.
 
-## Conectar Google
+## Dados locais e limites
 
-1. No seu projeto Google Cloud, habilite Sheets API, Drive API e Apps Script API. Configure a tela de consentimento e o usuário de teste, quando aplicável.
-2. Crie um cliente OAuth do tipo **Aplicativo para computador**. Não use cliente web nem service account.
-3. Informe o client ID na interface desktop e use Conectar. Se o cliente exigir o client secret desktop, configure `SHEETS_MONITOR_CLIENT_SECRET` no ambiente do processo antes de iniciar. Não coloque credenciais no código, no histórico Git ou em capturas.
-4. O navegador do sistema solicitará os três escopos de leitura. A aplicação recebe o retorno em `127.0.0.1` com porta efêmera e valida state e PKCE. Tokens ficam no Windows Credential Manager.
-5. Selecione o modo Google, cadastre somente os IDs das planilhas e dos scripts autorizados. Revise a prévia e aprove cada baseline explicitamente.
+No desktop, as quatro telas consultam fixtures SQLite em `%APPDATA%\com.sheetsmonitor.desktop\foundation-v1.db`. O seed é explícito e idempotente. Preferências persistem ao reiniciar; o navegador usa uma sessão em memória. Bancos do protótipo não são alterados ou migrados.
 
-O aplicativo não escreve nas planilhas, não executa scripts e não publica projetos. Desconectar remove a credencial local; a concessão remota pode ser administrada na sua conta Google. Sem credenciais e consentimento, a integração real permanece **não validada**.
+Os exemplos ilustram Online, Offline, Verificando e Indeterminado. Nenhum desses estados veio de uma consulta Google. O intervalo de 60–300 segundos e os 90 dias de histórico são parâmetros preparatórios; não há scheduler nem limpeza automática nesta sprint. Autostart permanece indisponível.
 
-## Monitoramento
+O banco possui as onze entidades previstas no anexo e ledger de migrações. Tokens, senhas e segredos não fazem parte do esquema. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
 
-Cada campo diferente nos snapshots completos gera um evento com antes/depois e uma entrada persistente na fila de notificações. O histórico permite inspecionar todas as diferenças detectadas, inclusive fontes e manifestos de scripts. A análise de scripts é heurística e não executa o código.
+## Verificar
 
-Baselines e históricos de demonstração ficam separados dos reais. O agendador funciona enquanto o processo está aberto. Uma coleta com erro não substitui o snapshot anterior. Notificações podem ser repetidas após interrupção, seguindo entrega pelo menos uma vez. Aceitação pelo sistema não garante que o Windows exibiu o toast.
+```powershell
+npm run lint
+npm run format:check
+npm run typecheck
+npm test
+npm run build
+.\scripts\check-rust.ps1 -Task format-check
+.\scripts\check-rust.ps1 -Task test
+.\scripts\check-rust.ps1 -Task clippy
+.\scripts\check-rust.ps1 -Task build
+node scripts/verify-repository.mjs
+```
 
-O polling não vê mudanças transitórias revertidas entre coletas. Só observa os campos disponibilizados pelas APIs e pelos acessos concedidos; não descobre automaticamente projetos Apps Script vinculados. Respostas maiores que 64 MiB e paginação acima do limite de proteção geram erro explícito, sem sucesso parcial.
+Resultados executados e limitações ficam em [docs/progress.md](docs/progress.md) e [docs/evidence/sprint01](docs/evidence/sprint01/). A presença de código, workflow ou fixture não comprova integração real ou execução do CI hospedado.
 
-SQLite e relatórios contêm conteúdo das planilhas e fontes autorizadas em texto local; proteja a conta Windows e o disco. Tokens não entram nesses arquivos. Use dados sintéticos ao compartilhar evidências.
+## Documentação
 
-Veja [plano de verificação](docs/verification.md), [decisões](docs/adr/0001-local-first-and-boundaries.md), [núcleo](docs/core.md), [integração Google](docs/google-integration.md), [interface](docs/ui.md) e [evidências](docs/evidence/).
+- [Especificação original](docs/specification-v1.0.original.md), [requisitos operacionais](docs/requirements.md) e [aceite](docs/acceptance.md).
+- [Backlog SM-001 a SM-028](docs/backlog.md), [arquitetura](docs/architecture.md) e [riscos](docs/risks.md).
+- [SQLite](docs/database.md), [desktop](docs/desktop.md) e [ADRs](docs/adr/README.md).
+- [Contrato de execução](AGENTS.md), [contribuição/GitHub](CONTRIBUTING.md), [segurança](SECURITY.md) e [licenciamento](docs/licensing.md).
+
+O protótipo anterior está preservado em `archive/prototype/` e no commit `ffcaa49`. Ele está fora da aplicação ativa e não define o aceite desta sprint. Os IDs oficiais do anexo não foram renumerados.
+
+## Publicação e licença
+
+Código próprio sob [MIT](LICENSE); dependências mantêm suas licenças. Não há remoto GitHub autorizado/configurado: o trabalho permanece local e a instrução mínima de autenticação está em [CONTRIBUTING.md](CONTRIBUTING.md). Nada foi publicado ou enviado ao Google.
+
+Ao concluir a Sprint 01, aguardar nova autorização antes de iniciar a Sprint 02.

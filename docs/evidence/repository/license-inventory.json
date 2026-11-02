@@ -1,0 +1,4873 @@
+{
+  "scope": "Active Sprint01 lockfiles; metadata only, no downloads, not complete legal/distribution audit. External licenses unchanged.",
+  "npm": [
+    {
+      "package": "@acemir/cssom",
+      "version": "0.9.32",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@adobe/css-tools",
+      "version": "4.5.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@asamuzakjp/css-color",
+      "version": "4.1.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@asamuzakjp/css-color/node_modules/lru-cache",
+      "version": "11.5.3",
+      "license": "BlueOak-1.0.0",
+      "dev": true
+    },
+    {
+      "package": "@asamuzakjp/dom-selector",
+      "version": "6.8.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@asamuzakjp/dom-selector/node_modules/lru-cache",
+      "version": "11.5.3",
+      "license": "BlueOak-1.0.0",
+      "dev": true
+    },
+    {
+      "package": "@asamuzakjp/nwsapi",
+      "version": "2.3.9",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/code-frame",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/compat-data",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/core",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/generator",
+      "version": "7.29.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-compilation-targets",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-globals",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-module-imports",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-module-transforms",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-plugin-utils",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-string-parser",
+      "version": "7.29.11",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-validator-identifier",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helper-validator-option",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/helpers",
+      "version": "7.29.10",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/parser",
+      "version": "7.29.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/plugin-transform-react-jsx-self",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/plugin-transform-react-jsx-source",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/runtime",
+      "version": "7.29.10",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/template",
+      "version": "7.29.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/traverse",
+      "version": "7.29.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@babel/types",
+      "version": "7.29.11",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@cacheable/memory",
+      "version": "2.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@cacheable/utils",
+      "version": "2.5.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@csstools/color-helpers",
+      "version": "6.1.2",
+      "license": "MIT-0",
+      "dev": true
+    },
+    {
+      "package": "@csstools/css-calc",
+      "version": "3.4.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@csstools/css-color-parser",
+      "version": "4.2.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@csstools/css-parser-algorithms",
+      "version": "4.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@csstools/css-syntax-patches-for-csstree",
+      "version": "1.1.16",
+      "license": "MIT-0",
+      "dev": true
+    },
+    {
+      "package": "@csstools/css-tokenizer",
+      "version": "4.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@esbuild/aix-ppc64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/android-arm",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/android-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/android-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/darwin-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/darwin-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/freebsd-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/freebsd-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-arm",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-ia32",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-loong64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-mips64el",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-ppc64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-riscv64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-s390x",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/linux-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/netbsd-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/netbsd-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/openbsd-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/openbsd-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/openharmony-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/sunos-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/win32-arm64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/win32-ia32",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@esbuild/win32-x64",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@eslint-community/eslint-utils",
+      "version": "4.10.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@eslint-community/eslint-utils/node_modules/eslint-visitor-keys",
+      "version": "3.4.3",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@eslint-community/regexpp",
+      "version": "4.12.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@eslint/config-array",
+      "version": "0.23.5",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@eslint/config-helpers",
+      "version": "0.7.0",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@eslint/core",
+      "version": "1.2.1",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@eslint/js",
+      "version": "10.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@eslint/object-schema",
+      "version": "3.0.5",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@eslint/plugin-kit",
+      "version": "0.7.3",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@exodus/bytes",
+      "version": "1.16.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@humanfs/core",
+      "version": "0.19.2",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@humanfs/node",
+      "version": "0.16.8",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@humanfs/types",
+      "version": "0.15.0",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@humanwhocodes/module-importer",
+      "version": "1.0.1",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@humanwhocodes/retry",
+      "version": "0.4.3",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "@isaacs/nonrecursive-glob-match",
+      "version": "1.0.3",
+      "license": "BlueOak-1.0.0",
+      "dev": true
+    },
+    {
+      "package": "@jridgewell/gen-mapping",
+      "version": "0.3.13",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@jridgewell/remapping",
+      "version": "2.3.5",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@jridgewell/resolve-uri",
+      "version": "3.1.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@jridgewell/sourcemap-codec",
+      "version": "1.6.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@jridgewell/trace-mapping",
+      "version": "0.3.31",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@keyv/bigmap",
+      "version": "1.3.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@keyv/serialize",
+      "version": "1.1.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@napi-rs/lzma-linux-x64-gnu",
+      "version": "1.5.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/primitive",
+      "version": "1.2.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-compose-refs",
+      "version": "1.1.5",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-context",
+      "version": "1.3.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-dialog",
+      "version": "1.3.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-dismissable-layer",
+      "version": "1.2.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-focus-guards",
+      "version": "1.2.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-focus-scope",
+      "version": "1.3.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-id",
+      "version": "1.1.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-portal",
+      "version": "1.2.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-presence",
+      "version": "1.1.11",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-primitive",
+      "version": "2.2.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-slot",
+      "version": "1.5.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-switch",
+      "version": "1.4.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-use-callback-ref",
+      "version": "1.1.5",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-use-controllable-state",
+      "version": "1.3.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-use-effect-event",
+      "version": "0.0.5",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-use-layout-effect",
+      "version": "1.1.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@radix-ui/react-use-size",
+      "version": "1.1.5",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rolldown/pluginutils",
+      "version": "1.0.0-rc.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@rollup/rollup-android-arm-eabi",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-android-arm64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-android-x64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-darwin-arm64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-darwin-x64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-freebsd-arm64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-freebsd-x64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-arm-gnueabihf",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-arm-musleabihf",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-arm64-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-arm64-musl",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-loong64-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-loong64-musl",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-ppc64-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-ppc64-musl",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-riscv64-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-riscv64-musl",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-s390x-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-x64-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-linux-x64-musl",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-openbsd-x64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-openharmony-arm64",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-win32-arm64-msvc",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-win32-ia32-msvc",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-win32-x64-gnu",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@rollup/rollup-win32-x64-msvc",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@standard-schema/spec",
+      "version": "1.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@tailwindcss/node",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-android-arm64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-darwin-arm64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-darwin-x64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-freebsd-x64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-linux-arm-gnueabihf",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-linux-arm64-gnu",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-linux-arm64-musl",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-linux-x64-gnu",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-linux-x64-musl",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core",
+      "version": "1.11.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime",
+      "version": "1.11.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads",
+      "version": "1.2.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime",
+      "version": "1.1.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util",
+      "version": "0.10.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-wasm32-wasi/node_modules/tslib",
+      "version": "2.8.1",
+      "license": "0BSD",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-win32-arm64-msvc",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/oxide-win32-x64-msvc",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tailwindcss/vite",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@tauri-apps/api",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": false
+    },
+    {
+      "package": "@tauri-apps/cli",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-darwin-arm64",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-darwin-x64",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-linux-arm-gnueabihf",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-linux-arm64-gnu",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-linux-arm64-musl",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-linux-riscv64-gnu",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-linux-x64-gnu",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-linux-x64-musl",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-win32-arm64-msvc",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-win32-ia32-msvc",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@tauri-apps/cli-win32-x64-msvc",
+      "version": "2.12.4",
+      "license": "Apache-2.0 OR MIT",
+      "dev": true
+    },
+    {
+      "package": "@testing-library/dom",
+      "version": "10.4.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@testing-library/jest-dom",
+      "version": "6.9.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@testing-library/jest-dom/node_modules/dom-accessibility-api",
+      "version": "0.6.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@testing-library/react",
+      "version": "16.3.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@testing-library/user-event",
+      "version": "14.6.8",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/aria-query",
+      "version": "5.0.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/babel__core",
+      "version": "7.20.5",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/babel__generator",
+      "version": "7.27.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/babel__template",
+      "version": "7.4.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/babel__traverse",
+      "version": "7.28.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/chai",
+      "version": "5.2.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/deep-eql",
+      "version": "4.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/esrecurse",
+      "version": "4.3.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/estree",
+      "version": "1.0.10",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@types/json-schema",
+      "version": "7.0.15",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@types/node",
+      "version": "24.19.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@types/react",
+      "version": "19.3.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@types/react-dom",
+      "version": "19.3.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "@typescript-eslint/eslint-plugin",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/eslint-plugin/node_modules/ignore",
+      "version": "7.0.14",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/parser",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/project-service",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/scope-manager",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/tsconfig-utils",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/type-utils",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/types",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/typescript-estree",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/typescript-estree/node_modules/semver",
+      "version": "7.8.5",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/utils",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@typescript-eslint/visitor-keys",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitejs/plugin-react",
+      "version": "5.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/expect",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/mocker",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/pretty-format",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/runner",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/snapshot",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/spy",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "@vitest/utils",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "acorn",
+      "version": "8.19.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "acorn-jsx",
+      "version": "5.3.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "agent-base",
+      "version": "7.1.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "ajv",
+      "version": "6.15.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "ansi-regex",
+      "version": "5.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "ansi-styles",
+      "version": "5.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "aria-hidden",
+      "version": "1.2.6",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "aria-query",
+      "version": "5.3.0",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "assertion-error",
+      "version": "2.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "balanced-match",
+      "version": "4.0.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "baseline-browser-mapping",
+      "version": "2.11.34",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "bidi-js",
+      "version": "1.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "brace-expansion",
+      "version": "5.0.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "browserslist",
+      "version": "4.29.5",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "cacheable",
+      "version": "2.5.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "caniuse-lite",
+      "version": "1.0.30001820",
+      "license": "CC-BY-4.0",
+      "dev": true
+    },
+    {
+      "package": "chai",
+      "version": "6.3.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "class-variance-authority",
+      "version": "0.7.1",
+      "license": "Apache-2.0",
+      "dev": false
+    },
+    {
+      "package": "clsx",
+      "version": "2.1.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "convert-source-map",
+      "version": "2.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "cross-spawn",
+      "version": "7.0.6",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "css-tree",
+      "version": "3.2.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "css.escape",
+      "version": "1.5.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "cssstyle",
+      "version": "5.3.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "cssstyle/node_modules/lru-cache",
+      "version": "11.5.3",
+      "license": "BlueOak-1.0.0",
+      "dev": true
+    },
+    {
+      "package": "csstype",
+      "version": "3.2.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "data-urls",
+      "version": "6.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "data-urls/node_modules/whatwg-mimetype",
+      "version": "5.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "debug",
+      "version": "4.4.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "decimal.js",
+      "version": "10.6.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "deep-is",
+      "version": "0.1.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "dequal",
+      "version": "2.0.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "detect-libc",
+      "version": "2.1.2",
+      "license": "Apache-2.0",
+      "dev": false
+    },
+    {
+      "package": "detect-node-es",
+      "version": "1.1.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "dom-accessibility-api",
+      "version": "0.5.16",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "electron-to-chromium",
+      "version": "1.5.472",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "enhanced-resolve",
+      "version": "5.26.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "entities",
+      "version": "9.0.0",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "es-module-lexer",
+      "version": "2.3.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "esbuild",
+      "version": "0.28.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "escalade",
+      "version": "3.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "escape-string-regexp",
+      "version": "4.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "eslint",
+      "version": "10.14.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "eslint-plugin-react-hooks",
+      "version": "7.1.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "eslint-scope",
+      "version": "9.1.2",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "eslint-visitor-keys",
+      "version": "5.0.1",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "espree",
+      "version": "11.2.0",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "esquery",
+      "version": "1.7.0",
+      "license": "BSD-3-Clause",
+      "dev": true
+    },
+    {
+      "package": "esrecurse",
+      "version": "4.3.0",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "estraverse",
+      "version": "5.3.0",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "estree-walker",
+      "version": "3.0.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "esutils",
+      "version": "2.0.3",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "expect-type",
+      "version": "1.4.0",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "fast-deep-equal",
+      "version": "3.1.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "fast-json-stable-stringify",
+      "version": "2.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "fast-levenshtein",
+      "version": "2.0.6",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "fdir",
+      "version": "6.5.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "file-entry-cache",
+      "version": "11.1.5",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "find-up",
+      "version": "5.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "flat-cache",
+      "version": "6.1.23",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "flatted",
+      "version": "3.4.4",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "fsevents",
+      "version": "2.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "gensync",
+      "version": "1.0.0-beta.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "get-nonce",
+      "version": "1.0.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "glob-parent",
+      "version": "6.0.2",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "globals",
+      "version": "17.14.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "graceful-fs",
+      "version": "4.2.11",
+      "license": "ISC",
+      "dev": false
+    },
+    {
+      "package": "hashery",
+      "version": "1.5.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "hermes-estree",
+      "version": "0.25.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "hermes-parser",
+      "version": "0.25.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "hookified",
+      "version": "1.15.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "html-encoding-sniffer",
+      "version": "6.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "http-proxy-agent",
+      "version": "7.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "https-proxy-agent",
+      "version": "7.0.6",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "ignore",
+      "version": "5.3.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "imurmurhash",
+      "version": "0.1.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "indent-string",
+      "version": "4.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "is-extglob",
+      "version": "2.1.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "is-glob",
+      "version": "4.0.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "is-potential-custom-element-name",
+      "version": "1.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "isexe",
+      "version": "2.0.0",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "jiti",
+      "version": "2.7.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "js-tokens",
+      "version": "4.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "jsdom",
+      "version": "27.4.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "jsesc",
+      "version": "3.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "json-schema-traverse",
+      "version": "0.4.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "json-stable-stringify-without-jsonify",
+      "version": "1.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "json5",
+      "version": "2.2.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "keyv",
+      "version": "5.6.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "levn",
+      "version": "0.4.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "lightningcss",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-android-arm64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-darwin-arm64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-darwin-x64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-freebsd-x64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-linux-arm-gnueabihf",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-linux-arm64-gnu",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-linux-arm64-musl",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-linux-x64-gnu",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-linux-x64-musl",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-win32-arm64-msvc",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "lightningcss-win32-x64-msvc",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "dev": false
+    },
+    {
+      "package": "locate-path",
+      "version": "6.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "lru-cache",
+      "version": "5.1.1",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "lucide-react",
+      "version": "0.468.0",
+      "license": "ISC",
+      "dev": false
+    },
+    {
+      "package": "lz-string",
+      "version": "1.5.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "magic-string",
+      "version": "0.30.21",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "mdn-data",
+      "version": "2.27.1",
+      "license": "CC0-1.0",
+      "dev": true
+    },
+    {
+      "package": "min-indent",
+      "version": "1.0.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "minimatch",
+      "version": "11.0.3",
+      "license": "BlueOak-1.0.0",
+      "dev": true
+    },
+    {
+      "package": "ms",
+      "version": "2.1.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "nanoid",
+      "version": "3.3.20",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "natural-compare",
+      "version": "1.4.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "node-releases",
+      "version": "2.0.63",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "obug",
+      "version": "2.2.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "optionator",
+      "version": "0.9.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "p-limit",
+      "version": "3.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "p-locate",
+      "version": "5.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "parse5",
+      "version": "8.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "path-exists",
+      "version": "4.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "path-key",
+      "version": "3.1.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "pathe",
+      "version": "2.0.3",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "picocolors",
+      "version": "1.1.1",
+      "license": "ISC",
+      "dev": false
+    },
+    {
+      "package": "picomatch",
+      "version": "4.0.7",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "postcss",
+      "version": "8.5.32",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "prelude-ls",
+      "version": "1.2.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "prettier",
+      "version": "3.9.10",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "pretty-format",
+      "version": "27.5.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "punycode",
+      "version": "2.3.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "qified",
+      "version": "0.10.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "qified/node_modules/hookified",
+      "version": "2.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "react",
+      "version": "19.3.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "react-dom",
+      "version": "19.3.1",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "react-is",
+      "version": "17.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "react-refresh",
+      "version": "0.18.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "react-remove-scroll",
+      "version": "2.7.2",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "react-remove-scroll-bar",
+      "version": "2.3.8",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "react-style-singleton",
+      "version": "2.2.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "redent",
+      "version": "3.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "require-from-string",
+      "version": "2.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "rollup",
+      "version": "4.67.4",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "saxes",
+      "version": "6.0.0",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "scheduler",
+      "version": "0.28.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "semver",
+      "version": "6.3.1",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "shebang-command",
+      "version": "2.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "shebang-regex",
+      "version": "3.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "siginfo",
+      "version": "2.0.0",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "source-map-js",
+      "version": "1.2.2",
+      "license": "BSD-3-Clause",
+      "dev": false
+    },
+    {
+      "package": "stackback",
+      "version": "0.0.2",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "std-env",
+      "version": "4.3.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "strip-indent",
+      "version": "3.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "symbol-tree",
+      "version": "3.2.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tailwind-merge",
+      "version": "3.7.0",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "tailwindcss",
+      "version": "4.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "tapable",
+      "version": "2.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "tinybench",
+      "version": "2.9.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tinyexec",
+      "version": "1.3.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tinyglobby",
+      "version": "0.2.17",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "tinyrainbow",
+      "version": "3.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tldts",
+      "version": "7.4.19",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tldts-core",
+      "version": "7.4.20",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tough-cookie",
+      "version": "6.0.2",
+      "license": "BSD-3-Clause",
+      "dev": true
+    },
+    {
+      "package": "tr46",
+      "version": "6.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "ts-api-utils",
+      "version": "2.5.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "tslib",
+      "version": "2.9.1",
+      "license": "0BSD",
+      "dev": false
+    },
+    {
+      "package": "type-check",
+      "version": "0.4.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "typescript",
+      "version": "5.7.3",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "typescript-eslint",
+      "version": "8.72.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "undici-types",
+      "version": "7.24.6",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "update-browserslist-db",
+      "version": "1.3.4",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "uri-js",
+      "version": "4.4.1",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "use-callback-ref",
+      "version": "1.3.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "use-sidecar",
+      "version": "1.1.3",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "vite",
+      "version": "7.3.7",
+      "license": "MIT",
+      "dev": false
+    },
+    {
+      "package": "vitest",
+      "version": "4.1.12",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "w3c-xmlserializer",
+      "version": "5.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "webidl-conversions",
+      "version": "8.0.1",
+      "license": "BSD-2-Clause",
+      "dev": true
+    },
+    {
+      "package": "whatwg-mimetype",
+      "version": "4.0.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "whatwg-url",
+      "version": "15.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "which",
+      "version": "2.0.2",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "why-is-node-running",
+      "version": "2.3.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "word-wrap",
+      "version": "1.2.5",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "ws",
+      "version": "8.22.1",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "xml-name-validator",
+      "version": "5.0.0",
+      "license": "Apache-2.0",
+      "dev": true
+    },
+    {
+      "package": "xmlchars",
+      "version": "2.2.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "yallist",
+      "version": "3.1.1",
+      "license": "ISC",
+      "dev": true
+    },
+    {
+      "package": "yocto-queue",
+      "version": "0.1.0",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "zod",
+      "version": "4.6.7",
+      "license": "MIT",
+      "dev": true
+    },
+    {
+      "package": "zod-validation-error",
+      "version": "4.0.2",
+      "license": "MIT",
+      "dev": true
+    }
+  ],
+  "rust": [
+    {
+      "package": "adler2",
+      "version": "2.0.1",
+      "license": "0BSD OR MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "aho-corasick",
+      "version": "1.1.5",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "alloc-no-stdlib",
+      "version": "3.0.0",
+      "license": "BSD-3-Clause",
+      "license_file": null
+    },
+    {
+      "package": "alloc-stdlib",
+      "version": "0.3.0",
+      "license": "BSD-3-Clause",
+      "license_file": null
+    },
+    {
+      "package": "android_system_properties",
+      "version": "0.1.6",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "anyhow",
+      "version": "1.0.104",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "atk",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "atk-sys",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "atomic-waker",
+      "version": "1.1.2",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "autocfg",
+      "version": "1.5.1",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "base64",
+      "version": "0.21.7",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "base64",
+      "version": "0.23.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "bit-set",
+      "version": "0.8.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "bit-vec",
+      "version": "0.8.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "bitflags",
+      "version": "1.3.2",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "bitflags",
+      "version": "2.13.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "block-buffer",
+      "version": "0.10.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "block2",
+      "version": "0.6.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "brotli",
+      "version": "9.1.1",
+      "license": "BSD-3-Clause AND MIT",
+      "license_file": null
+    },
+    {
+      "package": "brotli-decompressor",
+      "version": "6.2.0",
+      "license": "BSD-3-Clause/MIT",
+      "license_file": null
+    },
+    {
+      "package": "bs58",
+      "version": "0.5.1",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "bumpalo",
+      "version": "3.20.3",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "bytemuck",
+      "version": "1.25.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "byteorder",
+      "version": "1.5.0",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "bytes",
+      "version": "1.12.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "cairo-rs",
+      "version": "0.18.5",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "cairo-sys-rs",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "camino",
+      "version": "1.2.6",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "cargo-platform",
+      "version": "0.1.9",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "cargo_metadata",
+      "version": "0.19.2",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "cargo_toml",
+      "version": "1.0.1",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "cc",
+      "version": "1.10.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "cesu8",
+      "version": "1.1.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "cfb",
+      "version": "0.14.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "cfg-expr",
+      "version": "0.15.8",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "cfg-if",
+      "version": "1.0.5",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "chrono",
+      "version": "0.4.45",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "combine",
+      "version": "4.6.9",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "cookie",
+      "version": "0.18.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "core-foundation",
+      "version": "0.10.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "core-foundation-sys",
+      "version": "0.8.7",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "core-graphics",
+      "version": "0.25.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "core-graphics-types",
+      "version": "0.2.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "cpufeatures",
+      "version": "0.2.17",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "crc32fast",
+      "version": "1.5.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "crossbeam-channel",
+      "version": "0.5.17",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "crossbeam-utils",
+      "version": "0.8.23",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "crypto-common",
+      "version": "0.1.7",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "cssparser",
+      "version": "0.37.0",
+      "license": "MPL-2.0",
+      "license_file": null
+    },
+    {
+      "package": "cssparser-macros",
+      "version": "0.7.1",
+      "license": "MPL-2.0",
+      "license_file": null
+    },
+    {
+      "package": "ctor",
+      "version": "1.0.13",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "darling",
+      "version": "0.24.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "darling_core",
+      "version": "0.24.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "darling_macro",
+      "version": "0.24.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "dbus",
+      "version": "0.9.12",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "defmt",
+      "version": "1.2.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "defmt-macros",
+      "version": "1.2.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "defmt-parser",
+      "version": "1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "deranged",
+      "version": "0.5.9",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "derive_more",
+      "version": "2.1.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "derive_more-impl",
+      "version": "2.1.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "digest",
+      "version": "0.10.7",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dirs",
+      "version": "7.0.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dirs-sys",
+      "version": "0.5.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dispatch2",
+      "version": "0.3.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "displaydoc",
+      "version": "0.2.7",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dlopen2",
+      "version": "0.8.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "dlopen2_derive",
+      "version": "0.4.3",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "dom_query",
+      "version": "0.28.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "dpi",
+      "version": "0.1.2",
+      "license": "Apache-2.0 AND MIT",
+      "license_file": null
+    },
+    {
+      "package": "dtoa",
+      "version": "1.0.11",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dtoa-short",
+      "version": "0.3.5",
+      "license": "MPL-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dunce",
+      "version": "1.0.5",
+      "license": "CC0-1.0 OR MIT-0 OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "dyn-clone",
+      "version": "1.0.20",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "embed-resource",
+      "version": "3.0.12",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "embed_plist",
+      "version": "1.2.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "equivalent",
+      "version": "1.0.3",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "erased-serde",
+      "version": "0.4.11",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "errno",
+      "version": "0.3.14",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "fallible-iterator",
+      "version": "0.3.0",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "fallible-streaming-iterator",
+      "version": "0.1.9",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "fastrand",
+      "version": "2.5.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "fdeflate",
+      "version": "0.3.7",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "field-offset",
+      "version": "0.3.6",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "find-msvc-tools",
+      "version": "0.1.15",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "flate2",
+      "version": "1.1.10",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "fnv",
+      "version": "1.0.7",
+      "license": "Apache-2.0 / MIT",
+      "license_file": null
+    },
+    {
+      "package": "foldhash",
+      "version": "0.1.5",
+      "license": "Zlib",
+      "license_file": null
+    },
+    {
+      "package": "foldhash",
+      "version": "0.2.0",
+      "license": "Zlib",
+      "license_file": null
+    },
+    {
+      "package": "foreign-types",
+      "version": "0.5.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "foreign-types-macros",
+      "version": "0.2.4",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "foreign-types-shared",
+      "version": "0.3.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "form_urlencoded",
+      "version": "1.2.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "futures-channel",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "futures-core",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "futures-executor",
+      "version": "0.3.34",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "futures-io",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "futures-macro",
+      "version": "0.3.34",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "futures-sink",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "futures-task",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "futures-util",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "gdk",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gdk-pixbuf",
+      "version": "0.18.5",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gdk-pixbuf-sys",
+      "version": "0.18.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gdk-sys",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gdkwayland-sys",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gdkx11",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gdkx11-sys",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "generic-array",
+      "version": "0.14.7",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "getrandom",
+      "version": "0.3.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "getrandom",
+      "version": "0.4.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "gio",
+      "version": "0.18.4",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gio-sys",
+      "version": "0.18.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "glib",
+      "version": "0.18.5",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "glib-macros",
+      "version": "0.18.5",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "glib-sys",
+      "version": "0.18.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "glob",
+      "version": "0.3.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "gobject-sys",
+      "version": "0.18.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gtk",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gtk-sys",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "gtk3-macros",
+      "version": "0.18.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "hashbrown",
+      "version": "0.12.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "hashbrown",
+      "version": "0.15.5",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "hashbrown",
+      "version": "0.17.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "hashlink",
+      "version": "0.10.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "heck",
+      "version": "0.4.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "heck",
+      "version": "0.5.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "hex",
+      "version": "0.4.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "html5ever",
+      "version": "0.39.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "http",
+      "version": "1.5.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "http-body",
+      "version": "1.1.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "http-body-util",
+      "version": "0.1.5",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "httparse",
+      "version": "1.10.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "hyper",
+      "version": "1.12.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "hyper-util",
+      "version": "0.1.21",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "iana-time-zone",
+      "version": "0.1.65",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "iana-time-zone-haiku",
+      "version": "0.1.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "ico",
+      "version": "0.6.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "icu_collections",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "icu_locale_core",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "icu_normalizer",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "icu_normalizer_data",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "icu_properties",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "icu_properties_data",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "icu_provider",
+      "version": "2.4.0",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "ident_case",
+      "version": "1.0.1",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "idna",
+      "version": "1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "idna_adapter",
+      "version": "1.2.2",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "indexmap",
+      "version": "1.9.3",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "indexmap",
+      "version": "2.14.2",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "infer",
+      "version": "0.22.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "ipnet",
+      "version": "2.12.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "itoa",
+      "version": "1.0.18",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "javascriptcore-rs",
+      "version": "1.1.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "javascriptcore-rs-sys",
+      "version": "1.1.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "jiff",
+      "version": "0.2.38",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "jiff-core",
+      "version": "0.1.1",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "jiff-static",
+      "version": "0.2.38",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "jiff-tzdb",
+      "version": "0.1.9",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "jiff-tzdb-platform",
+      "version": "0.1.3",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "jni",
+      "version": "0.21.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "jni-sys",
+      "version": "0.3.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "jni-sys",
+      "version": "0.4.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "jni-sys-macros",
+      "version": "0.4.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "js-sys",
+      "version": "0.3.107",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "json-patch",
+      "version": "4.2.0",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "jsonptr",
+      "version": "0.7.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "keyboard-types",
+      "version": "0.8.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "libappindicator",
+      "version": "0.9.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "libappindicator-sys",
+      "version": "0.9.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "libc",
+      "version": "0.2.191",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "libdbus-sys",
+      "version": "0.2.7",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "libloading",
+      "version": "0.7.4",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "libredox",
+      "version": "0.1.25",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "libsqlite3-sys",
+      "version": "0.35.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "linux-raw-sys",
+      "version": "0.12.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "litemap",
+      "version": "0.8.3",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "lock_api",
+      "version": "0.4.14",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "log",
+      "version": "0.4.35",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "markup5ever",
+      "version": "0.39.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "memchr",
+      "version": "2.8.3",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "memoffset",
+      "version": "0.9.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "mime",
+      "version": "0.3.17",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "miniz_oxide",
+      "version": "0.8.9",
+      "license": "MIT OR Zlib OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "miniz_oxide",
+      "version": "0.9.1",
+      "license": "MIT OR Zlib OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "mio",
+      "version": "1.2.4",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "muda",
+      "version": "0.20.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "ndk",
+      "version": "0.9.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "ndk-context",
+      "version": "0.1.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "ndk-sys",
+      "version": "0.6.0+11769913",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "new_debug_unreachable",
+      "version": "1.0.6",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "num-conv",
+      "version": "0.2.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "num-traits",
+      "version": "0.2.19",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "num_enum",
+      "version": "0.7.6",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "num_enum_derive",
+      "version": "0.7.6",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2",
+      "version": "0.6.5",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-app-kit",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-cloud-kit",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-core-data",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-core-foundation",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-core-graphics",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-core-image",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-core-location",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-core-text",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-encode",
+      "version": "4.1.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-exception-helper",
+      "version": "0.1.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-foundation",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-io-surface",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-quartz-core",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-ui-kit",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-user-notifications",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "objc2-web-kit",
+      "version": "0.3.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "once_cell",
+      "version": "1.21.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "option-ext",
+      "version": "0.2.0",
+      "license": "MPL-2.0",
+      "license_file": null
+    },
+    {
+      "package": "pango",
+      "version": "0.18.3",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "pango-sys",
+      "version": "0.18.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "parking_lot",
+      "version": "0.12.5",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "parking_lot_core",
+      "version": "0.9.12",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "percent-encoding",
+      "version": "2.3.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "phf",
+      "version": "0.13.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "phf_codegen",
+      "version": "0.13.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "phf_generator",
+      "version": "0.13.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "phf_macros",
+      "version": "0.13.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "phf_shared",
+      "version": "0.13.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "pin-project-lite",
+      "version": "0.2.17",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "pkg-config",
+      "version": "0.3.34",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "plist",
+      "version": "1.10.3",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "png",
+      "version": "0.18.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "portable-atomic",
+      "version": "1.15.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "portable-atomic-util",
+      "version": "0.2.8",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "potential_utf",
+      "version": "0.1.6",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "powerfmt",
+      "version": "0.2.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "precomputed-hash",
+      "version": "0.1.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "proc-macro-crate",
+      "version": "1.3.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "proc-macro-crate",
+      "version": "2.0.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "proc-macro-crate",
+      "version": "3.5.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "proc-macro-error",
+      "version": "1.0.4",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "proc-macro-error-attr",
+      "version": "1.0.4",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "proc-macro2",
+      "version": "1.0.107",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "quick-xml",
+      "version": "0.42.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "quote",
+      "version": "1.0.47",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "r-efi",
+      "version": "5.3.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "r-efi",
+      "version": "6.0.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "raw-window-handle",
+      "version": "0.6.2",
+      "license": "MIT OR Apache-2.0 OR Zlib",
+      "license_file": null
+    },
+    {
+      "package": "redox_syscall",
+      "version": "0.5.18",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "redox_users",
+      "version": "0.5.3",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "ref-cast",
+      "version": "1.0.27",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "ref-cast-impl",
+      "version": "1.0.27",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "regex",
+      "version": "1.13.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "regex-automata",
+      "version": "0.4.18",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "regex-syntax",
+      "version": "0.8.11",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "reqwest",
+      "version": "0.13.5",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "rusqlite",
+      "version": "0.37.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "rustc-hash",
+      "version": "2.1.3",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "rustc_version",
+      "version": "0.4.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "rustix",
+      "version": "1.1.6",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "rustversion",
+      "version": "1.0.23",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "same-file",
+      "version": "1.0.6",
+      "license": "Unlicense/MIT",
+      "license_file": null
+    },
+    {
+      "package": "schemars",
+      "version": "0.8.22",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "schemars",
+      "version": "0.9.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "schemars",
+      "version": "1.2.3",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "schemars_derive",
+      "version": "0.8.22",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "scopeguard",
+      "version": "1.2.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "selectors",
+      "version": "0.38.0",
+      "license": "MPL-2.0",
+      "license_file": null
+    },
+    {
+      "package": "semver",
+      "version": "1.0.28",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde",
+      "version": "1.0.229",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde-untagged",
+      "version": "0.1.9",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_core",
+      "version": "1.0.229",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_derive",
+      "version": "1.0.229",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_derive_internals",
+      "version": "0.29.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_json",
+      "version": "1.0.154",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_repr",
+      "version": "0.1.21",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_spanned",
+      "version": "0.6.9",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "serde_spanned",
+      "version": "1.1.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_with",
+      "version": "3.24.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serde_with_macros",
+      "version": "3.24.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serialize-to-javascript",
+      "version": "0.1.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "serialize-to-javascript-impl",
+      "version": "0.1.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "servo_arc",
+      "version": "0.4.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "sha2",
+      "version": "0.10.9",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "shlex",
+      "version": "2.0.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "simd-adler32",
+      "version": "0.3.10",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "siphasher",
+      "version": "1.0.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "slab",
+      "version": "0.4.12",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "smallvec",
+      "version": "1.16.4",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "socket2",
+      "version": "0.6.5",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "softbuffer",
+      "version": "0.4.8",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "soup3",
+      "version": "0.5.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "soup3-sys",
+      "version": "0.5.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "stable_deref_trait",
+      "version": "1.2.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "static_vcruntime",
+      "version": "3.0.0",
+      "license": "MIT OR Apache-2.0 OR Zlib",
+      "license_file": null
+    },
+    {
+      "package": "string_cache",
+      "version": "0.9.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "string_cache_codegen",
+      "version": "0.6.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "strsim",
+      "version": "0.11.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "swift-rs",
+      "version": "1.0.9",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "syn",
+      "version": "1.0.109",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "syn",
+      "version": "2.0.119",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "syn",
+      "version": "3.0.9",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "sync_wrapper",
+      "version": "1.0.2",
+      "license": "Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "synstructure",
+      "version": "0.14.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "system-deps",
+      "version": "6.2.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "tao",
+      "version": "0.37.2",
+      "license": "Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "tao-macros",
+      "version": "0.1.4",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "target-lexicon",
+      "version": "0.12.16",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "tauri",
+      "version": "2.12.5",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-build",
+      "version": "2.7.4",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-codegen",
+      "version": "2.7.4",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-macros",
+      "version": "2.7.4",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-runtime",
+      "version": "2.12.2",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-runtime-wry",
+      "version": "2.12.3",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-utils",
+      "version": "2.10.2",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tauri-winres",
+      "version": "0.3.7",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tempfile",
+      "version": "3.27.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "tendril",
+      "version": "0.5.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "thiserror",
+      "version": "1.0.69",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "thiserror",
+      "version": "2.0.21",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "thiserror-impl",
+      "version": "1.0.69",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "thiserror-impl",
+      "version": "2.0.21",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "time",
+      "version": "0.3.55",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "time-core",
+      "version": "0.1.9",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "time-macros",
+      "version": "0.2.32",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "tinystr",
+      "version": "0.8.5",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "tinyvec",
+      "version": "1.13.3",
+      "license": "Zlib OR Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "tokio",
+      "version": "1.54.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tokio-util",
+      "version": "0.7.20",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "toml",
+      "version": "0.8.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "toml",
+      "version": "1.1.8+spec-1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "toml_datetime",
+      "version": "0.6.3",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "toml_datetime",
+      "version": "1.1.2+spec-1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "toml_edit",
+      "version": "0.19.15",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "toml_edit",
+      "version": "0.20.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "toml_edit",
+      "version": "0.25.17+spec-1.1.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "toml_parser",
+      "version": "1.1.5+spec-1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "toml_writer",
+      "version": "1.1.3+spec-1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "tower",
+      "version": "0.5.3",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tower-http",
+      "version": "0.6.11",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tower-layer",
+      "version": "0.3.3",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tower-service",
+      "version": "0.3.3",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tracing",
+      "version": "0.1.44",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tracing-core",
+      "version": "0.1.36",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "tray-icon",
+      "version": "0.25.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "try-lock",
+      "version": "0.2.5",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "typeid",
+      "version": "1.0.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "typenum",
+      "version": "1.20.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "unicode-ident",
+      "version": "1.0.27",
+      "license": "(MIT OR Apache-2.0) AND Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "unicode-segmentation",
+      "version": "1.13.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "url",
+      "version": "2.5.8",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "urlpattern",
+      "version": "0.6.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "utf8_iter",
+      "version": "1.1.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "utf_types",
+      "version": "1.0.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "uuid",
+      "version": "1.29.0",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "vcpkg",
+      "version": "0.2.15",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "version-compare",
+      "version": "0.2.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "version_check",
+      "version": "0.9.5",
+      "license": "MIT/Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "vswhom",
+      "version": "0.1.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "vswhom-sys",
+      "version": "0.1.3",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "walkdir",
+      "version": "2.5.0",
+      "license": "Unlicense/MIT",
+      "license_file": null
+    },
+    {
+      "package": "want",
+      "version": "0.3.2",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "wasi",
+      "version": "0.11.1+wasi-snapshot-preview1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasip2",
+      "version": "1.0.4+wasi-0.2.12",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasm-bindgen",
+      "version": "0.2.130",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasm-bindgen-futures",
+      "version": "0.4.80",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasm-bindgen-macro",
+      "version": "0.2.130",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasm-bindgen-macro-support",
+      "version": "0.2.130",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasm-bindgen-shared",
+      "version": "0.2.130",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "wasm-streams",
+      "version": "0.5.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "web-sys",
+      "version": "0.3.107",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "web-time",
+      "version": "1.1.0",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "web_atoms",
+      "version": "0.2.6",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "webkit2gtk",
+      "version": "2.0.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "webkit2gtk-sys",
+      "version": "2.0.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "webview2-com",
+      "version": "0.39.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "webview2-com-macros",
+      "version": "0.8.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "webview2-com-sys",
+      "version": "0.39.1",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "winapi",
+      "version": "0.3.9",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "winapi-i686-pc-windows-gnu",
+      "version": "0.4.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "winapi-util",
+      "version": "0.1.11",
+      "license": "Unlicense OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "winapi-x86_64-pc-windows-gnu",
+      "version": "0.4.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "window-vibrancy",
+      "version": "0.8.1",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "windows",
+      "version": "0.62.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-collections",
+      "version": "0.3.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-core",
+      "version": "0.62.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-future",
+      "version": "0.3.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-implement",
+      "version": "0.60.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-interface",
+      "version": "0.59.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-link",
+      "version": "0.2.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-numerics",
+      "version": "0.3.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-result",
+      "version": "0.4.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-strings",
+      "version": "0.5.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-sys",
+      "version": "0.45.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows-sys",
+      "version": "0.61.2",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-targets",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows-threading",
+      "version": "0.2.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows-version",
+      "version": "0.1.7",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null
+    },
+    {
+      "package": "windows_aarch64_gnullvm",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows_aarch64_msvc",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows_i686_gnu",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows_i686_msvc",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows_x86_64_gnu",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows_x86_64_gnullvm",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "windows_x86_64_msvc",
+      "version": "0.42.2",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "winnow",
+      "version": "0.5.40",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "winnow",
+      "version": "1.0.4",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "winreg",
+      "version": "0.56.0",
+      "license": "MIT",
+      "license_file": null
+    },
+    {
+      "package": "wit-bindgen",
+      "version": "0.57.1",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "writeable",
+      "version": "0.6.4",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "wry",
+      "version": "0.57.1",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null
+    },
+    {
+      "package": "x11",
+      "version": "2.21.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "x11-dl",
+      "version": "2.21.0",
+      "license": "NOT_CACHED",
+      "license_file": null
+    },
+    {
+      "package": "yoke",
+      "version": "0.8.4",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "yoke-derive",
+      "version": "0.8.4",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "zerofrom",
+      "version": "0.1.8",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "zerofrom-derive",
+      "version": "0.1.8",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "zerotrie",
+      "version": "0.2.5",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "zerovec",
+      "version": "0.11.9",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "zerovec-derive",
+      "version": "0.11.7",
+      "license": "Unicode-3.0",
+      "license_file": null
+    },
+    {
+      "package": "zlib-rs",
+      "version": "0.6.8",
+      "license": "Zlib",
+      "license_file": null
+    },
+    {
+      "package": "zmij",
+      "version": "1.0.23",
+      "license": "MIT",
+      "license_file": null
+    }
+  ],
+  "summary": {
+    "npm_packages": 392,
+    "npm_without_license": 0,
+    "rust_packages": 418,
+    "rust_not_cached": 144
+  }
+}

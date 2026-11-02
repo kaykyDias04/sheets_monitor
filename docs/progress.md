@@ -19,3 +19,18 @@ Correcoes verificadas: aspas na chamada VsDevCmd; manifesto Common Controls 6 na
 Pendencias desta etapa: nenhuma. Build funcional/instalador do produto, Google/OAuth e baselines nao foram validados e dependem dos prompts correspondentes.
 
 Proxima etapa somente apos concluir este aceite e receber o **Prompt 02**. Nenhum avanco automatico.
+
+## Sprint 01 do anexo v1.0 — autorização substitutiva
+
+Durante o Prompt 02, o usuário forneceu a especificação fechada e escolheu explicitamente substituir a etapa atual pela Sprint 01 do anexo. O registro anterior de ambiente permanece histórico; a autorização vigente inclui fundação executável e termina antes da Sprint 02.
+
+Estado: integração nativa em verificação. Protótipo preservado em `ffcaa49` e em `archive/prototype/` (47 hashes conferidos). IDs oficiais SM-001 a SM-028 mantidos, com 33 subtarefas e dependências sem ciclos. Licença própria MIT e templates configurados; nenhum remoto foi criado ou publicado.
+
+Gates já executados:
+
+- SQLite MSVC: 11 unitários e 2 de integração, aprovados, incluindo onze entidades, migrações, rollback, capacidade e reabertura.
+- Rust desktop: 12 unitários e 2 de integração, aprovados; rustfmt e clippy sem warnings aprovados.
+- Frontend: instalação limpa, format:check, typecheck, ESLint, oito testes Vitest e build aprovados; audit sem vulnerabilidades reportadas nesta resolução.
+- Repositório: especificação original, backlog, hashes do arquivo, links, templates, licença e padrões conhecidos de credenciais verificados. Esse scan não equivale a uma auditoria completa de segredos.
+
+Pendente antes de concluir: build standalone com assets finais, janela Windows, quatro telas e persistência de preferência após reabrir; reconciliação final de evidências e commit com status limpo. O workflow Windows está configurado, mas não foi executado no GitHub por não haver remoto autorizado.

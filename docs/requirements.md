@@ -1,27 +1,67 @@
-# Sheets Monitor V1 — requisitos provisórios
+# Requisitos canônicos — especificação v1.0
 
-Fonte: contrato fornecido na conversa em 01/11/2026. A pasta estava vazia; o documento original mencionado pelo usuário não estava disponível. Este arquivo registra o escopo implementável, sem alegar equivalência com um documento não recebido.
+Fonte: [anexo original](specification-v1.0.original.md), preservado sem edição. SHA-256 `994A2FAA0E1D9C48450C5FE2B7B88AB9E237C17054EFE3A70E1EC291671F765E`. A interpretação anterior está em [requirements.prototype.md](requirements.prototype.md) e no arquivo do protótipo.
 
-## Produto
+O usuário autorizou expressamente a **Sprint 01 do anexo**, substituindo a organização isolada do Prompt 02. O produto completo abaixo é especificação, não autorização para executar outras sprints.
 
-- Aplicativo Windows 11 local, Tauri 2, React, TypeScript, Rust e SQLite. Não exige servidor hospedado.
-- Até 30 planilhas por ambiente, IDs explícitos. Leitura de Sheets (incluindo grid), metadados/permissões Drive e projetos Apps Script explicitamente autorizados.
-- OAuth desktop no navegador do sistema, PKCE S256, state e callback loopback efêmero. Tokens restritos ao backend e ao cofre do Windows.
-- Baseline inicial exige prévia e aprovação explícita do usuário. Nenhuma baseline real é aprovada pelo agente.
-- Comparar todos os campos retornados pelas APIs, inclusive valores, fórmulas, formatação, estrutura, metadados, permissões e fontes/manifestos de scripts. Cada diferença detectada gera evento e notificação durável.
-- Análise estática de scripts desde V1: achados são heurísticos, sem executar código e sem afirmar auditoria completa.
-- Agendamento local, coleta manual, histórico, recuperação de erros, fila de notificações e relatório local.
-- Falhas parciais de API não devem substituir snapshots válidos. Reinícios preservam histórico e notificações. Modo de fixtures isolado de dados reais.
-- Nenhuma escrita nos arquivos Google. Nenhuma execução/deploy de Apps Script. Revogação remota depende de ação explícita, não da rotina de monitoramento.
+## Fundação autorizada agora
 
-## Limites verificáveis
+Tauri 2, React + TypeScript + Vite, Tailwind CSS + shadcn/ui, backend Rust modular e SQLite local com migrações versionadas. Dashboard, Planilhas, Histórico e Configurações navegam com exemplos identificados como demonstração, inclusive no desktop. O SQLite deve criar e ler as onze entidades da especificação e sobreviver à reabertura. Testes, lint, formatação, typecheck, builds, CI Windows e documentação devem ser reproduzíveis.
 
-Polling observa diferenças entre snapshots completos bem sucedidos; não captura alterações transitórias entre coletas. Escopos e APIs limitam o que é observável. Apps Script exige IDs e acesso explicitamente concedidos; não existe promessa de descoberta automática de todos os scripts vinculados. Dados fora da resposta ou inacessíveis não são declarados monitorados.
+Comprovar janela nativa no Windows 11. Build web e probe do ambiente não substituem essa evidência. Não implementar login Google, monitoramento real, bandeja, autostart ou instalador nesta fundação. Parâmetros futuros podem ser persistidos/validados, sem afirmar que a rotina correspondente já funciona.
 
-O aplicativo precisa permanecer em execução para agendar coletas. Notificações do Windows dependem das configurações do sistema; a fila persistente e a central do aplicativo preservam cada evento independentemente da apresentação do toast.
+## Produto V1 aprovado
 
-## Gates
+| RF | Requisito | Backlog principal |
+|---|---|---|
+| RF-01 | OAuth 2.0 desktop com PKCE | SM-007, SM-008 |
+| RF-02 | Cadastro por link | SM-019 |
+| RF-03 | Editar, remover e pausar | SM-019 |
+| RF-04 | Arquivo inteiro ou abas selecionadas | SM-020 |
+| RF-05 | Baseline versionado com aprovação explícita | SM-012 |
+| RF-06 | Colunas alteradas, excluídas e deslocadas | SM-013 |
+| RF-07 | Alterações/erros em fórmulas protegidas | SM-014 |
+| RF-08 | Apps Script autorizado e dependências estruturais estáticas | SM-011, SM-015 |
+| RF-09 | Diferenças de linhas e valores | SM-017 |
+| RF-10 | Notificar todas as diferenças observadas | SM-023 |
+| RF-11 | Histórico com data, arquivo e diagnóstico | SM-021 |
+| RF-12 | Dashboard de integridade | SM-018 |
+| RF-13 | Monitoramento enquanto minimizado | SM-022, SM-024 |
+| RF-14 | Recuperar status após correção | SM-016, SM-025 |
 
-1. Domínio/SQLite: limite 30, diffs, aprovação, transações, reinício, outbox e falhas testados com fixtures.
-2. Adaptadores: PKCE/state/callback, leitura, falhas/retries e proteção de tokens verificados localmente. Integração Google real permanece pendente sem credenciais/consentimento.
-3. Interface/Tauri: TypeScript, testes de fluxos, build web, testes Rust e build nativo conforme toolchain disponível. Evidências em `docs/evidence/`.
+## Estados de integridade
+
+- **Online:** avaliação concluída e integridade estrutural confirmada.
+- **Offline:** falha confirmada em estrutura, fórmula protegida ou dependência crítica.
+- **Verificando:** avaliação em execução.
+- **Indeterminado:** não foi possível confirmar integridade por permissão, indisponibilidade ou falha técnica.
+
+Alterar valor ou inserir/excluir linha comum gera evento e mantém Online quando permitido pelas regras. Coluna protegida reordenada/excluída, aba monitorada removida, fórmula crítica inválida ou dependência crítica quebrada gera Offline. Perda de conexão gera evento operacional e Indeterminado. Modificação de script depende do impacto; referência dinâmica não pode ser declarada válida automaticamente.
+
+## Parâmetros e limites
+
+| Parâmetro | Contrato |
+|---|---|
+| Sistema/distribuição | Windows 11 x64; Tauri 2; instalador `.exe` ou `.msi` em SM-028 |
+| Capacidade | Até 30 arquivos cadastrados simultaneamente |
+| Intervalo | Inicial 60 segundos; configurável de 60 a 300 |
+| Paralelismo | Até 3 verificações |
+| Histórico | Padrão de 90 dias |
+| Baseline | Versionado; aprovação humana explícita |
+| Notificações | Consolidação de repetidas sem perder eventos persistidos |
+| Minimização | Sim, em etapa própria; autostart opcional |
+| Alterações externas | Sem correção de planilhas e sem modificar/executar Apps Script |
+| Infraestrutura | Local; sem servidor próprio e sem webapp hospedado |
+| Sincronização entre PCs | Fora da V1 |
+
+Informar quando tamanho/cotas tornam a frequência inviável. Não truncar respostas e declarar sucesso. Polling registra somente diferenças efetivamente observadas, sem garantia de capturar toda edição intermediária.
+
+## Banco previsto
+
+`accounts`, `spreadsheets`, `monitored_sheets`, `baselines`, `integrity_rules`, `script_projects`, `script_dependencies`, `monitoring_checks`, `change_events`, `notifications` e `app_settings`. Migrações devem comprovar criação e leitura; o ledger interno não substitui nenhuma entidade.
+
+## Apps Script a partir da V1
+
+Ler somente projetos autorizados por ID, comparar fontes com referência e reconhecer referências estáticas `getSheetByName()`, `getRange()` e índices de colunas. Verificar a estrutura referenciada e sinalizar dependências dinâmicas não verificáveis. Indicadores genéricos de texto do protótipo não satisfazem, sozinhos, esse requisito. Nenhum código será executado ou alterado pelo monitor.
+
+Critérios em [acceptance.md](acceptance.md), tarefas oficiais em [backlog.md](backlog.md), decisões em [adr/README.md](adr/README.md) e evidência real em [progress.md](progress.md).

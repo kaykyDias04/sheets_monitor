@@ -1,164 +1,124 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { invoke } from "@tauri-apps/api/core";
 import App from "./App";
-import { call, resetDemo } from "./bridge";
-import type { Dashboard } from "./bridge";
-
-beforeEach(() => resetDemo());
+import { demoDashboard, type FoundationDashboard, type AppSettings } from "./fixtures";
+import { getDashboard, saveSettings } from "./services/foundation";
+vi.mock("@tauri-apps/api/core", () => ({ isTauri: () => true, invoke: vi.fn() }));
+let persisted: FoundationDashboard;
+const invokeMock = vi.mocked(invoke);
+beforeEach(() => {
+  persisted = demoDashboard();
+  invokeMock.mockReset();
+  invokeMock.mockImplementation(async (command, args) => {
+    if (command === "foundation_get_dashboard") return structuredClone(persisted);
+    if (command === "foundation_save_settings") {
+      persisted.settings = { ...(args as { settings: AppSettings }).settings };
+      return;
+    }
+    throw new Error(`Comando não permitido nesta sprint: ${command}`);
+  });
+});
 afterEach(() => cleanup());
 async function load() {
   render(<App />);
-  await screen.findByText("Planejamento financeiro");
+  await screen.findByRole("button", { name: "Ver exemplo de baseline de Indicadores comerciais" });
   return userEvent.setup();
 }
-
-describe("workspace", () => {
-  it("identifica dados fictícios e mantém baseline pendente até a confirmação", async () => {
+describe("Sprint 01 · interface demonstrativa", () => {
+  it("oferece exatamente as quatro telas e mantém identificação DEMO no desktop", async () => {
     const user = await load();
-    expect(screen.getByText(/Demonstração no navegador/)).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /Revisar baseline/ }));
-    const dialog = screen.getByRole("dialog", { name: "Revisar baseline" });
-    await within(dialog).findByText(/Snapshot da coleta/);
-    expect(
-      within(dialog).getByRole("button", { name: "Aprovar baseline" }),
-    ).toBeDisabled();
-    expect(
-      (await call<Dashboard>("get_dashboard")).sheets[2].baseline_approved,
-    ).toBe(false);
-    await user.click(
-      within(dialog).getByRole("checkbox", { name: /Revisei esta coleta/ }),
-    );
-    await user.click(
-      within(dialog).getByRole("button", { name: "Aprovar baseline" }),
-    );
-    await screen.findByText(/Baseline aprovada/);
-    expect(
-      (await call<Dashboard>("get_dashboard")).sheets[2].baseline_approved,
-    ).toBe(true);
+    const nav = screen.getByRole("navigation", { name: "Navegação principal" });
+    expect(within(nav).getAllByRole("button")).toHaveLength(4);
+    expect(screen.getByText(/Dados fictícios · Sprint 01/)).toBeInTheDocument();
+    expect(screen.getByText(/Nenhuma planilha Google é consultada/)).toBeInTheDocument();
+    for (const page of ["Planilhas", "Histórico", "Configurações", "Dashboard"]) {
+      await user.click(within(nav).getByRole("button", { name: page }));
+      expect(screen.getByRole("heading", { level: 1, name: page })).toBeInTheDocument();
+    }
   });
-  it("cadastra por URL e deduplica IDs autorizados sem aprovar automaticamente", async () => {
+  it("representa os quatro estados sem tratar alteração comum como falha", async () => {
     const user = await load();
-    await user.click(
-      screen.getByRole("button", { name: "Adicionar planilha" }),
-    );
-    await user.type(screen.getByLabelText("Nome da planilha"), "Nova base");
-    await user.type(
-      screen.getByLabelText("Link ou ID do Google Sheets"),
-      "https://docs.google.com/spreadsheets/d/fixture-new/edit",
-    );
-    await user.type(
-      screen.getByLabelText(/IDs de Apps Script autorizados/),
-      "script-one,script-one,script-two",
-    );
-    await user.click(
-      screen.getByRole("checkbox", { name: /Autorizo a consulta/ }),
-    );
-    await user.click(
-      screen.getByRole("button", { name: "Cadastrar planilha" }),
-    );
-    await screen.findByText("Nova base");
-    const sheet = (await call<Dashboard>("get_dashboard")).sheets.find(
-      (s) => s.name === "Nova base",
-    );
-    expect(sheet).toMatchObject({
-      spreadsheet_id: "fixture-new",
-      baseline_approved: false,
-      script_ids: ["script-one", "script-two"],
-    });
+    expect(screen.getAllByText("Online").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Offline").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Verificando").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Indeterminado").length).toBeGreaterThan(0);
+    const row = screen
+      .getAllByText("Indicadores comerciais")
+      .find((node) => node.closest("tr"))!
+      .closest("tr")!;
+    expect(within(row).getByText("Online")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Indicadores comerciais Conteúdo/ }));
+    expect(screen.getByRole("dialog")).toHaveTextContent("integridade permanece Online");
+    expect(screen.getByRole("dialog")).toHaveTextContent("Nenhuma alteração real foi observada");
   });
-  it("filtra planilhas e abre comparação dos valores", async () => {
+  it("mostra baseline apenas como exemplo, com diálogo acessível e sem aprovação real", async () => {
     const user = await load();
-    await user.type(
-      screen.getByRole("textbox", { name: "Buscar planilhas" }),
-      "financeiro",
-    );
-    expect(screen.getByText("Planejamento financeiro")).toBeInTheDocument();
-    expect(
-      screen.queryByText("Operação · acompanhamento"),
-    ).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Ver histórico" }));
-    await user.click(
-      screen.getByRole("button", {
-        name: /Indicadores comerciais Conteúdo ou metadados/,
-      }),
-    );
-    const dialog = screen.getByRole("dialog", {
-      name: "Detalhes da alteração",
+    const opener = screen.getByRole("button", {
+      name: "Ver exemplo de baseline de Indicadores comerciais",
     });
-    expect(within(dialog).getByText("12450")).toBeInTheDocument();
-    expect(within(dialog).getByText("13820")).toBeInTheDocument();
+    await user.click(opener);
+    const dialog = screen.getByRole("dialog", { name: "Exemplo de baseline" });
+    expect(dialog).toHaveTextContent("SEM APROVAÇÃO REAL");
+    expect(dialog).toHaveTextContent("Sprint 03");
+    expect(within(dialog).queryByRole("button", { name: /Aprovar/ })).not.toBeInTheDocument();
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(opener).toHaveFocus();
   });
-  it("demonstração não declara conexão Google ou entrega de notificações", async () => {
+  it("salva preferências no bridge local e recarrega valor persistido", async () => {
     const user = await load();
     await user.click(screen.getByRole("button", { name: "Configurações" }));
-    await user.type(
-      screen.getByLabelText("Client ID do Google Cloud"),
-      "test.apps.googleusercontent.com",
-    );
-    await user.click(screen.getByRole("button", { name: "Conectar Google" }));
-    await screen.findByRole("alert");
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Nenhuma conexão foi realizada",
-    );
-    expect((await call<Dashboard>("get_dashboard")).connected).toBe(false);
-    await user.click(screen.getByRole("button", { name: /Notificações/ }));
-    await user.click(screen.getByRole("button", { name: "Reprocessar fila" }));
-    await screen.findByText(/fila de demonstração permanece pendente/);
-    expect(
-      (await call<Dashboard>("get_dashboard")).notifications.every(
-        (n) => n.status === "pending",
-      ),
-    ).toBe(true);
-  });
-  it("exige confirmação por nome para remover acompanhamento", async () => {
-    const user = await load();
-    await user.click(
-      screen.getByRole("button", { name: "Remover Planejamento financeiro" }),
-    );
-    const button = screen.getByRole("button", {
-      name: "Remover acompanhamento",
+    const interval = screen.getByLabelText("Intervalo de verificação planejado");
+    expect(interval).toHaveValue(60);
+    await user.clear(interval);
+    await user.type(interval, "180");
+    await user.click(screen.getByRole("button", { name: "Salvar preferências locais" }));
+    await screen.findByText("Preferências demonstrativas salvas no SQLite local.");
+    expect(invokeMock).toHaveBeenCalledWith("foundation_save_settings", {
+      settings: { interval_seconds: 180, history_days: 90, start_with_windows: false },
     });
-    expect(button).toBeDisabled();
-    await user.type(
-      screen.getByLabelText("Digite o nome da planilha para confirmar"),
-      "Planejamento financeiro",
-    );
-    await user.click(button);
-    await screen.findByText("Planilha removida do acompanhamento.");
-    expect((await call<Dashboard>("get_dashboard")).sheets).toHaveLength(2);
+    expect((await getDashboard()).settings.interval_seconds).toBe(180);
+    expect(screen.getByRole("switch")).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Conexão Google indisponível" })).toBeDisabled();
+  });
+  it("filtra fixtures por nome e estado sem consulta externa", async () => {
+    const user = await load();
+    await user.click(screen.getByRole("button", { name: "Planilhas" }));
+    await user.type(screen.getByRole("textbox", { name: "Buscar planilhas" }), "financeiro");
+    expect(screen.getByText("Planejamento financeiro")).toBeInTheDocument();
+    expect(screen.queryByText("Indicadores comerciais")).not.toBeInTheDocument();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Filtrar estado" }), "online");
+    expect(screen.getByText("Nenhuma planilha nesta seleção")).toBeInTheDocument();
+  });
+  it("atualiza somente fixtures e não invoca OAuth, baseline ou monitoramento", async () => {
+    const user = await load();
+    await user.click(screen.getByRole("button", { name: "Atualizar demonstração" }));
+    await screen.findByText("Demonstração atualizada. Nenhuma API Google foi consultada.");
+    expect(invokeMock.mock.calls.every(([name]) => name === "foundation_get_dashboard")).toBe(true);
+    await user.click(screen.getByRole("button", { name: "Sobre esta sprint" }));
+    const dialog = screen.getByRole("dialog", { name: "Sprint 01 · Fundação do aplicativo" });
+    expect(dialog).toHaveTextContent("Nenhuma API Google é chamada");
+    await user.click(within(dialog).getByRole("button", { name: "Entendi" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });
-describe("bridge demonstrativo", () => {
-  it("rejeita fingerprint inválido e preserva baseline", async () => {
-    await call("preview_baseline", { id: "demo-3" });
+describe("contrato da fundação", () => {
+  it("rejeita preferências fora dos limites antes de invocar o backend", async () => {
     await expect(
-      call("approve_baseline", { id: "demo-3", fingerprint: "invalid" }),
-    ).rejects.toThrow("Prévia expirada");
-    expect(
-      (await call<Dashboard>("get_dashboard")).sheets[2].baseline_approved,
-    ).toBe(false);
-  });
-  it("limita o workspace a 30 planilhas", async () => {
-    for (let n = 3; n < 30; n++)
-      await call("add_sheet", {
-        input: { id: `fixture-${n}`, name: `Base ${n}`, script_ids: [] },
-      });
+      saveSettings({ interval_seconds: 59, history_days: 90, start_with_windows: false }),
+    ).rejects.toThrow("60 e 300");
     await expect(
-      call("add_sheet", {
-        input: { id: "fixture-31", name: "Excesso", script_ids: [] },
-      }),
-    ).rejects.toThrow("30 planilhas");
-    expect((await call<Dashboard>("get_dashboard")).sheets).toHaveLength(30);
+      saveSettings({ interval_seconds: 301, history_days: 90, start_with_windows: false }),
+    ).rejects.toThrow("60 e 300");
+    await expect(
+      saveSettings({ interval_seconds: 60, history_days: 90, start_with_windows: true }),
+    ).rejects.toThrow("inicialização automática desativada");
+    expect(invokeMock).not.toHaveBeenCalled();
   });
-  it("gera uma entrada de fila para cada diferença sem verificar pendentes", async () => {
-    const before = await call<Dashboard>("get_dashboard");
-    await call("run_check");
-    const after = await call<Dashboard>("get_dashboard");
-    expect(after.events.length - before.events.length).toBe(2);
-    expect(after.notifications.length - before.notifications.length).toBe(2);
-    expect(after.sheets[2].last_checked).toBeNull();
+  it("recusa conteúdo sem marcação demonstrativa", async () => {
+    invokeMock.mockResolvedValue({ ...persisted, is_demo: false });
+    await expect(getDashboard()).rejects.toThrow("somente dados demonstrativos");
   });
 });

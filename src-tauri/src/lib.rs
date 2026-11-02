@@ -1,10 +1,10 @@
-pub mod analysis;
-pub mod domain;
-pub mod engine;
-pub mod fixtures;
+//! Sprint 01: local desktop foundation, synthetic examples and SQLite only.
+pub mod auth;
+pub mod database;
 pub mod google;
-pub mod oauth;
-pub mod store;
+pub mod integrity;
+pub mod monitoring;
+pub mod notifications;
 
 #[cfg(feature = "desktop")]
 mod app;

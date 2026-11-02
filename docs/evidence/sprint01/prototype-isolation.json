@@ -1,0 +1,51 @@
+[
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\analysis.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\analysis.rs",
+    "sha256": "6A6E483DAEAD7F8BC2BA9791D7A95BFFD915EE2F662E292B06F0F6E406086A8E",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  },
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\domain.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\domain.rs",
+    "sha256": "F3F8BC68704FC260C3ADFCE33FC83024EA7B738BE78172C250F91B203EAB542F",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  },
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\engine.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\engine.rs",
+    "sha256": "8025668596EC3BF7853E46B4E25F0533C5A2732FECDB5B82AFC4FA6910BC284A",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  },
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\fixtures.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\fixtures.rs",
+    "sha256": "35F820DA0BFE0D675FD555369BEAA92614DF2842B599BF41B751CDE56BEEB5EE",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  },
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\store.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\store.rs",
+    "sha256": "5312436AA9CA3816252D488BF5711041C661912CA9BDB620CCFEC067D1F67DAF",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  },
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\oauth.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\oauth.rs",
+    "sha256": "50E1A47433FEB0CFF144BDAFF673F9C688721FA505EE338FE606F4ECF02E1244",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  },
+  {
+    "active_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\src\\google.rs",
+    "archive_path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\archive\\prototype\\src-tauri\\src\\google.rs",
+    "sha256": "6ED460E577AF5AD5CC365FFDEF2DD669C4E843A25725B238A63FD9A61F2CF068",
+    "identical": true,
+    "action": "remove_active_archived_prototype"
+  }
+]

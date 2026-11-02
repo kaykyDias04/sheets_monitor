@@ -41,3 +41,17 @@ Sheets Monitor: aplicativo desktop para Windows 11, Tauri 2, React, TypeScript, 
 Contrato registrado. Trabalho iniciado sob a solicitação anterior foi interrompido; os arquivos existentes foram preservados. Não instalar dependências, inicializar projeto ou implementar funcionalidades nesta etapa. Nenhuma conclusão de integração ou testes é inferida deste registro.
 
 **Próxima ação permitida: receber o Prompt 01 e executar apenas o escopo que ele autorizar.**
+
+## Atualização de escopo — Sprint 01 do anexo v1.0
+
+O registro acima descreve o estado histórico do Prompt 00. O Prompt 01 de ambiente foi concluído. Durante o Prompt 02, o usuário forneceu `docs/specification-v1.0.original.md` e confirmou expressamente: **substituir a etapa atual pela Sprint 01 do anexo**.
+
+A autorização vigente é criar a fundação Tauri 2 + React/TypeScript/Vite + Tailwind/shadcn, backend Rust modular, SQLite com migrações das onze entidades, navegação com dados simulados, testes, lint, formatação, CI Windows e documentação. Comprovar aplicativo em execução nativa. Não implementar autenticação Google, consultas reais ou motor de monitoramento nesta sprint.
+
+Os IDs oficiais são os SM-001 a SM-028 do anexo; não renumerar. Subtarefas usam `SM-002.01`. A numeração dos prompts e das sprints não é intercambiável. Ao concluir esta Sprint 01, encerrar e aguardar nova instrução; não iniciar Sprint 02 por conta própria.
+
+O protótipo anterior está preservado no commit `ffcaa49` e em `archive/prototype/`. Esse diretório é somente referência: não importar, compilar, formatar nem apresentar como funcionalidade validada. Fontes futuras já existentes ali não constituem autorização nem integração real concluída.
+
+Documentos canônicos: `docs/requirements.md`, `docs/architecture.md`, `docs/backlog.json`, `docs/acceptance.md` e `docs/progress.md`. Documentos de protótipo e ADRs históricos podem divergir: prevalecem o contrato do usuário e o anexo v1.0, com decisões atuais registradas em novos ADRs. Mudanças de requisitos precisam de registro, não de suposição silenciosa.
+
+Convenções e publicação: seguir `CONTRIBUTING.md`; commits em branch `codex/`, ligados a IDs SM. Sem remoto GitHub autorizado, trabalhar localmente. Não enviar mensagens, criar recursos remotos, consentir OAuth ou aprovar baseline real automaticamente.

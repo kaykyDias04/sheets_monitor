@@ -1,0 +1,607 @@
+{
+  "source": "docs/specification-v1.0.original.md",
+  "source_version": "1.0",
+  "authorization": "Somente Sprint 01; registrar outras sprints não autoriza implementá-las.",
+  "statuses": [
+    "planejado",
+    "em_andamento",
+    "concluido",
+    "bloqueado"
+  ],
+  "items": [
+    {
+      "id": "SM-001",
+      "title": "Verificar e preparar ambiente Windows",
+      "sprint": 1,
+      "status": "concluido",
+      "owner": "engenharia",
+      "depends_on": [],
+      "acceptance": "Dependências instaladas",
+      "evidence": [
+        "docs/evidence/environment/doctor.json"
+      ],
+      "subtasks": []
+    },
+    {
+      "id": "SM-002",
+      "title": "Criar repositório e projeto Tauri",
+      "sprint": 1,
+      "status": "em_andamento",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-001"
+      ],
+      "acceptance": "Aplicativo inicia",
+      "evidence": [
+        "docs/evidence/repository/prototype-manifest.json"
+      ],
+      "subtasks": [
+        {
+          "id": "SM-002.01",
+          "title": "Preservar protótipo e histórico sem sobrescrever",
+          "status": "concluido"
+        },
+        {
+          "id": "SM-002.02",
+          "title": "Organizar governança, licença, templates e branch",
+          "status": "em_andamento"
+        },
+        {
+          "id": "SM-002.03",
+          "title": "Abrir janela Tauri nativa com demonstração",
+          "status": "em_andamento"
+        }
+      ]
+    },
+    {
+      "id": "SM-003",
+      "title": "Configurar React, TypeScript e UI",
+      "sprint": 1,
+      "status": "em_andamento",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-002"
+      ],
+      "acceptance": "Interface navegável",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-003.01",
+          "title": "Configurar Tailwind/shadcn, aliases e componentes",
+          "status": "em_andamento"
+        },
+        {
+          "id": "SM-003.02",
+          "title": "Navegar em quatro telas com fixtures explícitas",
+          "status": "em_andamento"
+        }
+      ]
+    },
+    {
+      "id": "SM-004",
+      "title": "Estruturar backend Rust",
+      "sprint": 1,
+      "status": "em_andamento",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-002"
+      ],
+      "acceptance": "Módulos organizados",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-004.01",
+          "title": "Separar shell, banco e contratos futuros sem acesso Google",
+          "status": "em_andamento"
+        }
+      ]
+    },
+    {
+      "id": "SM-005",
+      "title": "Criar SQLite e migrações",
+      "sprint": 1,
+      "status": "em_andamento",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-004"
+      ],
+      "acceptance": "Persistência testada",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-005.01",
+          "title": "Criar onze entidades e ledger de migrações",
+          "status": "em_andamento"
+        },
+        {
+          "id": "SM-005.02",
+          "title": "Testar criação/leitura, reabertura e rollback",
+          "status": "em_andamento"
+        }
+      ]
+    },
+    {
+      "id": "SM-006",
+      "title": "Configurar testes e documentação",
+      "sprint": 1,
+      "status": "em_andamento",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-003",
+        "SM-004",
+        "SM-005"
+      ],
+      "acceptance": "Build e testes aprovados",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-006.01",
+          "title": "Documentar escopo, arquitetura, riscos e aceite",
+          "status": "em_andamento"
+        },
+        {
+          "id": "SM-006.02",
+          "title": "Executar lint, formatação, typecheck, testes e build",
+          "status": "em_andamento"
+        },
+        {
+          "id": "SM-006.03",
+          "title": "Configurar CI Windows e registrar execução nativa",
+          "status": "em_andamento"
+        }
+      ]
+    },
+    {
+      "id": "SM-007",
+      "title": "Implementar OAuth com PKCE",
+      "sprint": 2,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-004",
+        "SM-006"
+      ],
+      "acceptance": "Login Google funcional",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-007.01",
+          "title": "Validar PKCE S256/state/loopback sem guardar segredo em fonte",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-008",
+      "title": "Implementar armazenamento seguro de tokens",
+      "sprint": 2,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-005",
+        "SM-007"
+      ],
+      "acceptance": "Sessão recuperável",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-008.01",
+          "title": "Cofre Windows, renovação e isolamento de conta",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-009",
+      "title": "Integrar Sheets API",
+      "sprint": 2,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-007",
+        "SM-008"
+      ],
+      "acceptance": "Ler planilha autorizada",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-009.01",
+          "title": "Ler grids completos, fórmulas e erros com escopo de abas",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-010",
+      "title": "Integrar Drive API",
+      "sprint": 2,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-007",
+        "SM-008"
+      ],
+      "acceptance": "Ler metadados",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-010.01",
+          "title": "Metadados e paginação de permissões",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-011",
+      "title": "Integrar Apps Script API",
+      "sprint": 2,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-007",
+        "SM-008"
+      ],
+      "acceptance": "Ler projeto autorizado",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-011.01",
+          "title": "Ler fontes/manifest de IDs explicitamente autorizados",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-012",
+      "title": "Implementar baseline versionado",
+      "sprint": 3,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-005",
+        "SM-009",
+        "SM-010",
+        "SM-011"
+      ],
+      "acceptance": "Referência persistida",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-012.01",
+          "title": "Prévia, aprovação explícita e histórico de versões",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-013",
+      "title": "Detectar alterações de abas e colunas",
+      "sprint": 3,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-012"
+      ],
+      "acceptance": "Diferenças identificadas",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-013.01",
+          "title": "Detectar remoção/deslocamento de abas e colunas protegidas",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-014",
+      "title": "Comparar fórmulas protegidas",
+      "sprint": 3,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-009",
+        "SM-012"
+      ],
+      "acceptance": "Falhas detectadas",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-014.01",
+          "title": "Comparar regras de fórmulas e erros efetivos",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-015",
+      "title": "Analisar dependências Apps Script",
+      "sprint": 3,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-011",
+        "SM-012",
+        "SM-013"
+      ],
+      "acceptance": "Referências verificadas",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-015.01",
+          "title": "Resolver getSheetByName/getRange/índices estáticos",
+          "status": "planejado"
+        },
+        {
+          "id": "SM-015.02",
+          "title": "Sinalizar dependências dinâmicas não verificáveis",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-016",
+      "title": "Classificar integridade",
+      "sprint": 3,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-013",
+        "SM-014",
+        "SM-015"
+      ],
+      "acceptance": "Estados corretos",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-016.01",
+          "title": "Separar integridade, mudança permitida e incerteza técnica",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-017",
+      "title": "Registrar mudanças de conteúdo",
+      "sprint": 3,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-009",
+        "SM-012",
+        "SM-016"
+      ],
+      "acceptance": "Eventos sem duplicação indevida",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-017.01",
+          "title": "Persistir todas as diferenças sem duplicação indevida",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-018",
+      "title": "Criar dashboard",
+      "sprint": 4,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-003",
+        "SM-016"
+      ],
+      "acceptance": "Indicadores funcionais",
+      "evidence": [],
+      "subtasks": []
+    },
+    {
+      "id": "SM-019",
+      "title": "Implementar cadastro por link",
+      "sprint": 4,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-005",
+        "SM-010",
+        "SM-018"
+      ],
+      "acceptance": "Adicionar/remover arquivos",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-019.01",
+          "title": "Editar, remover, pausar e impor capacidade de trinta arquivos",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-020",
+      "title": "Criar seleção de abas",
+      "sprint": 4,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-012",
+        "SM-019"
+      ],
+      "acceptance": "Escopo individual configurável",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-020.01",
+          "title": "Escopo por arquivo/abas e efeito sobre baseline aprovado",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-021",
+      "title": "Criar histórico",
+      "sprint": 4,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-017",
+        "SM-018"
+      ],
+      "acceptance": "Eventos pesquisáveis",
+      "evidence": [],
+      "subtasks": []
+    },
+    {
+      "id": "SM-022",
+      "title": "Criar agendador",
+      "sprint": 5,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-016",
+        "SM-017",
+        "SM-020"
+      ],
+      "acceptance": "Consultas automáticas",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-022.01",
+          "title": "Intervalo 60–300s, até três coletas e aviso de frequência inviável",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-023",
+      "title": "Criar notificações nativas",
+      "sprint": 5,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-017",
+        "SM-022"
+      ],
+      "acceptance": "Alertas no Windows",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-023.01",
+          "title": "Outbox durável e consolidação sem perda de eventos",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-024",
+      "title": "Implementar bandeja do sistema",
+      "sprint": 5,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-022",
+        "SM-023"
+      ],
+      "acceptance": "Monitoramento minimizado",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-024.01",
+          "title": "Minimização/bandeja e autostart opcional explícito",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-025",
+      "title": "Implementar recuperação de falhas",
+      "sprint": 5,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-009",
+        "SM-010",
+        "SM-011",
+        "SM-022"
+      ],
+      "acceptance": "Tratamento de internet e cotas",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-025.01",
+          "title": "Rede/cotas/permissões e recuperação com estado Indeterminado",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-026",
+      "title": "Testes integrados",
+      "sprint": 6,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-006",
+        "SM-008",
+        "SM-016",
+        "SM-017",
+        "SM-020",
+        "SM-023",
+        "SM-024",
+        "SM-025"
+      ],
+      "acceptance": "Cenários críticos aprovados",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-026.01",
+          "title": "Matriz de cenários reais autorizados e fixtures separadas",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-027",
+      "title": "Teste de carga com 30 planilhas",
+      "sprint": 6,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-022",
+        "SM-026"
+      ],
+      "acceptance": "Estabilidade comprovada",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-027.01",
+          "title": "Medir memória, duração e quotas com trinta arquivos",
+          "status": "planejado"
+        }
+      ]
+    },
+    {
+      "id": "SM-028",
+      "title": "Gerar instalador",
+      "sprint": 6,
+      "status": "planejado",
+      "owner": "engenharia",
+      "depends_on": [
+        "SM-026",
+        "SM-027"
+      ],
+      "acceptance": "Instalação Windows validada",
+      "evidence": [],
+      "subtasks": [
+        {
+          "id": "SM-028.01",
+          "title": "Auditar licenças/avisos e dependências do bundle",
+          "status": "planejado"
+        },
+        {
+          "id": "SM-028.02",
+          "title": "Validar instalação/desinstalação Windows x64 e manual",
+          "status": "planejado"
+        }
+      ]
+    }
+  ]
+}

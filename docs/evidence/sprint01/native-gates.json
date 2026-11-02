@@ -1,0 +1,41 @@
+{
+  "recorded_at": "2026-11-02 00:25:56 -03:00",
+  "target": "x86_64-pc-windows-msvc",
+  "gates": [
+    {
+      "command": ".\\scripts\\check-rust.ps1 -Task test",
+      "exit_code": 0,
+      "log": "docs/evidence/sprint01/rust-test.log",
+      "unit_tests": 12,
+      "integration_tests": 2,
+      "result": "passed"
+    },
+    {
+      "command": ".\\scripts\\check-rust.ps1 -Task clippy",
+      "exit_code": 0,
+      "log": "docs/evidence/sprint01/rust-clippy.log",
+      "result": "passed; --all-targets -D warnings"
+    },
+    {
+      "command": ".\\scripts\\check-rust.ps1 -Task format-check",
+      "exit_code": 0,
+      "log": "docs/evidence/sprint01/rust-format-check.log",
+      "result": "passed; cargo fmt --all -- --check emits no output on success"
+    },
+    {
+      "command": ".\\scripts\\check-rust.ps1 -Task build",
+      "exit_code": 0,
+      "log": "docs/evidence/sprint01/rust-build.log",
+      "result": "passed; standalone --features custom-protocol, no installer"
+    }
+  ],
+  "excluded_claims": [
+    "Google integration",
+    "OAuth",
+    "real integrity monitoring",
+    "native notifications",
+    "installer",
+    "human acceptance"
+  ],
+  "runtime_window_verification": "principal agent records separate evidence"
+}

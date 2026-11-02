@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-11-02 00:25:08 -03:00",
+  "artifact_type": "Sprint 01 standalone development executable; not an installer",
+  "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\target\\x86_64-pc-windows-msvc\\debug\\sheets-monitor.exe",
+  "sha256": "64D329FC332B04D2491D2702E880318F7894304CB4A217DB70953978B3A071DF",
+  "bytes": 14516736,
+  "target": "x86_64-pc-windows-msvc",
+  "custom_protocol": true,
+  "vite_1420_listener_count": 0,
+  "google_integration_active": false,
+  "installer_generated": false,
+  "runtime_visual_verification": "pending principal agent Windows UI inspection",
+  "assets": [
+    {
+      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\index.html",
+      "sha256": "09EA6C43E00F49741031A88DD39B72F336792D6632C752AAFC09CA0A3D6D0CB9",
+      "bytes": 452
+    },
+    {
+      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\assets\\index-CKSleZlz.css",
+      "sha256": "C1B4DB5BFA6CA79AFEEA8993D242F9E4456EC0EECA37AC3AEED7CF1164724BBD",
+      "bytes": 36926
+    },
+    {
+      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\assets\\index-w7ovdo_U.js",
+      "sha256": "7804847F6142CAEA92A04FB3BD97FEAB4F52D22EBBC2CE1A5B0F47DC3772D78D",
+      "bytes": 329554
+    }
+  ],
+  "build_log": "docs/evidence/sprint01/rust-build.log",
+  "build_exit_code": 0
+}

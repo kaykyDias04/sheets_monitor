@@ -1,2 +1,8 @@
 # Keep raw diagnostic transcripts, including original whitespace and line endings.
 docs/evidence/environment/*.log -text -whitespace
+# Migration checksums must be identical on Windows and CI.
+*.sql text eol=lf
+archive/** -text -whitespace
+docs/specification-v1.0.original.md -text -whitespace
+docs/evidence/sprint01/*.log -text -whitespace
+docs/evidence/*.log -text -whitespace

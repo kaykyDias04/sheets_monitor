@@ -10,8 +10,8 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [{"title":"Sheets Monitor","width":1280,"height":840,"minWidth":900,"minHeight":640}],
+    "windows": [{"label":"main","title":"Sheets Monitor · Demonstração — Sprint 01","width":1280,"height":840,"minWidth":900,"minHeight":640}],
     "security": {"csp":"default-src 'self'; connect-src ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost data:; style-src 'self' 'unsafe-inline'; script-src 'self'"}
   },
-  "bundle": {"active":true,"targets":["nsis"],"icon":["icons/icon.png","icons/icon.ico"],"shortDescription":"Monitor local de Google Sheets","category":"Productivity"}
+  "bundle": {"active":false,"targets":["nsis"],"icon":["icons/icon.png","icons/icon.ico"],"shortDescription":"Fundação local — demonstração da Sprint 01","category":"Productivity"}
 }

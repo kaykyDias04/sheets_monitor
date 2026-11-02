@@ -1,0 +1,27 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.97s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\sheets_monitor_lib-8c434fe9df009be6.exe)
+
+running 11 tests
+test database::tests::unsafe_relative_database_path_is_rejected ... ok
+test database::migrations::tests::migration_checksum_is_stable_across_windows_line_endings ... ok
+test database::migrations::tests::migration_failure_rolls_back_schema_ledger_and_version ... ok
+test database::migrations::tests::failed_upgrade_keeps_previous_successful_version ... ok
+test database::migrations::tests::future_version_and_ledger_are_rejected ... ok
+test database::tests::defaults_bounds_and_unavailable_startup_are_enforced ... ok
+test database::migrations::tests::modified_migration_is_rejected ... ok
+test database::tests::foreign_keys_and_schema_constraints_reject_invalid_records ... ok
+test database::tests::all_eleven_tables_are_created_and_read_with_explicit_demo_seed ... ok
+test database::tests::seed_failure_rolls_back_every_fixture_and_can_be_retried ... ok
+test database::tests::fixture_capacity_is_enforced_for_insert_and_restore ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests\database_persistence.rs (src-tauri\target\debug\deps\database_persistence-34ded02f92496429.exe)
+
+running 2 tests
+test existing_future_database_is_not_downgraded ... ok
+test database_reopens_with_same_data_settings_and_migration_ledger ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

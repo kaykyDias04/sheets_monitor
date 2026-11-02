@@ -1,4 +1,4 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 fn main() {
-    sheets_monitor::run();
+    sheets_monitor_lib::run();
 }

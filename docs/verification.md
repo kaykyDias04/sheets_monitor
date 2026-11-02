@@ -1,3 +1,5 @@
+> DOCUMENTO HISTÓRICO DO PROTÓTIPO. Este texto descreve código arquivado, não a fundação ativa nem uma integração real homologada. Consulte [requisitos atuais](requirements.md), [arquitetura](architecture.md) e [progresso](progress.md). A versão original permanece em `archive/prototype/` e no commit `ffcaa49`.
+
 # Plano de verificação
 
 Responsável pela reconciliação: agente principal. Implementadores verificam seus módulos e um revisor independente examina cada fase.
