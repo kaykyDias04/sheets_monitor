@@ -1,0 +1,22 @@
+{
+  "access_absent_before_reads": true,
+  "bridge": true,
+  "current_registered_count": 2,
+  "discovery_complete": false,
+  "discovery_incomplete_search": false,
+  "discovery_pages": 2,
+  "discovery_results_observed": 2,
+  "drive_granted": true,
+  "drive_opt_in": true,
+  "more_pages_available": true,
+  "navigation_pages": 0,
+  "new_registration_pending": true,
+  "origin": "http://tauri.localhost",
+  "private_data_logged": false,
+  "registered_by_url": true,
+  "registered_from_discovery": true,
+  "session_recovered": true,
+  "success": true,
+  "synthetic": false,
+  "tabs_in_metadata": 28
+}

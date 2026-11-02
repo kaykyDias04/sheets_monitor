@@ -1,0 +1,24 @@
+{
+  "configuration_changed_since_readonly_homologation": true,
+  "existing_selection_preserved_by_agent": true,
+  "new_baseline_approved_by_agent": false,
+  "online": 0,
+  "pending": 2,
+  "registered": 2,
+  "rows": [
+    {
+      "baseline_version": null,
+      "protected_scope_tabs": 0,
+      "revision": 3,
+      "selected_tabs": 0,
+      "status": "configuration_pending"
+    },
+    {
+      "baseline_version": 1,
+      "protected_scope_tabs": 1,
+      "revision": 8,
+      "selected_tabs": 28,
+      "status": "configuration_pending"
+    }
+  ]
+}

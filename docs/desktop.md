@@ -108,3 +108,11 @@ As seções acima registram a fundação da Sprint 01. O build atual inclui os l
 Build MSVC standalone aprovado após os testes; origem tauri.localhost, bridge e sessão recuperada comprovados. Captura da tela técnica vazia e Axe sem violações no estado verificado em docs/evidence/sprint03/. O diagnóstico foi fechado normalmente e a porta 9231 confirmada encerrada. A janela foi reaberta sem diagnóstico; a permanência posterior depende do usuário.
 
 Resultados e limites do fluxo Google real estão no [relatório final](evidence/sprint03/final-report.md). Não se infere homologação de toda a planilha a partir da baseline humana de duas células.
+
+## Sprint 04 — validação operacional final
+
+O app usa seis rotas operacionais com dados da conta. O executável MSVC com assets incorporados passou pelos fluxos nativos documentados em [relatório final](evidence/sprint04/final-report.md). Axe verificou as seis rotas no tema automático escuro sem violações/incompletos. O renderer foi medido em 780/1280 pixels sem overflow horizontal da página; isso não é medição de todos os tamanhos possíveis da moldura Windows.
+
+A captura pública foi redigida temporariamente no DOM, omitindo conta/arquivos/inicial do avatar, sem mudar SQLite. Native-qa registra hash e limites. O diagnóstico foi fechado e porta 9234 confirmada encerrada; uma janela normal foi reaberta. Um probe separado confirmou CloseMainWindow/WaitForExit sem diagnóstico. Não há bundle/instalador, serviço periódico ou bandeja ativados.
+
+Antes de recompilar no Windows, feche a instância do executável que usa o mesmo caminho de saída. O aplicativo aberto pode impedir a substituição do binário pelo Cargo. Essa condição é distinta de uma falha dos testes ou do código e fica registrada separadamente nos logs.

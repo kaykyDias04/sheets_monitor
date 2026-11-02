@@ -78,7 +78,19 @@ check('Sprint 04 original and authorized additions', () => {
  assert(digest==='4ae6d43afbD53694cc1aec38b485eea584344bc5d6bc16950da637c8e58dab1f'.toLowerCase(),'Sprint 04 original changed');
  const additions=JSON.parse(read('docs/backlog.json')).additions;
  assert(additions.length===2 && additions[0].id==='SM-021A' && additions[1].id==='SM-021B','Authorized additions must remain separate from original 28 IDs');
- for (const item of additions) assert(item.sprint===4 && item.source==='docs/sprint04.original.md','Addition source invalid');
+ for (const item of additions) {
+  assert(item.sprint===4 && item.source==='docs/sprint04.original.md','Addition source invalid');
+  assert(['planejado','em_andamento','concluido','bloqueado'].includes(item.status),'Invalid addition status');
+  for (const file of item.evidence) assert(fs.existsSync(path.join(root,file)),`Missing addition evidence ${file}`);
+ }
+ const finished=JSON.parse(read('docs/backlog.json')).items.some(item=>item.sprint===4&&item.status==='concluido');
+ if(finished){
+  const local=JSON.parse(read('docs/evidence/sprint04/local-validation.json'));
+  const live=JSON.parse(read('docs/evidence/sprint04/live-validation.json'));
+  const native=JSON.parse(read('docs/evidence/sprint04/native-qa.json'));
+  assert(local.success===true&&live.success===true&&live.synthetic===false&&native.success===true,'Sprint 04 closure requires local, real read-only and native evidence');
+  assert(typeof local.new_real_visual_baseline_approval==='string'&&live.agent_approved_real_baseline===false,'Human baseline boundary must remain explicit');
+ }
  return 'source preserved; 28 original IDs and two explicit additions';
 });
 check('raw prototype archive', () => {

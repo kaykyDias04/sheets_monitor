@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 04 autorizada: SM-018 a SM-021 e adicoes SM-021A/SM-021B. Sprints 01-03 concluidas tecnicamente; etapas05-06 nao autorizadas.",
+  "authorization": "Sprint 04 concluida tecnicamente; nova baseline real ampliada depende de revisao/aprovacao humana. Aguardar Prompt 05; etapas05-06 nao autorizadas.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -495,21 +495,27 @@
       "id": "SM-018",
       "title": "Criar dashboard",
       "sprint": 4,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-003",
         "SM-016"
       ],
       "acceptance": "Indicadores funcionais",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint04/final-report.md",
+        "docs/evidence/sprint04/local-validation.json",
+        "docs/evidence/sprint04/live-validation.json",
+        "docs/evidence/sprint04/native-qa.json",
+        "docs/evidence/sprint04/gate3.md"
+      ],
       "subtasks": []
     },
     {
       "id": "SM-019",
       "title": "Implementar cadastro por link",
       "sprint": 4,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-005",
@@ -517,12 +523,18 @@
         "SM-018"
       ],
       "acceptance": "Adicionar/remover arquivos",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint04/final-report.md",
+        "docs/evidence/sprint04/local-validation.json",
+        "docs/evidence/sprint04/live-validation.json",
+        "docs/evidence/sprint04/native-qa.json",
+        "docs/evidence/sprint04/gate3.md"
+      ],
       "subtasks": [
         {
           "id": "SM-019.01",
           "title": "Editar, remover, pausar e impor capacidade de trinta arquivos",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },
@@ -530,19 +542,25 @@
       "id": "SM-020",
       "title": "Criar seleção de abas",
       "sprint": 4,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-012",
         "SM-019"
       ],
       "acceptance": "Escopo individual configurável",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint04/final-report.md",
+        "docs/evidence/sprint04/local-validation.json",
+        "docs/evidence/sprint04/live-validation.json",
+        "docs/evidence/sprint04/native-qa.json",
+        "docs/evidence/sprint04/gate3.md"
+      ],
       "subtasks": [
         {
           "id": "SM-020.01",
           "title": "Escopo por arquivo/abas e efeito sobre baseline aprovado",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },
@@ -550,14 +568,20 @@
       "id": "SM-021",
       "title": "Criar histórico",
       "sprint": 4,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-017",
         "SM-018"
       ],
       "acceptance": "Eventos pesquisáveis",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint04/final-report.md",
+        "docs/evidence/sprint04/local-validation.json",
+        "docs/evidence/sprint04/live-validation.json",
+        "docs/evidence/sprint04/native-qa.json",
+        "docs/evidence/sprint04/gate3.md"
+      ],
       "subtasks": []
     },
     {
@@ -720,25 +744,37 @@
       "id": "SM-021A",
       "title": "Gerenciamento visual da conta Google",
       "sprint": 4,
-      "status": "em_andamento",
+      "status": "concluido",
       "depends_on": [
         "SM-007",
         "SM-008"
       ],
       "source": "docs/sprint04.original.md",
-      "evidence": []
+      "evidence": [
+        "docs/evidence/sprint04/final-report.md",
+        "docs/evidence/sprint04/local-validation.json",
+        "docs/evidence/sprint04/live-validation.json",
+        "docs/evidence/sprint04/native-qa.json",
+        "docs/evidence/sprint04/gate3.md"
+      ]
     },
     {
       "id": "SM-021B",
       "title": "Fluxo visual de baselines",
       "sprint": 4,
-      "status": "em_andamento",
+      "status": "concluido",
       "depends_on": [
         "SM-012",
         "SM-020"
       ],
       "source": "docs/sprint04.original.md",
-      "evidence": []
+      "evidence": [
+        "docs/evidence/sprint04/final-report.md",
+        "docs/evidence/sprint04/local-validation.json",
+        "docs/evidence/sprint04/live-validation.json",
+        "docs/evidence/sprint04/native-qa.json",
+        "docs/evidence/sprint04/gate3.md"
+      ]
     }
   ]
 }

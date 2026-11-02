@@ -563,11 +563,11 @@ tbody tr:last-child td {
   color: #526747;
   white-space: nowrap;
 }
-td:last-child .inline-flex {
+.table-scroll td:last-child .inline-flex {
   font-size: 10px;
   color: #526747;
 }
-td:last-child .inline-flex svg {
+.table-scroll td:last-child .inline-flex svg {
   width: 14px;
 }
 .panel-footer {
@@ -2293,6 +2293,15 @@ button.op-file-link:hover strong {
 }
 .op-main {
   min-height: calc(100vh - 76px);
+}
+.op-app .breadcrumbs > span,
+.op-app .breadcrumbs > svg,
+.op-app .eyebrow,
+.op-app .page-title > div > p:last-child:not(.eyebrow) {
+  color: var(--muted-foreground);
+}
+.op-app .breadcrumbs > strong {
+  color: var(--foreground);
 }
 .op-skip {
   position: absolute;

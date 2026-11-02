@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "scope": "Native operational overview before privacy redaction",
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodes": 4
+    }
+  ],
+  "incomplete_count": 0,
+  "private_html_or_selectors_in_public_report": false
+}

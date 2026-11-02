@@ -17,3 +17,5 @@ O [inventário adicional](evidence/sprint02/dependency-licenses.json) registra m
 ## Novas dependências da Sprint 03
 
 Tree-sitter e a grammar JavaScript foram escolhidos a partir das APIs e metadados oficiais. O [inventário adicional](evidence/sprint03/dependency-licenses.json) registra versões/licenças do cache usado na compilação. A resolução está fixada no Cargo.lock; o inventário não substitui revisão dos avisos de distribuição em SM-028.
+
+Sprint 04 não adicionou dependências de produto. O inventário revisado da Sprint03 permanece aplicável aos mesmos pacotes e respectivas licenças; ferramentas locais de QA não integram o bundle. Distribuição final e avisos completos continuam sujeitos à etapa autorizada de instalador.

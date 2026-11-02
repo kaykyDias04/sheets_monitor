@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "audits": [
+    {
+      "audit": "rules",
+      "violations": 0,
+      "incomplete": 0
+    },
+    {
+      "audit": "overview",
+      "violations": 0,
+      "incomplete": 0
+    }
+  ],
+  "scope": "Post-default-policy checks; CSS asset unchanged, earlier six-route audit remains applicable. Concurrent visible navigation may change between commands; no additional exact-route claim beyond prior confirmed six-route audit.",
+  "private_data_logged": false
+}

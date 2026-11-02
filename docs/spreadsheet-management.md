@@ -11,3 +11,5 @@ Pausar impede verificações operacionais sob demanda; retomar exige configuraç
 A remoção exige confirmação. Preservar histórico mantém atividades acessíveis com indicação de cadastro removido. Excluir atividades elimina esse histórico local conforme a opção apresentada; baselines aprovados são referências imutáveis e permanecem preservados. Nenhuma dessas ações exclui ou modifica o arquivo no Google.
 
 Erros de autorização são exibidos separadamente de integridade. Uma avaliação antiga não comprova o estado atual após editar regras. Trocas de conta descartam resultados pendentes e todas as consultas são segregadas no backend.
+
+Política padrão de histórico aplica-se somente a novas proteções sem escopo salvo. Ajustar esse padrão não substitui a retenção de proteções existentes nem altera referências aprovadas.

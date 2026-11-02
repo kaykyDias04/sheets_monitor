@@ -195,14 +195,29 @@ fn proposal_from_documents(
     scope.validate()?;
     Ok(scope)
 }
+fn proposal_with_history_default(
+    row: &RegisteredSpreadsheet,
+    documents: &[GridDocument],
+    default_history_days: u16,
+) -> Result<MonitorScope, CommandError> {
+    let mut proposal = proposal_from_documents(row, documents)?;
+    if row.scope.is_none() {
+        proposal.history_retention_days = default_history_days;
+    }
+    proposal.validate()?;
+    Ok(proposal)
+}
 impl IntegrationRuntime {
     pub fn propose_integrity_rules(
         &self,
         input: Mutation,
     ) -> Result<EngineEnvelope<MonitorScope>, CommandError> {
-        let row = self
+        let (row, default_history_days) = self
             .management_local(Some(input.expected_generation), |db, s| {
-                db.check_registry_mutation(s, &input)
+                Ok((
+                    db.check_registry_mutation(s, &input)?,
+                    db.management_preferences(s)?.history_days,
+                ))
             })?
             .data;
         let ranges = proposal_ranges(&row)?;
@@ -241,7 +256,7 @@ impl IntegrationRuntime {
                 documents.push(result?);
             }
         }
-        let scope = proposal_from_documents(&row, &documents)?;
+        let scope = proposal_with_history_default(&row, &documents, default_history_days)?;
         self.management_local(Some(input.expected_generation), |db, s| {
             db.check_registry_mutation(s, &input)?;
             Ok(scope)
@@ -351,5 +366,25 @@ mod tests {
         );
         doc.sheets[0].data[0].start_row = 3;
         assert!(proposal_from_documents(&row(&[7]), &[doc]).is_err());
+    }
+    #[test]
+    fn new_proposals_use_history_preference_without_overwriting_existing_policy() {
+        let empty = row(&[7]);
+        let doc = document(
+            7,
+            serde_json::json!([
+                {"effectiveValue":{"stringValue":"ID"}}
+            ]),
+        );
+        let fresh = proposal_with_history_default(&empty, &[doc], 365).unwrap();
+        assert_eq!(fresh.history_retention_days, 365);
+        let mut existing = row(&[7]);
+        let mut scope = crate::integrity::fixtures::scope();
+        scope.history_retention_days = 30;
+        existing.scope = Some(scope.clone());
+        assert_eq!(
+            proposal_with_history_default(&existing, &[], 365).unwrap(),
+            scope
+        );
     }
 }

@@ -2,7 +2,7 @@
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A etapa autorizada atual e a **Sprint 04**, interface operacional e gerenciamento: descoberta Drive, cadastro por URL, selecao de abas/regras, fluxo visual de baselines e historico. Implementacao em andamento; resultados verificaveis em [progresso](docs/progress.md) e docs/evidence/sprint04. Sprints 01-03 preservadas. Nao iniciar Sprint05 sem novo prompt.
+A **Sprint 04 esta concluida tecnicamente**: descoberta Drive, cadastro por URL, selecao de abas/regras, baselines visuais e historico. [Relatorio e evidencias](docs/evidence/sprint04/final-report.md). Sprints 01-03 preservadas. Aguardar Prompt 05 antes de iniciar a proxima etapa.
 
 O fluxo diario usa a conta Google conectada e dados do backend. O cadastro admite ate30 arquivos presentes, incluindo pausados; a descoberta nao limita a lista a30. Baseline real exige aprovacao humana e nenhuma operacao altera os arquivos Google. As capturas e regras protegem somente o escopo escolhido. O monitoramento nesta etapa e sob demanda.
 
@@ -88,3 +88,12 @@ Ao encerrar a Sprint 04, aguardar o Prompt 05. Não avançar automaticamente.
 Documentação da integração: [APIs](docs/google-apis.md), [contratos IPC](docs/api-contracts.md), [segurança](docs/security.md) e [testes](docs/testing.md).
 
 Motor: [integridade](docs/integrity-engine.md), [baselines](docs/baselines.md), [fórmulas](docs/formula-analysis.md), [Apps Script](docs/apps-script-dependencies.md) e [eventos](docs/event-model.md).
+
+## Guias de operacao
+
+- [Interface e estados](docs/interface.md).
+- [Descoberta de planilhas](docs/spreadsheet-discovery.md) e [gerenciamento](docs/spreadsheet-management.md).
+- [Regras](docs/integrity-rules-ui.md) e [baselines](docs/baseline-ui.md).
+- [Apps Script](docs/apps-script-ui.md) e [OAuth](docs/oauth-setup.md).
+
+A referencia real aprovada cobre uma aba e duas celulas. A selecao atual de28 abas permanece em Configuracao pendente ate revisao das regras e aprovacao humana correspondente. Nenhum arquivo Google foi alterado pelo agente. Scheduler e notificacoes Windows continuam para a Sprint 05.

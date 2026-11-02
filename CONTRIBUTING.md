@@ -34,3 +34,7 @@ gh auth status
 ```
 
 Depois de indicar o repositório correto e autorizar a publicação, configurar `origin` e enviar a branch. Nenhum remoto de outro projeto será reutilizado. Os templates locais já estão em `.github/`.
+
+## Atualização de execução — Sprint 04
+
+As etapas anteriores acima são históricas. Sprint 04 usa docs/evidence/sprint04, novos IDs SM-021A/SM-021B ficam em additions do backlog sem renumerar os 28 originais, e cada gate exige provas. A etapa foi encerrada tecnicamente; aguardar Prompt 05. Recursos Google continuam somente leitura e aprovação real continua humana.

@@ -76,3 +76,11 @@ cargo test --manifest-path src-tauri/Cargo.toml --locked --target x86_64-pc-wind
 A medição cobre algoritmos locais e tamanho serializado, não vazão de APIs para30 arquivos reais. Não impor prazo frágil de benchmark por máquina. Compilar custom-protocol por último antes da prova nativa.
 
 A homologação real deve distinguir: leitura/captura autorizada, aprovação humana de baseline e mutações destrutivas em recurso descartável. Login da Sprint02 não autoriza aprovar referência. Sem recursos/autorização para mutações Google, executar esse ciclo com fixtures e marcar os passos reais como pendentes. Nunca ampliar escopos para escrita silenciosamente. Relatórios reais só podem conter indicadores/contagens, sem conta, IDs, valores, fórmulas ou fontes.
+
+## Sprint 04 — verificação atual
+
+Logs em docs/evidence/sprint04, sem sobrescrever sprints anteriores. Suíte final Rust188 unitários+2 integrações,1 cofre ignorado por padrão (prova explícita anterior inalterada); React42. Cenários requeridos24 mapeados em scenario-matrix.json. Rustfmt/Clippy/lint/tipos/Prettier e builds aprovados. Nova regressão verifica31 abas sem confundir limite30 arquivos; outra verifica abridor de URL canônica sem usar o abridor OAuth. Preview de script é testado antes da aprovação, sem reutilizar análise de projeto ausente.
+
+A homologação real tem logs próprios de descoberta, gerenciamento, script, remoção e reinício; não é inferida por mocks. A referência real tem apenas duas células. Estado atual28 abas selecionadas ainda depende de novas regras/baseline. Novo fluxo de aprovação visual é automatizado somente com fixtures, sem aprovar produção. Histórico real vazio não substitui fixtures de eventos/falhas.
+
+Relatórios nativos registram seis rotas com Axe sem violações no tema automático escuro, viewports medidos e captura com rótulos omitidos. Falhas intermediárias de expectativa, timeout de testes, contraste e bloqueio Windows do executável foram preservadas e corrigidas. Consulte native-tooling-notes.md para diferenças entre medição do renderer, ferramentas e funcionamento do aplicativo.

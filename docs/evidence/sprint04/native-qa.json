@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "executable_sha256": "F8D39A9E0A560F279C1DF16ABB82C7F1234DDBD124244F33AF1F000235EFD60D",
+  "window_title": "Sheets Monitor - Sprint 04",
+  "renderer_origin": "http://tauri.localhost",
+  "desktop_bridge": true,
+  "navigation_pages": 6,
+  "a11y_routes_verified": 6,
+  "a11y_violations": 0,
+  "a11y_incomplete": 0,
+  "theme_verified": "system dark",
+  "responsive_renderer_widths": [
+    780,
+    1280
+  ],
+  "page_horizontal_overflow": false,
+  "viewport_tool_note": "set viewport CLI reported an EOF response; independent renderer reads confirmed both requested dimensions. No assumption that the command failed or succeeded without measurement.",
+  "schema_version": 4,
+  "product_tables": 24,
+  "diagnostic_port_closed": true,
+  "normal_window_close_verified": true,
+  "normal_window_reopened": true,
+  "screenshot": "native-overview-redacted.png",
+  "screenshot_scope": "Native WebView2 renderer, not Windows frame. Account/resource labels and avatar initial redacted temporarily in DOM for public image; SQLite not altered.",
+  "public_private_identifiers_or_content": false,
+  "current_configuration": "28 selected tabs versus one-tab prior baseline => configuration_pending; user selection preserved",
+  "history_default_native_verified": true,
+  "history_default_test": "native-history-default.json",
+  "post_history_a11y": "native-a11y-after-history.json",
+  "a11y_reuse_scope": "Six-route audit reused for unchanged CSS and markup; native audits repeated after the default-policy-only patch reported zero violations.",
+  "latest_artifact_check": "final-artifact-after-history.log",
+  "screenshots": [
+    "native-overview-redacted.png",
+    "native-spreadsheets-redacted.png"
+  ]
+}

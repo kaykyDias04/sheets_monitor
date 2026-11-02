@@ -58,3 +58,18 @@ Sem baseline aprovada, motor de integridade, scheduler ou notificações. Sprint
 | Mutações reais e recuperação | Não executadas; fixtures separadas | Pendente de recurso descartável e autorização |
 
 A conclusão técnica não representa homologação destrutiva real nem aprovação de baseline pelo agente. Ver [relatório final](evidence/sprint03/final-report.md), [matriz](evidence/sprint03/scenario-matrix.json) e [leituras reais](evidence/sprint03/live-validation.json). Aguardar Prompt 04.
+
+## Sprint 04 — gate técnico aprovado com cobertura real delimitada
+
+| Critério | Resultado e limite | Evidência |
+|---|---|---|
+| SM-018 dashboard | Dados do backend, seis destinos e estados pendentes sem Online padrão | Testes React e native-qa.json |
+| SM-019 descoberta/cadastro | Drive real paginado, cadastro por lista/URL e remoção/restauração local; limite30 transacional testado com fixtures | live-validation.json e testes Rust |
+| SM-020 abas/regras | Seleção persistida, editor estruturado, proposta só rascunho, regressão31 abas; configuração ampliada atual ainda pendente | Testes188/41 e final-current-configuration.json |
+| SM-021 atividades/diagnósticos | Filtros/paginação SQL e diagnóstico; consulta real vazia, histórico não vazio coberto por fixtures | scenario-matrix.json e live-management.log |
+| SM-021A conta | Sessão recuperada, refresh real, troca de geração e sincronização avançada testadas | live-restart.log e testes React/Rust |
+| SM-021B baselines | Aprovação explícita visual com fixtures; referência humana anterior preservada e reutilizada em leitura real | BaselineFlow/App tests e live-management.log |
+| Windows 11/qualidade | 188 unitários Rust+2 integrações+42 React, builds/checks e seis rotas nativas aprovados | local-validation.json e gate3.md |
+| Privacidade | Sem identificadores/conteúdo reais nos textos verificados; imagem pública redigida visualmente | private-identifier-scan.json e native-overview-redacted.png |
+
+Aceite é técnico e não constitui homologação de toda a planilha real. A baseline humana cobre uma aba/duas células; a seleção atual de28 abas exige revisar regras e aprovar nova referência no aplicativo. Não houve nova aprovação real pelo agente, mutações destrutivas Google, CI hospedado, PR remoto ou publicação externa Google. Ver [relatório final](evidence/sprint04/final-report.md). Aguardar Prompt 05.

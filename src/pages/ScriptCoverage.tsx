@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ScriptSummary } from "@/types/management";
+import type { StructuralSnapshot } from "@/types/integrity";
 import { dateLabel } from "./OperationalShared";
 
 function record(value: unknown): Record<string, unknown> {
@@ -79,7 +80,20 @@ function DependencyRows({ values }: { values: unknown[] }) {
     </>
   );
 }
-export function ScriptCoverage({ scripts }: { scripts: ScriptSummary[] }) {
+export function ScriptCoverage({
+  scripts,
+  previewScripts,
+}: {
+  scripts: ScriptSummary[];
+  previewScripts?: StructuralSnapshot["scripts"];
+}) {
+  const displayScripts = scripts.map((script) => ({
+    ...script,
+    analysis:
+      previewScripts === undefined
+        ? script.analysis
+        : (previewScripts.find((captured) => captured.script_id === script.script_id) ?? null),
+  }));
   return (
     <div className="op-stack">
       <div className="op-notice">
@@ -90,13 +104,22 @@ export function ScriptCoverage({ scripts }: { scripts: ScriptSummary[] }) {
           necessário.
         </p>
       </div>
+      {previewScripts !== undefined && (
+        <div className="op-notice">
+          <strong>Análise da captura em revisão — ainda não aprovada</strong>
+          <p>
+            A cobertura abaixo pertence à captura em revisão. Projetos ausentes dessa captura não
+            reutilizam uma análise anterior.
+          </p>
+        </div>
+      )}
       {scripts.length === 0 && (
         <p className="op-empty">
           Nenhum projeto Apps Script associado. Cadastre um projeto autorizado para consultar a
           cobertura.
         </p>
       )}
-      {scripts.map((script) => (
+      {displayScripts.map((script) => (
         <Card key={script.script_id}>
           <CardHeader>
             <div className="op-section-heading">
@@ -154,7 +177,10 @@ export function ScriptCoverage({ scripts }: { scripts: ScriptSummary[] }) {
                   </details>
                 )}
                 <h4 className="op-small-heading">Dependências reconhecidas e não verificáveis</h4>
-                <DependencyRows values={script.analysis.analysis.dependencies} />
+                <DependencyRows
+                  key={`${script.script_id}:${script.analysis.source_hash}`}
+                  values={script.analysis.analysis.dependencies}
+                />
               </>
             ) : (
               <p className="op-hint">

@@ -1,0 +1,23 @@
+{
+  "baseline_versions": [
+    null,
+    1
+  ],
+  "bridge": true,
+  "css_asset": "/assets/index-OjmFgGCO.css",
+  "discovery_more_pages": true,
+  "discovery_results": 1,
+  "navigation_pages": 6,
+  "origin": "http://tauri.localhost",
+  "pending": 2,
+  "private_data_logged": false,
+  "registered": 2,
+  "resource_labels_redacted_for_public_image": true,
+  "script_asset": "/assets/index-BNklQ_AR.js",
+  "selected_tab_counts": [
+    0,
+    28
+  ],
+  "success": true,
+  "synthetic": false
+}

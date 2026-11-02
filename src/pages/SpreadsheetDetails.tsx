@@ -33,6 +33,7 @@ interface Props {
   comparison: BaselineComparison | null;
   versionOffset: number;
   disabled: boolean;
+  defaultHistoryDays?: number;
   initialTab?: "tabs" | "rules";
   onPreview: () => void;
   onInvalidate: () => void;
@@ -58,6 +59,7 @@ export function SpreadsheetDetails({
   comparison,
   versionOffset,
   disabled,
+  defaultHistoryDays = 90,
   initialTab = "tabs",
   onPreview,
   onInvalidate,
@@ -79,7 +81,9 @@ export function SpreadsheetDetails({
   const row = data.spreadsheet;
   const [tab, setTab] = useState<string>(initialTab);
   const [selected, setSelected] = useState(row.selected_sheet_ids);
-  const [scope, setScope] = useState(() => scopeForTabs(row.scope, row.selected_sheet_ids));
+  const [scope, setScope] = useState(() =>
+    scopeForTabs(row.scope, row.selected_sheet_ids, defaultHistoryDays),
+  );
   const [removeOpen, setRemoveOpen] = useState(false);
   const [removeConfirmed, setRemoveConfirmed] = useState(false);
   const [historyChoice, setHistoryChoice] = useState<"preserve" | "delete_activity">("preserve");
@@ -97,7 +101,7 @@ export function SpreadsheetDetails({
   ];
   function select(ids: number[]) {
     setSelected(ids);
-    setScope(scopeForTabs(scope, ids));
+    setScope(scopeForTabs(scope, ids, defaultHistoryDays));
     onInvalidate();
   }
   return (
@@ -510,7 +514,10 @@ export function SpreadsheetDetails({
               </p>
             </CardContent>
           </Card>
-          <ScriptCoverage scripts={data.scripts} />
+          <ScriptCoverage
+            scripts={data.scripts}
+            previewScripts={preview?.preview.snapshot.scripts}
+          />
         </div>
       )}
       <Dialog open={removeOpen} onOpenChange={setRemoveOpen}>

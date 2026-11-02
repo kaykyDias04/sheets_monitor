@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "scope": "Final standalone WebView2 renderer, six operational routes confirmed through aria-current, system dark theme, no CSS injection",
+  "pages": [
+    {
+      "page": "overview",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "sheets",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "details",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "activities",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "rules",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "settings",
+      "violations": [],
+      "incomplete": 0
+    }
+  ],
+  "private_data_logged": false
+}

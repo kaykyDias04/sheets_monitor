@@ -1,0 +1,232 @@
+{
+  "scope": "24 required local scenarios; mocks/fixtures not live Google evidence",
+  "rust_log": "docs/evidence/sprint04/history-default/rust-test.log",
+  "frontend_log": "docs/evidence/sprint04/frontend-test.log",
+  "cases": [
+    {
+      "id": 1,
+      "scenario": "Login visual conectado/desconectado",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src/pages/GooglePage.test.tsx"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 2,
+      "scenario": "Descoberta com resultados",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src/pages/SpreadsheetTables.test.tsx",
+        "src-tauri/src/google/discovery/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 3,
+      "scenario": "Descoberta sem resultados",
+      "evidence_sources": [
+        "src/pages/SpreadsheetTables.test.tsx",
+        "src-tauri/src/google/discovery/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 4,
+      "scenario": "Permissao insuficiente",
+      "evidence_sources": [
+        "src/pages/SpreadsheetTables.test.tsx",
+        "src-tauri/src/integration/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 5,
+      "scenario": "Paginacao de arquivos",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/google/discovery/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 6,
+      "scenario": "Arquivos compartilhados",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src/pages/SpreadsheetTables.test.tsx",
+        "src-tauri/src/google/discovery/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 7,
+      "scenario": "Cadastro por URL valida",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/google/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 8,
+      "scenario": "URL invalida",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/google/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 9,
+      "scenario": "Duplicidade",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 10,
+      "scenario": "Limite30cadastros",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 11,
+      "scenario": "Selecao de abas incluindo31",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src/pages/ScopeEditor.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 12,
+      "scenario": "Remocao e escolha de historico",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 13,
+      "scenario": "Persistencia de regras",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs",
+        "src-tauri/src/management/proposal.rs",
+        "docs/evidence/sprint04/native-history-default.json"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 14,
+      "scenario": "Criacao de baseline",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src/pages/BaselineFlow.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 15,
+      "scenario": "Substituicao nao aprovada recusada",
+      "evidence_sources": [
+        "src/pages/BaselineFlow.test.tsx",
+        "src-tauri/src/management/tests.rs",
+        "src-tauri/src/integrity/runtime_tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 16,
+      "scenario": "Exibicao Online",
+      "evidence_sources": [
+        "src/pages/OperationalShared.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 17,
+      "scenario": "Exibicao Offline",
+      "evidence_sources": [
+        "src/pages/OperationalShared.test.tsx",
+        "src-tauri/src/integrity/engine_tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 18,
+      "scenario": "Exibicao Indeterminado",
+      "evidence_sources": [
+        "src/pages/OperationalShared.test.tsx",
+        "src-tauri/src/integrity/engine_tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 19,
+      "scenario": "Planilha sem baseline",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 20,
+      "scenario": "Filtros de historico",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 21,
+      "scenario": "Dependencias Apps Script",
+      "evidence_sources": [
+        "src/pages/OperationalShared.test.tsx",
+        "src-tauri/src/management/tests.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 22,
+      "scenario": "Carregamento e erros",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src/pages/GooglePage.test.tsx"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 23,
+      "scenario": "Recuperacao apos reinicio",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs",
+        "src-tauri/tests/database_persistence.rs"
+      ],
+      "status": "local_passed"
+    },
+    {
+      "id": 24,
+      "scenario": "Compatibilidade Tauri",
+      "evidence_sources": [
+        "src/App.test.tsx",
+        "src-tauri/src/management/tests.rs",
+        "docs/evidence/sprint04/phase2-structure-scan.json"
+      ],
+      "status": "local_passed"
+    }
+  ]
+}

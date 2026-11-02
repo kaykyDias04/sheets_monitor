@@ -1,0 +1,14 @@
+{
+  "access_absent_before_read": true,
+  "access_available_after_read": true,
+  "bridge": true,
+  "discovery_results": 1,
+  "navigation_pages": 6,
+  "online": 0,
+  "origin": "http://tauri.localhost",
+  "private_data_logged": false,
+  "registered": 2,
+  "session_recovered": true,
+  "success": true,
+  "synthetic": false
+}

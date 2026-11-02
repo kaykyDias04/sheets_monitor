@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "rust_unit_tests": 188,
+  "rust_integration_tests": 2,
+  "frontend_tests": 42,
+  "vault_ignored_by_default": 1,
+  "vault_implementation_unchanged": true,
+  "vault_explicit_previous_evidence": "docs/evidence/sprint02/windows-vault.log",
+  "rust_log": "docs/evidence/sprint04/history-default/rust-test.log",
+  "frontend_log": "docs/evidence/sprint04/frontend-test.log",
+  "local_scenarios": 24,
+  "real_google_evidence_separate": true,
+  "history_default_native_verified": true
+}

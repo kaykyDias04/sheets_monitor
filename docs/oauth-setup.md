@@ -1,4 +1,11 @@
-# Configuração OAuth — Sprint 02
+# OAuth — uso diário e preparação da aplicação
+
+## Uso diario — Sprint 04
+
+Abra Configuracoes e escolha Entrar com Google. O navegador do sistema recebe o consentimento; a sessao permanece protegida no Windows. Habilite a descoberta Drive apenas se concordar com a leitura de metadados e reautorize quando a permissao estiver ausente. Desconectar encerra a sessao local; revogar a concessao e uma acao explicita separada nas ferramentas avancadas.
+
+O usuario comum nao precisa de projeto Cloud, Client ID, secret ou API key. O mantenedor provisiona a configuracao Desktop da aplicacao no build. Se a instalacao informar falta de provisionamento, o mantenedor deve prepara-la; nao criar um projeto ou compartilhar credenciais para contornar a pendencia. Os passos abaixo sao de desenvolvimento/preparacao do mantenedor e preservam a auditoria historica da Sprint02.
+
 
 Esta configuração depende de um projeto e uma conta autorizados. Não cole senhas, authorization codes, access tokens ou refresh tokens no chat ou no código. O consentimento e as verificações de segurança são feitos pelo usuário no navegador do sistema.
 

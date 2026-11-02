@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "rust_unit_tests": 188,
+  "rust_integration_tests": 2,
+  "frontend_tests": 42,
+  "required_scenarios": 24,
+  "vault_ignored_by_default": 1,
+  "vault_previous_explicit_test_reused": true,
+  "frontend_build": true,
+  "rust_standalone_build": true,
+  "native_qa": true,
+  "remote_ci": "not executed; no authorized remote",
+  "remote_pr": "draft only",
+  "new_real_visual_baseline_approval": "pending human action; previous human baseline preserved",
+  "live_destructive_google_changes": "not executed; fixtures only",
+  "google_public_distribution": "pending authorized app provisioning and applicable Google review",
+  "history_default_native_verified": true
+}

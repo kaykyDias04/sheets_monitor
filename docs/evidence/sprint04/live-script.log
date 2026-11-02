@@ -1,0 +1,12 @@
+{
+  "agent_approved_baseline": false,
+  "associated_projects": 1,
+  "authorized_project_listed": true,
+  "google_resources_modified": false,
+  "parent_proven": true,
+  "private_data_logged": false,
+  "script_files": 23,
+  "success": true,
+  "synthetic": false,
+  "target_registered_for_test": false
+}

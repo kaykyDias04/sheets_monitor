@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "scope": "Candidate CSS in native renderer; final artifact confirmation pending",
+  "pages": [
+    {
+      "page": "overview",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "sheets",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "details",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "activities",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "rules",
+      "violations": [],
+      "incomplete": 0
+    },
+    {
+      "page": "settings",
+      "violations": [],
+      "incomplete": 0
+    }
+  ],
+  "private_data_logged": false
+}

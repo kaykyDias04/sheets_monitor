@@ -1,0 +1,16 @@
+{
+  "access_absent_before_local_reads": true,
+  "human_baseline_preserved": true,
+  "interval_after_restart": 120,
+  "interval_restored": 60,
+  "last_report_status": "online",
+  "local_reads_did_not_refresh": true,
+  "navigation_pages": 6,
+  "private_data_logged": false,
+  "registered_count": 2,
+  "rules_persisted": true,
+  "selected_tabs": 1,
+  "session_recovered": true,
+  "success": true,
+  "synthetic": false
+}

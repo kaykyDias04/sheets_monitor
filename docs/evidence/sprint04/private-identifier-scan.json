@@ -1,0 +1,6 @@
+{
+  "success": true,
+  "text_files_scanned": 479,
+  "private_identifier_matches": 0,
+  "method": "Read-only metadata comparison against known account identifiers, OAuth client ID, resource IDs/names/source hashes and registration names; UTF-8/UTF-16 aware. No vault access or private values output. Not a complete secret audit."
+}

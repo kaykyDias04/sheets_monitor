@@ -7,13 +7,13 @@ import { Plus, Trash2 } from "lucide-react";
 type Sheet = MonitorScope["sheets"][number];
 type Region = Sheet["regions"][number];
 type Tab = SpreadsheetMetadata["sheets"][number];
-export const emptyScope = (): MonitorScope => ({
+export const emptyScope = (defaultHistoryDays = 90): MonitorScope => ({
   schema_version: 1,
   sheets: [],
   scripts: [],
   named_range_ids: [],
   snapshot_retention_days: 7,
-  history_retention_days: 90,
+  history_retention_days: defaultHistoryDays,
 });
 function newRegion(id: string): Region {
   return {
@@ -27,8 +27,12 @@ function newRegion(id: string): Region {
     formulas: [],
   };
 }
-export function scopeForTabs(scope: MonitorScope | null, ids: number[]): MonitorScope {
-  const source = scope ?? emptyScope();
+export function scopeForTabs(
+  scope: MonitorScope | null,
+  ids: number[],
+  defaultHistoryDays = 90,
+): MonitorScope {
+  const source = scope ?? emptyScope(defaultHistoryDays);
   return {
     ...structuredClone(source),
     sheets: ids.map((sheet_id) =>

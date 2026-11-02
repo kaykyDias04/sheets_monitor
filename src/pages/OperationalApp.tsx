@@ -754,6 +754,7 @@ export function OperationalApp() {
                       versions={versions}
                       comparison={comparison}
                       versionOffset={versionOffset}
+                      defaultHistoryDays={preferences?.history_days ?? 90}
                       disabled={disabled}
                       onInvalidate={invalidatePreview}
                       onPreview={() =>

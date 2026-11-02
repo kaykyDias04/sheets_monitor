@@ -1,0 +1,12 @@
+{
+  "success": false,
+  "scope": "Final native operational overview, system dark theme, before redaction",
+  "violations": [
+    {
+      "id": "color-contrast",
+      "nodes": 2
+    }
+  ],
+  "incomplete_count": 0,
+  "private_data_logged": false
+}

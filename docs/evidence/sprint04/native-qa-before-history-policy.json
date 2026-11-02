@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "executable_sha256": "BB97F7EC22ACB4DBA0341528BE6FD96A78CE57B89114E9A0872252B236EFA962",
+  "window_title": "Sheets Monitor - Sprint 04",
+  "renderer_origin": "http://tauri.localhost",
+  "desktop_bridge": true,
+  "navigation_pages": 6,
+  "a11y_routes_verified": 6,
+  "a11y_violations": 0,
+  "a11y_incomplete": 0,
+  "theme_verified": "system dark",
+  "responsive_renderer_widths": [
+    780,
+    1280
+  ],
+  "page_horizontal_overflow": false,
+  "viewport_tool_note": "set viewport CLI reported an EOF response; independent renderer reads confirmed both requested dimensions. No assumption that the command failed or succeeded without measurement.",
+  "schema_version": 4,
+  "product_tables": 24,
+  "diagnostic_port_closed": true,
+  "normal_window_close_verified": true,
+  "normal_window_reopened": true,
+  "screenshot": "native-overview-redacted.png",
+  "screenshot_scope": "Native WebView2 renderer, not Windows frame. Account/resource labels and avatar initial redacted temporarily in DOM for public image; SQLite not altered.",
+  "public_private_identifiers_or_content": false,
+  "current_configuration": "28 selected tabs versus one-tab prior baseline => configuration_pending; user selection preserved"
+}

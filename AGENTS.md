@@ -91,3 +91,9 @@ SM-012 a SM-017 implementados e aprovados nos gates locais. Evidências e limite
 O usuário autorizou docs/sprint04.original.md: SM-018 a SM-021 e adições SM-021A (conta) e SM-021B (baselines). Implementar descoberta Drive paginada, gerenciamento de até 30 planilhas, dashboard real, seleção de abas/regras, aprovação visual, histórico/diagnósticos e preferências persistidas. Preservar as sprints anteriores e registrar evidências em docs/evidence/sprint04. Não usar fixtures na interface operacional.
 
 Usar escopos mínimos adequados; mudanças exigem consentimento oficial, sem ampliação silenciosa e sem servidor próprio. Usuário final não deve informar credenciais Cloud: configuração da aplicação pertence ao desenvolvimento/empacotamento; publicação externa depende de projeto autorizado e requisitos OAuth. Baseline real continua com aprovação humana; Google somente leitura. Aplicar deepwork com lanes e gates. Ao concluir, aguardar Prompt 05, sem scheduler, notificações nativas, bandeja, autostart ou instalador final.
+
+## Encerramento técnico da Sprint 04
+
+SM-018 a SM-021 e adições autorizadas SM-021A/SM-021B implementados e aprovados nos três gates. Evidências em docs/evidence/sprint04/final-report.md. Testes: 188 unitários Rust, duas integrações e 42 React aprovados; builds/checks e inspeção nativa aprovados. Descoberta e operações Google reais comprovadas no escopo registrado, sem alterações Google ou aprovação de baseline pelo agente.
+
+A referência humana anterior cobre uma aba e duas células; a seleção atual de 28 abas está em Configuração pendente e foi preservada. Nova referência ampliada exige revisão/aprovação humana. Publicação Google externa permanece separada da validação local. Preservar migrações/evidências anteriores. Encerrar e aguardar Prompt 05, sem antecipar scheduler, notificações, bandeja, autostart ou instalador.

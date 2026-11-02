@@ -96,4 +96,49 @@ describe("Diagnóstico operacional", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByText("Main")).toHaveLength(2);
   });
+  it("mostra arquivos e dependências da captura não aprovada sem reutilizar análise de projeto ausente", () => {
+    const captured = {
+      script_id: "fixture-script",
+      source_hash: "preview-hash",
+      files: [{ name: "Main", file_type: "SERVER_JS", hash: "fixture" }],
+      analysis: {
+        complete: false,
+        parser: "fixture-parser",
+        limitations: ["dynamic reference"],
+        dependencies: [
+          {
+            file: "Main",
+            line: 12,
+            kind: "sheet_by_name",
+            coverage: "dynamic",
+            detail_code: "dynamic_argument",
+            sheet_name: null,
+          },
+        ],
+      },
+    };
+    const associated = {
+      script_id: "fixture-script",
+      name: "Projeto de teste",
+      authorization: "success",
+      critical: false,
+      last_queried_at: null,
+      analysis: null,
+    };
+    const { rerender } = render(
+      <ScriptCoverage scripts={[associated]} previewScripts={[captured]} />,
+    );
+    expect(
+      screen.getByText("Análise da captura em revisão — ainda não aprovada"),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Main")).toHaveLength(2);
+    expect(screen.getByText("Não verificável")).toBeInTheDocument();
+    rerender(
+      <ScriptCoverage scripts={[{ ...associated, analysis: captured }]} previewScripts={[]} />,
+    );
+    expect(screen.queryByText("Main")).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Ainda não há análise para este projeto no escopo atual/),
+    ).toBeInTheDocument();
+  });
 });

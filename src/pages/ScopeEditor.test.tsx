@@ -11,6 +11,14 @@ function Harness() {
   return <ScopeEditor value={scope} tabs={tabs} onChange={setScope} />;
 }
 describe("Regras estruturadas", () => {
+  it("usa a retenção padrão somente em regras novas, preservando políticas salvas e rascunhos", () => {
+    const draft = scopeForTabs(null, [17], 365);
+    expect(draft.history_retention_days).toBe(365);
+    expect(scopeForTabs(draft, [17, 88], 90).history_retention_days).toBe(365);
+    const saved = { ...draft, history_retention_days: 30 };
+    expect(scopeForTabs(saved, [17, 88], 365).history_retention_days).toBe(30);
+    expect(saved.history_retention_days).toBe(30);
+  });
   it("preserva identidade da aba e exige cabeçalho explícito sem inventar proteção", async () => {
     const user = userEvent.setup();
     render(<Harness />);

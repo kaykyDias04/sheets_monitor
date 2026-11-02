@@ -1,0 +1,16 @@
+{
+  "schema_version": 4,
+  "product_tables": 24,
+  "baseline_versions": 1,
+  "foreign_key_errors": 0,
+  "registered": 4,
+  "selected_tab_counts": [
+    0,
+    28,
+    1,
+    0
+  ],
+  "history_days": [
+    90
+  ]
+}
