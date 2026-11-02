@@ -1,0 +1,10 @@
+src/App.test.tsx 108ms
+src/App.tsx 130ms
+src/bridge.ts 25ms
+src/main.tsx 2ms
+src/styles.css 125ms
+src/test-setup.ts 1ms
+package.json 19ms
+tsconfig.json 2ms
+vite.config.ts 2ms
+index.html 24ms
