@@ -67,3 +67,17 @@ Evidências executadas em docs/evidence/sprint02:
 Falhas iniciais preservadas: expectativas de versão/título da Sprint01, lint do hook e Clippy corrigidos; probe nativa development após cargo test foi corrigida com build custom-protocol por último. Nenhuma falha foi apresentada como sucesso. Revisão local pelo principal está em local-review.md; indisponibilidade das lanes impede afirmar revisão independente. Histórico/evidências da Sprint01 preservados.
 
 Próximo passo: usuário configurar o cliente no app, consentir no navegador e consultar planilha/script de teste; depois comprovar reinício/refresh e registrar resultados sanitizados. Seguir docs/oauth-setup.md e docs/testing.md. Nenhum projeto/API/faturamento foi alterado pelo agente. Sem remoto autorizado, PR preparado apenas em docs/pr-sprint02.md e trabalho em branch codex/sprint-02-google-integration. Não iniciar Sprint03; Prompt03 depende de instrução posterior e não substitui a pendência de homologação atual.
+
+## Encerramento da Sprint 02 — Google real aprovado
+
+Estado vigente: **Sprint 02 concluída**, SM-007 a SM-011 aprovados com recursos autorizados pelo usuário. Este encerramento substitui a pendência registrada acima; os registros anteriores permanecem históricos. O usuário conectou a conta e solicitou verificar as consultas efetuadas no aplicativo.
+
+Comprovado no backend de produção: login/identidade, sessão protegida recuperada após reinício, access token inicialmente ausente da memória e renovado na primeira leitura sem novo consentimento. Sheets retornou metadados e 28 abas, valores não vazios e modo FORMULA. Uma consulta limitada a A1:H20 em 20 abas confirmou fórmula e valor calculado. Drive retornou metadados com opt-in; Apps Script retornou metadados e 23 arquivos GS/HTML/JSON, fontes e hash válido. Respostas e estado final conferem com a mesma conta, sem registrar a identidade.
+
+Evidência sanitizada em docs/evidence/sprint02/google-live.json, google-live.md, google-live-read-results.log, google-formula-validation.log e google-final-build-results.log. Nenhum ID, email/nome, token, secret, célula, fórmula ou código foi gravado nesses arquivos. Não houve screenshot real, edição/execução Google, criação de projeto/faturamento nem revogação do consentimento.
+
+Removido da interface o aviso fixo de homologação pendente e do DTO o campo de engenharia real_validation. Revalidação após a alteração: 13 testes React, 43 unitários Rust e 2 de integração aprovados; lint, Prettier, tipos, rustfmt, Clippy sem warnings e builds React/MSVC aprovados. O teste isolado do cofre de Windows continua comprovado pelo log anterior, com o mesmo código de cofre. Build atualizado testado novamente com sessão recuperada e leituras reais nas três APIs.
+
+A instância diagnóstica foi fechada normalmente, após a revisão automática recusar o encerramento forçado. Porta 9227 confirmada fechada; app reaberto em modo normal com sessão preservada. A captura desconectada anterior continua histórica; hash do executável atualizado e fechamento do diagnóstico em google-authenticated-native.json.
+
+Limites remanescentes: revisão independente indisponível, CI hospedado/PR remoto não executados por falta de remoto autorizado. Falhas de permissão/rede/revogação permanecem cobertas por testes controlados; a concessão real não foi revogada. Não há pendência humana para o aceite desta sprint. Rascunho PR atualizado em docs/pr-sprint02.md. **Encerrar e aguardar Prompt 03, sem implementar a Sprint 03.**

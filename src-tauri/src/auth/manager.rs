@@ -113,7 +113,6 @@ pub struct IntegrationState {
     pub auth: AuthStatus,
     pub drive_metadata_opt_in: bool,
     pub generation: u64,
-    pub real_validation: &'static str,
 }
 
 /// A backend-only lease. Do not serialize it or expose its token through IPC.
@@ -249,7 +248,6 @@ impl AuthManager {
             },
             drive_metadata_opt_in: config.is_some_and(|c| c.drive_metadata_opt_in),
             generation: memory.generation,
-            real_validation: "pending",
         }
     }
     pub fn state(&self) -> AuthResult<IntegrationState> {

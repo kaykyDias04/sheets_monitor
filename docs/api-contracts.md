@@ -14,7 +14,7 @@ O renderer recebe DTOs tipados; endpoints, SQL, caminho do banco e tokens não s
 | `integration_test_sheet` | `input`: URL/ID, lista de intervalos A1 | Resultados independentes de metadados, valores/fórmulas e Drive |
 | `integration_test_script` | `input`: script ID, spreadsheet ID opcional explícito | Projeto, arquivos tipados e hash |
 
-`IntegrationState` contém `generation`, `configured`, `client_id`, `auth`, `drive_metadata_opt_in` e `real_validation: pending`. Esse último campo representa o gate externo desta entrega; sucesso de uma consulta pontual não homologa a sprint inteira.
+`IntegrationState` contém `generation`, `configured`, `client_id`, `auth` e `drive_metadata_opt_in`. O aceite de engenharia fica nas evidências versionadas, separado do estado de uma conta em execução. O antigo campo fixo `real_validation: pending` foi removido após a homologação real, pois não descrevia a sessão do usuário.
 
 `auth` contém status `unconfigured`, `disconnected`, `connected` ou `reconnect_required`, identidade não secreta, escopos efetivamente concedidos e `expires_at` em segundos Unix quando conhecido. Recuperar estado não faz login nem abre navegador. A primeira consulta renova a sessão protegida recuperada, se necessário.
 

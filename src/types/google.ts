@@ -14,7 +14,6 @@ export interface IntegrationState {
     expires_at: number | null;
   };
   drive_metadata_opt_in: boolean;
-  real_validation: "pending";
 }
 export interface OAuthConfiguration {
   client_id: string;

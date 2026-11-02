@@ -31,7 +31,6 @@ beforeEach(() => {
     client_id: null,
     auth: { status: "unconfigured", account: null, granted_scopes: [], expires_at: null },
     drive_metadata_opt_in: false,
-    real_validation: "pending",
   };
   mock.mockReset();
   mock.mockImplementation(async (command) => {

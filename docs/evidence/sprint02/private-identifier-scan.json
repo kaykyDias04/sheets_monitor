@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "scope": "Changed/new UTF-8 text files checked against real account subject/email, client ID, resource IDs and source hashes from local SQLite; no values printed",
+  "files_checked": 28,
+  "files_containing_private_identifiers": 0,
+  "credentials_read_from_vault": false
+}

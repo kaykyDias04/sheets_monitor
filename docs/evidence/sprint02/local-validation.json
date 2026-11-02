@@ -6,8 +6,8 @@
   "rust_integration_passed": 2,
   "rust_ignored_in_default_suite": 1,
   "windows_vault_explicit_passed": 1,
-  "real_google_validation": "pending",
-  "user_checkpoint": "User will configure Desktop client and consent; execution not yet evidenced",
+  "real_google_validation": "passed; see google-live.json",
+  "user_checkpoint": "Account connected and authorized resources verified with production readers",
   "independent_review": "unavailable; principal local review only",
   "remote_ci": "not_run",
   "pull_request": "local_draft_only"

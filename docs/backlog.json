@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 02 autorizada; Sprint 01 concluida; etapas 03-06 sem autorizacao.",
+  "authorization": "Sprint 02 concluida com homologacao Google real; Sprint 01 concluida; etapas 03-06 sem autorizacao.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -170,7 +170,7 @@
       "id": "SM-007",
       "title": "Implementar OAuth com PKCE",
       "sprint": 2,
-      "status": "bloqueado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-004",
@@ -180,7 +180,10 @@
       "evidence": [
         "docs/testing.md",
         "docs/evidence/sprint02/rust-test.log",
-        "docs/evidence/sprint02/frontend-test.log"
+        "docs/evidence/sprint02/frontend-test.log",
+        "docs/evidence/sprint02/google-live.json",
+        "docs/evidence/sprint02/google-live.md",
+        "docs/evidence/sprint02/google-authenticated-native.json"
       ],
       "subtasks": [
         {
@@ -191,7 +194,7 @@
         {
           "id": "SM-007.02",
           "title": "Homologar com conta e recurso Google autorizados",
-          "status": "bloqueado"
+          "status": "concluido"
         }
       ]
     },
@@ -199,7 +202,7 @@
       "id": "SM-008",
       "title": "Implementar armazenamento seguro de tokens",
       "sprint": 2,
-      "status": "bloqueado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-005",
@@ -209,7 +212,10 @@
       "evidence": [
         "docs/testing.md",
         "docs/evidence/sprint02/rust-test.log",
-        "docs/evidence/sprint02/frontend-test.log"
+        "docs/evidence/sprint02/frontend-test.log",
+        "docs/evidence/sprint02/google-live.json",
+        "docs/evidence/sprint02/google-live.md",
+        "docs/evidence/sprint02/google-authenticated-native.json"
       ],
       "subtasks": [
         {
@@ -220,7 +226,7 @@
         {
           "id": "SM-008.02",
           "title": "Homologar com conta e recurso Google autorizados",
-          "status": "bloqueado"
+          "status": "concluido"
         }
       ]
     },
@@ -228,7 +234,7 @@
       "id": "SM-009",
       "title": "Integrar Sheets API",
       "sprint": 2,
-      "status": "bloqueado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-007",
@@ -238,7 +244,10 @@
       "evidence": [
         "docs/testing.md",
         "docs/evidence/sprint02/rust-test.log",
-        "docs/evidence/sprint02/frontend-test.log"
+        "docs/evidence/sprint02/frontend-test.log",
+        "docs/evidence/sprint02/google-live.json",
+        "docs/evidence/sprint02/google-live.md",
+        "docs/evidence/sprint02/google-authenticated-native.json"
       ],
       "subtasks": [
         {
@@ -249,7 +258,7 @@
         {
           "id": "SM-009.02",
           "title": "Homologar com conta e recurso Google autorizados",
-          "status": "bloqueado"
+          "status": "concluido"
         }
       ]
     },
@@ -257,7 +266,7 @@
       "id": "SM-010",
       "title": "Integrar Drive API",
       "sprint": 2,
-      "status": "bloqueado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-007",
@@ -267,7 +276,10 @@
       "evidence": [
         "docs/testing.md",
         "docs/evidence/sprint02/rust-test.log",
-        "docs/evidence/sprint02/frontend-test.log"
+        "docs/evidence/sprint02/frontend-test.log",
+        "docs/evidence/sprint02/google-live.json",
+        "docs/evidence/sprint02/google-live.md",
+        "docs/evidence/sprint02/google-authenticated-native.json"
       ],
       "subtasks": [
         {
@@ -278,7 +290,7 @@
         {
           "id": "SM-010.02",
           "title": "Homologar com conta e recurso Google autorizados",
-          "status": "bloqueado"
+          "status": "concluido"
         }
       ]
     },
@@ -286,7 +298,7 @@
       "id": "SM-011",
       "title": "Integrar Apps Script API",
       "sprint": 2,
-      "status": "bloqueado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-007",
@@ -296,7 +308,10 @@
       "evidence": [
         "docs/testing.md",
         "docs/evidence/sprint02/rust-test.log",
-        "docs/evidence/sprint02/frontend-test.log"
+        "docs/evidence/sprint02/frontend-test.log",
+        "docs/evidence/sprint02/google-live.json",
+        "docs/evidence/sprint02/google-live.md",
+        "docs/evidence/sprint02/google-authenticated-native.json"
       ],
       "subtasks": [
         {
@@ -307,7 +322,7 @@
         {
           "id": "SM-011.02",
           "title": "Homologar com conta e recurso Google autorizados",
-          "status": "bloqueado"
+          "status": "concluido"
         }
       ]
     },

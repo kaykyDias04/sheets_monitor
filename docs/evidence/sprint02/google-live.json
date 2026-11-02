@@ -1,0 +1,105 @@
+{
+  "success": true,
+  "synthetic": false,
+  "checked_at_utc": "2026-11-02T05:11:08.529963+00:00",
+  "checks": {
+    "login_identity": true,
+    "protected_session_recovered_after_restart": true,
+    "access_token_absent_immediately_after_restart": true,
+    "refresh_succeeded_without_new_consent": true,
+    "sheets_metadata": true,
+    "sheets_values": true,
+    "sheets_formula": true,
+    "drive_metadata": true,
+    "apps_script_metadata_and_sources": true,
+    "final_updated_build_session_check": true
+  },
+  "reads": {
+    "success": true,
+    "synthetic": false,
+    "identity_present": true,
+    "same_account": true,
+    "access_token_available": true,
+    "sheets_metadata": {
+      "status": "success",
+      "error_code": null,
+      "title_present": true,
+      "tabs_count": 28
+    },
+    "sheets_values": {
+      "status": "success",
+      "error_code": null,
+      "calculated_range_count": 1,
+      "formula_range_count": 1,
+      "nonempty_values": true,
+      "formula_present": false
+    },
+    "drive": {
+      "status": "success",
+      "error_code": null,
+      "name_present": true,
+      "mime_present": true,
+      "modified_time_present": true,
+      "trashed": false
+    },
+    "apps_script": {
+      "status": "success",
+      "error_code": null,
+      "title_present": true,
+      "file_count": 23,
+      "file_types": [
+        "SERVER_JS",
+        "HTML",
+        "JSON"
+      ],
+      "source_present": true,
+      "hash_valid": true
+    },
+    "scope": "Actual authorized backend reads; identifiers, identity, cell values, formulas and source omitted"
+  },
+  "formula_probe": {
+    "success": true,
+    "synthetic": false,
+    "formula_present": true,
+    "calculated_cell_present": true,
+    "checked_tabs": 20,
+    "batches": 1,
+    "maximum_probe_range": "A1:H20 per tab",
+    "private_content_logged": false
+  },
+  "privacy": {
+    "tokens_logged": false,
+    "identity_logged": false,
+    "resource_ids_logged": false,
+    "cell_values_or_formulas_logged": false,
+    "script_source_logged": false,
+    "screenshots_of_real_data": false
+  },
+  "operations": {
+    "google_resources_modified": false,
+    "scripts_executed": false,
+    "remote_revocation_requested": false,
+    "cloud_project_or_billing_changed": false
+  },
+  "limitations": [
+    "Independent specialist review unavailable; principal local review performed.",
+    "Remote logout/revocation not exercised against the real grant; explicit revocation remains user-controlled."
+  ],
+  "final_build": {
+    "success": true,
+    "synthetic": false,
+    "origin": "http://tauri.localhost",
+    "desktop_bridge": true,
+    "session_recovered": true,
+    "access_absent_before_read": true,
+    "access_available_after_read": true,
+    "same_identity": true,
+    "sheets": "success",
+    "values": "success",
+    "drive": "success",
+    "apps_script": "success",
+    "obsolete_pending_banner": false,
+    "engineering_field_removed": true,
+    "private_content_logged": false
+  }
+}

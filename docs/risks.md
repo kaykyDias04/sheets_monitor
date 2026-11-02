@@ -31,3 +31,7 @@ Cliente OAuth, APIs habilitadas, políticas Workspace e permissão adicional App
 Valores/fórmulas são duas leituras sem snapshot atômico; modifiedTime não comprova mudança estrutural. Fontes Apps Script podem conter dados privados; a UI mostra texto e não persiste o código. O cofre protege credenciais no contexto Windows, sem impedir acesso por outro processo comprometido do mesmo usuário. Falhas de limpeza podem deixar chunks antigos protegidos e inacessíveis ao ponteiro ativo; não enumerar/remover credenciais alheias.
 
 A revisão desta retomada é local pelo agente principal: os agentes anteriores esgotaram sua disponibilidade. Isso não equivale a uma auditoria independente. Mocks, build e teste real do cofre não aprovam integração Google nem distribuição pública.
+
+## Atualização do gate externo
+
+O bloqueio inicial por credenciais foi resolvido pelo usuário. A homologação real passou com conta e recursos autorizados, recuperação/refresh e leituras das três APIs. Isso não elimina restrições de políticas Workspace/verificação para outras contas, a falta de revisão independente ou os limites de snapshot/monitoramento já documentados.

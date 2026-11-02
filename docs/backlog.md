@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Autorização vigente: **Sprint02 implementada localmente, homologação externa pendente**. SM-007 a SM-011 permanecem bloqueados por cliente/consentimento e recursos autorizados; subtarefas locais têm evidência separada. Sprint01 permanece concluída. Sprints03–06 sem autorização.
+Autorização vigente: **Sprint 02 concluída com homologação Google real**. SM-007 a SM-011 têm evidência de login, recuperação/refresh e leituras autorizadas das três APIs. Sprint 01 permanece concluída. Sprints 03–06 sem autorização.
 
 ## Sprint 01
 
@@ -45,11 +45,11 @@ Autorização vigente: **Sprint02 implementada localmente, homologação externa
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-007 | Implementar OAuth com PKCE | bloqueado | SM-004, SM-006 | Login Google funcional |
-| SM-008 | Implementar armazenamento seguro de tokens | bloqueado | SM-005, SM-007 | Sessão recuperável |
-| SM-009 | Integrar Sheets API | bloqueado | SM-007, SM-008 | Ler planilha autorizada |
-| SM-010 | Integrar Drive API | bloqueado | SM-007, SM-008 | Ler metadados |
-| SM-011 | Integrar Apps Script API | bloqueado | SM-007, SM-008 | Ler projeto autorizado |
+| SM-007 | Implementar OAuth com PKCE | concluido | SM-004, SM-006 | Login Google funcional |
+| SM-008 | Implementar armazenamento seguro de tokens | concluido | SM-005, SM-007 | Sessão recuperável |
+| SM-009 | Integrar Sheets API | concluido | SM-007, SM-008 | Ler planilha autorizada |
+| SM-010 | Integrar Drive API | concluido | SM-007, SM-008 | Ler metadados |
+| SM-011 | Integrar Apps Script API | concluido | SM-007, SM-008 | Ler projeto autorizado |
 
 ### SM-007 — subtarefas
 
@@ -172,6 +172,6 @@ Autorização vigente: **Sprint02 implementada localmente, homologação externa
 
 Estimativa original: 25–41 dias úteis, apenas planejamento. Credenciais, consentimento e homologação final não são presumidos. Consulte [critérios de aceite](acceptance.md) e [progresso](progress.md).
 
-## Homologação Sprint02 pendente
+## Homologação Sprint 02 concluída
 
-SM-007.02 a SM-011.02: bloqueados por credencial Desktop, consentimento e recursos Google de teste. Seguir [OAuth](oauth-setup.md) e [testes](testing.md); não enviar secrets no chat. Nenhum item da Sprint03 foi antecipado.
+SM-007.02 a SM-011.02: concluídos por testes reais com conta e recursos autorizados. Evidência sanitizada em [google-live](evidence/sprint02/google-live.json). Segredos, identidade, IDs e conteúdos não foram registrados. Aguardar Prompt 03 sem antecipar a próxima sprint.

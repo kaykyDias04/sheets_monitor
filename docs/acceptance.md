@@ -28,16 +28,18 @@ Comandos e resultados ficam em [progresso](progress.md), [desktop](desktop.md), 
 
 Cada gate futuro exige autorização e evidência própria. Aprovação de baseline, consentimento e homologação final pertencem ao usuário; não serão inferidos por tempo decorrido ou por sucesso de mock.
 
-## Sprint 02 — gate atual
+## Sprint 02 — gate aprovado
 
-| Critério | Evidência requerida | Estado |
+| Critério | Evidência real | Estado |
 |---|---|---|
-| SM-007 login e identidade reais | Consentimento no navegador e UserInfo com conta autorizada | Pendente externo |
-| SM-008 recuperação e renovação reais | Reinício e consulta com refresh protegido | Pendente externo; testes locais separados |
-| SM-009 Sheets real | Nome, abas, intervalos, valores e fórmulas de teste autorizados | Pendente externo |
-| SM-010 Drive real | Metadados de recurso com opt-in autorizado | Pendente externo |
-| SM-011 Apps Script real | Metadados e fontes de projeto autorizado | Pendente externo |
-| Qualidade local | Vitest, Rust, Clippy, formato, tipos e builds MSVC | Ver docs/evidence/sprint02 e progress.md |
-| Segurança local | PKCE/state, limites, escopos, redaction, cofre e isolamento por conta | Ver testes e revisão local |
+| SM-007 login e identidade | Conta conectada e UserInfo pelo backend de produção | Aprovado |
+| SM-008 recuperação e renovação | Reinício com access token ausente e leituras seguintes com refresh protegido | Aprovado |
+| SM-009 Sheets | Metadados/abas, valores não vazios, fórmula e valor calculado | Aprovado |
+| SM-010 Drive | Metadados retornados com opt-in de leitura | Aprovado |
+| SM-011 Apps Script | Metadados/fontes GS, HTML, JSON e hash válido | Aprovado |
+| Qualidade local | Suítes React/Rust, Clippy, formato, tipos e builds atualizados | Aprovado |
+| Privacidade | Evidências booleanas/contagens; sem identidade, IDs, tokens ou conteúdo | Aprovado no escopo verificado |
 
-As cinco tarefas principais permanecem sem conclusão enquanto a homologação real estiver pendente. Não há baseline aprovada, monitor cadastrado nem estado de integridade derivado destas consultas. A próxima etapa é o Prompt 03 somente após instrução expressa; o bloqueio externo não autoriza antecipá-lo.
+Relatório [Google real](evidence/sprint02/google-live.json) e [roteiro/resultados](evidence/sprint02/google-live.md). Capturas desconectadas anteriores são históricas; nenhum screenshot de dados reais foi feito. Revisão independente ficou indisponível, conforme [riscos](risks.md); não se declara auditoria externa ou CI hospedado.
+
+Sem baseline aprovada, motor de integridade, scheduler ou notificações. Sprint 02 encerrada; aguardar Prompt 03.

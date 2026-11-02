@@ -2,11 +2,11 @@
 
 Esta configuração depende de um projeto e uma conta autorizados. Não cole senhas, authorization codes, access tokens ou refresh tokens no chat ou no código. O consentimento e as verificações de segurança são feitos pelo usuário no navegador do sistema.
 
-## Situação encontrada
+## Auditoria inicial
 
 A auditoria local não encontrou Google Cloud CLI, configuração autenticada do SDK nem variáveis de cliente/projeto da aplicação. Isso não afirma que o usuário não possui um projeto: apenas não existe acesso disponível ao agente por esses mecanismos. Evidência sanitizada em `docs/evidence/sprint02/access-audit.json`.
 
-Nenhum projeto foi criado, API habilitada, consentimento concedido ou faturamento alterado. Não usar credenciais de um projeto diferente apenas porque estão disponíveis na máquina.
+Na auditoria inicial, o agente não criou projeto, habilitou APIs, concedeu consentimento ou alterou faturamento. Não usar credenciais de um projeto diferente apenas porque estão disponíveis na máquina.
 
 ## Preparação no projeto correto
 
@@ -35,3 +35,7 @@ Usar script ID explicitamente autorizado; não assumir que ele é o spreadsheet 
 Quando o build estiver pronto: configurar o cliente Desktop localmente, conectar a conta pelo navegador, consentir os escopos desejados e informar uma planilha e um projeto Apps Script de teste autorizados. Links/IDs podem ser informados ao aplicativo; conteúdos privados não devem entrar nas evidências versionadas.
 
 O roteiro real deve comprovar identificação, leitura Sheets de abas/valores/fórmulas, metadados Drive quando autorizado, conteúdo Apps Script, reinício e renovação da sessão. Registrar apenas resultados sanitizados. Sem esses passos, a homologação real continua pendente, mesmo que todos os mocks passem.
+
+## Resultado nesta sprint
+
+O usuário configurou o cliente localmente e concluiu login/consentimento pelo navegador. Leituras autorizadas Sheets/Drive/Apps Script e recuperação/refresh foram comprovadas em [google-live](evidence/sprint02/google-live.json). Não foram registrados client ID/secret, identidade ou IDs dos recursos. O roteiro acima continua aplicável à configuração de outra conta, sem transferir o consentimento atual.

@@ -38,3 +38,5 @@ Homologação externa separada: seguir [oauth-setup](oauth-setup.md), consentir 
 CI Windows usa os mesmos gates, mas existência do workflow não prova execução hospedada. As falhas iniciais ficam preservadas; resultados atuais e limitações constam em [progress](progress.md).
 
 Executar o build standalone por último antes da prova nativa: `cargo test` com features padrão pode substituir o executável pelo modo development, que aponta para localhost:1420. O comando adicional de cofre acima usa custom-protocol para preservar esse modo. Não concluir sucesso standalone se o renderer depender do Vite.
+
+A execução real desta sprint foi concluída e está em [google-live](evidence/sprint02/google-live.json), com o [relato sanitizado](evidence/sprint02/google-live.md). Os testes de recuperação e leituras foram repetidos no build atualizado, sem novo consentimento e sem expor dados privados.

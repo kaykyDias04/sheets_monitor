@@ -15,3 +15,7 @@ O Google não oferece autorização incremental para apps instalados. Mudar a op
 Tokens e client secret opcional serão protegidos pelo cofre Windows, sem fallback para JSON, SQLite ou localStorage. Logout remove sessão local; revogação remota é ação separada e explícita. Falha transitória não deve apagar uma credencial válida. Conta, cliente e geração da sessão delimitam operações concorrentes.
 
 Consequências: testes com transporte/cofre simulados cobrem a lógica, e uma entrada sintética isolada pode comprovar o cofre local. Isso não comprova login, refresh ou respostas Google reais. Sem cliente/projeto/consentimento disponíveis, os critérios reais de SM-007 a SM-011 permanecem pendentes; nenhum faturamento ou projeto Cloud será criado por suposição.
+
+## Atualização após homologação
+
+O estado de uma conta em execução não representa o aceite da sprint. Removido o campo fixo real_validation do DTO e a mensagem fixa de pendência da interface; os resultados de engenharia ficam em docs/evidence/sprint02/google-live.json. A interface apresenta autorização e diagnósticos das consultas atuais. Nenhum estado global de “aprovado” é aplicado a contas futuras por causa desse teste.

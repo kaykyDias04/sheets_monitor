@@ -69,3 +69,7 @@ Google Cloud só pode ser configurado em projeto identificado e autorizado. Sem 
 Login/consentimento serão feitos pelo usuário no navegador do sistema. Revogar autorização é ação explícita separada de logout local. Mudança de escopos usa nova autorização completa: Google não suporta autorização incremental em apps instalados. `drive.file` só é adequado quando a seleção por arquivo e suas permissões de escrita forem compatíveis; esta sprint não pode solicitar edição/exclusão.
 
 Evidências atuais: `docs/evidence/sprint02/`. Atualizar backlog sem marcar integração real concluída apenas por mocks. Ao encerrar, aguardar Prompt03 sem executar a Sprint03.
+
+## Encerramento da Sprint 02
+
+Homologação real concluída com conta e recursos autorizados pelo usuário: login, cofre/recuperação, refresh e leituras Sheets/Drive/Apps Script. Evidências sanitizadas em docs/evidence/sprint02/google-live.json. SM-007 a SM-011 concluídos. Aguardar Prompt 03; não iniciar funcionalidades posteriores automaticamente. Credenciais e conteúdos reais continuam fora do Git e dos relatórios.

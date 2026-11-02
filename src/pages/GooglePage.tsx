@@ -114,8 +114,8 @@ export function GooglePage() {
         <div>
           <strong>Integração Google · somente leitura</strong>
           <p>
-            Consultas reais exigem sua autorização no aplicativo Windows. A homologação externa
-            desta sprint permanece pendente até os testes com uma conta autorizada.
+            Autorize sua conta no navegador do sistema para consultar planilhas e projetos
+            acessíveis. O aplicativo lê os recursos selecionados sem alterar seus arquivos.
           </p>
         </div>
         <Badge variant="outline">SPRINT 02</Badge>

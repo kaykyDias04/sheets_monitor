@@ -2,7 +2,7 @@
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A entrega atual implementa a **Sprint02**: OAuth Desktop PKCE, cofre Windows, identidade da conta e leitores manuais de Sheets, Drive e Apps Script. **Homologação real pendente** de cliente OAuth, consentimento e recursos de teste autorizados. Mocks não comprovam integração Google.
+A entrega atual implementa a **Sprint02**: OAuth Desktop PKCE, cofre Windows, identidade da conta e leitores manuais de Sheets, Drive e Apps Script. **Homologação real aprovada** com cliente/conta e recursos autorizados: login, recuperação/refresh e leituras das três APIs. Evidência sanitizada em [google-live](docs/evidence/sprint02/google-live.json). Cada nova conta continua exigindo configuração e consentimento próprios.
 
 A tela Integração Google usa somente o backend desktop. Dashboard, Planilhas, Histórico e preferências conservam a demonstração da Sprint01. Monitoramento contínuo, baseline aprovada, análise semântica, notificações, bandeja, autostart e instalador aguardam suas etapas.
 

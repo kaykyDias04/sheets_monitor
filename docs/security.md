@@ -32,3 +32,7 @@ Testes devem usar nomes e tokens sintéticos, com valores redigidos nas falhas. 
 Screenshots de estado desconectado podem ser versionados; screenshots de conta/arquivos reais devem ser sanitizados ou mantidos fora do Git. Nunca registrar a URL de autorização completa ou o callback com code/state. Revogação e consentimento não são inferidos por passagem de tempo.
 
 Antes de encerrar, confrontar estes controles com código e resultados executados em `docs/evidence/sprint02/`. Homologação com usuário/recursos reais permanece um gate separado.
+
+## Homologação real
+
+O usuário conectou a conta e autorizou os recursos de teste. Login, recuperação/refresh e leituras das três APIs têm evidência sanitizada em [google-live](evidence/sprint02/google-live.json). A inspeção usou só resultados booleanos/contagens; tokens permaneceram no backend/cofre, e identidade/IDs/conteúdo não foram registrados. O consentimento real não foi revogado pelo teste.
