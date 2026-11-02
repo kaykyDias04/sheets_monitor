@@ -1,0 +1,13 @@
+
+> sheets-monitor@0.1.0 build
+> tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1660 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.45 kB │ gzip:   0.29 kB
+dist/assets/index-Dqq8Y0wy.css   39.36 kB │ gzip:   8.89 kB
+dist/assets/index-BVVCG2at.js   353.00 kB │ gzip: 110.95 kB
+✓ built in 5.18s

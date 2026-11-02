@@ -1,0 +1,82 @@
+{
+  "scope": "Names of new direct Rust dependencies, including other versions present transitively in the lockfile; cached package metadata only, not distribution approval",
+  "packages": [
+    {
+      "name": "base64",
+      "version": "0.21.7",
+      "license": null,
+      "license_file": null,
+      "metadata_available": false
+    },
+    {
+      "name": "base64",
+      "version": "0.22.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "base64",
+      "version": "0.23.1",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "keyring",
+      "version": "3.6.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "open",
+      "version": "5.4.5",
+      "license": "MIT",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "rand",
+      "version": "0.8.8",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "rand",
+      "version": "0.10.3",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "reqwest",
+      "version": "0.12.28",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "reqwest",
+      "version": "0.13.5",
+      "license": null,
+      "license_file": null,
+      "metadata_available": false
+    },
+    {
+      "name": "url",
+      "version": "2.5.8",
+      "license": "MIT OR Apache-2.0",
+      "license_file": null,
+      "metadata_available": true
+    },
+    {
+      "name": "zeroize",
+      "version": "1.9.1",
+      "license": "Apache-2.0 OR MIT",
+      "license_file": null,
+      "metadata_available": true
+    }
+  ]
+}

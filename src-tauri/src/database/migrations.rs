@@ -7,11 +7,18 @@ pub(super) struct Migration {
     pub sql: &'static str,
 }
 
-const MIGRATIONS: &[Migration] = &[Migration {
-    version: 1,
-    name: "0001_foundation",
-    sql: include_str!("../../migrations/0001_foundation.sql"),
-}];
+const MIGRATIONS: &[Migration] = &[
+    Migration {
+        version: 1,
+        name: "0001_foundation",
+        sql: include_str!("../../migrations/0001_foundation.sql"),
+    },
+    Migration {
+        version: 2,
+        name: "0002_google_integration",
+        sql: include_str!("../../migrations/0002_google_integration.sql"),
+    },
+];
 
 pub(super) fn apply(connection: &mut Connection) -> Result<(), String> {
     apply_list(connection, MIGRATIONS)
@@ -225,7 +232,7 @@ mod tests {
         apply(&mut connection).unwrap();
         connection
             .execute(
-                "INSERT INTO _schema_migrations VALUES(2,'future','unknown','demo')",
+                "INSERT INTO _schema_migrations VALUES(3,'future','unknown','demo')",
                 [],
             )
             .unwrap();

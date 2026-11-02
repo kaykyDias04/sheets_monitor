@@ -1,4 +1,4 @@
-name: Sprint 01 - Windows foundation
+name: Sprint 02 - Windows Google integration
 on:
   push:
   pull_request:

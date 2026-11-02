@@ -1,0 +1,19 @@
+{
+  "process_id": 30168,
+  "window_title": "Sheets Monitor - Sprint 02",
+  "executable_sha256": "FC0A418A03E7F4EAA694FDFCBA7CE7E579D00D4CAF499E28BA8F7EBC0C309A73",
+  "renderer_origin": "http://tauri.localhost",
+  "desktop_bridge": true,
+  "configuration": "unconfigured",
+  "navigation": [
+    "dashboard",
+    "sheets",
+    "history",
+    "settings",
+    "google"
+  ],
+  "google_access": false,
+  "capture": "WebView2 renderer screenshot, not Windows frame",
+  "success": true,
+  "diagnostic_port_closed": true
+}

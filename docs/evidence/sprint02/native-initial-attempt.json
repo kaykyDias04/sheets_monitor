@@ -1,0 +1,7 @@
+{
+  "success": false,
+  "renderer_url": "http://localhost:1420/",
+  "cause": "The explicit vault test rebuilt the executable with default development features after the standalone build. Rebuilding custom-protocol last is required.",
+  "google_access": false,
+  "secrets_logged": false
+}

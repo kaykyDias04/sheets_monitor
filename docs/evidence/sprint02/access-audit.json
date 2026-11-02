@@ -1,0 +1,11 @@
+{
+  "gcloud_cli_available": false,
+  "known_cloud_configuration_present": false,
+  "oauth_client_environment_present": false,
+  "application_default_credentials_environment_present": false,
+  "project_authorization_available": false,
+  "project_created": false,
+  "apis_enabled_by_agent": false,
+  "billing_changed": false,
+  "scope": "Presence checks only, no credential values read or printed. Browser account state not assumed."
+}

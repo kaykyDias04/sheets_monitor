@@ -1,49 +1,26 @@
 # Arquitetura do Sheets Monitor
 
-Fonte normativa: [especificação v1.0 original](specification-v1.0.original.md). A Sprint 01 entrega somente a fundação local. Arquitetura-alvo descreve módulos futuros, sem declarar sua implementação.
-
-## Fundação ativa
+A autorização vigente é a [Sprint 02](sprint02.original.md), SM-007 a SM-011. A fundação da Sprint 01 permanece; motor de integridade, baselines definitivos, análise semântica, scheduler e notificações não estão implementados.
 
 ```mermaid
 flowchart LR
-    UI[React + TypeScript\nTailwind + shadcn/ui] -->|IPC local, DTOs de demonstração| Shell[Tauri 2 / Rust]
-    Shell --> DB[Database / migrações versionadas]
-    DB --> SQLite[(foundation-v1.db / SQLite)]
-    Future[auth / google / integrity\nmonitoring / notifications] -. contratos sem implementação .-> Shell
+    UI[React e DTOs] -->|IPC local| Runtime[Tauri / spawn_blocking]
+    Runtime --> Auth[AuthManager / geração de sessão]
+    Auth --> Vault[Windows Credential Manager]
+    Auth --> Browser[Navegador externo / PKCE loopback]
+    Runtime --> Google[Leitores HTTPS somente GET]
+    Google --> APIs[Sheets / Drive / Apps Script]
+    Runtime --> DB[(SQLite / metadados por conta)]
 ```
 
-A interface possui Dashboard, Planilhas cadastradas, Histórico e Configurações. No navegador usa memória; no desktop usa comandos Tauri para fixtures SQLite. Ambas mostram aviso de demonstração. Nenhuma conta Google é conectada e os estados dos exemplos não são verificações reais.
+A área Integração Google usa exclusivamente comandos reais do backend. No navegador não há OAuth/consultas, e a interface informa essa limitação. Dashboard, Planilhas e Histórico continuam demonstrativos; Configurações conserva preferências locais. Dados simulados nunca substituem falhas de APIs.
 
-Rust controla abertura do banco, migrações, seed idempotente, validação e persistência de configurações. Os comandos não recebem caminho de banco nem SQL do frontend. A aplicação usa um arquivo próprio de fundação, separado dos bancos do protótipo. Autostart, bandeja, polling e envio de notificações não estão ativos nesta sprint.
+`auth/` controla PKCE S256, state, porta dinâmica 127.0.0.1, timeout e callback de uso único. Tokens ficam no backend; refresh token e secret Desktop opcional ficam no cofre Windows. O access token permanece em memória. UserInfo HTTPS identifica a conta; JWT não verificado não é usado como identidade. Logout remove a sessão local; revogação exige comando explícito e confirmação na UI. Consulte [segurança](security.md) e [ADR 0007](adr/0007-google-scopes-and-desktop-auth.md).
 
-## Estrutura e responsabilidades
+`google/` valida IDs/URLs, faz leituras tipadas com limites, erros fechados e retentativas GET transitórias. `integration.rs` coordena consultas pontuais, escopos efetivamente concedidos, renovação limitada após 401 e persistência. Geração invalida respostas e gravações antigas após logout/reconfiguração; o mutex protege somente o commit local, sem ficar preso à rede. O React repete a checagem de conta/geração e limpa resultados de sessão anterior.
 
-| Caminho | Responsabilidade na Sprint 01 |
-|---|---|
-| `src/components/`, `src/pages/` | Composição visual e quatro telas |
-| `src/components/ui/` | Componentes shadcn/Radix e estilos Tailwind |
-| `src/hooks/`, `src/services/`, `src/types/` | Estado, bridge tipada e contratos de dados simulados |
-| `src-tauri/src/app.rs` | Inicialização, comandos restritos e DTOs da fundação |
-| `src-tauri/src/database/` | SQLite, migrações, fixtures e configurações |
-| `src-tauri/migrations/` | SQL versionado com checksum |
-| `src-tauri/src/auth/`, `google/`, `integrity/`, `monitoring/`, `notifications/` | Contratos para etapas posteriores; sem acesso externo |
-| `tests/`, `src-tauri/tests/` | Verificação integrada/local, sem credenciais |
-| `archive/prototype/` | Snapshot imutável de trabalho anterior, fora da aplicação ativa |
+SQLite conserva as onze entidades da fundação mais configuração, recursos consultados, últimas consultas e associações explícitas. Migração0002 adiciona as quatro tabelas e metadados de conta; migração0001/checksum preservados. Recursos são vinculados à conta; valores, fórmulas, código, tokens e secrets não são persistidos no banco. Consultas manuais não são monitores e não criam eventos/baselines. Consulte [contratos](api-contracts.md) e [APIs](google-apis.md).
 
-O esquema inclui `accounts`, `spreadsheets`, `monitored_sheets`, `baselines`, `integrity_rules`, `script_projects`, `script_dependencies`, `monitoring_checks`, `change_events`, `notifications` e `app_settings`. O ledger de migrações é metadado interno adicional. Consulte [banco](database.md).
+A aplicação roda localmente sem servidor hospedado. O executável com `custom-protocol` incorpora os assets React; instalador não faz parte desta entrega. `archive/prototype/` é snapshot imutável fora de imports, formatação e build.
 
-## Arquitetura-alvo das sprints seguintes
-
-Os futuros adaptadores Google serão somente leitura, via OAuth desktop PKCE e credenciais no armazenamento seguro Windows. Sheets API v4 fornecerá dados de grid, fórmulas e estrutura; Drive v3 fornecerá metadados; Apps Script API lerá fontes dos IDs autorizados. A biblioteca de HTTP e os endpoints serão aprovados/testados na etapa correspondente. A fundação não necessita de servidor próprio nem webapp hospedado.
-
-Snapshots completos alimentarão duas avaliações distintas: diferenças observadas entre coletas e integridade contra baseline versionado aprovado. Mudança permitida de conteúdo gera evento sem tornar a planilha Offline. Falha confirmada de regra crítica torna Offline; falha técnica de avaliação torna Indeterminado. Recuperação após correção deve atualizar o estado, preservando eventos históricos.
-
-Parâmetros aprovados: até 30 arquivos cadastrados simultaneamente, intervalo inicial de 60 segundos configurável entre 60 e 300, até três verificações paralelas, histórico padrão de 90 dias. Esses limites são contratos futuros, exceto a persistência/validação dos parâmetros da fundação. Nenhum scheduler fictício será apresentado como coleta real.
-
-A análise estática futura deve reconhecer `getSheetByName`, `getRange` e referências a colunas e avaliar sua validade estrutural. Dependências dinâmicas serão sinalizadas como não verificáveis. O app não executará nem corrigirá scripts ou planilhas.
-
-## Fronteiras e riscos
-
-Dados reais, tokens e credenciais não pertencem à UI, aos commits ou às evidências. A permissão Tauri da janela é mínima; conteúdo de scripts não pode virar instrução executável. Fixtures têm identidade sintética e marcação de demonstração. Relatórios e SQLite reais terão tratamento de privacidade antes das respectivas etapas.
-
-O polling não observa todas as edições intermediárias, e várias APIs não formam uma transação global Google. Consolidar toasts não pode apagar eventos persistentes. Capacidade e frequência exigirão teste de carga dedicado, não inferência a partir da demonstração. Consulte [riscos](risks.md) e [ADRs](adr/README.md).
+O alvo das próximas sprints mantém capacidade de 30 monitores, intervalo 60–300s, até 3 verificações simultâneas e histórico 90 dias. Mudança permitida de conteúdo deve gerar evento sem concluir falha de integridade. Esses contratos não autorizam antecipar implementação. Polling não garante capturar edições intermediárias; APIs separadas não formam snapshot atômico. [Riscos](risks.md), [testes](testing.md) e [backlog](backlog.md) acompanham os limites e a evidência.

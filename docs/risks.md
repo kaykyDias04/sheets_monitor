@@ -23,3 +23,11 @@ Os responsáveis abaixo são papéis de engenharia, não pessoas externas a quem
 | R-17 | Dois gerenciadores alteram resolução de dependências | Manter npm lock existente nesta sprint; pnpm disponível, migração só em ADR | SM-003, SM-006 / frontend |
 
 Aceitar um risco para planejamento não autoriza efeitos externos ou implementar a sprint seguinte. Cada fechamento deve citar comando/evidência e seu limite.
+
+## Sprint02 — riscos e limites atuais
+
+Cliente OAuth, APIs habilitadas, políticas Workspace e permissão adicional Apps Script dependem do projeto/conta autorizados. Não contornar bloqueios de verificação. Drive metadata opt-in é escopo restrito; revisar privacidade e exigências de verificação antes de distribuição pública. Autorização incremental não é suportada para apps instalados.
+
+Valores/fórmulas são duas leituras sem snapshot atômico; modifiedTime não comprova mudança estrutural. Fontes Apps Script podem conter dados privados; a UI mostra texto e não persiste o código. O cofre protege credenciais no contexto Windows, sem impedir acesso por outro processo comprometido do mesmo usuário. Falhas de limpeza podem deixar chunks antigos protegidos e inacessíveis ao ponteiro ativo; não enumerar/remover credenciais alheias.
+
+A revisão desta retomada é local pelo agente principal: os agentes anteriores esgotaram sua disponibilidade. Isso não equivale a uma auditoria independente. Mocks, build e teste real do cofre não aprovam integração Google nem distribuição pública.

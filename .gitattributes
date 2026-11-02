@@ -6,3 +6,5 @@ archive/** -text -whitespace
 docs/specification-v1.0.original.md -text -whitespace
 docs/evidence/sprint01/*.log -text -whitespace
 docs/evidence/*.log -text -whitespace
+docs/evidence/sprint02/*.log -text -whitespace
+docs/sprint02.original.md -text -whitespace

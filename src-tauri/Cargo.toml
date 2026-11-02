@@ -1,7 +1,7 @@
 [package]
 name = "sheets-monitor"
 version = "0.1.0"
-description = "Fundação desktop do Sheets Monitor — Sprint 01"
+description = "Sheets Monitor — integrações Google de leitura"
 edition = "2021"
 rust-version = "1.88"
 license = "MIT"
@@ -30,6 +30,13 @@ rusqlite = { version = "0.37", features = ["bundled"] }
 sha2 = "0.10"
 uuid = { version = "1", features = ["v4"] }
 chrono = { version = "0.4", features = ["serde"] }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+rand = "0.8"
+base64 = "0.22"
+url = "2"
+keyring = { version = "3", features = ["windows-native"] }
+open = "5"
+zeroize = { version = "1", features = ["derive"] }
 tauri = { version = "2", features = [], optional = true }
 
 [dev-dependencies]

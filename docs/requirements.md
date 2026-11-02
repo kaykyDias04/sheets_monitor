@@ -2,13 +2,13 @@
 
 Fonte: [anexo original](specification-v1.0.original.md), preservado sem edição. SHA-256 `994A2FAA0E1D9C48450C5FE2B7B88AB9E237C17054EFE3A70E1EC291671F765E`. A interpretação anterior está em [requirements.prototype.md](requirements.prototype.md) e no arquivo do protótipo.
 
-O usuário autorizou expressamente a **Sprint 01 do anexo**, substituindo a organização isolada do Prompt 02. O produto completo abaixo é especificação, não autorização para executar outras sprints.
+A Sprint01 foi concluída; a autorização vigente é a [Sprint02](sprint02.original.md), SM-007 a SM-011. O produto completo abaixo é especificação, sem autorizar etapas posteriores.
 
-## Fundação autorizada agora
+## Integração autorizada agora
 
-Tauri 2, React + TypeScript + Vite, Tailwind CSS + shadcn/ui, backend Rust modular e SQLite local com migrações versionadas. Dashboard, Planilhas, Histórico e Configurações navegam com exemplos identificados como demonstração, inclusive no desktop. O SQLite deve criar e ler as onze entidades da especificação e sobreviver à reabertura. Testes, lint, formatação, typecheck, builds, CI Windows e documentação devem ser reproduzíveis.
+Preservar a fundação e implementar OAuth Desktop PKCE, conta, cofre Windows, refresh/logout/revogação explícita, leitores Sheets/Drive/Apps Script e consultas manuais pela interface. Persistir metadados por conta, nunca tokens no SQLite ou fontes/valores automaticamente. Testar e compilar no Windows; homologar acessos reais apenas quando houver cliente OAuth e consentimento autorizados.
 
-Comprovar janela nativa no Windows 11. Build web e probe do ambiente não substituem essa evidência. Não implementar login Google, monitoramento real, bandeja, autostart ou instalador nesta fundação. Parâmetros futuros podem ser persistidos/validados, sem afirmar que a rotina correspondente já funciona.
+Não implementar motor, baseline definitivo, classificação real Online/Offline, análise semântica, polling, notificações definitivas, bandeja, autostart ou instalador. Sem acesso, testes simulados devem ser identificados e aceite externo permanece pendente.
 
 ## Produto V1 aprovado
 

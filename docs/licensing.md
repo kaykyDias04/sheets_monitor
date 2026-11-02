@@ -9,3 +9,7 @@ Pacotes e componentes externos mantêm suas próprias licenças. O arquivo LICEN
 O [inventário de metadados](evidence/repository/license-inventory.json) registra nomes/versões/licenças disponíveis. Sua cobertura é explícita: dependências Rust de plataformas não presentes no cache podem não ter sido verificadas. Expressões MPL, Unicode e atribuição não devem ser tratadas genericamente como MIT. Não se declara uma auditoria jurídica completa nem que um bundle redistribuível já esteja homologado.
 
 Antes de SM-028, resolver itens sem metadados, inspecionar as licenças/avisos dos artefatos efetivamente distribuídos, produzir os avisos de terceiros e confirmar a distribuição Windows/WebView2. Não redistribuir SDKs, toolchains ou credenciais no repositório.
+
+## Dependências da Sprint02
+
+O [inventário adicional](evidence/sprint02/dependency-licenses.json) registra metadados locais das novas dependências diretas Rust (HTTP/TLS, PKCE, URL, cofre e abertura de navegador). O Cargo.lock fixa a resolução utilizada nos testes. Esse inventário não homologa redistribuição nem substitui a revisão dos avisos transitivos em SM-028. npm audit de produção tem relatório separado e não cobre advisories Rust ou todas as dependências de desenvolvimento.

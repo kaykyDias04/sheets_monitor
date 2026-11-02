@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-11-02T04:55:09.784859+00:00",
+  "local_success": true,
+  "frontend_tests": 13,
+  "rust_unit_passed": 43,
+  "rust_integration_passed": 2,
+  "rust_ignored_in_default_suite": 1,
+  "windows_vault_explicit_passed": 1,
+  "real_google_validation": "pending",
+  "user_checkpoint": "User will configure Desktop client and consent; execution not yet evidenced",
+  "independent_review": "unavailable; principal local review only",
+  "remote_ci": "not_run",
+  "pull_request": "local_draft_only"
+}

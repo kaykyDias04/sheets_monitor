@@ -54,6 +54,16 @@ check('official backlog and dependency graph', () => {
   map.forEach(item => assert(markdown.includes(`| ${item.id} | ${item.title} | ${item.status} |`), `Markdown backlog drift: ${item.id}`));
   return `28 original IDs, ${subtasks} subtasks, acyclic dependencies`;
 });
+check('Sprint 02 original and completion honesty', () => {
+  const digest = crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'docs/sprint02.original.md'))).digest('hex');
+  assert(digest === 'c468f087db24d0271d332ff936bce4f42968f6d27dd339cc4e6c41c0020dac84', 'Sprint 02 source changed');
+  const items = JSON.parse(read('docs/backlog.json')).items.filter(i=>i.sprint===2);
+  if (items.some(i=>i.status==='concluido')) {
+    const live=JSON.parse(read('docs/evidence/sprint02/google-live.json'));
+    assert(live.success===true && live.synthetic===false, 'Real integration completion needs live evidence');
+  }
+  return 'source hash preserved; live success is never inferred from mocks';
+});
 check('raw prototype archive', () => {
   const manifest = JSON.parse(read('docs/evidence/repository/prototype-manifest.json'));
   for (const entry of manifest.files) {
@@ -94,20 +104,26 @@ check('issue and PR templates', () => {
   assert(read('.github/PULL_REQUEST_TEMPLATE.md').includes('Critérios de aceite'), 'PR template lacks acceptance');
   return 'two issue templates and PR acceptance/evidence sections';
 });
-check('foundation scope and modular structure', () => {
+check('Sprint 02 scope and modular structure', () => {
   for (const directory of ['src/components','src/pages','src/hooks','src/services','src/types','src-tauri/src/database','src-tauri/src/auth','src-tauri/src/google','src-tauri/src/integrity','src-tauri/src/monitoring','src-tauri/src/notifications','src-tauri/migrations']) {
     assert(fs.statSync(path.join(root,directory)).isDirectory(), `Missing module ${directory}`);
   }
   const app = read('src-tauri/src/app.rs');
-  assert((app.match(/#\[tauri::command\]/g) || []).length === 2 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
+  assert((app.match(/#\[tauri::command\]/g) || []).length === 9 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
   const cargo = read('src-tauri/Cargo.toml');
-  assert(!/^(reqwest|keyring|open|tauri-plugin-notification)\s*=/m.test(cargo), 'Future implementation dependency activated');
+  assert(!/^tauri-plugin-notification\s*=/m.test(cargo), 'Future notification dependency activated');
+  for (const command of ['integration_get_state','integration_configure','integration_connect','integration_disconnect','integration_revoke','integration_test_sheet','integration_test_script']) assert(app.includes(command), `Missing command ${command}`);
   assert(!/pub mod (oauth|store|engine|fixtures|analysis);/.test(read('src-tauri/src/lib.rs')), 'Prototype modules exported');
   for (const file of trackedAndNew.filter(p => /^(src|src-tauri\/src)\//.test(p) && /\.(rs|tsx?|css)$/.test(p))) {
     const content = read(file);
     assert(!/(?:from\s*["']|include!\s*\(\s*["'])[^"']*archive\//.test(content), `Active import of archive: ${file}`);
   }
-  return 'four-page modules, future contracts isolated, two local commands';
+  return 'foundation + Google UI, future contracts isolated, nine native commands';
+});
+check('active source encoding', () => {
+  const source=trackedAndNew.filter(p=>/^(src|src-tauri\/src)\//.test(p) && /\.(tsx?|rs|css)$/.test(p));
+  for (const file of source) assert(!read(file).includes('\uFFFD'), `Invalid Unicode replacement in ${file}`);
+  return `${source.length} source files without replacement characters`;
 });
 check('known credential patterns', () => {
   const patterns = [/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,/AIza[0-9A-Za-z_-]{30,}/,/gh[pousr]_[A-Za-z0-9]{30,}/,/github_pat_[A-Za-z0-9_]{40,}/,/GOCSPX-[A-Za-z0-9_-]{20,}/,/ya29\.[A-Za-z0-9_-]{25,}/,/AKIA[0-9A-Z]{16}/];
@@ -134,11 +150,11 @@ check('completion evidence matches sprint status', () => {
   assert(['dashboard','sheets','history','settings'].every(page => qa.navigation.includes(page)), 'Native navigation not established');
   assert(qa.persistence.saved_interval === 120 && qa.persistence.after_restart_interval === 120 && qa.persistence.final_interval === 60, 'Native persistence not established');
   assert(qa.diagnostics.final_debug_port_closed === true && qa.cloud_access === false, 'Diagnostics or scope gate incomplete');
-  assert(items.filter(i => i.sprint > 1).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
+  assert(items.filter(i => i.sprint > 2).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
   return 'Completed foundation items have native evidence; future sprints remain uncompleted';
 });
 const success = checks.every(item => item.ok);
-const reportPath = path.join(root,'docs/evidence/repository/verification.json');
+const reportPath = path.join(root,'docs/evidence/sprint02/repository-verification.json');
 fs.mkdirSync(path.dirname(reportPath), { recursive:true });
-fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 01 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
+fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 02 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
 process.exitCode = success ? 0 : 1;

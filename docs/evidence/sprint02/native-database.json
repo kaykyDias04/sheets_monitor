@@ -1,0 +1,14 @@
+{
+  "scope": "Read-only aggregate checks; no account, resource IDs, values or credentials read",
+  "checks": {
+    "schema_version": 2,
+    "migration_count": 2,
+    "product_tables": 15,
+    "demo_spreadsheets": 4,
+    "real_monitors": 0,
+    "integration_resources": 0,
+    "public_configuration_rows": 0,
+    "interval_seconds": 60,
+    "foreign_key_errors": 0
+  }
+}

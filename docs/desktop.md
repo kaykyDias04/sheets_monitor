@@ -1,3 +1,7 @@
+# Desktop — Sprint 02
+
+A entrega atual adiciona Integração Google à fundação. Somente os dois comandos foundation retornam fixtures is_demo=true. Os sete comandos integration usam cofre/backend reais, sem fallback simulado. Credenciais e consentimento continuam necessários para homologação externa. O texto abaixo registra também limites e evidências históricas da fundação.
+
 # Fundação desktop — Sprint 01
 
 O executável desta sprint contém Tauri 2, a interface React e um banco SQLite

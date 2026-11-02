@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [ValidateSet('test','clippy','build','format-check','format')]
-    [string]$Task = 'test'
+    [string]$Task = 'test',
+    [string]$EvidenceDirectory = ''
 )
 
 Set-StrictMode -Version Latest
@@ -15,7 +16,11 @@ $cargo = Get-NativeTool 'cargo.exe'
 if (-not $cargo) { throw 'Cargo ausente. Consulte docs/environment.md.' }
 $root = Split-Path -Parent $PSScriptRoot
 $manifest = Join-Path $root 'src-tauri\Cargo.toml'
-$evidence = Join-Path $root 'docs\evidence\sprint01'
+$evidence = if ([string]::IsNullOrWhiteSpace($EvidenceDirectory)) {
+    Join-Path $root 'docs\evidence\sprint02'
+} else {
+    [IO.Path]::GetFullPath($EvidenceDirectory)
+}
 New-Item -ItemType Directory -Force -Path $evidence | Out-Null
 $arguments = switch ($Task) {
     'test' { @('test','--manifest-path',$manifest,'--locked','--target','x86_64-pc-windows-msvc','--all-targets') }

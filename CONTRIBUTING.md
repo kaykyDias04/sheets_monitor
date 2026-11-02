@@ -15,7 +15,7 @@ O escopo do prompt autorizado limita o trabalho. A [especificação v1.0](docs/s
 
 Na Sprint 01, executar lint, formatação, typecheck, testes Vitest e Rust, build frontend e compilação nativa MSVC. Comprovar janela Windows, navegação e SQLite persistente. Comandos e resultados ficam em `docs/evidence/sprint01/` e [progresso](docs/progress.md).
 
-Não usar testes de mocks como prova de integração Google. Não transformar ausência de credenciais em sucesso fictício. Não alterar scripts, planilhas ou permissões reais. Autenticação, monitoramento real, bandeja, autostart e instalador pertencem a etapas posteriores.
+Não usar testes de mocks como prova de integração Google. Não transformar ausência de credenciais em sucesso fictício. Não alterar scripts, planilhas ou permissões reais. Na Sprint02, autenticação e consultas manuais estão autorizadas; monitoramento contínuo, bandeja, autostart e instalador aguardam etapas posteriores. Evidências novas ficam em docs/evidence/sprint02, com gates descritos em docs/testing.md.
 
 ## Dados e licenças
 

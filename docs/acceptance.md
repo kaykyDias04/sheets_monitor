@@ -1,8 +1,8 @@
 # Critérios de aceite e evidências
 
-Somente evidência da aplicação ativa comprova a Sprint 01. Arquivos em `archive/prototype/`, estimativas do anexo e testes apenas previstos não representam conclusão.
+Somente evidência da aplicação ativa comprova a etapa correspondente. Arquivos em `archive/prototype/`, estimativas do anexo e testes apenas previstos não representam conclusão.
 
-## Sprint 01 — gate obrigatório
+## Sprint 01 — gate histórico aprovado
 
 | ID | Critério | Verificação mínima | Tarefas |
 |---|---|---|---|
@@ -27,3 +27,17 @@ Comandos e resultados ficam em [progresso](progress.md), [desktop](desktop.md), 
 - Sprint 06: cenários integrados, carga de 30 arquivos com métricas, instalador/desinstalação Windows x64 e avisos de licenças/privacidade.
 
 Cada gate futuro exige autorização e evidência própria. Aprovação de baseline, consentimento e homologação final pertencem ao usuário; não serão inferidos por tempo decorrido ou por sucesso de mock.
+
+## Sprint 02 — gate atual
+
+| Critério | Evidência requerida | Estado |
+|---|---|---|
+| SM-007 login e identidade reais | Consentimento no navegador e UserInfo com conta autorizada | Pendente externo |
+| SM-008 recuperação e renovação reais | Reinício e consulta com refresh protegido | Pendente externo; testes locais separados |
+| SM-009 Sheets real | Nome, abas, intervalos, valores e fórmulas de teste autorizados | Pendente externo |
+| SM-010 Drive real | Metadados de recurso com opt-in autorizado | Pendente externo |
+| SM-011 Apps Script real | Metadados e fontes de projeto autorizado | Pendente externo |
+| Qualidade local | Vitest, Rust, Clippy, formato, tipos e builds MSVC | Ver docs/evidence/sprint02 e progress.md |
+| Segurança local | PKCE/state, limites, escopos, redaction, cofre e isolamento por conta | Ver testes e revisão local |
+
+As cinco tarefas principais permanecem sem conclusão enquanto a homologação real estiver pendente. Não há baseline aprovada, monitor cadastrado nem estado de integridade derivado destas consultas. A próxima etapa é o Prompt 03 somente após instrução expressa; o bloqueio externo não autoriza antecipá-lo.

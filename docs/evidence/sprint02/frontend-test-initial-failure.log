@@ -1,0 +1,280 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ❯ src/App.test.tsx (8 tests | 1 failed) 9897ms
+     × atualiza somente fixtures e não invoca OAuth, baseline ou monitoramento 2826ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > Sprint 01 · interface demonstrativa > atualiza somente fixtures e não invoca OAuth, baseline ou monitoramento
+TestingLibraryElementError: Unable to find an accessible element with the role "dialog" and name "Sprint 01 · Fundação do aplicativo"
+
+Here are the accessible roles:
+
+  dialog:
+
+  Name "Sprint 02 · Integração Google":
+  <div
+    aria-describedby="radix-_r_1f_"
+    aria-labelledby="radix-_r_1e_"
+    class="fixed left-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border bg-background p-6 shadow-xl max-h-[90vh] overflow-auto"
+    data-state="open"
+    id="radix-_r_1d_"
+    role="dialog"
+    style="pointer-events: auto;"
+    tabindex="-1"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Sprint 02 · Integração Google":
+  <h2
+    class="text-lg font-semibold tracking-tight"
+    id="radix-_r_1e_"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="text-sm leading-relaxed text-muted-foreground"
+    id="radix-_r_1f_"
+  />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p
+    class="scope-footer"
+  />
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  <strong />
+
+  Name "":
+  <strong />
+
+  --------------------------------------------------
+  button:
+
+  Name "Entendi":
+  <button
+    class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"
+  />
+
+  Name "Fechar diálogo":
+  <button
+    class="absolute right-4 top-4 rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    type="button"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body
+  data-scroll-locked="1"
+  style="pointer-events: none;"
+>
+  <span
+    aria-hidden="true"
+    data-aria-hidden="true"
+    data-radix-focus-guard=""
+    style="outline: none; opacity: 0; position: fixed; pointer-events: none;"
+    tabindex="0"
+  />
+  <div
+    aria-hidden="true"
+    data-aria-hidden="true"
+  >
+    <div
+      class="app-shell"
+    >
+      <aside
+        class="sidebar"
+      >
+        <a
+          aria-label="Sheets Monitor — Dashboard"
+          class="brand"
+          href="#dashboard"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              SEU WORKSPACE LOCAL
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-database"
+              fill="none"
+              height="17"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="17"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <ellipse
+                cx="12"
+                cy="5"
+                rx="9"
+                ry="3"
+              />
+              <path
+                d="M3 5V19A9 3 0 0 0 21 19V5"
+              />
+              <path
+                d="M3 12A9 3 0 0 0 21 12"
+              />
+            </svg>
+          </span>
+          <div>
+            Meu workspace
+            <small>
+              Fundação do aplicativo
+            </small>
+          </div>
+          <span
+            class="workspace-dot"
+          />
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            aria-label="Integra��o Google"
+            class="nav-item"
+          >
+            <svg
+              class="lucide lucide-lock-keyhole"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="16"
+                r="1"
+              />
+              <rect
+                height="12"
+                rx="2"
+                width="18"
+                x="3"
+                y="10"
+              />
+              <path
+                d="M7 10V7a5 5 0 0 1 10 0v3"
+              />
+            </svg>
+            <span>
+              Integra��o Google
+            </span>
+          </button>
+          <button
+            aria-current="page"
+            aria-label="Dashboard"
+            class="nav-item active"
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                ...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:174:27
+    172|     await user.click(screen.getByRole("button", { name: "Sobre esta sp…
+    173|
+    174|     const dialog = screen.getByRole("dialog", { name: "Sprint 01 · Fun…
+       |                           ^
+    175|
+    176|     expect(dialog).toHaveTextContent("Nenhuma API Google é chamada");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 12 passed (13)
+   Start at  01:38:35
+   Duration  26.32s (transform 2.77s, setup 3.35s, import 10.76s, tests 15.40s, environment 15.54s)
+

@@ -1,4 +1,4 @@
-# SQLite — fundação da Sprint 01
+# SQLite — fundação e integração Google
 
 O módulo `src-tauri/src/database` oferece persistência local e fixtures explícitas. Não executa OAuth, acesso Google, verificações de integridade, agendamento, aprovação de baseline ou notificações Windows.
 
@@ -68,3 +68,9 @@ cargo test --manifest-path src-tauri/Cargo.toml --lib --tests --no-default-featu
 Os testes unitários cobrem leitura das onze tabelas, fixtures atômicas/idempotentes, configurações, chaves estrangeiras (incluindo rejeição de vínculos cruzados entre planilhas), capacidade e migrações. Os testes de integração em `src-tauri/tests/database_persistence.rs` reabrem um banco temporário e verificam persistência, ledger e recusa de versão futura. Resultados executados são registrados em `docs/evidence/`; esta descrição não substitui os logs.
 
 Execução local MSVC em 02/11/2026: **11 testes unitários e 2 testes de integração aprovados**, saída 0. Evidência: `docs/evidence/sprint01-database-tests-final.log`. A primeira tentativa, anterior ao ajuste do target binário com feature desktop obrigatória, falhou ao tentar compilar `main` sem a feature; seu log também foi preservado. Esses testes não declaram validação da interface nativa nem integração Google.
+
+## Evolução Sprint 02
+
+Migração0002 preserva o checksum da 0001, adiciona email/última conexão em accounts e cria integration_config, integration_resources, integration_queries e integration_associations. São 15 tabelas de produto, mais ledger. Configuração pública e metadados consultados são reais e têm is_demo=0; não se misturam às fixtures de monitores. Associações exigem mesma conta e consulta bem-sucedida de metadados Sheets, além da escolha explícita do usuário.
+
+Nenhum token/secret, valor de célula, fórmula ou fonte de script é persistido. O hash de fontes e nomes/IDs/últimos estados são metadados. Logout limpa sessão do cofre, preservando o histórico não secreto no banco; consultas são sempre filtradas por conta. A capacidade 30 refere-se a monitores, não às consultas manuais desta etapa.

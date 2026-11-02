@@ -44,3 +44,26 @@ Preservação: histórico de ambiente `46ae4fd`, snapshot original `ffcaa49`, fu
 Pendências desta entrega: nenhuma técnica de fundação. Limites externos: integração Google, notificações, bandeja, autostart, carga30, instalador e homologação final do produto não executados. Inventário de licenças registra lacunas de dependências não presentes no cache; avisos de distribuição pertencem a SM-028. Nenhum segredo, recurso Google, remoto GitHub ou CI hospedado foi criado.
 
 **Próximo passo: aguardar nova instrução para a Sprint 02 do anexo (SM-007 a SM-011). Não avançar automaticamente.**
+
+## Sprint 02 — implementação local e checkpoint Google
+
+Estado atual: **implementação e gates locais aprovados; homologação real pendente**. O usuário confirmou que configurará o cliente Desktop e autorizará testes. Ainda não existe evidência de login/refresh Google real nem de recursos autorizados das três APIs. SM-007 a SM-011 permanecem bloqueados no aceite principal; subtarefas locais concluídas e evidências separadas.
+
+Implementado: OAuth Desktop com PKCE S256, callback IPv4 loopback em porta dinâmica, state/parâmetros/host/prazo validados, navegador externo, UserInfo, sessão no cofre Windows, access token somente em memória, refresh limitado, logout e revogação explícita. Concessões efetivas e geração protegem contra escopos ausentes, troca de conta e respostas tardias. Nove comandos nativos ao todo, com rede/cofre fora da thread UI.
+
+Leitores tipados: metadados/abas Sheets, batchGet de intervalos calculados e FORMULA, metadados Drive opt-in e Apps Script projects.get/getContent com arquivos SERVER_JS/HTML/JSON e hash local. Sem executar ou editar scripts. Associação planilha/projeto exige escolha explícita e consulta prévia da mesma conta. Drive usa drive.metadata.readonly, sem permissão de escrita; nova autorização completa substitui incremental incompatível com apps instalados, conforme ADR0007.
+
+Persistência: migração0002 preserva0001 e adiciona quatro tabelas de configuração/recursos/consultas/associações, mais metadados de conta. Não há tokens/secrets, células, fórmulas ou fontes no SQLite. Consultas manuais não criam monitores, eventos nem baseline. UI mostra loading/erros/conta/escopos/resultados independentes; limpa segredo do campo e descarta resultados de outra sessão. As telas da fundação continuam demonstrativas.
+
+Evidências executadas em docs/evidence/sprint02:
+
+- React:13 testes aprovados; ESLint, Prettier, TypeScript e build Vite aprovados.
+- Rust MSVC:43 unitários e2 de integração aprovados;1 teste de cofre ignorado na suíte padrão e executado explicitamente com sucesso. Rustfmt, Clippy sem warnings e build standalone aprovados.
+- Testes de rede simulada: parsers/formatos, PKCE/callback/consentimento, refresh/invalid_grant/identidade, logout concorrente,401 limitado,400/403/404/429/5xx, timeout/rede, respostas grandes/redirects, hashes e segregação de conta. Não são prova de Google real.
+- Windows Credential Manager real: roundtrip com chunks sintéticos, substituição e limpeza do namespace exclusivo aprovados.
+- Nativo: renderer tauri.localhost, bridge, cinco telas, migração2 com quatro fixtures e intervalo60 preservados, Client ID inválido rejeitado sem persistir. Axe4.12.1 na tela Google com0 violações/incompletos. Porta de diagnóstico encerrada e app reaberto normalmente.
+- Governança:28 IDs oficiais,38 subtarefas, hashes dos dois anexos e47 arquivos do protótipo preservados, links/templates/escopo/Unicode/padrões conhecidos de credenciais verificados. npm audit de produção reportou0 vulnerabilidades; não cobre toda a supply chain.
+
+Falhas iniciais preservadas: expectativas de versão/título da Sprint01, lint do hook e Clippy corrigidos; probe nativa development após cargo test foi corrigida com build custom-protocol por último. Nenhuma falha foi apresentada como sucesso. Revisão local pelo principal está em local-review.md; indisponibilidade das lanes impede afirmar revisão independente. Histórico/evidências da Sprint01 preservados.
+
+Próximo passo: usuário configurar o cliente no app, consentir no navegador e consultar planilha/script de teste; depois comprovar reinício/refresh e registrar resultados sanitizados. Seguir docs/oauth-setup.md e docs/testing.md. Nenhum projeto/API/faturamento foi alterado pelo agente. Sem remoto autorizado, PR preparado apenas em docs/pr-sprint02.md e trabalho em branch codex/sprint-02-google-integration. Não iniciar Sprint03; Prompt03 depende de instrução posterior e não substitui a pendência de homologação atual.

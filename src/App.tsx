@@ -37,8 +37,10 @@ import type { Page, DemoSpreadsheet, DemoActivity } from "@/types/foundation";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { SpreadsheetsPage } from "@/pages/SpreadsheetsPage";
 import { HistoryPage } from "@/pages/HistoryPage";
+import { GooglePage } from "@/pages/GooglePage";
 import { SettingsPage } from "@/pages/SettingsPage";
 const pages = [
+  { key: "google", label: "Integração Google", icon: LockKeyhole },
   { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { key: "sheets", label: "Planilhas", icon: FileSpreadsheet },
   { key: "history", label: "Histórico", icon: History },
@@ -123,7 +125,7 @@ export default function App() {
             </div>
           </div>
           <div className="version">
-            <span>SPRINT 01 · FUNDAÇÃO</span>
+            <span>SPRINT 02 · INTEGRAÇÕES</span>
             <span>v0.1.0</span>
           </div>
         </div>
@@ -136,10 +138,12 @@ export default function App() {
             <strong>{current.label}</strong>
           </div>
           <div className="topbar-tools">
-            <Badge variant="demo">
-              <FlaskConical size={12} />
-              DEMONSTRAÇÃO
-            </Badge>
+            {page !== "google" && (
+              <Badge variant="demo">
+                <FlaskConical size={12} />
+                DEMONSTRAÇÃO
+              </Badge>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -152,18 +156,20 @@ export default function App() {
           </div>
         </header>
         <div className="main-content">
-          <div className="demo-banner">
-            <FlaskConical size={16} />
-            <p>
-              <strong>Dados fictícios · Sprint 01.</strong> Nenhuma planilha Google é consultada.
-              Estados, histórico e baseline são exemplos.
-            </p>
-            <button onClick={() => setAbout(true)}>
-              Entender esta etapa
-              <ArrowRight size={13} />
-            </button>
-          </div>
-          {error && (
+          {page !== "google" && (
+            <div className="demo-banner">
+              <FlaskConical size={16} />
+              <p>
+                <strong>Dados fictícios · Sprint 01.</strong> Este workspace usa fixtures locais.
+                Estados, histórico e baseline são exemplos.
+              </p>
+              <button onClick={() => setAbout(true)}>
+                Entender esta etapa
+                <ArrowRight size={13} />
+              </button>
+            </div>
+          )}
+          {page !== "google" && error && (
             <div role="alert" className="feedback error">
               <CircleAlert size={17} />
               <span>{error}</span>
@@ -175,36 +181,40 @@ export default function App() {
               <span>{notice}</span>
             </div>
           )}
-          <div className="page-title">
-            <div>
-              <p className="eyebrow">
-                {page === "dashboard" ? "CLAREZA PARA CADA PLANILHA" : "SHEETS MONITOR"}
-              </p>
-              <h1>{current.label}</h1>
-              <p>
-                {page === "dashboard"
-                  ? "Um olhar sobre a integridade das suas bases e painéis."
-                  : page === "sheets"
-                    ? "Conheça a organização das fontes no workspace demonstrativo."
-                    : page === "history"
-                      ? "Eventos de exemplo com data, arquivo e diagnóstico."
-                      : "Preferências locais e os limites desta primeira etapa."}
-              </p>
-            </div>
-            <div className="heading-actions">
-              <Button variant="outline" size="sm" onClick={() => setAbout(true)}>
-                <Info />
-                Sobre esta sprint
-              </Button>
-              {page !== "settings" && (
-                <Button size="sm" disabled={busy} onClick={() => void refresh()}>
-                  <RefreshCw className={cn(busy && "animate-spin")} />
-                  Atualizar demonstração
+          {page !== "google" && (
+            <div className="page-title">
+              <div>
+                <p className="eyebrow">
+                  {page === "dashboard" ? "CLAREZA PARA CADA PLANILHA" : "SHEETS MONITOR"}
+                </p>
+                <h1>{current.label}</h1>
+                <p>
+                  {page === "dashboard"
+                    ? "Um olhar sobre a integridade das suas bases e painéis."
+                    : page === "sheets"
+                      ? "Conheça a organização das fontes no workspace demonstrativo."
+                      : page === "history"
+                        ? "Eventos de exemplo com data, arquivo e diagnóstico."
+                        : "Preferências locais e os limites desta primeira etapa."}
+                </p>
+              </div>
+              <div className="heading-actions">
+                <Button variant="outline" size="sm" onClick={() => setAbout(true)}>
+                  <Info />
+                  Sobre esta sprint
                 </Button>
-              )}
+                {page !== "settings" && (
+                  <Button size="sm" disabled={busy} onClick={() => void refresh()}>
+                    <RefreshCw className={cn(busy && "animate-spin")} />
+                    Atualizar demonstração
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-          {!data ? (
+          )}
+          {page === "google" ? (
+            <GooglePage />
+          ) : !data ? (
             <Card className="loading-card">
               <LoaderCircle className="animate-spin text-primary" />
               <h2>Carregando workspace demonstrativo</h2>
@@ -261,40 +271,42 @@ export default function App() {
           <footer className="app-footer">
             <span>
               <ShieldCheck size={13} />
-              Fundação local. Dados de demonstração.
+              {page === "google"
+                ? "Consultas Google autorizadas: somente leitura"
+                : "Fundação local. Dados de demonstração."}
             </span>
-            <span>Sheets Monitor · Sprint 01</span>
+            <span>Sheets Monitor · Sprint 02</span>
           </footer>
         </div>
       </main>
       <Dialog open={about} onOpenChange={setAbout}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sprint 01 · Fundação do aplicativo</DialogTitle>
+            <DialogTitle>Sprint 02 · Integração Google</DialogTitle>
             <DialogDescription>
-              Esta entrega prepara o aplicativo desktop e a persistência. Os dados apresentados são
-              inteiramente fictícios, também no Windows.
+              A área Integração Google realiza consultas manuais autorizadas. Dashboard, planilhas e
+              histórico ainda usam dados fictícios.
             </DialogDescription>
           </DialogHeader>
           <div className="scope-list">
             <div>
               <CheckCircle2 />
               <p>
-                <strong>Nesta etapa</strong>Quatro telas navegáveis, componentes shadcn/ui,
-                preferências locais e SQLite com migrações.
+                <strong>Nesta etapa</strong>OAuth Desktop com PKCE, cofre Windows e leitores de
+                Sheets, Drive e Apps Script.
               </p>
             </div>
             <div>
               <LockKeyhole />
               <p>
-                <strong>Nas próximas sprints</strong>OAuth Google, coleta real, baseline aprovada,
-                motor de integridade, análise de Apps Script e alertas de produção.
+                <strong>Nas próximas sprints</strong>Baseline aprovada, motor de integridade,
+                análise de Apps Script e alertas de produção.
               </p>
             </div>
           </div>
           <p className="scope-footer">
-            Os estados demonstram a especificação; não são resultado de verificação real. Nenhuma
-            API Google é chamada.
+            Os estados de integridade são demonstrativos. A homologação Google real depende de
+            credenciais e consentimento.
           </p>
           <Button onClick={() => setAbout(false)}>Entendi</Button>
         </DialogContent>

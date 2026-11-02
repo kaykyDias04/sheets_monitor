@@ -1,0 +1,13 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  01:10:28
+   Duration  20.08s (transform 1.16s, setup 1.82s, import 4.06s, tests 6.40s, environment 6.69s)
+

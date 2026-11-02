@@ -1,0 +1,5 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+error: failed to remove file `C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\x86_64-pc-windows-msvc\debug\sheets-monitor.exe`
+
+Caused by:
+  Acesso negado. (os error 5)

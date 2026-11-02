@@ -55,3 +55,17 @@ O protótipo anterior está preservado no commit `ffcaa49` e em `archive/prototy
 Documentos canônicos: `docs/requirements.md`, `docs/architecture.md`, `docs/backlog.json`, `docs/acceptance.md` e `docs/progress.md`. Documentos de protótipo e ADRs históricos podem divergir: prevalecem o contrato do usuário e o anexo v1.0, com decisões atuais registradas em novos ADRs. Mudanças de requisitos precisam de registro, não de suposição silenciosa.
 
 Convenções e publicação: seguir `CONTRIBUTING.md`; commits em branch `codex/`, ligados a IDs SM. Sem remoto GitHub autorizado, trabalhar localmente. Não enviar mensagens, criar recursos remotos, consentir OAuth ou aprovar baseline real automaticamente.
+
+## Autorização vigente — Sprint 02
+
+O usuário autorizou expressamente `docs/sprint02.original.md` em 02/11/2026. A Sprint 01 foi encerrada no commit `2a0b0f8`; suas evidências são históricas e não devem ser sobrescritas por novos testes.
+
+Implementar somente SM-007 a SM-011: OAuth desktop PKCE, identidade da conta, cofre Windows e ciclo de sessão; leitores Sheets/Drive/Apps Script; persistência de configuração/IDs/metadados sem segredos; UI de conexão e consultas manuais; testes, build e documentação. O acesso Google deve ser somente leitura e as consultas reais não podem usar fixtures como sucesso.
+
+Não implementar Sprint 03: motor de integridade, comparação definitiva de baselines, classificação automática Online/Offline, análise avançada de dependências, agendamento contínuo ou notificações definitivas. Não alterar a migração0001 já aplicada; evoluir com novas migrações.
+
+Google Cloud só pode ser configurado em projeto identificado e autorizado. Sem acesso disponível, implementar e testar adaptadores com mocks e registrar a homologação real como pendente. Não criar projetos duplicados, configurar faturamento ou pedir senhas/tokens no chat. Agrupar credenciais, consentimento e recursos de teste em um checkpoint quando a aplicação estiver pronta para revisão.
+
+Login/consentimento serão feitos pelo usuário no navegador do sistema. Revogar autorização é ação explícita separada de logout local. Mudança de escopos usa nova autorização completa: Google não suporta autorização incremental em apps instalados. `drive.file` só é adequado quando a seleção por arquivo e suas permissões de escrita forem compatíveis; esta sprint não pode solicitar edição/exclusão.
+
+Evidências atuais: `docs/evidence/sprint02/`. Atualizar backlog sem marcar integração real concluída apenas por mocks. Ao encerrar, aguardar Prompt03 sem executar a Sprint03.

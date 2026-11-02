@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Autorização vigente: **Sprint 01 concluída tecnicamente**. Sprints 02–06 estão planejadas, sem autorização de execução. Prompts não são IDs de tarefas.
+Autorização vigente: **Sprint02 implementada localmente, homologação externa pendente**. SM-007 a SM-011 permanecem bloqueados por cliente/consentimento e recursos autorizados; subtarefas locais têm evidência separada. Sprint01 permanece concluída. Sprints03–06 sem autorização.
 
 ## Sprint 01
 
@@ -45,31 +45,31 @@ Autorização vigente: **Sprint 01 concluída tecnicamente**. Sprints 02–06 es
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-007 | Implementar OAuth com PKCE | planejado | SM-004, SM-006 | Login Google funcional |
-| SM-008 | Implementar armazenamento seguro de tokens | planejado | SM-005, SM-007 | Sessão recuperável |
-| SM-009 | Integrar Sheets API | planejado | SM-007, SM-008 | Ler planilha autorizada |
-| SM-010 | Integrar Drive API | planejado | SM-007, SM-008 | Ler metadados |
-| SM-011 | Integrar Apps Script API | planejado | SM-007, SM-008 | Ler projeto autorizado |
+| SM-007 | Implementar OAuth com PKCE | bloqueado | SM-004, SM-006 | Login Google funcional |
+| SM-008 | Implementar armazenamento seguro de tokens | bloqueado | SM-005, SM-007 | Sessão recuperável |
+| SM-009 | Integrar Sheets API | bloqueado | SM-007, SM-008 | Ler planilha autorizada |
+| SM-010 | Integrar Drive API | bloqueado | SM-007, SM-008 | Ler metadados |
+| SM-011 | Integrar Apps Script API | bloqueado | SM-007, SM-008 | Ler projeto autorizado |
 
 ### SM-007 — subtarefas
 
-- **SM-007.01** — Validar PKCE S256/state/loopback sem guardar segredo em fonte (planejado).
+- **SM-007.01** — PKCE, callback e identidade com transporte simulado (concluido).
 
 ### SM-008 — subtarefas
 
-- **SM-008.01** — Cofre Windows, renovação e isolamento de conta (planejado).
+- **SM-008.01** — Cofre Windows, renovacao e isolamento de conta (concluido).
 
 ### SM-009 — subtarefas
 
-- **SM-009.01** — Ler grids completos, fórmulas e erros com escopo de abas (planejado).
+- **SM-009.01** — Metadados, abas e batchGet de valores/formulas por intervalos (concluido).
 
 ### SM-010 — subtarefas
 
-- **SM-010.01** — Metadados e paginação de permissões (planejado).
+- **SM-010.01** — Metadados Drive por fileId e diagnostico de acesso (concluido).
 
 ### SM-011 — subtarefas
 
-- **SM-011.01** — Ler fontes/manifest de IDs explicitamente autorizados (planejado).
+- **SM-011.01** — Fontes e manifesto de IDs explicitamente autorizados, hash e associacao (concluido).
 
 ## Sprint 03
 
@@ -171,3 +171,7 @@ Autorização vigente: **Sprint 01 concluída tecnicamente**. Sprints 02–06 es
 - **SM-028.02** — Validar instalação/desinstalação Windows x64 e manual (planejado).
 
 Estimativa original: 25–41 dias úteis, apenas planejamento. Credenciais, consentimento e homologação final não são presumidos. Consulte [critérios de aceite](acceptance.md) e [progresso](progress.md).
+
+## Homologação Sprint02 pendente
+
+SM-007.02 a SM-011.02: bloqueados por credencial Desktop, consentimento e recursos Google de teste. Seguir [OAuth](oauth-setup.md) e [testes](testing.md); não enviar secrets no chat. Nenhum item da Sprint03 foi antecipado.

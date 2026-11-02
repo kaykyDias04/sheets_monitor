@@ -10,5 +10,6 @@ ADRs novos usam número sequencial, contexto, decisão, consequências e estado.
 | [0004](0004-sprint01-and-prototype.md) | Aceito | Fonte canônica, preservação e limites da Sprint 01 |
 | [0005](0005-license-and-repository.md) | Aceito | Licença própria, histórico, branches e remoto local |
 | [0006](0006-foundation-stack-and-verification.md) | Aceito | Stack UI, build independente e evidência nativa |
+| [0007](0007-google-scopes-and-desktop-auth.md) | Aceito para Sprint 02 | OAuth desktop, escopos somente leitura e gate real separado |
 
 Propostas futuras não autorizam sua implementação antes do prompt/sprint correspondente.

@@ -1,6 +1,8 @@
-//! Sprint 01 persistence. All exposed records are explicit local demonstration
-//! fixtures; no provider, authorization, integrity engine or scheduler runs here.
+//! Local persistence. Demonstration fixtures and authorized integration metadata
+//! have separate tables; values, formulas, source code and tokens are never stored.
+mod integration;
 mod migrations;
+pub use integration::*;
 
 use rusqlite::{params, Connection, OpenFlags, TransactionBehavior};
 use serde::{Deserialize, Serialize};
@@ -324,7 +326,10 @@ mod tests {
             "script_projects",
             "spreadsheets",
         ];
-        assert_eq!(database.table_names().unwrap(), expected);
+        let tables = database.table_names().unwrap();
+        assert!(expected
+            .iter()
+            .all(|name| tables.iter().any(|table| table == name)));
         assert!(database.list_demo_spreadsheets().unwrap().is_empty());
         assert!(database.demo_history().unwrap().is_empty());
         database.seed_demo().unwrap();

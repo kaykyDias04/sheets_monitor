@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Somente Sprint 01; registrar outras sprints não autoriza implementá-las.",
+  "authorization": "Sprint 02 autorizada; Sprint 01 concluida; etapas 03-06 sem autorizacao.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -170,19 +170,28 @@
       "id": "SM-007",
       "title": "Implementar OAuth com PKCE",
       "sprint": 2,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-004",
         "SM-006"
       ],
       "acceptance": "Login Google funcional",
-      "evidence": [],
+      "evidence": [
+        "docs/testing.md",
+        "docs/evidence/sprint02/rust-test.log",
+        "docs/evidence/sprint02/frontend-test.log"
+      ],
       "subtasks": [
         {
           "id": "SM-007.01",
-          "title": "Validar PKCE S256/state/loopback sem guardar segredo em fonte",
-          "status": "planejado"
+          "title": "PKCE, callback e identidade com transporte simulado",
+          "status": "concluido"
+        },
+        {
+          "id": "SM-007.02",
+          "title": "Homologar com conta e recurso Google autorizados",
+          "status": "bloqueado"
         }
       ]
     },
@@ -190,19 +199,28 @@
       "id": "SM-008",
       "title": "Implementar armazenamento seguro de tokens",
       "sprint": 2,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-005",
         "SM-007"
       ],
       "acceptance": "Sessão recuperável",
-      "evidence": [],
+      "evidence": [
+        "docs/testing.md",
+        "docs/evidence/sprint02/rust-test.log",
+        "docs/evidence/sprint02/frontend-test.log"
+      ],
       "subtasks": [
         {
           "id": "SM-008.01",
-          "title": "Cofre Windows, renovação e isolamento de conta",
-          "status": "planejado"
+          "title": "Cofre Windows, renovacao e isolamento de conta",
+          "status": "concluido"
+        },
+        {
+          "id": "SM-008.02",
+          "title": "Homologar com conta e recurso Google autorizados",
+          "status": "bloqueado"
         }
       ]
     },
@@ -210,19 +228,28 @@
       "id": "SM-009",
       "title": "Integrar Sheets API",
       "sprint": 2,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-007",
         "SM-008"
       ],
       "acceptance": "Ler planilha autorizada",
-      "evidence": [],
+      "evidence": [
+        "docs/testing.md",
+        "docs/evidence/sprint02/rust-test.log",
+        "docs/evidence/sprint02/frontend-test.log"
+      ],
       "subtasks": [
         {
           "id": "SM-009.01",
-          "title": "Ler grids completos, fórmulas e erros com escopo de abas",
-          "status": "planejado"
+          "title": "Metadados, abas e batchGet de valores/formulas por intervalos",
+          "status": "concluido"
+        },
+        {
+          "id": "SM-009.02",
+          "title": "Homologar com conta e recurso Google autorizados",
+          "status": "bloqueado"
         }
       ]
     },
@@ -230,19 +257,28 @@
       "id": "SM-010",
       "title": "Integrar Drive API",
       "sprint": 2,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-007",
         "SM-008"
       ],
       "acceptance": "Ler metadados",
-      "evidence": [],
+      "evidence": [
+        "docs/testing.md",
+        "docs/evidence/sprint02/rust-test.log",
+        "docs/evidence/sprint02/frontend-test.log"
+      ],
       "subtasks": [
         {
           "id": "SM-010.01",
-          "title": "Metadados e paginação de permissões",
-          "status": "planejado"
+          "title": "Metadados Drive por fileId e diagnostico de acesso",
+          "status": "concluido"
+        },
+        {
+          "id": "SM-010.02",
+          "title": "Homologar com conta e recurso Google autorizados",
+          "status": "bloqueado"
         }
       ]
     },
@@ -250,19 +286,28 @@
       "id": "SM-011",
       "title": "Integrar Apps Script API",
       "sprint": 2,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-007",
         "SM-008"
       ],
       "acceptance": "Ler projeto autorizado",
-      "evidence": [],
+      "evidence": [
+        "docs/testing.md",
+        "docs/evidence/sprint02/rust-test.log",
+        "docs/evidence/sprint02/frontend-test.log"
+      ],
       "subtasks": [
         {
           "id": "SM-011.01",
-          "title": "Ler fontes/manifest de IDs explicitamente autorizados",
-          "status": "planejado"
+          "title": "Fontes e manifesto de IDs explicitamente autorizados, hash e associacao",
+          "status": "concluido"
+        },
+        {
+          "id": "SM-011.02",
+          "title": "Homologar com conta e recurso Google autorizados",
+          "status": "bloqueado"
         }
       ]
     },

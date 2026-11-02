@@ -1,7 +1,8 @@
-//! Sprint 01: local desktop foundation, synthetic examples and SQLite only.
+//! Local desktop foundation and authorized, read-only Google integration.
 pub mod auth;
 pub mod database;
 pub mod google;
+pub mod integration;
 pub mod integrity;
 pub mod monitoring;
 pub mod notifications;
