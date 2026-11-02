@@ -1,0 +1,7 @@
+Git existente preservado.
+Node existente preservado; doctor verifica se e LTS compativel.
+pnpm existente preservado; doctor verifica major 10.
+Tauri CLI existente preservada.
+WebView2 existente preservado.
+Visual Studio C++ e SDK existentes preservados.
+Bootstrap finalizado. Rode doctor para validar o aceite.

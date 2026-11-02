@@ -1,0 +1,4 @@
+PASS PowerShell 5.1 parser: scripts/environment-common.ps1
+PASS PowerShell 5.1 parser: scripts/bootstrap.ps1
+PASS PowerShell 5.1 parser: scripts/doctor.ps1
+PASS missing executable rejected

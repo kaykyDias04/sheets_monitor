@@ -1,0 +1,3 @@
+PASS subprocess exit 9 rejected
+PASS invalid installer SHA-256 rejected
+PASS registry and installed WebView2 executable agree: 156.0.4314.58

@@ -1,0 +1,417 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35229.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\.tooling\environment-probe\tauri\target\x86_64-pc-windows-msvc\debug\sheets-monitor-environment-probe.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Section contains the following imports:
+
+    bcryptprimitives.dll
+             14023B2F0 Import Address Table
+             1402DF9D0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 ProcessPrng
+
+    advapi32.dll
+             14023B1A8 Import Address Table
+             1402DF888 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 RegGetValueW
+
+    ntdll.dll
+             14023B490 Import Address Table
+             1402DFB70 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 RtlGetVersion
+                         2A7 NtWriteFile
+                         52C RtlNtStatusToDosError
+
+    kernel32.dll
+             14023B3E8 Import Address Table
+             1402DFAC8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 LoadLibraryW
+                           0 GetModuleHandleW
+                           0 FormatMessageW
+                           0 GetCurrentThreadId
+                           0 LoadLibraryA
+                           0 GetModuleHandleA
+                           0 GetConsoleMode
+                           0 lstrlenW
+                           0 HeapAlloc
+                           0 IsProcessorFeaturePresent
+                           0 LoadLibraryExA
+                           0 IsDebuggerPresent
+                           0 HeapFree
+                           0 GetProcessHeap
+                           0 GetModuleFileNameW
+                           0 GetLastError
+                           0 Sleep
+                           0 CloseHandle
+                           0 GetSystemTimeAsFileTime
+                           0 GetProcAddress
+
+    api-ms-win-core-synch-l1-2-0.dll
+             14023B1B8 Import Address Table
+             1402DF898 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 WaitOnAddress
+                           0 WakeByAddressSingle
+                           0 WakeByAddressAll
+
+    user32.dll
+             14023B530 Import Address Table
+             1402DFC10 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 ShowCursor
+                           0 ClipCursor
+                           0 ChangeDisplaySettingsExW
+                           0 SystemParametersInfoA
+                           0 SetWindowDisplayAffinity
+                           0 GetMenu
+                           0 MonitorFromPoint
+                           0 EnumDisplayMonitors
+                           0 SetPropW
+                           0 CreateWindowExW
+                           0 SetWindowTextW
+                           0 DestroyIcon
+                           0 GetClipCursor
+                           0 SetParent
+                           0 DispatchMessageA
+                           0 GetMessageA
+                           0 ShowWindow
+                           0 RegisterWindowMessageA
+                           0 MapWindowPoints
+                           0 GetWindowTextLengthW
+                           0 EnableMenuItem
+                           0 RegisterRawInputDevices
+                           0 SetCapture
+                           0 ReleaseDC
+                           0 GetDC
+                           0 GetKeyState
+                           0 SetWindowRgn
+                           0 ToUnicodeEx
+                           0 GetParent
+                           0 GetWindowPlacement
+                           0 SetWindowLongPtrW
+                           0 IsProcessDPIAware
+                           0 GetWindowLongPtrW
+                           0 GetWindowRect
+                           0 MapVirtualKeyW
+                           0 FindWindowExW
+                           0 IsWindowEnabled
+                           0 EnableWindow
+                           0 ReleaseCapture
+                           0 GetAsyncKeyState
+                           0 GetKeyboardState
+                           0 MapVirtualKeyExW
+                           0 ValidateRect
+                           0 GetKeyboardLayout
+                           0 SendInput
+                           0 GetWindowTextW
+                           0 FillRect
+                           0 GetMenuBarInfo
+                           0 MonitorFromWindow
+                           0 OffsetRect
+                           0 MonitorFromRect
+                           0 GetMonitorInfoW
+                           0 ScreenToClient
+                           0 InvalidateRect
+                           0 ClientToScreen
+                           0 InvalidateRgn
+                           0 GetWindowDC
+                           0 UpdateWindow
+                           0 RedrawWindow
+                           0 GetMenuItemInfoW
+                           0 DrawTextW
+                           0 DestroyAcceleratorTable
+                           0 CreateAcceleratorTableW
+                           0 TrackMouseEvent
+                           0 GetActiveWindow
+                           0 SetMenu
+                           0 CloseTouchInputHandle
+                           0 RegisterTouchWindow
+                           0 GetTouchInputInfo
+                           0 SetCursor
+                           0 IsIconic
+                           0 SystemParametersInfoW
+                           0 GetForegroundWindow
+                           0 PostThreadMessageW
+                           0 AdjustWindowRectEx
+                           0 TranslateMessage
+                           0 RegisterClassExW
+                           0 GetSystemMetrics
+                           0 DispatchMessageW
+                           0 GetWindowLongW
+                           0 DefWindowProcW
+                           0 GetClientRect
+                           0 FlashWindowEx
+                           0 DestroyWindow
+                           0 SetWindowPos
+                           0 SetCursorPos
+                           0 SendMessageW
+                           0 PostMessageW
+                           0 PeekMessageW
+                           0 GetCursorPos
+                           0 LoadCursorW
+                           0 DrawMenuBar
+                           0 RemoveMenu
+                           0 CheckMenuItem
+                           0 PostQuitMessage
+                           0 SetWindowLongW
+                           0 DestroyMenu
+                           0 SetWindowPlacement
+                           0 IsWindowVisible
+                           0 SetForegroundWindow
+                           0 GetSystemMenu
+
+    dwmapi.dll
+             14023B340 Import Address Table
+             1402DFA20 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 DwmGetWindowAttribute
+                           0 DwmEnableBlurBehindWindow
+                           0 DwmSetWindowAttribute
+
+    ole32.dll
+             14023B4B0 Import Address Table
+             1402DFB90 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 RegisterDragDrop
+                           0 OleInitialize
+                           0 RevokeDragDrop
+                           0 CoUninitialize
+                           0 CoInitializeEx
+                           0 CoCreateInstance
+
+    gdi32.dll
+             14023B360 Import Address Table
+             1402DFA40 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 DeleteDC
+                           0 CreateCompatibleDC
+                           0 DeleteObject
+                           0 BitBlt
+                           0 SetTextColor
+                           0 SetBkMode
+                           0 CreateRectRgn
+                           0 CombineRgn
+                           0 CreateSolidBrush
+                           0 SelectObject
+                           0 GetDeviceCaps
+                           0 CreateDIBSection
+
+    comctl32.dll
+             14023B318 Import Address Table
+             1402DF9F8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 RemoveWindowSubclass
+                           0 SetWindowSubclass
+                           0 TaskDialogIndirect
+                           0 DefSubclassProc
+
+    shell32.dll
+             14023B510 Import Address Table
+             1402DFBF0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 SHAppBarMessage
+                           0 DragFinish
+                           0 DragQueryFileW
+
+    imm32.dll
+             14023B3C8 Import Address Table
+             1402DFAA8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 ImmReleaseContext
+                           0 ImmGetContext
+                           0 ImmGetCompositionStringW
+
+    combase.dll
+             14023B300 Import Address Table
+             1402DF9E0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 CoTaskMemFree
+                           0 CoCreateFreeThreadedMarshaler
+
+    oleaut32.dll
+             14023B4E8 Import Address Table
+             1402DFBC8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 SetErrorInfo
+                           0 SysFreeString
+                           0 GetErrorInfo
+                           0 SysStringLen
+
+    KERNEL32.dll
+             14023B000 Import Address Table
+             1402DF6E0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                         5AB SetThreadStackGuarantee
+                         5FB UnhandledExceptionFilter
+                         5B8 SetUnhandledExceptionFilter
+                         39A InitializeSListHead
+                          E6 CreateFileW
+                         264 GetEnvironmentVariableW
+                         625 WaitForSingleObject
+                         578 SetLastError
+                         285 GetFullPathNameW
+                         566 SetFileInformationByHandle
+                         303 GetStdHandle
+                         241 GetCurrentProcess
+                         245 GetCurrentThread
+                         23A GetCurrentDirectoryW
+                         383 HeapReAlloc
+                         481 QueryPerformanceCounter
+                         10F CreateThread
+                         242 GetCurrentProcessId
+                         509 RtlCaptureContext
+                         511 RtlLookupFunctionEntry
+                         518 RtlVirtualUnwind
+                         31B GetSystemTimePreciseAsFileTime
+                         56C SetFileTime
+                         5D8 TerminateProcess
+                         5D3 SwitchToThread
+                         64C WideCharToMultiByte
+                         626 WaitForSingleObjectEx
+                          F3 CreateMutexA
+                         4E6 ReleaseMutex
+                         27C GetFinalPathNameByHandleW
+                          14 AddVectoredExceptionHandler
+                         423 MultiByteToWideChar
+                         65F WriteConsoleW
+                         229 GetConsoleOutputCP
+                         11D CreateWaitableTimerExW
+                         5C1 SetWaitableTimer
+                         1C3 FlsFree
+                         1C2 FlsAlloc
+                         2A4 GetModuleHandleExW
+                         3BA IsThreadAFiber
+                         1C6 FlsSetValue
+                         482 QueryPerformanceFrequency
+
+    VCRUNTIME140.dll
+             14023B158 Import Address Table
+             1402DF838 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1B __current_exception
+                          1C __current_exception_context
+                           8 __C_specific_handler
+                          3C memcpy
+                           1 _CxxThrowException
+                          3D memmove
+                          3B memcmp
+                          3E memset
+                           E __CxxFrameHandler3
+
+    api-ms-win-crt-math-l1-1-0.dll
+             14023B200 Import Address Table
+             1402DF8E0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           9 __setusermatherr
+                         109 round
+                         10A roundf
+                         11F trunc
+                          BE floor
+
+    api-ms-win-crt-string-l1-1-0.dll
+             14023B2E0 Import Address Table
+             1402DF9C0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          A3 wcslen
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             14023B230 Import Address Table
+             1402DF910 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           4 __p___argc
+                          15 _c_exit
+                          3D _register_thread_local_exe_atexit_callback
+                          40 _seh_filter_exe
+                          23 _exit
+                          42 _set_app_type
+                          34 _initialize_onexit_table
+                          55 exit
+                          3C _register_onexit_function
+                          1E _crt_atexit
+                          67 terminate
+                          37 _initterm_e
+                          36 _initterm
+                          28 _get_initial_narrow_environment
+                          33 _initialize_narrow_environment
+                           5 __p___argv
+                          18 _configure_narrow_argv
+                          16 _cexit
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             14023B2C8 Import Address Table
+             1402DF9A8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           1 __p__commode
+                          54 _set_fmode
+
+    api-ms-win-crt-locale-l1-1-0.dll
+             14023B1F0 Import Address Table
+             1402DF8D0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           8 _configthreadlocale
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             14023B1D8 Import Address Table
+             1402DF8B8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          18 free
+                          16 _set_new_mode
+
+  Summary
+
+        3000 .data
+       2D000 .pdata
+       A7000 .rdata
+        3000 .reloc
+      23A000 .text

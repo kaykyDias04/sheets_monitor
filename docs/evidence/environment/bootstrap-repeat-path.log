@@ -1,0 +1,2 @@
+PASS full bootstrap + doctor under Windows PowerShell 5.1; existing PATH preserved.
+PASS repeated bootstrap exit 0; PATH unchanged; existing installations preserved.

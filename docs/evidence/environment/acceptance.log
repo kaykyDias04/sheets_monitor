@@ -1,0 +1,5 @@
+PASS doctor ready_for_build=true; 16/16 checks passed.
+PASS direct doctor under PowerShell 7 exited 0.
+PASS full bootstrap + doctor under PowerShell 5.1 exited 0.
+PASS repeated bootstrap exited 0 and preserved user PATH.
+PASS no Build Tools bootstrapper remains running.

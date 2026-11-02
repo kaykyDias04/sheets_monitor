@@ -1,0 +1,2 @@
+# Keep raw diagnostic transcripts, including original whitespace and line endings.
+docs/evidence/environment/*.log -text -whitespace

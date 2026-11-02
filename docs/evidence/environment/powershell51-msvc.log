@@ -1,0 +1,5 @@
+PASS PowerShell 5.1 resolution: cl.exe -> C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe
+PASS PowerShell 5.1 resolution: link.exe -> C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe
+PASS PowerShell 5.1 resolution: rc.exe -> C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\\x64\rc.exe
+PASS PowerShell 5.1 resolution: cargo.exe -> C:\Users\kayky\.cargo\bin\cargo.exe
+PASS PowerShell 5.1 resolution: pnpm.cmd -> C:\Users\kayky\AppData\Roaming\npm\pnpm.cmd

@@ -1,0 +1,27 @@
+Git existente preservado.
+Node existente preservado; doctor verifica se e LTS compativel.
+pnpm existente preservado; doctor verifica major 10.
+Tauri CLI existente preservada.
+WebView2 existente preservado.
+Visual Studio C++ e SDK existentes preservados.
+[OK] Windows 11 x64 : Microsoft Windows 11 Home; versao 10.0.26200; build 26200; x64
+[OK] PowerShell : 5.1.26100.9711 Desktop
+[OK] Git : git version 2.53.0.windows.1
+[OK] Node LTS : 24.15.0 LTS Krypton; C:\Program Files\nodejs\node.exe
+[OK] npm : 11.12.1
+[OK] pnpm 10 : 10.34.9; C:\Users\kayky\AppData\Roaming\npm\pnpm.cmd
+[OK] Rustup e Rust MSVC estavel : rustc 1.99.1 (58cf8f9c3 2026-10-13); cargo 1.99.1 (5f94df478 2026-08-27); rustup 1.29.2 (d8c92c676 2026-10-21)
+info: This is the version for the rustup toolchain manager, not the rustc compiler.
+info: the currently active `rustc` version is `rustc 1.99.1 (58cf8f9c3 2026-10-13)`; stable-x86_64-pc-windows-msvc (default)
+[OK] rustfmt e clippy : rustfmt e clippy instalados para MSVC
+[OK] Visual Studio C++ : Visual Studio 17.14.37827.9; MSVC 14.44.35207; cl 19.44.35229.0; C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools
+[OK] Windows SDK : 10.0.26100.0; C:\Program Files (x86)\Windows Kits\10\
+[OK] WebView2 Runtime : 156.0.4314.58; C:\Program Files (x86)\Microsoft\EdgeWebView\Application\156.0.4314.58\msedgewebview2.exe
+[OK] Tauri CLI 2 : tauri-cli 2.12.4
+[OK] Build C++ e link Windows : cpp-sdk-ok
+[OK] Windows resource compiler : rc.exe gerou resource.res
+[OK] Build e execucao Rust MSVC : rust-msvc-ok
+Compilando probe Tauri isolada (primeira execucao pode levar varios minutos)...
+[OK] Build e execucao minima Tauri 2 : tauri v2.12.5
+[build-dependencies]; tauri2-build-ok
+DOCTOR PASS: ambiente apto ao build Windows MSVC/Tauri 2.

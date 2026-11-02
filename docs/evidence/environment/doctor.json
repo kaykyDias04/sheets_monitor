@@ -1,0 +1,87 @@
+﻿{
+    "checked_at":  "2026-11-01 23:49:20 -03:00",
+    "ready_for_build":  true,
+    "scope":  "Prompt 01 - ambiente; probes isoladas, sem build/execucao do aplicativo",
+    "checks":  [
+                   {
+                       "name":  "Windows 11 x64",
+                       "ok":  true,
+                       "detail":  "Microsoft Windows 11 Home; versao 10.0.26200; build 26200; x64"
+                   },
+                   {
+                       "name":  "PowerShell",
+                       "ok":  true,
+                       "detail":  "5.1.26100.9711 Desktop"
+                   },
+                   {
+                       "name":  "Git",
+                       "ok":  true,
+                       "detail":  "git version 2.53.0.windows.1"
+                   },
+                   {
+                       "name":  "Node LTS",
+                       "ok":  true,
+                       "detail":  "24.15.0 LTS Krypton; C:\\Program Files\\nodejs\\node.exe"
+                   },
+                   {
+                       "name":  "npm",
+                       "ok":  true,
+                       "detail":  "11.12.1"
+                   },
+                   {
+                       "name":  "pnpm 10",
+                       "ok":  true,
+                       "detail":  "10.34.9; C:\\Users\\kayky\\AppData\\Roaming\\npm\\pnpm.cmd"
+                   },
+                   {
+                       "name":  "Rustup e Rust MSVC estavel",
+                       "ok":  true,
+                       "detail":  "rustc 1.99.1 (58cf8f9c3 2026-10-13); cargo 1.99.1 (5f94df478 2026-08-27); rustup 1.29.2 (d8c92c676 2026-10-21)\r\ninfo: This is the version for the rustup toolchain manager, not the rustc compiler.\r\ninfo: the currently active `rustc` version is `rustc 1.99.1 (58cf8f9c3 2026-10-13)`; stable-x86_64-pc-windows-msvc (default)"
+                   },
+                   {
+                       "name":  "rustfmt e clippy",
+                       "ok":  true,
+                       "detail":  "rustfmt e clippy instalados para MSVC"
+                   },
+                   {
+                       "name":  "Visual Studio C++",
+                       "ok":  true,
+                       "detail":  "Visual Studio 17.14.37827.9; MSVC 14.44.35207; cl 19.44.35229.0; C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools"
+                   },
+                   {
+                       "name":  "Windows SDK",
+                       "ok":  true,
+                       "detail":  "10.0.26100.0; C:\\Program Files (x86)\\Windows Kits\\10\\"
+                   },
+                   {
+                       "name":  "WebView2 Runtime",
+                       "ok":  true,
+                       "detail":  "156.0.4314.58; C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.58\\msedgewebview2.exe"
+                   },
+                   {
+                       "name":  "Tauri CLI 2",
+                       "ok":  true,
+                       "detail":  "tauri-cli 2.12.4"
+                   },
+                   {
+                       "name":  "Build C++ e link Windows",
+                       "ok":  true,
+                       "detail":  "cpp-sdk-ok"
+                   },
+                   {
+                       "name":  "Windows resource compiler",
+                       "ok":  true,
+                       "detail":  "rc.exe gerou resource.res"
+                   },
+                   {
+                       "name":  "Build e execucao Rust MSVC",
+                       "ok":  true,
+                       "detail":  "rust-msvc-ok"
+                   },
+                   {
+                       "name":  "Build e execucao minima Tauri 2",
+                       "ok":  true,
+                       "detail":  "tauri v2.12.5\r\n[build-dependencies]; tauri2-build-ok"
+                   }
+               ]
+}

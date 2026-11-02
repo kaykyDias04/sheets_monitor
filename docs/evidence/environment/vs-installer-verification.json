@@ -1,0 +1,8 @@
+{
+  "source": "winget show Microsoft.VisualStudio.2022.BuildTools --exact --source winget",
+  "version": "17.14.44",
+  "sha256": "5DC747350FB0589F908915C7B5FA52EC22D22B37AE2E5F4964D83519667498B2",
+  "signature_status": "Valid",
+  "publisher": "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+  "elevated_scope": "Somente o instalador oficial C++; consentimento explicito do usuario"
+}

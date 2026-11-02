@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-11-01 23:22:44 -03:00",
+  "ready_for_build": false,
+  "scope": "Prompt 01 - ambiente; probes isoladas, sem build/execucao do aplicativo",
+  "checks": [
+    {
+      "name": "Windows 11 x64",
+      "ok": true,
+      "detail": "Microsoft Windows 11 Home; versao 10.0.26200; build 26200; x64"
+    },
+    {
+      "name": "PowerShell",
+      "ok": true,
+      "detail": "7.6.5 Core"
+    },
+    {
+      "name": "Git",
+      "ok": true,
+      "detail": "git version 2.53.0.windows.1"
+    },
+    {
+      "name": "Node LTS",
+      "ok": true,
+      "detail": "24.15.0 LTS Krypton; C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "name": "npm",
+      "ok": true,
+      "detail": "11.12.1"
+    },
+    {
+      "name": "pnpm 10",
+      "ok": true,
+      "detail": "10.34.9; C:\\Users\\kayky\\AppData\\Roaming\\npm\\pnpm.cmd"
+    },
+    {
+      "name": "Rustup e Rust MSVC estavel",
+      "ok": true,
+      "detail": "rustc 1.99.1 (58cf8f9c3 2026-10-13); cargo 1.99.1 (5f94df478 2026-08-27); rustup 1.29.2 (d8c92c676 2026-10-21)\r\ninfo: This is the version for the rustup toolchain manager, not the rustc compiler.\r\ninfo: the currently active `rustc` version is `rustc 1.99.1 (58cf8f9c3 2026-10-13)`; stable-x86_64-pc-windows-msvc (default)"
+    },
+    {
+      "name": "rustfmt e clippy",
+      "ok": false,
+      "detail": "Execute bootstrap para instalar rustfmt e clippy."
+    },
+    {
+      "name": "Visual Studio C++",
+      "ok": false,
+      "detail": "Visual Studio C++ completo nao encontrado; execute bootstrap -InstallBuildTools."
+    },
+    {
+      "name": "Windows SDK",
+      "ok": false,
+      "detail": "Windows SDK nao carregado."
+    },
+    {
+      "name": "WebView2 Runtime",
+      "ok": true,
+      "detail": "156.0.4314.58; C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\156.0.4314.58\\msedgewebview2.exe"
+    },
+    {
+      "name": "Tauri CLI 2",
+      "ok": true,
+      "detail": "tauri-cli 2.12.4"
+    },
+    {
+      "name": "Build C++ e link Windows",
+      "ok": false,
+      "detail": "Prova nao executada: pre-requisitos ausentes."
+    },
+    {
+      "name": "Windows resource compiler",
+      "ok": false,
+      "detail": "Prova nao executada: pre-requisitos ausentes."
+    },
+    {
+      "name": "Build e execucao Rust MSVC",
+      "ok": false,
+      "detail": "Prova nao executada: pre-requisitos ausentes."
+    },
+    {
+      "name": "Build e execucao minima Tauri 2",
+      "ok": false,
+      "detail": "Prova nao executada: pre-requisitos ausentes."
+    }
+  ]
+}
