@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Autorização vigente: **Sprint 02 concluída com homologação Google real**. SM-007 a SM-011 têm evidência de login, recuperação/refresh e leituras autorizadas das três APIs. Sprint 01 permanece concluída. Sprints 03–06 sem autorização.
+Autorização vigente: **Sprint 03 concluída no aceite técnico local**, SM-012 a SM-017. Sprints 01/02 concluídas, com homologação Google real na Sprint 02. Etapas 04–06 aguardam autorização. Aprovação de baseline real permanece humana. Mutações reais continuam pendentes; ver [encerramento](evidence/sprint03/final-report.md).
 
 ## Sprint 01
 
@@ -75,37 +75,37 @@ Autorização vigente: **Sprint 02 concluída com homologação Google real**. S
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-012 | Implementar baseline versionado | planejado | SM-005, SM-009, SM-010, SM-011 | Referência persistida |
-| SM-013 | Detectar alterações de abas e colunas | planejado | SM-012 | Diferenças identificadas |
-| SM-014 | Comparar fórmulas protegidas | planejado | SM-009, SM-012 | Falhas detectadas |
-| SM-015 | Analisar dependências Apps Script | planejado | SM-011, SM-012, SM-013 | Referências verificadas |
-| SM-016 | Classificar integridade | planejado | SM-013, SM-014, SM-015 | Estados corretos |
-| SM-017 | Registrar mudanças de conteúdo | planejado | SM-009, SM-012, SM-016 | Eventos sem duplicação indevida |
+| SM-012 | Implementar baseline versionado | concluido | SM-005, SM-009, SM-010, SM-011 | Referência persistida |
+| SM-013 | Detectar alterações de abas e colunas | concluido | SM-012 | Diferenças identificadas |
+| SM-014 | Comparar fórmulas protegidas | concluido | SM-009, SM-012 | Falhas detectadas |
+| SM-015 | Analisar dependências Apps Script | concluido | SM-011, SM-012, SM-013 | Referências verificadas |
+| SM-016 | Classificar integridade | concluido | SM-013, SM-014, SM-015 | Estados corretos |
+| SM-017 | Registrar mudanças de conteúdo | concluido | SM-009, SM-012, SM-016 | Eventos sem duplicação indevida |
 
 ### SM-012 — subtarefas
 
-- **SM-012.01** — Prévia, aprovação explícita e histórico de versões (planejado).
+- **SM-012.01** — Prévia, aprovação explícita e histórico de versões (concluido).
 
 ### SM-013 — subtarefas
 
-- **SM-013.01** — Detectar remoção/deslocamento de abas e colunas protegidas (planejado).
+- **SM-013.01** — Detectar remoção/deslocamento de abas e colunas protegidas (concluido).
 
 ### SM-014 — subtarefas
 
-- **SM-014.01** — Comparar regras de fórmulas e erros efetivos (planejado).
+- **SM-014.01** — Comparar regras de fórmulas e erros efetivos (concluido).
 
 ### SM-015 — subtarefas
 
-- **SM-015.01** — Resolver getSheetByName/getRange/índices estáticos (planejado).
-- **SM-015.02** — Sinalizar dependências dinâmicas não verificáveis (planejado).
+- **SM-015.01** — Resolver getSheetByName/getRange/índices estáticos (concluido).
+- **SM-015.02** — Sinalizar dependências dinâmicas não verificáveis (concluido).
 
 ### SM-016 — subtarefas
 
-- **SM-016.01** — Separar integridade, mudança permitida e incerteza técnica (planejado).
+- **SM-016.01** — Separar integridade, mudança permitida e incerteza técnica (concluido).
 
 ### SM-017 — subtarefas
 
-- **SM-017.01** — Persistir todas as diferenças sem duplicação indevida (planejado).
+- **SM-017.01** — Persistir todas as diferenças sem duplicação indevida (concluido).
 
 ## Sprint 04
 

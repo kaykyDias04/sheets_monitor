@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "synthetic_scenarios": true,
+  "rust_unit_tests": 146,
+  "rust_integration_tests": 2,
+  "frontend_tests": 20,
+  "vault_ignored_in_default_suite": 1,
+  "previous_windows_vault_evidence": "docs/evidence/sprint02/windows-vault.log; vault implementation unchanged",
+  "live_mutations": "pending; fixtures cover destructive cycle; Google read-only grant preserved",
+  "real_baseline": "human-approved v1, restricted scope; see live-human-baseline.log",
+  "larger_draft": "800-cell capture with formulas and partial AST, not approved; see live-bounded-draft.log",
+  "remote_ci": "not_run",
+  "remote_pr": "not_published; no authorized remote"
+}

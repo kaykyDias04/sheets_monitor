@@ -1,16 +1,18 @@
-//! Boundary reserved for Sprint 03 (SM-012 through SM-017).
-//! No baseline is approved and no integrity evaluation runs in Sprint 01.
+//! Versioned, bounded contracts for on-demand structural integrity.
+mod models;
+pub use models::*;
 
-/// Future evaluation must distinguish operational uncertainty from confirmed damage.
-pub trait IntegrityEvaluator {
-    type Snapshot;
-    type ApprovedBaseline;
-    type Assessment;
-    type Error;
+pub mod collector;
+pub mod compare;
+pub mod formulas;
+pub mod runtime;
+pub mod scripts;
 
-    fn evaluate(
-        &self,
-        baseline: &Self::ApprovedBaseline,
-        snapshot: &Self::Snapshot,
-    ) -> Result<Self::Assessment, Self::Error>;
-}
+pub use compare::{evaluate, validate_baseline_snapshot};
+#[cfg(test)]
+mod engine_tests;
+#[cfg(test)]
+pub(crate) mod fixtures;
+
+#[cfg(test)]
+mod scale_tests;

@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Sheets Monitor - Sprint 02",
+        "title": "Sheets Monitor - Sprint 03",
         "width": 1280,
         "height": 840,
         "minWidth": 900,
@@ -33,7 +33,7 @@
       "icons/icon.png",
       "icons/icon.ico"
     ],
-    "shortDescription": "Integracoes Google de leitura - Sprint 02",
+    "shortDescription": "Integridade estrutural sob demanda",
     "category": "Productivity"
   }
 }

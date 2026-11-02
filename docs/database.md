@@ -74,3 +74,9 @@ Execução local MSVC em 02/11/2026: **11 testes unitários e 2 testes de integr
 Migração0002 preserva o checksum da 0001, adiciona email/última conexão em accounts e cria integration_config, integration_resources, integration_queries e integration_associations. São 15 tabelas de produto, mais ledger. Configuração pública e metadados consultados são reais e têm is_demo=0; não se misturam às fixtures de monitores. Associações exigem mesma conta e consulta bem-sucedida de metadados Sheets, além da escolha explícita do usuário.
 
 Nenhum token/secret, valor de célula, fórmula ou fonte de script é persistido. O hash de fontes e nomes/IDs/últimos estados são metadados. Logout limpa sessão do cofre, preservando o histórico não secreto no banco; consultas são sempre filtradas por conta. A capacidade 30 refere-se a monitores, não às consultas manuais desta etapa.
+
+## Sprint 03 — engine
+
+Migração 0003 adiciona sete tabelas: integrity_scopes, structural_snapshots, baseline_versions, integrity_reports, integrity_events, integrity_incidents e integrity_observation_components. Total22 tabelas de produto, preservando as quinze anteriores e os checksums 0001/0002. Novas estruturas são separadas dos exemplos da fundação; não duplicam dados reais nas tabelas demonstrativas.
+
+Conta/arquivo/escopo são chaves das operações. Baseline e snapshot são imutáveis; o ponteiro ativo muda em transação CAS. Journal de componentes e revisão observada são separados do último snapshot completo. Retenção não apaga referências aprovadas ou estado de deduplicação. Snapshots mantêm fórmulas protegidas necessárias, cabeçalhos e hashes; valores completos, fontes brutas e tokens continuam fora do banco. Hash de valor não é criptografia nem anonimização forte. O SQLite depende da proteção do perfil/disco Windows.

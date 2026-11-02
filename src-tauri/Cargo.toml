@@ -37,6 +37,8 @@ url = "2"
 keyring = { version = "3", features = ["windows-native"] }
 open = "5"
 zeroize = { version = "1", features = ["derive"] }
+tree-sitter = "0.25"
+tree-sitter-javascript = "0.25.0"
 tauri = { version = "2", features = [], optional = true }
 
 [dev-dependencies]

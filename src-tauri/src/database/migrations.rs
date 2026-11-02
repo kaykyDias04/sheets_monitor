@@ -18,6 +18,11 @@ const MIGRATIONS: &[Migration] = &[
         name: "0002_google_integration",
         sql: include_str!("../../migrations/0002_google_integration.sql"),
     },
+    Migration {
+        version: 3,
+        name: "0003_integrity_engine",
+        sql: include_str!("../../migrations/0003_integrity_engine.sql"),
+    },
 ];
 
 pub(super) fn apply(connection: &mut Connection) -> Result<(), String> {
@@ -232,7 +237,7 @@ mod tests {
         apply(&mut connection).unwrap();
         connection
             .execute(
-                "INSERT INTO _schema_migrations VALUES(3,'future','unknown','demo')",
+                "INSERT INTO _schema_migrations VALUES(4,'future','unknown','demo')",
                 [],
             )
             .unwrap();

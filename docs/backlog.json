@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 02 concluida com homologacao Google real; Sprint 01 concluida; etapas 03-06 sem autorizacao.",
+  "authorization": "Sprint 03 concluida no aceite tecnico local; mutacoes Google reais pendentes. Aguardar Prompt 04; etapas 04-06 nao autorizadas.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -330,7 +330,7 @@
       "id": "SM-012",
       "title": "Implementar baseline versionado",
       "sprint": 3,
-      "status": "planejado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-005",
@@ -339,12 +339,18 @@
         "SM-011"
       ],
       "acceptance": "Referência persistida",
-      "evidence": [],
+      "evidence": [
+        "docs/integrity-engine.md",
+        "docs/evidence/sprint03/rust-test.log",
+        "docs/evidence/sprint03/scenario-matrix.json",
+        "docs/evidence/sprint03/final-report.md",
+        "docs/evidence/sprint03/live-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-012.01",
           "title": "Prévia, aprovação explícita e histórico de versões",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -352,18 +358,24 @@
       "id": "SM-013",
       "title": "Detectar alterações de abas e colunas",
       "sprint": 3,
-      "status": "planejado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-012"
       ],
       "acceptance": "Diferenças identificadas",
-      "evidence": [],
+      "evidence": [
+        "docs/integrity-engine.md",
+        "docs/evidence/sprint03/rust-test.log",
+        "docs/evidence/sprint03/scenario-matrix.json",
+        "docs/evidence/sprint03/final-report.md",
+        "docs/evidence/sprint03/live-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-013.01",
           "title": "Detectar remoção/deslocamento de abas e colunas protegidas",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -371,19 +383,25 @@
       "id": "SM-014",
       "title": "Comparar fórmulas protegidas",
       "sprint": 3,
-      "status": "planejado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-009",
         "SM-012"
       ],
       "acceptance": "Falhas detectadas",
-      "evidence": [],
+      "evidence": [
+        "docs/integrity-engine.md",
+        "docs/evidence/sprint03/rust-test.log",
+        "docs/evidence/sprint03/scenario-matrix.json",
+        "docs/evidence/sprint03/final-report.md",
+        "docs/evidence/sprint03/live-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-014.01",
           "title": "Comparar regras de fórmulas e erros efetivos",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -391,7 +409,7 @@
       "id": "SM-015",
       "title": "Analisar dependências Apps Script",
       "sprint": 3,
-      "status": "planejado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-011",
@@ -399,17 +417,23 @@
         "SM-013"
       ],
       "acceptance": "Referências verificadas",
-      "evidence": [],
+      "evidence": [
+        "docs/integrity-engine.md",
+        "docs/evidence/sprint03/rust-test.log",
+        "docs/evidence/sprint03/scenario-matrix.json",
+        "docs/evidence/sprint03/final-report.md",
+        "docs/evidence/sprint03/live-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-015.01",
           "title": "Resolver getSheetByName/getRange/índices estáticos",
-          "status": "planejado"
+          "status": "concluido"
         },
         {
           "id": "SM-015.02",
           "title": "Sinalizar dependências dinâmicas não verificáveis",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -417,7 +441,7 @@
       "id": "SM-016",
       "title": "Classificar integridade",
       "sprint": 3,
-      "status": "planejado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-013",
@@ -425,12 +449,18 @@
         "SM-015"
       ],
       "acceptance": "Estados corretos",
-      "evidence": [],
+      "evidence": [
+        "docs/integrity-engine.md",
+        "docs/evidence/sprint03/rust-test.log",
+        "docs/evidence/sprint03/scenario-matrix.json",
+        "docs/evidence/sprint03/final-report.md",
+        "docs/evidence/sprint03/live-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-016.01",
           "title": "Separar integridade, mudança permitida e incerteza técnica",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -438,7 +468,7 @@
       "id": "SM-017",
       "title": "Registrar mudanças de conteúdo",
       "sprint": 3,
-      "status": "planejado",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-009",
@@ -446,12 +476,18 @@
         "SM-016"
       ],
       "acceptance": "Eventos sem duplicação indevida",
-      "evidence": [],
+      "evidence": [
+        "docs/integrity-engine.md",
+        "docs/evidence/sprint03/rust-test.log",
+        "docs/evidence/sprint03/scenario-matrix.json",
+        "docs/evidence/sprint03/final-report.md",
+        "docs/evidence/sprint03/live-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-017.01",
           "title": "Persistir todas as diferenças sem duplicação indevida",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },

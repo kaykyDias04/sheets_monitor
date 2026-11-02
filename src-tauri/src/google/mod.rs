@@ -283,3 +283,5 @@ fn endpoint(origin: &str, path: &str) -> Result<Url, ApiError> {
 
 #[cfg(test)]
 mod tests;
+
+pub mod grid;

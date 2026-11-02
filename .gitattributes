@@ -8,3 +8,7 @@ docs/evidence/sprint01/*.log -text -whitespace
 docs/evidence/*.log -text -whitespace
 docs/evidence/sprint02/*.log -text -whitespace
 docs/sprint02.original.md -text -whitespace
+
+docs/evidence/sprint03/**/*.log -text -whitespace
+docs/evidence/sprint03/*.log -text -whitespace
+docs/sprint03.original.md -text -whitespace

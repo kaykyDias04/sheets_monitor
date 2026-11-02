@@ -13,3 +13,7 @@ Antes de SM-028, resolver itens sem metadados, inspecionar as licenças/avisos d
 ## Dependências da Sprint02
 
 O [inventário adicional](evidence/sprint02/dependency-licenses.json) registra metadados locais das novas dependências diretas Rust (HTTP/TLS, PKCE, URL, cofre e abertura de navegador). O Cargo.lock fixa a resolução utilizada nos testes. Esse inventário não homologa redistribuição nem substitui a revisão dos avisos transitivos em SM-028. npm audit de produção tem relatório separado e não cobre advisories Rust ou todas as dependências de desenvolvimento.
+
+## Novas dependências da Sprint 03
+
+Tree-sitter e a grammar JavaScript foram escolhidos a partir das APIs e metadados oficiais. O [inventário adicional](evidence/sprint03/dependency-licenses.json) registra versões/licenças do cache usado na compilação. A resolução está fixada no Cargo.lock; o inventário não substitui revisão dos avisos de distribuição em SM-028.

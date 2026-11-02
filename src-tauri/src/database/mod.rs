@@ -1,6 +1,8 @@
 //! Local persistence. Demonstration fixtures and authorized integration metadata
-//! have separate tables; values, formulas, source code and tokens are never stored.
+//! have separate tables. Cell values/source/tokens are not stored; approved
+//! structural snapshots retain protected formulas needed for deterministic checks.
 mod integration;
+mod integrity_store;
 mod migrations;
 pub use integration::*;
 

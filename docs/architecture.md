@@ -1,26 +1,30 @@
 # Arquitetura do Sheets Monitor
 
-A autorização vigente é a [Sprint 02](sprint02.original.md), SM-007 a SM-011. A fundação da Sprint 01 permanece; motor de integridade, baselines definitivos, análise semântica, scheduler e notificações não estão implementados.
+A autorização vigente é a Sprint 03, SM-012 a SM-017. As integrações da Sprint 02 foram preservadas; a entrega atual acrescenta um motor Rust de integridade sob demanda e uma interface técnica de aprovação/validação. Dashboard, gestão e histórico definitivos, scheduler, notificações e instalador aguardam etapas posteriores.
 
 ```mermaid
 flowchart LR
-    UI[React e DTOs] -->|IPC local| Runtime[Tauri / spawn_blocking]
-    Runtime --> Auth[AuthManager / geração de sessão]
-    Auth --> Vault[Windows Credential Manager]
-    Auth --> Browser[Navegador externo / PKCE loopback]
-    Runtime --> Google[Leitores HTTPS somente GET]
-    Google --> APIs[Sheets / Drive / Apps Script]
-    Runtime --> DB[(SQLite / metadados por conta)]
+ UI[React / tela técnica] -->|IPC tipado| Runtime[Tauri / spawn_blocking]
+ Runtime --> Auth[AuthManager / geração da sessão]
+ Auth --> Vault[Windows Credential Manager]
+ Runtime --> Google[Leitores HTTPS GET]
+ Google --> Normalize[Snapshot normalizado com cobertura]
+ Normalize --> Engine[Diff estrutural / fórmula / AST]
+ DB[(SQLite / versões / journal / eventos)] --> Engine
+ Engine --> DB
+ Runtime --> DB
 ```
 
-A área Integração Google usa exclusivamente comandos reais do backend. No navegador não há OAuth/consultas, e a interface informa essa limitação. Dashboard, Planilhas e Histórico continuam demonstrativos; Configurações conserva preferências locais. Dados simulados nunca substituem falhas de APIs.
+`auth/` mantém PKCE, loopback, identidade UserInfo, credenciais protegidas, refresh/logout e revogação explícita. Tokens não chegam ao renderer nem ao SQLite. Geração protege resultados e commits contra troca de sessão; a prévia do baseline vincula também geração esperada, fingerprint do conteúdo e versão anterior.
 
-`auth/` controla PKCE S256, state, porta dinâmica 127.0.0.1, timeout e callback de uso único. Tokens ficam no backend; refresh token e secret Desktop opcional ficam no cofre Windows. O access token permanece em memória. UserInfo HTTPS identifica a conta; JWT não verificado não é usado como identidade. Logout remove a sessão local; revogação exige comando explícito e confirmação na UI. Consulte [segurança](security.md) e [ADR 0007](adr/0007-google-scopes-and-desktop-auth.md).
+`google/` oferece metadados, valores/fórmulas batchGet, GridData validado, Drive e Apps Script somente leitura. `integrity/collector.rs` faz captura dirigida e reduz valores a hashes; fórmulas protegidas, cabeçalhos e metadados necessários permanecem no snapshot. Fonte Apps Script é transitória e vira hashes/análise. Não há leitura transacional global entre APIs; cobertura e janela são explícitas.
 
-`google/` valida IDs/URLs, faz leituras tipadas com limites, erros fechados e retentativas GET transitórias. `integration.rs` coordena consultas pontuais, escopos efetivamente concedidos, renovação limitada após 401 e persistência. Geração invalida respostas e gravações antigas após logout/reconfiguração; o mutex protege somente o commit local, sem ficar preso à rede. O React repete a checagem de conta/geração e limpa resultados de sessão anterior.
+`integrity/compare.rs`, `formulas.rs` e `scripts.rs` são determinísticos. Baseline define integridade; últimas observações definem conteúdo. Identidade usa sheetId, colunas lógicas e chaves explícitas. Ambiguidade não é prova de dano ou equivalência. Offline crítico tem precedência, preservando inconclusões. Dependência opcional indisponível não vira obrigação crítica global.
 
-SQLite conserva as onze entidades da fundação mais configuração, recursos consultados, últimas consultas e associações explícitas. Migração0002 adiciona as quatro tabelas e metadados de conta; migração0001/checksum preservados. Recursos são vinculados à conta; valores, fórmulas, código, tokens e secrets não são persistidos no banco. Consultas manuais não são monitores e não criam eventos/baselines. Consulte [contratos](api-contracts.md) e [APIs](google-apis.md).
+`database/integrity_store.rs` mantém versões aprovadas imutáveis, snapshots, relatórios, eventos, incidentes e journal de componentes. Transações e CAS de baseline/observação impedem sobrescrita concorrente. Falha parcial não avança o último snapshot global nem recupera incidente sem prova, mas diferenças plenamente observadas continuam gerando eventos. Retenção preserva referências e estado de deduplicação.
 
-A aplicação roda localmente sem servidor hospedado. O executável com `custom-protocol` incorpora os assets React; instalador não faz parte desta entrega. `archive/prototype/` é snapshot imutável fora de imports, formatação e build.
+`integrity/runtime.rs` expõe operações autenticadas; o frontend define escopo, mostra prévia e recebe classificação, sem reproduzir lógica de integridade. O IPC não aceita SQL, caminhos, endpoints arbitrários, snapshot fabricado ou origem sintética de aprovação. Não existe comando Google de escrita, execução de script ou início de scheduler.
 
-O alvo das próximas sprints mantém capacidade de 30 monitores, intervalo 60–300s, até 3 verificações simultâneas e histórico 90 dias. Mudança permitida de conteúdo deve gerar evento sem concluir falha de integridade. Esses contratos não autorizam antecipar implementação. Polling não garante capturar edições intermediárias; APIs separadas não formam snapshot atômico. [Riscos](risks.md), [testes](testing.md) e [backlog](backlog.md) acompanham os limites e a evidência.
+A migração 0003 preserva 0001/0002 e adiciona sete tabelas, totalizando 22 entidades de produto. As quatro fixtures da fundação não se tornam monitores reais nem consomem o limite de 30 arquivos do motor. As tabelas antigas e suas evidências permanecem históricas. Bancos, tokens e conteúdo privado não entram no Git.
+
+O app usa assets incorporados com custom-protocol e não depende de servidor hospedado. `archive/prototype/` permanece fora de imports, formatação e build. Capacidade e frequência de polling futuros não são inferidas da medição local de 30 datasets. Veja [motor](integrity-engine.md), [contratos](api-contracts.md), [banco](database.md), [riscos](risks.md) e [ADRs](adr/README.md).

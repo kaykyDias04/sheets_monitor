@@ -37,9 +37,11 @@ import type { Page, DemoSpreadsheet, DemoActivity } from "@/types/foundation";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { SpreadsheetsPage } from "@/pages/SpreadsheetsPage";
 import { HistoryPage } from "@/pages/HistoryPage";
+import { IntegrityPage } from "@/pages/IntegrityPage";
 import { GooglePage } from "@/pages/GooglePage";
 import { SettingsPage } from "@/pages/SettingsPage";
 const pages = [
+  { key: "engine", label: "Integridade técnica", icon: ShieldCheck },
   { key: "google", label: "Integração Google", icon: LockKeyhole },
   { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { key: "sheets", label: "Planilhas", icon: FileSpreadsheet },
@@ -61,6 +63,7 @@ export default function App() {
     setFilter("all");
     setNotice("");
   }
+  const technicalPage = page === "google" || page === "engine";
   const current = pages.find((item) => item.key === page)!;
   const visibleSheets = (data?.spreadsheets ?? []).filter(
     (sheet) =>
@@ -125,7 +128,7 @@ export default function App() {
             </div>
           </div>
           <div className="version">
-            <span>SPRINT 02 · INTEGRAÇÕES</span>
+            <span>SPRINT 03 · INTEGRIDADE</span>
             <span>v0.1.0</span>
           </div>
         </div>
@@ -138,7 +141,7 @@ export default function App() {
             <strong>{current.label}</strong>
           </div>
           <div className="topbar-tools">
-            {page !== "google" && (
+            {!technicalPage && (
               <Badge variant="demo">
                 <FlaskConical size={12} />
                 DEMONSTRAÇÃO
@@ -156,7 +159,7 @@ export default function App() {
           </div>
         </header>
         <div className="main-content">
-          {page !== "google" && (
+          {!technicalPage && (
             <div className="demo-banner">
               <FlaskConical size={16} />
               <p>
@@ -169,7 +172,7 @@ export default function App() {
               </button>
             </div>
           )}
-          {page !== "google" && error && (
+          {!technicalPage && error && (
             <div role="alert" className="feedback error">
               <CircleAlert size={17} />
               <span>{error}</span>
@@ -181,7 +184,7 @@ export default function App() {
               <span>{notice}</span>
             </div>
           )}
-          {page !== "google" && (
+          {!technicalPage && (
             <div className="page-title">
               <div>
                 <p className="eyebrow">
@@ -212,7 +215,9 @@ export default function App() {
               </div>
             </div>
           )}
-          {page === "google" ? (
+          {page === "engine" ? (
+            <IntegrityPage />
+          ) : page === "google" ? (
             <GooglePage />
           ) : !data ? (
             <Card className="loading-card">
@@ -271,18 +276,18 @@ export default function App() {
           <footer className="app-footer">
             <span>
               <ShieldCheck size={13} />
-              {page === "google"
+              {technicalPage
                 ? "Consultas Google autorizadas: somente leitura"
                 : "Fundação local. Dados de demonstração."}
             </span>
-            <span>Sheets Monitor · Sprint 02</span>
+            <span>Sheets Monitor · Sprint 03</span>
           </footer>
         </div>
       </main>
       <Dialog open={about} onOpenChange={setAbout}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sprint 02 · Integração Google</DialogTitle>
+            <DialogTitle>Sprint 03 · Motor de integridade</DialogTitle>
             <DialogDescription>
               A área Integração Google realiza consultas manuais autorizadas. Dashboard, planilhas e
               histórico ainda usam dados fictícios.
@@ -299,7 +304,7 @@ export default function App() {
             <div>
               <LockKeyhole />
               <p>
-                <strong>Nas próximas sprints</strong>Baseline aprovada, motor de integridade,
+                <strong>Nas próximas sprints</strong>Gerenciamento completo, monitoramento contínuo,
                 análise de Apps Script e alertas de produção.
               </p>
             </div>

@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "scope": "Read-only aggregate checks; no private identifiers",
+  "checks": {
+    "schema_version": 3,
+    "migrations": 3,
+    "product_tables": 22,
+    "demo_spreadsheets": 4,
+    "approved_baseline_versions": 1,
+    "foreign_key_errors": 0
+  }
+}

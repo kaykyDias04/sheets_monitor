@@ -2,13 +2,9 @@
 
 Fonte: [anexo original](specification-v1.0.original.md), preservado sem edição. SHA-256 `994A2FAA0E1D9C48450C5FE2B7B88AB9E237C17054EFE3A70E1EC291671F765E`. A interpretação anterior está em [requirements.prototype.md](requirements.prototype.md) e no arquivo do protótipo.
 
-A Sprint01 foi concluída; a autorização vigente é a [Sprint02](sprint02.original.md), SM-007 a SM-011. O produto completo abaixo é especificação, sem autorizar etapas posteriores.
+Sprints 01 e02 concluídas. A autorização vigente é [Sprint 03](sprint03.original.md), SM-012 a SM-017: motor determinístico sob demanda, referências aprovadas explicitamente, snapshots, estrutura/fórmulas/dependências, classificação e eventos. O produto completo abaixo não autoriza antecipar etapas 04–06.
 
-## Integração autorizada agora
-
-Preservar a fundação e implementar OAuth Desktop PKCE, conta, cofre Windows, refresh/logout/revogação explícita, leitores Sheets/Drive/Apps Script e consultas manuais pela interface. Persistir metadados por conta, nunca tokens no SQLite ou fontes/valores automaticamente. Testar e compilar no Windows; homologar acessos reais apenas quando houver cliente OAuth e consentimento autorizados.
-
-Não implementar motor, baseline definitivo, classificação real Online/Offline, análise semântica, polling, notificações definitivas, bandeja, autostart ou instalador. Sem acesso, testes simulados devem ser identificados e aceite externo permanece pendente.
+Não atualizar baseline real automaticamente, modificar Google, implementar dashboard/gestão/histórico definitivos, scheduler, notificações ou instalador. Sem autorização para mutações em recursos descartáveis, usar fixtures e manter os passos reais correspondentes como pendentes.
 
 ## Produto V1 aprovado
 

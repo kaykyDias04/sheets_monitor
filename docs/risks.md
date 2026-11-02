@@ -35,3 +35,13 @@ A revisão desta retomada é local pelo agente principal: os agentes anteriores 
 ## Atualização do gate externo
 
 O bloqueio inicial por credenciais foi resolvido pelo usuário. A homologação real passou com conta e recursos autorizados, recuperação/refresh e leituras das três APIs. Isso não elimina restrições de políticas Workspace/verificação para outras contas, a falta de revisão independente ou os limites de snapshot/monitoramento já documentados.
+
+## Riscos específicos da Sprint 03
+
+Comparação de fórmulas e dependências tem cobertura limitada, determinística e documentada. Chaves duplicadas, ausência de identidade, construções dinâmicas, HTML e dependências fora da captura podem tornar uma obrigação Indeterminada. Uma prova pequena de equivalência não é promessa de semântica geral.
+
+Limites de captura evitam consumo sem teto, mas não tornam uma amostra equivalente à planilha inteira. Online refere-se apenas às obrigações aprovadas do escopo. A captura não é uma transação global entre Sheets e Apps Script. Leituras muito grandes exigem escopo menor; uma captura incompleta não pode aprovar referência.
+
+A janela lógica de captura é diferente de geometria estrutural obrigatória. Exclusões permitidas de linhas não devem virar violação só por reduzir a grade. Baselines antigos e estado de incidentes sobrevivem à retenção; isso pode consumir disco ao aprovar muitas versões, de forma intencional e rastreável.
+
+Testes locais cobrem o ciclo destrutivo com fixtures. Uma referência real restrita ou uma captura real somente leitura não comprovam mutações destrutivas no Google. Esses passos permanecem separados e exigem recursos descartáveis/autorização específica. Não ampliar OAuth para escrita só para obter uma prova de teste.

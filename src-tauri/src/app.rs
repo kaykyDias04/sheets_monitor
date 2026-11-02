@@ -7,6 +7,11 @@ use crate::integration::{
     CommandError, IntegrationRuntime, ScriptAccessResult, ScriptInput, SheetAccessResult,
     SheetInput,
 };
+use crate::integrity::runtime::{
+    ApproveInput, BaselineSummary, CaptureInput, CapturePreview, EngineEnvelope, ScopeProposal,
+    ScopeQuery, ValidationResult,
+};
+use crate::integrity::{BaselineVersion, IntegrityEvent, IntegrityReport, ScriptSnapshot};
 use serde_json::{json, Value};
 use std::sync::Arc;
 use std::{fs, path::PathBuf};
@@ -129,6 +134,96 @@ async fn integration_test_script(
     blocking(move || runtime.script(input)).await
 }
 
+#[tauri::command]
+async fn integrity_propose_scope(
+    state: State<'_, FoundationState>,
+    url: String,
+) -> Result<EngineEnvelope<ScopeProposal>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.propose_integrity_scope(url)).await
+}
+#[tauri::command]
+async fn integrity_capture_snapshot(
+    state: State<'_, FoundationState>,
+    input: CaptureInput,
+) -> Result<EngineEnvelope<CapturePreview>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.capture_integrity_snapshot(input)).await
+}
+#[tauri::command]
+async fn integrity_create_baseline(
+    state: State<'_, FoundationState>,
+    input: ApproveInput,
+) -> Result<EngineEnvelope<BaselineVersion>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.approve_integrity_baseline(input)).await
+}
+#[tauri::command]
+async fn integrity_list_baselines(
+    state: State<'_, FoundationState>,
+    input: ScopeQuery,
+    offset: Option<u32>,
+) -> Result<EngineEnvelope<Vec<BaselineSummary>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.integrity_baselines(input, offset.unwrap_or(0))).await
+}
+#[tauri::command]
+async fn integrity_get_active_baseline(
+    state: State<'_, FoundationState>,
+    input: ScopeQuery,
+) -> Result<EngineEnvelope<Option<BaselineVersion>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.integrity_active_baseline(input)).await
+}
+#[tauri::command]
+async fn integrity_compare_snapshot(
+    state: State<'_, FoundationState>,
+    snapshot_id: String,
+) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.validate_integrity_snapshot(snapshot_id, false)).await
+}
+#[tauri::command]
+async fn integrity_validate_integrity(
+    state: State<'_, FoundationState>,
+    snapshot_id: String,
+) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.validate_integrity_snapshot(snapshot_id, true)).await
+}
+#[tauri::command]
+async fn integrity_analyze_script_dependencies(
+    state: State<'_, FoundationState>,
+    snapshot_id: String,
+) -> Result<EngineEnvelope<Vec<ScriptSnapshot>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.integrity_script_analysis(snapshot_id)).await
+}
+#[tauri::command]
+async fn integrity_list_integrity_events(
+    state: State<'_, FoundationState>,
+    input: ScopeQuery,
+) -> Result<EngineEnvelope<Vec<IntegrityEvent>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.integrity_event_list(input)).await
+}
+#[tauri::command]
+async fn integrity_get_integrity_report(
+    state: State<'_, FoundationState>,
+    input: ScopeQuery,
+) -> Result<EngineEnvelope<Option<IntegrityReport>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.integrity_report(input)).await
+}
+#[tauri::command]
+async fn integrity_prune_history(
+    state: State<'_, FoundationState>,
+    input: ScopeQuery,
+) -> Result<EngineEnvelope<usize>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.prune_integrity(input)).await
+}
+
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
@@ -158,7 +253,18 @@ pub fn run() {
             integration_disconnect,
             integration_revoke,
             integration_test_sheet,
-            integration_test_script
+            integration_test_script,
+            integrity_propose_scope,
+            integrity_capture_snapshot,
+            integrity_create_baseline,
+            integrity_list_baselines,
+            integrity_get_active_baseline,
+            integrity_compare_snapshot,
+            integrity_validate_integrity,
+            integrity_analyze_script_dependencies,
+            integrity_list_integrity_events,
+            integrity_get_integrity_report,
+            integrity_prune_history
         ])
         .run(tauri::generate_context!())
         .expect("Falha ao iniciar a fundação local do Sheets Monitor");
@@ -178,7 +284,7 @@ mod tests {
         state.database().unwrap().seed_demo().unwrap();
         let dashboard = state.dashboard().unwrap();
         assert_eq!(dashboard["is_demo"], true);
-        assert_eq!(dashboard["database_version"], 2);
+        assert_eq!(dashboard["database_version"], 3);
         let sheets = dashboard["spreadsheets"].as_array().unwrap();
         assert!(!sheets.is_empty());
         assert!(sheets.iter().all(|sheet| sheet["is_demo"] == true));

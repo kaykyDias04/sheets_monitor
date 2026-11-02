@@ -30,4 +30,4 @@ export interface FoundationDashboard {
   database_version: number;
 }
 
-export type Page = "dashboard" | "sheets" | "history" | "settings" | "google";
+export type Page = "dashboard" | "sheets" | "history" | "settings" | "google" | "engine";

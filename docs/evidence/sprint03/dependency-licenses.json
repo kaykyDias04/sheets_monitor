@@ -1,0 +1,29 @@
+{
+  "scope": "New direct parser dependencies and immediate parser support crates; cached metadata only, not distribution approval",
+  "packages": [
+    {
+      "name": "streaming-iterator",
+      "version": "0.1.9",
+      "license": "MIT OR Apache-2.0",
+      "metadata_available": true
+    },
+    {
+      "name": "tree-sitter",
+      "version": "0.25.10",
+      "license": "MIT",
+      "metadata_available": true
+    },
+    {
+      "name": "tree-sitter-javascript",
+      "version": "0.25.0",
+      "license": "MIT",
+      "metadata_available": true
+    },
+    {
+      "name": "tree-sitter-language",
+      "version": "0.1.9",
+      "license": "MIT",
+      "metadata_available": true
+    }
+  ]
+}

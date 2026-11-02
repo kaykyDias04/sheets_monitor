@@ -1,10 +1,10 @@
-# Sheets Monitor — fundação desktop
+# Sheets Monitor — integridade estrutural
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A entrega atual implementa a **Sprint02**: OAuth Desktop PKCE, cofre Windows, identidade da conta e leitores manuais de Sheets, Drive e Apps Script. **Homologação real aprovada** com cliente/conta e recursos autorizados: login, recuperação/refresh e leituras das três APIs. Evidência sanitizada em [google-live](docs/evidence/sprint02/google-live.json). Cada nova conta continua exigindo configuração e consentimento próprios.
+A autorização atual é a **Sprint 03**, motor de integridade sob demanda: snapshots, baselines com aprovação humana, comparações estruturais/conteúdo/fórmulas, análise AST Apps Script, relatórios e eventos deduplicados. Aceite técnico concluído; cobertura real restrita e mutações reais pendentes estão no [relatório final](docs/evidence/sprint03/final-report.md). Aguardar Prompt 04. Mutações Google e aprovação de baseline real não são automáticas.
 
-A tela Integração Google usa somente o backend desktop. Dashboard, Planilhas, Histórico e preferências conservam a demonstração da Sprint01. Monitoramento contínuo, baseline aprovada, análise semântica, notificações, bandeja, autostart e instalador aguardam suas etapas.
+A Sprint 02 continua homologada com login, sessão/refresh e leituras reais das três APIs: [evidência](docs/evidence/sprint02/google-live.json). A tela Integração Google e a nova Integridade técnica usam backend real; navegador sem Tauri não simula sucesso. Dashboard, Planilhas, Histórico e preferências ainda conservam a demonstração da fundação. Gerenciamento definitivo, scheduler, notificações, bandeja, autostart e instalador aguardam suas etapas.
 
 Configurar a conexão local seguindo [OAuth](docs/oauth-setup.md). Nunca enviar senhas, secrets ou tokens no chat ou em commits. Drive usa opt-in de metadados; nenhuma permissão de escrita é solicitada.
 
@@ -49,7 +49,7 @@ No desktop, as quatro telas consultam fixtures SQLite em `%APPDATA%\com.sheetsmo
 
 Os exemplos ilustram Online, Offline, Verificando e Indeterminado. Nenhum desses estados veio de uma consulta Google. O intervalo de 60–300 segundos e os 90 dias de histórico são parâmetros preparatórios; não há scheduler nem limpeza automática nesta sprint. Autostart permanece indisponível.
 
-O banco conserva as onze entidades da fundação e adiciona quatro tabelas de metadados de integração na migração2. Tokens, senhas e segredos não fazem parte do esquema. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
+O banco possui 22 tabelas de produto: onze da fundação, quatro de integração e sete do motor na migração 0003. Tokens, senhas e segredos não fazem parte do esquema. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
 
 ## Verificar
 
@@ -66,7 +66,7 @@ npm run build
 node scripts/verify-repository.mjs
 ```
 
-Resultados executados e limitações ficam em [docs/progress.md](docs/progress.md) e [docs/evidence/sprint02](docs/evidence/sprint02/). A presença de código, workflow ou fixture não comprova integração real ou execução do CI hospedado.
+Resultados executados e limitações ficam em [docs/progress.md](docs/progress.md) e [docs/evidence/sprint03](docs/evidence/sprint03/). A presença de código, workflow ou fixture não comprova integração real ou execução do CI hospedado.
 
 ## Documentação
 
@@ -81,6 +81,8 @@ O protótipo anterior está preservado em `archive/prototype/` e no commit `ffca
 
 Código próprio sob [MIT](LICENSE); dependências mantêm suas licenças. Não há remoto GitHub autorizado/configurado: o trabalho permanece local e a instrução mínima de autenticação está em [CONTRIBUTING.md](CONTRIBUTING.md). Nada foi publicado ou enviado ao Google.
 
-Ao encerrar a Sprint02, aguardar o Prompt03. Não avançar automaticamente.
+Ao encerrar a Sprint 03, aguardar o Prompt 04. Não avançar automaticamente.
 
 Documentação da integração: [APIs](docs/google-apis.md), [contratos IPC](docs/api-contracts.md), [segurança](docs/security.md) e [testes](docs/testing.md).
+
+Motor: [integridade](docs/integrity-engine.md), [baselines](docs/baselines.md), [fórmulas](docs/formula-analysis.md), [Apps Script](docs/apps-script-dependencies.md) e [eventos](docs/event-model.md).

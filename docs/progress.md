@@ -81,3 +81,15 @@ Removido da interface o aviso fixo de homologação pendente e do DTO o campo de
 A instância diagnóstica foi fechada normalmente, após a revisão automática recusar o encerramento forçado. Porta 9227 confirmada fechada; app reaberto em modo normal com sessão preservada. A captura desconectada anterior continua histórica; hash do executável atualizado e fechamento do diagnóstico em google-authenticated-native.json.
 
 Limites remanescentes: revisão independente indisponível, CI hospedado/PR remoto não executados por falta de remoto autorizado. Falhas de permissão/rede/revogação permanecem cobertas por testes controlados; a concessão real não foi revogada. Não há pendência humana para o aceite desta sprint. Rascunho PR atualizado em docs/pr-sprint02.md. **Encerrar e aguardar Prompt 03, sem implementar a Sprint 03.**
+
+## Encerramento da Sprint 03 — aceite técnico local
+
+SM-012 a SM-017 concluídos na implementação e nos gates locais. O [relatório final](evidence/sprint03/final-report.md) reúne resultados, limites e evidências. Este registro substitui o estado anterior de espera pelo Prompt 03; os registros das Sprints 01/02 permanecem históricos.
+
+Implementados snapshots normalizados, aprovação humana de baselines versionados, diff de estrutura/conteúdo/fórmulas, AST Apps Script, classificação, eventos sem duplicação indevida, retenção e interface técnica. Migração 0003: sete tabelas novas, 22 de produto ao todo. Isolamento de conta/geração e CAS protegem aprovações e observações concorrentes.
+
+Verificações: 146 testes unitários Rust e 2 integrações aprovados, 20 testes React aprovados, 25 cenários exigidos mapeados, lint/formato/tipos/Clippy e builds aprovados. Um teste de cofre permanece ignorado por padrão, com evidência explícita anterior e implementação inalterada. Escala sintética de 30 arquivos não equivale a carga Google real. Revisões dos três gates concluídas com correções e regressões incorporadas.
+
+Leitura real no build final confirmou sessão recuperada, refresh e baseline v1 aprovada pelo usuário, restrita a uma aba e duas células, sem fórmulas protegidas/scripts. Online na repetição, zero eventos novos. Rascunho adicional de 800 células, duas regras de fórmulas e 23 arquivos de script foi capturado, mas não aprovado; AST parcial. Não declarar toda a planilha homologada.
+
+Pendência: ciclo destrutivo Google real não executado, coberto por fixtures. Nenhum recurso Google foi alterado e nenhuma baseline real foi aprovada pelo agente. CI remoto e PR publicado indisponíveis sem remoto autorizado; rascunho em docs/pr-sprint03.md. Diagnóstico encerrado, janela normal reaberta. Encerrar e aguardar Prompt 04; não iniciar SM-018 a SM-021.

@@ -52,7 +52,7 @@ describe("Sprint 01 · interface demonstrativa", () => {
 
     const nav = screen.getByRole("navigation", { name: "Navegação principal" });
 
-    expect(within(nav).getAllByRole("button")).toHaveLength(5);
+    expect(within(nav).getAllByRole("button")).toHaveLength(6);
 
     expect(screen.getByText(/Dados fictícios · Sprint 01/)).toBeInTheDocument();
 
@@ -171,7 +171,7 @@ describe("Sprint 01 · interface demonstrativa", () => {
 
     await user.click(screen.getByRole("button", { name: "Sobre esta sprint" }));
 
-    const dialog = screen.getByRole("dialog", { name: "Sprint 02 · Integração Google" });
+    const dialog = screen.getByRole("dialog", { name: "Sprint 03 · Motor de integridade" });
 
     expect(dialog).toHaveTextContent("homologação Google real depende");
 

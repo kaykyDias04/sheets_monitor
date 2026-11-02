@@ -1659,3 +1659,62 @@ td:last-child .inline-flex svg {
     grid-template-columns: 1fr;
   }
 }
+.engine-page {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.engine-page .page-title {
+  margin-bottom: 0;
+}
+.engine-page .field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 14px 0 8px;
+}
+.engine-json-editor {
+  display: block;
+  width: 100%;
+  min-height: 330px;
+  max-height: 650px;
+  resize: vertical;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--background);
+}
+.engine-tabs,
+.engine-history {
+  font-size: 13px;
+  line-height: 1.8;
+  padding: 14px 0;
+  overflow-wrap: anywhere;
+}
+.engine-preview {
+  margin: 20px 0;
+}
+.engine-preview summary,
+.engine-page details summary {
+  font-size: 13px;
+  cursor: pointer;
+}
+.engine-findings {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+.engine-findings li {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.engine-findings code {
+  font-size: 11px;
+}

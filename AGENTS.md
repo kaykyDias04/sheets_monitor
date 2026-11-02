@@ -73,3 +73,15 @@ Evidências atuais: `docs/evidence/sprint02/`. Atualizar backlog sem marcar inte
 ## Encerramento da Sprint 02
 
 Homologação real concluída com conta e recursos autorizados pelo usuário: login, cofre/recuperação, refresh e leituras Sheets/Drive/Apps Script. Evidências sanitizadas em docs/evidence/sprint02/google-live.json. SM-007 a SM-011 concluídos. Aguardar Prompt 03; não iniciar funcionalidades posteriores automaticamente. Credenciais e conteúdos reais continuam fora do Git e dos relatórios.
+
+## Autorização vigente — Sprint 03
+
+O usuário autorizou docs/sprint03.original.md. Implementar somente SM-012 a SM-017: snapshots normalizados, baselines versionados com aprovação explícita, diff estrutural/conteúdo/fórmulas, análise determinística Apps Script, classificação e eventos deduplicados, retenção e operações sob demanda. Preservar Sprints01/02 e migrações já aplicadas; evidências novas em docs/evidence/sprint03.
+
+Permitir interface técnica simples, sem dashboard/gerenciamento/histórico definitivos, scheduler, notificações ou instalador das Sprints04–06. Não alterar arquivos Google nem aprovar baseline real automaticamente. Regras e mutações sintéticas ficam em fixtures; coletar recursos reais só em leitura autorizada, sem expor identidade, IDs, fórmulas ou fontes em relatórios públicos. Sem autorização destrutiva, registrar homologação real de mutações como pendente.
+
+Aplicar deepwork com lanes de implementação e gates de revisão; verificar algoritmos determinísticos, ambiguidades e isolamento de conta. Ao terminar, encerrar e aguardar Prompt04.
+
+## Encerramento técnico da Sprint 03
+
+SM-012 a SM-017 implementados e aprovados nos gates locais. Evidências e limites em docs/evidence/sprint03/final-report.md. Baseline humana real restrita a duas células; rascunho maior não aprovado; mutações Google reais pendentes e cobertas por fixtures. Nenhuma aprovação de baseline real pelo agente. Preservar evidências históricas. Aguardar Prompt 04 antes de iniciar a Sprint 04.

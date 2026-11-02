@@ -13,3 +13,5 @@ ADRs novos usam número sequencial, contexto, decisão, consequências e estado.
 | [0007](0007-google-scopes-and-desktop-auth.md) | Aceito para Sprint 02 | OAuth desktop, escopos somente leitura e gate real separado |
 
 Propostas futuras não autorizam sua implementação antes do prompt/sprint correspondente.
+
+- [0008: Motor determinístico, baseline e observações parciais](0008-integrity-observation-and-approval.md).

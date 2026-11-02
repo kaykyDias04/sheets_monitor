@@ -1,0 +1,6 @@
+{
+  "success": true,
+  "text_files_scanned": 362,
+  "private_identifier_matches": 0,
+  "method": "Read-only metadata comparison against account identity, OAuth client identifier and known Google resource IDs/names/source hashes; UTF-8 and UTF-16 logs supported. No vault access or private values output. Not a complete secret audit."
+}

@@ -43,3 +43,18 @@ Cada gate futuro exige autorização e evidência própria. Aprovação de basel
 Relatório [Google real](evidence/sprint02/google-live.json) e [roteiro/resultados](evidence/sprint02/google-live.md). Capturas desconectadas anteriores são históricas; nenhum screenshot de dados reais foi feito. Revisão independente ficou indisponível, conforme [riscos](risks.md); não se declara auditoria externa ou CI hospedado.
 
 Sem baseline aprovada, motor de integridade, scheduler ou notificações. Sprint 02 encerrada; aguardar Prompt 03.
+
+## Sprint 03 — gate técnico aprovado, homologação real delimitada
+
+| Critério | Evidência | Estado |
+|---|---|---|
+| SM-012 baseline versionado | Persistência, aprovação explícita, fingerprint e CAS; baseline humana real restrita a duas células | Aprovado no escopo verificado |
+| SM-013 estrutura | Abas, colunas, cabeçalhos, intervalos nomeados e cobertura parcial em testes | Aprovado localmente |
+| SM-014 fórmulas | Comparação exata/estrutural, movimento seguro, erros efetivos e ambiguidades | Aprovado com fixtures |
+| SM-015 dependências | AST determinística, vínculos e incertezas; leitura real adicional com análise parcial | Aprovado localmente; limitações explícitas |
+| SM-016 estados | Offline precede incerteza crítica; conectividade separada; Checking na interface | Aprovado com fixtures; Online real no escopo restrito |
+| SM-017 eventos | Diferenças, observações parciais, deduplicação, recorrência, retenção e concorrência | Aprovado localmente; repetição real sem eventos novos |
+| Qualidade | 146 unitários Rust, 2 integrações, 20 React, checks e builds | Aprovado |
+| Mutações reais e recuperação | Não executadas; fixtures separadas | Pendente de recurso descartável e autorização |
+
+A conclusão técnica não representa homologação destrutiva real nem aprovação de baseline pelo agente. Ver [relatório final](evidence/sprint03/final-report.md), [matriz](evidence/sprint03/scenario-matrix.json) e [leituras reais](evidence/sprint03/live-validation.json). Aguardar Prompt 04.

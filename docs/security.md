@@ -36,3 +36,13 @@ Antes de encerrar, confrontar estes controles com código e resultados executado
 ## Homologação real
 
 O usuário conectou a conta e autorizou os recursos de teste. Login, recuperação/refresh e leituras das três APIs têm evidência sanitizada em [google-live](evidence/sprint02/google-live.json). A inspeção usou só resultados booleanos/contagens; tokens permaneceram no backend/cofre, e identidade/IDs/conteúdo não foram registrados. O consentimento real não foi revogado pelo teste.
+
+## Sprint 03 — dados necessários ao motor
+
+Snapshots estruturais mantêm cabeçalhos e fórmulas protegidas necessários à comparação, além de hashes de células/linhas e metadados. Isso é diferente do leitor manual da Sprint02, que não persistia fórmulas. Nenhuma cópia integral de valores ou fonte Apps Script é armazenada. Hashes são indicadores de mudança, não criptografia ou anonimização forte; o banco continua protegido pelo perfil/disco Windows.
+
+Referências aprovadas são imutáveis. ID, fingerprint, geração da prévia, conta e versão esperada vinculam a aprovação. Sessão alterada invalida o pedido antes de gravar. O renderer não recebe tokens, SQL, acesso genérico a arquivos ou execução de código; JSON/fonte/metadados são texto, nunca HTML executável.
+
+Falhas parciais preservam incidentes anteriores e diferenças comprovadas de componentes completos. Journal com revisão CAS impede diferenças calculadas sobre observação concorrente antiga. Cenários de fonte malformada, erro calculado, chave/cabeçalho ambíguo e cobertura parcial produzem diagnósticos conservadores.
+
+Mutações Google não são necessárias para rodar o motor local e não foram realizadas pelo agente. Baseline real só pode ser aprovado pelo usuário. Relatórios públicos registram apenas indicadores e contagens; nunca identidade, IDs, valores, fórmulas ou fontes reais. Não capturar screenshots com conteúdo privado.

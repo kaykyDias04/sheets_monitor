@@ -100,3 +100,11 @@ MSVC x64 com assets incorporados. Comandos, códigos de saída e limites estão 
 [native-gates.json](evidence/sprint01/native-gates.json). O hash do executável e
 dos assets está em [native-artifact.json](evidence/sprint01/native-artifact.json).
 Essas evidências não substituem o registro separado da janela real e da navegação.
+
+## Atualização — Sprint 03
+
+As seções acima registram a fundação da Sprint 01. O build atual inclui os leitores Google da Sprint 02 e o motor sob demanda da Sprint 03, com seis páginas e esquema SQLite 3. O frontend continua sem permissões diretas de rede, shell ou arquivos. O backend executa as consultas autenticadas; o bundle continua desativado até a Sprint 06.
+
+Build MSVC standalone aprovado após os testes; origem tauri.localhost, bridge e sessão recuperada comprovados. Captura da tela técnica vazia e Axe sem violações no estado verificado em docs/evidence/sprint03/. O diagnóstico foi fechado normalmente e a porta 9231 confirmada encerrada. A janela foi reaberta sem diagnóstico; a permanência posterior depende do usuário.
+
+Resultados e limites do fluxo Google real estão no [relatório final](evidence/sprint03/final-report.md). Não se infere homologação de toda a planilha a partir da baseline humana de duas células.

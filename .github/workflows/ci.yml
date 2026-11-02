@@ -1,4 +1,4 @@
-name: Sprint 02 - Windows Google integration
+name: Sprint 03 - Windows integrity engine
 on:
   push:
   pull_request:

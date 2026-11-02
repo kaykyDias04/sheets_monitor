@@ -1,0 +1,182 @@
+{
+  "success": true,
+  "required_scenarios": 25,
+  "checks": [
+    {
+      "id": "01",
+      "scenario": "Insercao permitida",
+      "test": "inserted_keyed_record_is_informative_online",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "02",
+      "scenario": "Exclusao permitida",
+      "test": "deleted_noncritical_data_record_stays_online",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "03",
+      "scenario": "Edicao de valor permitida",
+      "test": "common_value_edit_generates_cell_difference_without_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "04",
+      "scenario": "Reordenacao de colunas",
+      "test": "protected_column_reorder_is_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "05",
+      "scenario": "Remocao de coluna",
+      "test": "protected_column_deletion_is_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "06",
+      "scenario": "Cabecalho critico",
+      "test": "critical_header_rename_is_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "07",
+      "scenario": "Aba monitorada removida",
+      "test": "deleted_monitored_sheet_is_offline_only_with_complete_metadata",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "08",
+      "scenario": "Aba protegida renomeada",
+      "test": "protected_sheet_rename_is_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "09",
+      "scenario": "Formula removida",
+      "test": "protected_formula_removed_or_replaced_is_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "10",
+      "scenario": "Formula substituida",
+      "test": "protected_formula_removed_or_replaced_is_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "11",
+      "scenario": "Referencia quebrada",
+      "test": "effective_ref_error_is_confirmed_while_loading_is_uncertain",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "12",
+      "scenario": "Formula deslocada por insercao",
+      "test": "formula_shifted_by_inserted_row_with_key_and_target_identity_is_online",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "13",
+      "scenario": "Formula deslocada por exclusao",
+      "test": "formula_shifted_by_deleted_row_is_online",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "14",
+      "scenario": "Dependencia valida",
+      "test": "valid_and_invalid_sheet_dependencies_are_distinguished",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "15",
+      "scenario": "Dependencia invalida",
+      "test": "invalid_numeric_bounds_are_confirmed_for_proven_receiver",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "16",
+      "scenario": "Dependencia dinamica",
+      "test": "dynamic_arguments_are_unproven_not_confirmed_damage",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "17",
+      "scenario": "Codigo alterado",
+      "test": "script_code_change_is_informative_without_false_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "18",
+      "scenario": "Falha de autenticacao",
+      "test": "network_and_auth_failures_are_indeterminate_not_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "19",
+      "scenario": "Falha de rede",
+      "test": "network_and_auth_failures_are_indeterminate_not_offline",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "20",
+      "scenario": "Violacao persistente deduplicada",
+      "test": "repeated_violation_recovery_and_recurrence_survive_history_retention",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "21",
+      "scenario": "Recuperacao",
+      "test": "repeated_violation_recovery_and_recurrence_survive_history_retention",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "22",
+      "scenario": "Baseline anterior preservado",
+      "test": "immutable_versions_and_compare_and_swap_preserve_history",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "23",
+      "scenario": "Atualizacao automatica rejeitada",
+      "test": "approval_requires_confirmation_valid_origin_and_complete_snapshot",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "24",
+      "scenario": "Multiplas abas",
+      "test": "aggregation_classifies_each_monitored_tab",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    },
+    {
+      "id": "25",
+      "scenario": "Violacao e incerteza",
+      "test": "confirmed_violation_precedes_uncertainty_without_hiding_it",
+      "passed": true,
+      "mode": "synthetic_fixture"
+    }
+  ],
+  "live_mutations": "not_executed; no Google write authorization requested"
+}
