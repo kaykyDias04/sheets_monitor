@@ -4,6 +4,7 @@ pub mod database;
 pub mod google;
 pub mod integration;
 pub mod integrity;
+pub mod management;
 pub mod monitoring;
 pub mod notifications;
 

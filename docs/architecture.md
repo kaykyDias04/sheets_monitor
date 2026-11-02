@@ -28,3 +28,7 @@ flowchart LR
 A migração 0003 preserva 0001/0002 e adiciona sete tabelas, totalizando 22 entidades de produto. As quatro fixtures da fundação não se tornam monitores reais nem consomem o limite de 30 arquivos do motor. As tabelas antigas e suas evidências permanecem históricas. Bancos, tokens e conteúdo privado não entram no Git.
 
 O app usa assets incorporados com custom-protocol e não depende de servidor hospedado. `archive/prototype/` permanece fora de imports, formatação e build. Capacidade e frequência de polling futuros não são inferidas da medição local de 30 datasets. Veja [motor](integrity-engine.md), [contratos](api-contracts.md), [banco](database.md), [riscos](risks.md) e [ADRs](adr/README.md).
+
+## Sprint 04 — operação
+
+O registro operacional acrescenta gerenciamento por conta sobre os snapshots imutáveis. RegisteredSpreadsheet mantém seleção, regras, revisão, autorização e preferências; os estados reais continuam derivados do motor Rust, sem comparação no frontend. Mudança de configuração exige referência correspondente. Listagens de atividades usam filtros e paginação SQL. Drive descobre metadados em páginas e não cadastra resultados automaticamente. IPC preserva conta/geração; mutações críticas usam CAS e transação. O diagrama e as seções anteriores descrevem as camadas preexistentes e continuam válidos para seus módulos.

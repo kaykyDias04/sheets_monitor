@@ -85,3 +85,9 @@ Aplicar deepwork com lanes de implementação e gates de revisão; verificar alg
 ## Encerramento técnico da Sprint 03
 
 SM-012 a SM-017 implementados e aprovados nos gates locais. Evidências e limites em docs/evidence/sprint03/final-report.md. Baseline humana real restrita a duas células; rascunho maior não aprovado; mutações Google reais pendentes e cobertas por fixtures. Nenhuma aprovação de baseline real pelo agente. Preservar evidências históricas. Aguardar Prompt 04 antes de iniciar a Sprint 04.
+
+## Autorização vigente — Sprint 04
+
+O usuário autorizou docs/sprint04.original.md: SM-018 a SM-021 e adições SM-021A (conta) e SM-021B (baselines). Implementar descoberta Drive paginada, gerenciamento de até 30 planilhas, dashboard real, seleção de abas/regras, aprovação visual, histórico/diagnósticos e preferências persistidas. Preservar as sprints anteriores e registrar evidências em docs/evidence/sprint04. Não usar fixtures na interface operacional.
+
+Usar escopos mínimos adequados; mudanças exigem consentimento oficial, sem ampliação silenciosa e sem servidor próprio. Usuário final não deve informar credenciais Cloud: configuração da aplicação pertence ao desenvolvimento/empacotamento; publicação externa depende de projeto autorizado e requisitos OAuth. Baseline real continua com aprovação humana; Google somente leitura. Aplicar deepwork com lanes e gates. Ao concluir, aguardar Prompt 05, sem scheduler, notificações nativas, bandeja, autostart ou instalador final.

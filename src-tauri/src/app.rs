@@ -103,6 +103,19 @@ async fn integration_connect(
     .await
 }
 #[tauri::command]
+async fn integration_set_drive_opt_in(
+    state: State<'_, FoundationState>,
+    enabled: bool,
+) -> Result<IntegrationState, CommandError> {
+    let runtime = runtime(&state)?;
+    blocking(move || {
+        let next = runtime.auth.set_drive_opt_in(enabled)?;
+        runtime.persist_state(&next)?;
+        Ok(next)
+    })
+    .await
+}
+#[tauri::command]
 async fn integration_disconnect(
     state: State<'_, FoundationState>,
 ) -> Result<IntegrationState, CommandError> {
@@ -141,6 +154,15 @@ async fn integrity_propose_scope(
 ) -> Result<EngineEnvelope<ScopeProposal>, CommandError> {
     let rt = runtime(&state)?;
     blocking(move || rt.propose_integrity_scope(url)).await
+}
+
+#[tauri::command]
+async fn discover_spreadsheets(
+    state: State<'_, FoundationState>,
+    input: crate::google::DiscoveryQuery,
+) -> Result<EngineEnvelope<crate::google::DiscoveryPage>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.discover_spreadsheets(input)).await
 }
 #[tauri::command]
 async fn integrity_capture_snapshot(
@@ -224,19 +246,209 @@ async fn integrity_prune_history(
     blocking(move || rt.prune_integrity(input)).await
 }
 
+#[tauri::command]
+async fn list_registered_spreadsheets(
+    state: State<'_, FoundationState>,
+) -> Result<EngineEnvelope<Vec<crate::management::RegisteredSpreadsheet>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.list_registered_spreadsheets()).await
+}
+
+#[tauri::command]
+async fn get_dashboard_summary(
+    state: State<'_, FoundationState>,
+) -> Result<EngineEnvelope<crate::management::DashboardSummary>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.get_dashboard_summary()).await
+}
+
+#[tauri::command]
+async fn register_spreadsheet(
+    state: State<'_, FoundationState>,
+    input: crate::management::RegisterInput,
+) -> Result<EngineEnvelope<crate::management::RegisteredSpreadsheet>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.register_spreadsheet(input)).await
+}
+
+#[tauri::command]
+async fn list_spreadsheet_tabs(
+    state: State<'_, FoundationState>,
+    input: crate::management::SpreadsheetQuery,
+) -> Result<EngineEnvelope<crate::management::RegisteredSpreadsheet>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.list_spreadsheet_tabs(input)).await
+}
+
+#[tauri::command]
+async fn remove_spreadsheet(
+    state: State<'_, FoundationState>,
+    input: crate::management::RemoveInput,
+) -> Result<EngineEnvelope<()>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.remove_spreadsheet(input)).await
+}
+
+#[tauri::command]
+async fn pause_spreadsheet(
+    state: State<'_, FoundationState>,
+    input: crate::management::Mutation,
+) -> Result<EngineEnvelope<crate::management::RegisteredSpreadsheet>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.pause_spreadsheet(input)).await
+}
+
+#[tauri::command]
+async fn resume_spreadsheet(
+    state: State<'_, FoundationState>,
+    input: crate::management::Mutation,
+) -> Result<EngineEnvelope<crate::management::RegisteredSpreadsheet>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.resume_spreadsheet(input)).await
+}
+
+#[tauri::command]
+async fn update_monitored_tabs(
+    state: State<'_, FoundationState>,
+    input: crate::management::TabsInput,
+) -> Result<EngineEnvelope<crate::management::RegisteredSpreadsheet>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.update_monitored_tabs(input)).await
+}
+
+#[tauri::command]
+async fn update_integrity_rules(
+    state: State<'_, FoundationState>,
+    input: crate::management::RulesInput,
+) -> Result<EngineEnvelope<crate::management::RegisteredSpreadsheet>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.update_integrity_rules(input)).await
+}
+
+#[tauri::command]
+async fn preview_baseline(
+    state: State<'_, FoundationState>,
+    input: crate::management::Mutation,
+) -> Result<EngineEnvelope<crate::management::OperationalPreview>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.preview_baseline(input)).await
+}
+
+#[tauri::command]
+async fn approve_baseline(
+    state: State<'_, FoundationState>,
+    input: crate::management::ApprovalInput,
+) -> Result<EngineEnvelope<BaselineVersion>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.approve_baseline(input)).await
+}
+
+#[tauri::command]
+async fn run_spreadsheet_check(
+    state: State<'_, FoundationState>,
+    input: crate::management::Mutation,
+) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.run_spreadsheet_check(input)).await
+}
+
+#[tauri::command]
+async fn get_spreadsheet_diagnostics(
+    state: State<'_, FoundationState>,
+    input: crate::management::SpreadsheetQuery,
+) -> Result<EngineEnvelope<crate::management::Diagnostics>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.get_spreadsheet_diagnostics(input)).await
+}
+
+#[tauri::command]
+async fn list_change_events(
+    state: State<'_, FoundationState>,
+    input: crate::management::EventFilter,
+) -> Result<EngineEnvelope<crate::management::Page<crate::management::Activity>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.list_change_events(input)).await
+}
+
+#[tauri::command]
+async fn list_associated_scripts(
+    state: State<'_, FoundationState>,
+    input: crate::management::SpreadsheetQuery,
+) -> Result<EngineEnvelope<Vec<crate::management::ScriptSummary>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.list_associated_scripts(input)).await
+}
+
+#[tauri::command]
+async fn list_baseline_versions(
+    state: State<'_, FoundationState>,
+    input: crate::management::BaselinesQuery,
+) -> Result<EngineEnvelope<crate::management::Page<BaselineSummary>>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.list_baseline_versions(input)).await
+}
+
+#[tauri::command]
+async fn compare_baseline_versions(
+    state: State<'_, FoundationState>,
+    input: crate::management::CompareBaselinesInput,
+) -> Result<EngineEnvelope<crate::management::BaselineComparison>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.compare_baseline_versions(input)).await
+}
+
+#[tauri::command]
+async fn get_management_preferences(
+    state: State<'_, FoundationState>,
+) -> Result<EngineEnvelope<crate::management::Preferences>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.get_management_preferences()).await
+}
+
+#[tauri::command]
+async fn save_management_preferences(
+    state: State<'_, FoundationState>,
+    input: crate::management::PreferencesInput,
+) -> Result<EngineEnvelope<crate::management::Preferences>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.save_management_preferences(input)).await
+}
+
+#[tauri::command]
+async fn open_spreadsheet(
+    state: State<'_, FoundationState>,
+    input: crate::management::SpreadsheetQuery,
+) -> Result<EngineEnvelope<()>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.open_spreadsheet(input)).await
+}
+
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
             let directory = app.path().app_data_dir()?;
             fs::create_dir_all(&directory)?;
+            let auth = Arc::new(AuthManager::new(
+                Arc::new(WindowsVault::production()),
+                Arc::new(HttpsOAuthTransport::new()?),
+            ));
+            // The maintainer provisions a Desktop client at build time. A local
+            // development configuration is preserved and no consent is inferred.
+            let provisioned =
+                option_env!("SHEETS_MONITOR_OAUTH_CLIENT_ID").map(|id| AuthConfigInput {
+                    client_id: id.into(),
+                    client_secret: option_env!("SHEETS_MONITOR_OAUTH_DESKTOP_SECRET")
+                        .map(str::to_owned),
+                    drive_metadata_opt_in: false,
+                });
+            // Vault errors remain actionable through IPC without aborting the shell.
+            // Invalid build provisioning leaves the application unconfigured.
+            let _ = auth.configure_application(provisioned);
             let state = FoundationState {
                 database_path: directory.join("foundation-v1.db"),
                 integration: Some(IntegrationRuntime {
                     database_path: directory.join("foundation-v1.db"),
-                    auth: Arc::new(AuthManager::new(
-                        Arc::new(WindowsVault::production()),
-                        Arc::new(HttpsOAuthTransport::new()?),
-                    )),
+                    auth,
                 }),
             };
             let mut database = state.database().map_err(std::io::Error::other)?;
@@ -250,10 +462,32 @@ pub fn run() {
             integration_get_state,
             integration_configure,
             integration_connect,
+            integration_set_drive_opt_in,
             integration_disconnect,
             integration_revoke,
             integration_test_sheet,
             integration_test_script,
+            discover_spreadsheets,
+            open_spreadsheet,
+            list_registered_spreadsheets,
+            get_dashboard_summary,
+            register_spreadsheet,
+            list_spreadsheet_tabs,
+            remove_spreadsheet,
+            pause_spreadsheet,
+            resume_spreadsheet,
+            update_monitored_tabs,
+            update_integrity_rules,
+            preview_baseline,
+            approve_baseline,
+            run_spreadsheet_check,
+            get_spreadsheet_diagnostics,
+            list_change_events,
+            list_associated_scripts,
+            list_baseline_versions,
+            compare_baseline_versions,
+            get_management_preferences,
+            save_management_preferences,
             integrity_propose_scope,
             integrity_capture_snapshot,
             integrity_create_baseline,
@@ -284,7 +518,7 @@ mod tests {
         state.database().unwrap().seed_demo().unwrap();
         let dashboard = state.dashboard().unwrap();
         assert_eq!(dashboard["is_demo"], true);
-        assert_eq!(dashboard["database_version"], 3);
+        assert_eq!(dashboard["database_version"], 4);
         let sheets = dashboard["spreadsheets"].as_array().unwrap();
         assert!(!sheets.is_empty());
         assert!(sheets.iter().all(|sheet| sheet["is_demo"] == true));

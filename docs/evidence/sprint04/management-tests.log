@@ -1,0 +1,26 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.79s
+     Running unittests src\lib.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\sheets_monitor_lib-7f97c51d4b1bc40a.exe)
+
+running 18 tests
+test database::management_store::tests::ipc_flat_json_inputs_accept_valid_and_reject_unknown_keys ... ok
+test database::management_store::tests::legacy_baselines_are_listed_inactive_before_operational_rules_are_configured ... ok
+test database::management_store::tests::baseline_version_queries_are_paged_and_account_isolated ... ok
+test database::management_store::tests::diagnostics_do_not_invent_integrity_for_unapproved_scope ... ok
+test database::management_store::tests::approval_guard_revision_tabs_and_explicit_consent ... ok
+test database::management_store::tests::new_baseline_does_not_reuse_previous_online_check ... ok
+test database::management_store::tests::pause_and_remove_guard_reports_and_preserve_baselines ... ok
+test database::management_store::tests::baseline_approval_and_current_scope_status_are_independent ... ok
+test database::management_store::tests::only_current_configuration_baseline_is_active_across_scope_versions ... ok
+test database::management_store::tests::history_filters_paginate_in_sql_and_archived_file_remains_searchable ... ok
+test database::management_store::tests::activity_erasure_retains_approved_baseline_and_clears_report_pointers ... ok
+test database::management_store::tests::configuration_reopen_preferences_and_stable_sheet_ids ... ok
+test database::management_store::tests::scripts_require_authorized_association_and_preferences_are_validated ... ok
+test database::management_store::tests::selected_tabs_persist_before_rules_and_revision_rejects_lost_updates ... ok
+test database::management_store::tests::registry_capacity_thirty_includes_paused_and_frees_removed_slots ... ok
+test database::management_store::tests::registry_uses_current_account_never_demo_or_default_online ... ok
+test database::management_store::tests::capture_capacity_reuses_slot_after_retained_registry_removal ... ok
+test database::management_store::tests::report_transaction_rejects_stale_revision_after_pause_resume_same_scope ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 162 filtered out; finished in 0.20s
+

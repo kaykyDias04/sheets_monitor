@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "prior_migrations_preserved": true,
+  "new_migration": "0004_operational_management",
+  "management_contract_models": "src-tauri/src/management/models.rs",
+  "management_store_compiled_in": "database::management_store",
+  "runtime_layer": "IntegrationRuntime -> account/generation guards -> SQLite/GET readers",
+  "frontend_comparison_logic": "none in pure ScopeEditor; operational integration pending",
+  "new_ipc_commands": 22,
+  "future_scheduler_or_notification_module_activated": false,
+  "limitation": "Source structure scan; tests and native behavior verified separately"
+}

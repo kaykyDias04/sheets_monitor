@@ -120,3 +120,22 @@ fn disconnected_runtime_never_reads_or_persists_as_success() {
         "network"
     );
 }
+
+#[test]
+fn discovery_without_explicit_drive_opt_in_does_not_refresh_or_create_database() {
+    let (_dir, runtime, transport) = runtime(vec!["openid", DRIVE_SCOPE]);
+    let result = runtime.discover_spreadsheets(crate::google::DiscoveryQuery::default());
+    assert_eq!(result.err().unwrap().code, "insufficient_scope");
+    assert_eq!(transport.calls.load(Ordering::SeqCst), 0);
+    assert!(!runtime.database_path.exists());
+}
+
+#[test]
+fn discovery_requires_effective_scope_even_after_requesting_drive() {
+    let (_dir, runtime, transport) = runtime(vec!["openid", SHEETS_SCOPE]);
+    runtime.auth.set_drive_opt_in(true).unwrap();
+    let result = runtime.discover_spreadsheets(crate::google::DiscoveryQuery::default());
+    assert_eq!(result.err().unwrap().code, "forbidden");
+    assert_eq!(transport.calls.load(Ordering::SeqCst), 1);
+    assert!(!runtime.database_path.exists());
+}

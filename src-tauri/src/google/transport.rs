@@ -182,6 +182,7 @@ pub(super) fn validate_api_url(url: &Url) -> Result<(), ApiError> {
         (Some("sheets.googleapis.com"), ["v4", "spreadsheets", id]) => *id,
         (Some("sheets.googleapis.com"), ["v4", "spreadsheets", id, "values:batchGet"]) => *id,
         (Some("www.googleapis.com"), ["drive", "v3", "files", id]) => *id,
+        (Some("www.googleapis.com"), ["drive", "v3", "files"]) => return Ok(()),
         (Some("script.googleapis.com"), ["v1", "projects", id]) => *id,
         (Some("script.googleapis.com"), ["v1", "projects", id, "content"]) => *id,
         _ => return Err(ApiError::InvalidInput),
@@ -271,12 +272,23 @@ mod tests {
             "https://sheets.googleapis.com:444/v4/spreadsheets/a",
             "https://x@sheets.googleapis.com/v4/spreadsheets/a",
             "https://script.googleapis.com/v1/projects/a:run",
+            "https://www.googleapis.com/drive/v3/files/",
+            "https://www.googleapis.com/drive/v3/drives",
         ] {
             assert_eq!(
                 validate_api_url(&Url::parse(raw).unwrap()),
                 Err(ApiError::InvalidInput)
             );
         }
+    }
+    #[test]
+    fn exact_drive_discovery_endpoint_is_authorized_without_arbitrary_paths() {
+        assert_eq!(
+            validate_api_url(
+                &Url::parse("https://www.googleapis.com/drive/v3/files?q=fixture").unwrap()
+            ),
+            Ok(())
+        );
     }
     #[test]
     fn retry_after_is_bounded_and_errors_have_no_provider_body() {

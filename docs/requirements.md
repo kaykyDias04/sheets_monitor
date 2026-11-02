@@ -2,9 +2,9 @@
 
 Fonte: [anexo original](specification-v1.0.original.md), preservado sem edição. SHA-256 `994A2FAA0E1D9C48450C5FE2B7B88AB9E237C17054EFE3A70E1EC291671F765E`. A interpretação anterior está em [requirements.prototype.md](requirements.prototype.md) e no arquivo do protótipo.
 
-Sprints 01 e02 concluídas. A autorização vigente é [Sprint 03](sprint03.original.md), SM-012 a SM-017: motor determinístico sob demanda, referências aprovadas explicitamente, snapshots, estrutura/fórmulas/dependências, classificação e eventos. O produto completo abaixo não autoriza antecipar etapas 04–06.
+Sprints 01-03 encerradas tecnicamente, com limites reais documentados. A autorizacao vigente e [Sprint 04](sprint04.original.md): SM-018 a SM-021, adicoes SM-021A (conta) e SM-021B (baselines), descoberta Drive, gerenciamento, regras e interface operacional. Nao antecipar etapas05-06.
 
-Não atualizar baseline real automaticamente, modificar Google, implementar dashboard/gestão/histórico definitivos, scheduler, notificações ou instalador. Sem autorização para mutações em recursos descartáveis, usar fixtures e manter os passos reais correspondentes como pendentes.
+Nao atualizar baseline real automaticamente nem modificar Google. Agendador, notificacoes nativas, bandeja, autostart e instalador continuam fora de escopo. Mocks/fixtures nao comprovam APIs reais. Descoberta usa metadados autorizados e deve mostrar resultados incompletos; cadastro por URL permanece alternativo. O limite30 aplica-se aos cadastros presentes, incluindo pausados.
 
 ## Produto V1 aprovado
 

@@ -3,6 +3,8 @@
 //! structural snapshots retain protected formulas needed for deterministic checks.
 mod integration;
 mod integrity_store;
+#[path = "../management/store.rs"]
+mod management_store;
 mod migrations;
 pub use integration::*;
 

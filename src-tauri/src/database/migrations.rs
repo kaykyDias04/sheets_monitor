@@ -8,6 +8,7 @@ pub(super) struct Migration {
 }
 
 const MIGRATIONS: &[Migration] = &[
+    // Applied in order; prior migrations retain their original checksums.
     Migration {
         version: 1,
         name: "0001_foundation",
@@ -22,6 +23,11 @@ const MIGRATIONS: &[Migration] = &[
         version: 3,
         name: "0003_integrity_engine",
         sql: include_str!("../../migrations/0003_integrity_engine.sql"),
+    },
+    Migration {
+        version: 4,
+        name: "0004_operational_management",
+        sql: include_str!("../../migrations/0004_operational_management.sql"),
     },
 ];
 
@@ -237,7 +243,7 @@ mod tests {
         apply(&mut connection).unwrap();
         connection
             .execute(
-                "INSERT INTO _schema_migrations VALUES(4,'future','unknown','demo')",
+                "INSERT INTO _schema_migrations VALUES(5,'future','unknown','demo')",
                 [],
             )
             .unwrap();

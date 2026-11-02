@@ -46,3 +46,11 @@ Referências aprovadas são imutáveis. ID, fingerprint, geração da prévia, c
 Falhas parciais preservam incidentes anteriores e diferenças comprovadas de componentes completos. Journal com revisão CAS impede diferenças calculadas sobre observação concorrente antiga. Cenários de fonte malformada, erro calculado, chave/cabeçalho ambíguo e cobertura parcial produzem diagnósticos conservadores.
 
 Mutações Google não são necessárias para rodar o motor local e não foram realizadas pelo agente. Baseline real só pode ser aprovado pelo usuário. Relatórios públicos registram apenas indicadores e contagens; nunca identidade, IDs, valores, fórmulas ou fontes reais. Não capturar screenshots com conteúdo privado.
+
+## Sprint 04 — fronteiras adicionais
+
+A descoberta Drive consulta nomes e identificadores de arquivos em páginas limitadas, sem células. Esses metadados são privados. Não registrar listas reais, nome/email da conta, IDs de recursos ou fontes nos relatórios públicos. Os registros de evidência reais devem usar somente contagens e resultados sanitizados.
+
+Cadastro e histórico são segregados por conta autenticada, sem aceitar identidade da conta como argumento confiável do frontend. Mutações fixam geração de sessão e revisão do registro; baselines fixam fingerprint e versão esperada; verificações fixam revisão no commit da avaliação. Respostas tardias são descartadas na interface. A remoção local nunca executa exclusão Drive.
+
+O cliente OAuth Desktop opcionalmente provisionado no build é da aplicação. Nenhum valor real entra no repositório. Um segredo incorporado em cliente público não é confidencial; PKCE continua obrigatório. Cofre indisponível não impede a abertura da interface, que informa o erro. Configurações existentes não são substituídas pelo provisionamento.

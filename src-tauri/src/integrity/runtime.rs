@@ -404,6 +404,14 @@ impl IntegrationRuntime {
         snapshot_id: String,
         persist: bool,
     ) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
+        self.validate_integrity_snapshot_registered(snapshot_id, persist, None)
+    }
+    pub fn validate_integrity_snapshot_registered(
+        &self,
+        snapshot_id: String,
+        persist: bool,
+        registry_revision: Option<u64>,
+    ) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
         let session = self.auth.authorized()?;
         self.engine_envelope(&session, || {
             let mut db = self.engine_database()?;
@@ -435,7 +443,7 @@ impl IntegrationRuntime {
             report.previous_snapshot_id = previous.as_ref().map(|s| s.id.clone());
             report.observation_revision = observation.revision;
             let events = if persist {
-                db.persist_integrity_report(&snapshot, &report)?
+                db.persist_registered_integrity_report(&snapshot, &report, registry_revision)?
             } else {
                 vec![]
             };

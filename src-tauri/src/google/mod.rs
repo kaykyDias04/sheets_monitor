@@ -1,6 +1,8 @@
 //! Authorized GET-only Google readers. Values and sources remain transient.
+mod discovery;
 mod models;
 mod transport;
+pub use discovery::*;
 pub use models::*;
 use reqwest::header::HeaderValue;
 use serde::de::DeserializeOwned;

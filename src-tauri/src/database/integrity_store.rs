@@ -10,6 +10,43 @@ use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{de::DeserializeOwned, Serialize};
 use std::collections::BTreeSet;
 
+fn guard_registered_snapshot(
+    c: &Connection,
+    snapshot: &StructuralSnapshot,
+    revision: Option<u64>,
+    checking: bool,
+) -> EngineResult<()> {
+    let aid = account(c, &snapshot.account_subject)?;
+    let row: Option<(Option<String>, String, bool, bool, u64)> = c.query_row(
+        "SELECT scope_hash,selected_sheet_ids_json,removed,paused,revision FROM registered_spreadsheets WHERE account_id=?1 AND spreadsheet_id=?2",
+        params![aid,snapshot.spreadsheet_id],
+        |r| Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?,r.get(4)?))
+    ).optional().map_err(storage)?;
+    match row {
+        None if revision.is_some() => Err(EngineError::BaselineConflict),
+        None => Ok(()),
+        Some((hash, selected, removed, paused, current)) => {
+            let selected: Vec<u32> = decode(&selected)?;
+            if removed
+                || checking && paused
+                || hash.as_deref() != Some(&snapshot.scope_hash)
+                || revision.is_some_and(|r| r != current)
+                || selected.iter().copied().collect::<BTreeSet<_>>()
+                    != snapshot
+                        .scope
+                        .sheets
+                        .iter()
+                        .map(|s| s.sheet_id)
+                        .collect::<BTreeSet<_>>()
+            {
+                Err(EngineError::BaselineConflict)
+            } else {
+                Ok(())
+            }
+        }
+    }
+}
+
 fn storage(_: rusqlite::Error) -> EngineError {
     EngineError::Storage
 }
@@ -242,7 +279,7 @@ impl Database {
         }
         let known_file:bool=transaction.query_row("SELECT EXISTS(SELECT 1 FROM integrity_scopes WHERE account_id=?1 AND spreadsheet_id=?2)",params![account_id,snapshot.spreadsheet_id],|r|r.get(0)).map_err(storage)?;
         if !known_file {
-            let count:i64=transaction.query_row("SELECT count(*) FROM (SELECT account_id,spreadsheet_id FROM integrity_scopes GROUP BY account_id,spreadsheet_id)",[],|r|r.get(0)).map_err(storage)?;
+            let count:i64=transaction.query_row("SELECT count(*) FROM (SELECT s.account_id,s.spreadsheet_id FROM integrity_scopes s WHERE NOT EXISTS(SELECT 1 FROM registered_spreadsheets r WHERE r.account_id=s.account_id AND r.spreadsheet_id=s.spreadsheet_id AND r.removed=1) GROUP BY s.account_id,s.spreadsheet_id)",[],|r|r.get(0)).map_err(storage)?;
             if count >= 30 {
                 return Err(EngineError::Limit);
             }
@@ -264,6 +301,24 @@ impl Database {
         confirmed: bool,
         origin: &str,
     ) -> EngineResult<BaselineVersion> {
+        self.approve_registered_structural_baseline(
+            subject,
+            snapshot_id,
+            expected_version,
+            confirmed,
+            origin,
+            None,
+        )
+    }
+    pub fn approve_registered_structural_baseline(
+        &mut self,
+        subject: &str,
+        snapshot_id: &str,
+        expected_version: u32,
+        confirmed: bool,
+        origin: &str,
+        registry_revision: Option<u64>,
+    ) -> EngineResult<BaselineVersion> {
         if !confirmed {
             return Err(EngineError::ApprovalRequired);
         }
@@ -276,6 +331,7 @@ impl Database {
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
         let snapshot = snapshot_from(&transaction, subject, snapshot_id)?;
+        guard_registered_snapshot(&transaction, &snapshot, registry_revision, false)?;
         crate::integrity::compare::validate_baseline_snapshot(&snapshot)?;
         if !capture_complete(&snapshot) {
             return Err(EngineError::InvalidSnapshot);
@@ -472,6 +528,14 @@ impl Database {
         snapshot: &StructuralSnapshot,
         report: &IntegrityReport,
     ) -> EngineResult<Vec<IntegrityEvent>> {
+        self.persist_registered_integrity_report(snapshot, report, None)
+    }
+    pub fn persist_registered_integrity_report(
+        &mut self,
+        snapshot: &StructuralSnapshot,
+        report: &IntegrityReport,
+        registry_revision: Option<u64>,
+    ) -> EngineResult<Vec<IntegrityEvent>> {
         snapshot.validate()?;
         if report.snapshot_id != snapshot.id
             || report.account_subject != snapshot.account_subject
@@ -501,6 +565,7 @@ impl Database {
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
         let stored = snapshot_from(&transaction, &snapshot.account_subject, &snapshot.id)?;
+        guard_registered_snapshot(&transaction, snapshot, registry_revision, true)?;
         if fingerprint(&stored) != fingerprint(snapshot) {
             return Err(EngineError::InvalidSnapshot);
         }

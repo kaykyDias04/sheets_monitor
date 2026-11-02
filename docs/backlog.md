@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Autorização vigente: **Sprint 03 concluída no aceite técnico local**, SM-012 a SM-017. Sprints 01/02 concluídas, com homologação Google real na Sprint 02. Etapas 04–06 aguardam autorização. Aprovação de baseline real permanece humana. Mutações reais continuam pendentes; ver [encerramento](evidence/sprint03/final-report.md).
+Sprint 04 autorizada: SM-018 a SM-021, com adicoes SM-021A e SM-021B do novo anexo. Sprints 01-03 encerradas tecnicamente; mutacoes reais da Sprint03 continuam pendentes. Etapas05-06 aguardam autorizacao.
 
 ## Sprint 01
 
@@ -111,18 +111,27 @@ Autorização vigente: **Sprint 03 concluída no aceite técnico local**, SM-012
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-018 | Criar dashboard | planejado | SM-003, SM-016 | Indicadores funcionais |
-| SM-019 | Implementar cadastro por link | planejado | SM-005, SM-010, SM-018 | Adicionar/remover arquivos |
-| SM-020 | Criar seleção de abas | planejado | SM-012, SM-019 | Escopo individual configurável |
-| SM-021 | Criar histórico | planejado | SM-017, SM-018 | Eventos pesquisáveis |
+| SM-018 | Criar dashboard | em_andamento | SM-003, SM-016 | Indicadores funcionais |
+| SM-019 | Implementar cadastro por link | em_andamento | SM-005, SM-010, SM-018 | Adicionar/remover arquivos |
+| SM-020 | Criar seleção de abas | em_andamento | SM-012, SM-019 | Escopo individual configurável |
+| SM-021 | Criar histórico | em_andamento | SM-017, SM-018 | Eventos pesquisáveis |
 
 ### SM-019 — subtarefas
 
-- **SM-019.01** — Editar, remover, pausar e impor capacidade de trinta arquivos (planejado).
+- **SM-019.01** — Editar, remover, pausar e impor capacidade de trinta arquivos (em_andamento).
 
 ### SM-020 — subtarefas
 
-- **SM-020.01** — Escopo por arquivo/abas e efeito sobre baseline aprovado (planejado).
+- **SM-020.01** — Escopo por arquivo/abas e efeito sobre baseline aprovado (em_andamento).
+
+### Adicoes autorizadas no Prompt 04
+
+| ID | Entrega | Estado |
+|---|---|---|
+| SM-021A | Gerenciamento visual da conta Google | em_andamento |
+| SM-021B | Fluxo visual de baselines | em_andamento |
+
+Os 28 IDs originais permanecem preservados. As adicoes ficam separadas em backlog.json.
 
 ## Sprint 05
 

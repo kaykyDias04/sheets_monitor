@@ -15,3 +15,5 @@ ADRs novos usam número sequencial, contexto, decisão, consequências e estado.
 Propostas futuras não autorizam sua implementação antes do prompt/sprint correspondente.
 
 - [0008: Motor determinístico, baseline e observações parciais](0008-integrity-observation-and-approval.md).
+
+- [0009 — Descoberta e operação por conta](0009-discovery-and-account-management.md): Drive, capacidade transacional, configuração e baseline, histórico e cliente OAuth da aplicação.

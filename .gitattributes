@@ -12,3 +12,7 @@ docs/sprint02.original.md -text -whitespace
 docs/evidence/sprint03/**/*.log -text -whitespace
 docs/evidence/sprint03/*.log -text -whitespace
 docs/sprint03.original.md -text -whitespace
+
+docs/evidence/sprint04/**/*.log -text -whitespace
+docs/evidence/sprint04/*.log -text -whitespace
+docs/sprint04.original.md -text -whitespace

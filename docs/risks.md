@@ -45,3 +45,9 @@ Limites de captura evitam consumo sem teto, mas não tornam uma amostra equivale
 A janela lógica de captura é diferente de geometria estrutural obrigatória. Exclusões permitidas de linhas não devem virar violação só por reduzir a grade. Baselines antigos e estado de incidentes sobrevivem à retenção; isso pode consumir disco ao aprovar muitas versões, de forma intencional e rastreável.
 
 Testes locais cobrem o ciclo destrutivo com fixtures. Uma referência real restrita ou uma captura real somente leitura não comprovam mutações destrutivas no Google. Esses passos permanecem separados e exigem recursos descartáveis/autorização específica. Não ampliar OAuth para escrita só para obter uma prova de teste.
+
+## Sprint 04 — riscos de descoberta e interface
+
+Drive.metadata.readonly é escopo restrito e pode ser bloqueado por administradores ou publicação não verificada. Paginação e incompleteSearch impedem prometer listagem completa prematuramente. Não há promessa de descoberta universal de scripts vinculados. Sem cliente da aplicação provisionado, o build de desenvolvimento não representa produto distribuível para qualquer usuário.
+
+A cobertura de integridade é limitada às abas/regiões/regras aprovadas. Mudança de seleção ou regra exige referência correspondente. Baselines imutáveis persistem quando o usuário opta por excluir apenas atividades; informar isso na confirmação. Histórico de valores usa hashes, sem recuperar texto anterior bruto que o motor não armazenou. Preferências futuras não indicam serviço periódico ativo.

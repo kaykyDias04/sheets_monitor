@@ -73,6 +73,14 @@ check('Sprint 03 contract and evidence boundary', () => {
  if(completed){const proof=JSON.parse(read('docs/evidence/sprint03/local-validation.json'));assert(proof.success===true&&proof.synthetic_scenarios===true,'Completion needs local scenario evidence');assert(typeof proof.live_mutations==='string','Real mutation coverage must be explicit');}
  return 'original preserved; Sprint 03 operations only; real and synthetic evidence separate';
 });
+check('Sprint 04 original and authorized additions', () => {
+ const digest=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'docs/sprint04.original.md'))).digest('hex');
+ assert(digest==='4ae6d43afbD53694cc1aec38b485eea584344bc5d6bc16950da637c8e58dab1f'.toLowerCase(),'Sprint 04 original changed');
+ const additions=JSON.parse(read('docs/backlog.json')).additions;
+ assert(additions.length===2 && additions[0].id==='SM-021A' && additions[1].id==='SM-021B','Authorized additions must remain separate from original 28 IDs');
+ for (const item of additions) assert(item.sprint===4 && item.source==='docs/sprint04.original.md','Addition source invalid');
+ return 'source preserved; 28 original IDs and two explicit additions';
+});
 check('raw prototype archive', () => {
   const manifest = JSON.parse(read('docs/evidence/repository/prototype-manifest.json'));
   for (const entry of manifest.files) {
@@ -113,12 +121,12 @@ check('issue and PR templates', () => {
   assert(read('.github/PULL_REQUEST_TEMPLATE.md').includes('Critérios de aceite'), 'PR template lacks acceptance');
   return 'two issue templates and PR acceptance/evidence sections';
 });
-check('Sprint 03 scope and modular structure', () => {
+check('Sprint 04 scope and modular structure', () => {
   for (const directory of ['src/components','src/pages','src/hooks','src/services','src/types','src-tauri/src/database','src-tauri/src/auth','src-tauri/src/google','src-tauri/src/integrity','src-tauri/src/monitoring','src-tauri/src/notifications','src-tauri/migrations']) {
     assert(fs.statSync(path.join(root,directory)).isDirectory(), `Missing module ${directory}`);
   }
   const app = read('src-tauri/src/app.rs');
-  assert((app.match(/#\[tauri::command\]/g) || []).length === 20 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
+  assert((app.match(/#\[tauri::command\]/g) || []).length >= 21 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
   const cargo = read('src-tauri/Cargo.toml');
   assert(!/^tauri-plugin-notification\s*=/m.test(cargo), 'Future notification dependency activated');
   for (const command of ['integration_get_state','integration_configure','integration_connect','integration_disconnect','integration_revoke','integration_test_sheet','integration_test_script']) assert(app.includes(command), `Missing command ${command}`);
@@ -127,7 +135,7 @@ check('Sprint 03 scope and modular structure', () => {
     const content = read(file);
     assert(!/(?:from\s*["']|include!\s*\(\s*["'])[^"']*archive\//.test(content), `Active import of archive: ${file}`);
   }
-  return 'foundation + Google + technical integrity UI, future contracts isolated, twenty native commands';
+  return 'foundation + Google + operational management, future scheduler and notifications isolated';
 });
 check('active source encoding', () => {
   const source=trackedAndNew.filter(p=>/^(src|src-tauri\/src)\//.test(p) && /\.(tsx?|rs|css)$/.test(p));
@@ -159,11 +167,11 @@ check('completion evidence matches sprint status', () => {
   assert(['dashboard','sheets','history','settings'].every(page => qa.navigation.includes(page)), 'Native navigation not established');
   assert(qa.persistence.saved_interval === 120 && qa.persistence.after_restart_interval === 120 && qa.persistence.final_interval === 60, 'Native persistence not established');
   assert(qa.diagnostics.final_debug_port_closed === true && qa.cloud_access === false, 'Diagnostics or scope gate incomplete');
-  assert(items.filter(i => i.sprint > 3).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
+  assert(items.filter(i => i.sprint > 4).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
   return 'Completed foundation items have native evidence; future sprints remain uncompleted';
 });
 const success = checks.every(item => item.ok);
-const reportPath = path.join(root,'docs/evidence/sprint03/repository-verification.json');
+const reportPath = path.join(root,'docs/evidence/sprint04/repository-verification.json');
 fs.mkdirSync(path.dirname(reportPath), { recursive:true });
-fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 03 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
+fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 04 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
 process.exitCode = success ? 0 : 1;

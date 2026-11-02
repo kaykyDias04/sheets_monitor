@@ -282,3 +282,88 @@ fn corrupt_vault_fails_closed_and_explicit_local_logout_resets_it() {
     assert_eq!(manager.disconnect().unwrap().auth.status, "unconfigured");
     assert!(vault.bytes.lock().unwrap().is_none());
 }
+
+#[test]
+fn application_provisioning_is_optional_and_never_overwrites_existing_config() {
+    let vault = Arc::new(Vault::default());
+    let mock = Arc::new(Mock::new());
+    let manager = AuthManager::new(vault, mock);
+    assert!(!manager.configure_application(None).unwrap().configured);
+    let first = manager
+        .configure_application(Some(AuthConfigInput {
+            client_id: "fixture.apps.googleusercontent.com".into(),
+            client_secret: Some("synthetic-secret".into()),
+            drive_metadata_opt_in: false,
+        }))
+        .unwrap();
+    assert!(first.configured);
+    let second = manager
+        .configure_application(Some(AuthConfigInput {
+            client_id: "other.apps.googleusercontent.com".into(),
+            client_secret: None,
+            drive_metadata_opt_in: true,
+        }))
+        .unwrap();
+    assert_eq!(second.client_id, first.client_id);
+    assert_eq!(second.generation, first.generation);
+    assert!(!second.drive_metadata_opt_in);
+}
+
+#[test]
+fn drive_opt_in_requires_official_consent_and_never_fabricates_grants() {
+    let (_, _, manager) = configured();
+    manager.connect().unwrap();
+    let before = manager.state().unwrap();
+    assert!(!before
+        .auth
+        .granted_scopes
+        .iter()
+        .any(|s| s == super::super::DRIVE_SCOPE));
+    let enabled = manager.set_drive_opt_in(true).unwrap();
+    assert!(enabled.drive_metadata_opt_in);
+    assert_eq!(enabled.auth.status, "reconnect_required");
+    assert_eq!(enabled.auth.granted_scopes, before.auth.granted_scopes);
+    assert!(enabled.generation > before.generation);
+    assert_eq!(enabled.auth.account, before.auth.account);
+    let disabled = manager.set_drive_opt_in(false).unwrap();
+    assert_eq!(disabled.auth.status, "connected");
+    assert!(!disabled.drive_metadata_opt_in);
+    assert_eq!(disabled.auth.granted_scopes, before.auth.granted_scopes);
+}
+
+#[test]
+fn failed_drive_opt_in_preserves_previous_protected_configuration() {
+    let (vault, _, manager) = configured();
+    let before = manager.state().unwrap();
+    vault.fail.store(true, Ordering::SeqCst);
+    assert_eq!(
+        manager.set_drive_opt_in(true).unwrap_err().code,
+        AuthCode::VaultUnavailable
+    );
+    let after = manager.state().unwrap();
+    assert_eq!(before.generation, after.generation);
+    assert!(!after.drive_metadata_opt_in);
+}
+
+#[test]
+fn opting_out_of_drive_does_not_clear_an_unrelated_reconnect_error() {
+    let (_, _, manager) = configured();
+    manager.set_drive_opt_in(true).unwrap();
+    manager.memory().unwrap().reconnect_required = true;
+    let next = manager.set_drive_opt_in(false).unwrap();
+    assert_eq!(next.auth.status, "reconnect_required");
+}
+
+#[test]
+fn invalid_application_provisioning_keeps_shell_state_unconfigured() {
+    let vault = Arc::new(Vault::default());
+    let manager = AuthManager::new(vault, Arc::new(Mock::new()));
+    assert!(manager
+        .configure_application(Some(AuthConfigInput {
+            client_id: "invalid-client".into(),
+            client_secret: None,
+            drive_metadata_opt_in: false,
+        }))
+        .is_err());
+    assert!(!manager.state().unwrap().configured);
+}

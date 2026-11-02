@@ -39,3 +39,13 @@ O roteiro real deve comprovar identificação, leitura Sheets de abas/valores/f�
 ## Resultado nesta sprint
 
 O usuário configurou o cliente localmente e concluiu login/consentimento pelo navegador. Leituras autorizadas Sheets/Drive/Apps Script e recuperação/refresh foram comprovadas em [google-live](evidence/sprint02/google-live.json). Não foram registrados client ID/secret, identidade ou IDs dos recursos. O roteiro acima continua aplicável à configuração de outra conta, sem transferir o consentimento atual.
+
+## Sprint 04 — configuração da aplicação e descoberta
+
+No uso diário, o usuário entra com Google e concede permissões. Não precisa informar projeto Cloud, Client ID, secret ou API key. O mantenedor prepara um cliente Desktop do projeto autorizado e provisiona o build com SHEETS_MONITOR_OAUTH_CLIENT_ID e, quando exigido pelo cliente Desktop, SHEETS_MONITOR_OAUTH_DESKTOP_SECRET. Esses valores são fornecidos pelo ambiente de build autorizado, nunca por arquivos versionados. Um cliente desktop é público: incorporar um segredo desktop não oferece confidencialidade e não substitui PKCE. Não usar um segredo de cliente Web.
+
+O backend aplica essa configuração somente quando ainda não existe configuração protegida local. Nunca substitui uma sessão/configuração existente ao iniciar. Sem provisionamento, a interface informa que o aplicativo precisa ser preparado pelo mantenedor; a configuração avançada continua disponível para desenvolvimento local autorizado. Não fabricar cliente nem reutilizar projeto de terceiros.
+
+A descoberta usa drive.metadata.readonly com opt-in explícito. Ativar a preferência sem concessão suficiente exige reautorizar pelo navegador com o conjunto completo de escopos; a preferência não concede acesso. Desativar a descoberta bloqueia consultas Drive no aplicativo e não revoga automaticamente as permissões Google já concedidas. O fluxo de revogação permanece ação explícita separada.
+
+A pesquisa paginada inclui arquivos compartilhados conforme as políticas da conta, com aviso de resultados incompletos. Não se apresenta drive.file como listagem geral. Detalhes e fontes oficiais em [descoberta](spreadsheet-discovery.md). O escopo de metadados é restrito; publicação externa ainda depende de verificação, audiência, políticas de privacidade e aprovação Google aplicáveis. Funcionamento com uma conta de teste não comprova distribuição pública.

@@ -227,7 +227,11 @@ impl AuthManager {
             session.is_some_and(|s| s.refresh_token.as_ref().is_some_and(|t| !t.is_empty()));
         let status = if config.is_none() {
             "unconfigured"
-        } else if memory.reconnect_required || (session.is_some() && !access_valid && !recoverable)
+        } else if memory.reconnect_required
+            || (session.is_some() && !access_valid && !recoverable)
+            || (config.is_some_and(|c| c.drive_metadata_opt_in)
+                && session
+                    .is_some_and(|s| !s.granted_scopes.iter().any(|v| v == super::DRIVE_SCOPE)))
         {
             "reconnect_required"
         } else if session.is_some() {
@@ -291,6 +295,46 @@ impl AuthManager {
         memory.access = None;
         memory.reconnect_required = false;
         memory.load_error = None;
+        Ok(Self::status(&memory))
+    }
+    /// Startup-only application provisioning. Never replaces a user's existing
+    /// protected configuration or grants Drive access without an explicit choice.
+    pub fn configure_application(
+        &self,
+        input: Option<AuthConfigInput>,
+    ) -> AuthResult<IntegrationState> {
+        let current = self.state()?;
+        if current.configured {
+            return Ok(current);
+        }
+        match input {
+            Some(input) => self.configure(input),
+            None => Ok(current),
+        }
+    }
+    /// Changing the requested Drive scope does not manufacture a Google grant.
+    /// Enabling it without an existing grant requires full desktop reconsent.
+    pub fn set_drive_opt_in(&self, enabled: bool) -> AuthResult<IntegrationState> {
+        let _gate = self
+            .auth_gate
+            .try_lock()
+            .map_err(|_| AuthError::new(AuthCode::AuthBusy))?;
+        let mut memory = self.memory()?;
+        if let Some(error) = &memory.load_error {
+            return Err(error.clone());
+        }
+        let mut stored = memory.stored.clone();
+        let config = stored
+            .config
+            .as_mut()
+            .ok_or_else(|| AuthError::new(AuthCode::Unconfigured))?;
+        if config.drive_metadata_opt_in == enabled {
+            return Ok(Self::status(&memory));
+        }
+        config.drive_metadata_opt_in = enabled;
+        self.save(&stored)?;
+        memory.stored = stored;
+        memory.generation = memory.generation.wrapping_add(1);
         Ok(Self::status(&memory))
     }
     pub fn connect(&self) -> AuthResult<IntegrationState> {

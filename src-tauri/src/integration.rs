@@ -323,3 +323,55 @@ impl IntegrationRuntime {
 
 #[cfg(test)]
 mod tests;
+
+impl IntegrationRuntime {
+    /// Metadata discovery is independent of registration and does not fetch cells.
+    pub fn discover_spreadsheets(
+        &self,
+        input: crate::google::DiscoveryQuery,
+    ) -> Result<crate::integrity::runtime::EngineEnvelope<crate::google::DiscoveryPage>, CommandError>
+    {
+        let requested = self.auth.state()?;
+        if !requested.drive_metadata_opt_in {
+            return Err(
+                crate::auth::AuthError::new(crate::auth::AuthCode::InsufficientScope).into(),
+            );
+        }
+        let mut session = self.auth.authorized()?;
+        if session.generation != requested.generation {
+            return Err(
+                crate::auth::AuthError::new(crate::auth::AuthCode::OperationSuperseded).into(),
+            );
+        }
+        let page = self.read(&mut session, DRIVE_SCOPE, |api| {
+            api.discover_spreadsheets(&input)
+        })??;
+        self.auth.with_current(&session, || {
+            Ok(crate::integrity::runtime::EngineEnvelope {
+                generation: session.generation,
+                account_subject: session.account.subject.clone(),
+                data: page,
+            })
+        })?
+    }
+}
+
+impl IntegrationRuntime {
+    pub fn open_spreadsheet(
+        &self,
+        input: crate::management::SpreadsheetQuery,
+    ) -> Result<crate::integrity::runtime::EngineEnvelope<()>, CommandError> {
+        use crate::auth::OAuthTransport;
+        let result = self.get_spreadsheet_diagnostics(input)?;
+        let url =
+            url::Url::parse(&result.data.spreadsheet.url).map_err(|_| CommandError::local())?;
+        self.auth.with_generation(result.generation, || {
+            crate::auth::HttpsOAuthTransport::new()?.open_browser(&url)?;
+            Ok(crate::integrity::runtime::EngineEnvelope {
+                generation: result.generation,
+                account_subject: result.account_subject,
+                data: (),
+            })
+        })?
+    }
+}

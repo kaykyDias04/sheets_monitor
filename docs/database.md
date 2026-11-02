@@ -80,3 +80,9 @@ Nenhum token/secret, valor de célula, fórmula ou fonte de script é persistido
 Migração 0003 adiciona sete tabelas: integrity_scopes, structural_snapshots, baseline_versions, integrity_reports, integrity_events, integrity_incidents e integrity_observation_components. Total22 tabelas de produto, preservando as quinze anteriores e os checksums 0001/0002. Novas estruturas são separadas dos exemplos da fundação; não duplicam dados reais nas tabelas demonstrativas.
 
 Conta/arquivo/escopo são chaves das operações. Baseline e snapshot são imutáveis; o ponteiro ativo muda em transação CAS. Journal de componentes e revisão observada são separados do último snapshot completo. Retenção não apaga referências aprovadas ou estado de deduplicação. Snapshots mantêm fórmulas protegidas necessárias, cabeçalhos e hashes; valores completos, fontes brutas e tokens continuam fora do banco. Hash de valor não é criptografia nem anonimização forte. O SQLite depende da proteção do perfil/disco Windows.
+
+## Migração 0004 — registro operacional
+
+Duas tabelas novas, registered_spreadsheets e management_preferences, totalizam 24 tabelas de produto. O cadastro usa chave composta conta/arquivo, seleção e escopo JSON validados, revisão monotônica e remoção lógica. Triggers limitam a 30 cadastros presentes em todas as contas locais, contando pausados. Uma atualização do trigger de capacidade de captura deixa de contar cadastros removidos; imagens/baselines existentes permanecem intactas. Não altera SQL das migrações 0001–0003.
+
+Aprovação e commit de avaliação verificam escopo/seleção e revisão atuais na mesma transação. A remoção com exclusão de atividades limpa eventos, relatórios, incidentes e observações, preservando baselines imutáveis; a remoção preservando histórico mantém a consulta de atividades do cadastro arquivado. Operações são sempre segregadas por conta.

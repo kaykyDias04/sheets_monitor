@@ -2,9 +2,11 @@
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A autorização atual é a **Sprint 03**, motor de integridade sob demanda: snapshots, baselines com aprovação humana, comparações estruturais/conteúdo/fórmulas, análise AST Apps Script, relatórios e eventos deduplicados. Aceite técnico concluído; cobertura real restrita e mutações reais pendentes estão no [relatório final](docs/evidence/sprint03/final-report.md). Aguardar Prompt 04. Mutações Google e aprovação de baseline real não são automáticas.
+A etapa autorizada atual e a **Sprint 04**, interface operacional e gerenciamento: descoberta Drive, cadastro por URL, selecao de abas/regras, fluxo visual de baselines e historico. Implementacao em andamento; resultados verificaveis em [progresso](docs/progress.md) e docs/evidence/sprint04. Sprints 01-03 preservadas. Nao iniciar Sprint05 sem novo prompt.
 
-A Sprint 02 continua homologada com login, sessão/refresh e leituras reais das três APIs: [evidência](docs/evidence/sprint02/google-live.json). A tela Integração Google e a nova Integridade técnica usam backend real; navegador sem Tauri não simula sucesso. Dashboard, Planilhas, Histórico e preferências ainda conservam a demonstração da fundação. Gerenciamento definitivo, scheduler, notificações, bandeja, autostart e instalador aguardam suas etapas.
+O fluxo diario usa a conta Google conectada e dados do backend. O cadastro admite ate30 arquivos presentes, incluindo pausados; a descoberta nao limita a lista a30. Baseline real exige aprovacao humana e nenhuma operacao altera os arquivos Google. As capturas e regras protegem somente o escopo escolhido. O monitoramento nesta etapa e sob demanda.
+
+O mantenedor provisiona o cliente OAuth Desktop da aplicacao antes da distribuicao; o usuario comum apenas entra com Google. O modo avancado serve ao desenvolvimento autorizado. Sem provisionamento, o aplicativo informa essa pendencia, sem fabricar integracao ou exigir credenciais Cloud no fluxo diario. Publicacao Google e homologacao local sao coisas distintas.
 
 Configurar a conexão local seguindo [OAuth](docs/oauth-setup.md). Nunca enviar senhas, secrets ou tokens no chat ou em commits. Drive usa opt-in de metadados; nenhuma permissão de escrita é solicitada.
 
