@@ -361,12 +361,25 @@ impl IntegrationRuntime {
         &self,
         input: crate::management::SpreadsheetQuery,
     ) -> Result<crate::integrity::runtime::EngineEnvelope<()>, CommandError> {
-        use crate::auth::OAuthTransport;
+        self.open_spreadsheet_with(input, |url| {
+            open::that(url.as_str())
+                .map_err(|_| crate::auth::AuthError::new(crate::auth::AuthCode::BrowserUnavailable))
+        })
+    }
+    fn open_spreadsheet_with(
+        &self,
+        input: crate::management::SpreadsheetQuery,
+        opener: impl FnOnce(&url::Url) -> Result<(), crate::auth::AuthError>,
+    ) -> Result<crate::integrity::runtime::EngineEnvelope<()>, CommandError> {
         let result = self.get_spreadsheet_diagnostics(input)?;
-        let url =
-            url::Url::parse(&result.data.spreadsheet.url).map_err(|_| CommandError::local())?;
+        crate::google::validate_google_id(&result.data.spreadsheet.spreadsheet_id)?;
+        let url = url::Url::parse(&format!(
+            "https://docs.google.com/spreadsheets/d/{}/edit",
+            result.data.spreadsheet.spreadsheet_id
+        ))
+        .map_err(|_| CommandError::local())?;
         self.auth.with_generation(result.generation, || {
-            crate::auth::HttpsOAuthTransport::new()?.open_browser(&url)?;
+            opener(&url)?;
             Ok(crate::integrity::runtime::EngineEnvelope {
                 generation: result.generation,
                 account_subject: result.account_subject,

@@ -1,0 +1,465 @@
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ❯ src/App.test.tsx (12 tests | 1 failed) 21107ms
+     × salva abas, sugere rascunho e aprova apenas a captura revisada 1983ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > salva abas, sugere rascunho e aprova apenas a captura revisada
+TestingLibraryElementError: Unable to find an accessible element with the role "checkbox" and name `/Receitas ID 17/`
+
+Here are the accessible roles:
+
+  link:
+
+  Name "Ir para o conteúdo":
+  <a
+    class="op-skip"
+    href="#operational-content"
+  />
+
+  Name "SheetsMonitorINTEGRIDADE DAS SUAS PLANILHAS":
+  <a
+    class="brand"
+    href="#overview"
+  />
+
+  --------------------------------------------------
+  complementary:
+
+  Name "":
+  <aside
+    class="sidebar"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="nav-label"
+  />
+
+  Name "":
+  <p
+    class="eyebrow"
+  />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p />
+
+  Name "":
+  <p
+    class="op-hint"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="op-notice"
+  />
+
+  --------------------------------------------------
+  navigation:
+
+  Name "Navegação principal":
+  <nav
+    aria-label="Navegação principal"
+  />
+
+  Name "Seções da planilha":
+  <nav
+    aria-label="Seções da planilha"
+    class="op-detail-nav"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Visão geral":
+  <button
+    class="nav-item "
+  />
+
+  Name "Planilhas":
+  <button
+    class="nav-item "
+  />
+
+  Name "Detalhes da planilha":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  Name "Abrir configurações da conta":
+  <button
+    aria-label="Abrir configurações da conta"
+    class="op-avatar"
+    title="Configurações da conta"
+  />
+
+  Name "Atualizar dados":
+  <button
+    class="inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-9 rounded-md px-3 text-xs"
+  />
+
+  Name "Verificar agora":
+  <button
+    class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"
+    disabled=""
+  />
+
+  Name "Pausar":
+  <button
+    class="inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-9 rounded-md px-3 text-xs"
+  />
+
+  Name "Atualizar abas e nome":
+  <button
+    class="inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-9 rounded-md px-3 text-xs"
+  />
+
+  Name "Abrir no Google Sheets":
+  <button
+    class="inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-9 rounded-md px-3 text-xs"
+  />
+
+  Name "Ver atividades":
+  <button
+    class="inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-9 rounded-md px-3 text-xs"
+  />
+
+  Name "Remover cadastro":
+  <button
+    class="inline-flex items-center justify-center gap-2 font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 text-muted-foreground hover:bg-accent hover:text-foreground h-9 rounded-md px-3 text-xs"
+  />
+
+  Name "Abas":
+  <button
+    aria-current="page"
+  />
+
+  Name "Regras de proteção":
+  <button />
+
+  Name "Referências":
+  <button />
+
+  Name "Diagnósticos":
+  <button />
+
+  Name "Apps Script":
+  <button />
+
+  Name "Salvar seleção de abas":
+  <button
+    class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"
+    disabled=""
+  />
+
+  Name "Continuar para regras de proteção":
+  <button
+    class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"
+  />
+
+  --------------------------------------------------
+  banner:
+
+  Name "":
+  <header
+    class="topbar"
+  />
+
+  --------------------------------------------------
+  strong:
+
+  Name "":
+  <strong />
+
+  Name "":
+  <strong />
+
+  --------------------------------------------------
+  main:
+
+  Name "":
+  <main
+    class="main-content op-main"
+    id="operational-content"
+  />
+
+  --------------------------------------------------
+  heading:
+
+  Name "Detalhes da planilha":
+  <h1 />
+
+  Name "Receitas de teste":
+  <h2 />
+
+  Name "Abas monitoradas":
+  <h2
+    class="font-semibold leading-none tracking-tight"
+  />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Planilha selecionada":
+  <select />
+
+  --------------------------------------------------
+  option:
+
+  Name "Selecione uma planilha cadastrada":
+  <option
+    value=""
+  />
+
+  Name "Receitas de teste":
+  <option
+    value="fixture-file"
+  />
+
+  --------------------------------------------------
+  checkbox:
+
+  Name "Selecionar todas as abas de grade":
+  <input
+    type="checkbox"
+  />
+
+  Name "ReceitasID 17 · 500 linhas · 8 colunas":
+  <input
+    type="checkbox"
+  />
+
+  --------------------------------------------------
+  contentinfo:
+
+  Name "":
+  <footer
+    class="op-footer"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="app-shell op-app"
+    >
+      <a
+        class="op-skip"
+        href="#operational-content"
+      >
+        Ir para o conteúdo
+      </a>
+      <aside
+        class="sidebar"
+      >
+        <a
+          class="brand"
+          href="#overview"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              INTEGRIDADE DAS SUAS PLANILHAS
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-shield-check"
+              fill="none"
+              height="19"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="19"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </span>
+          <div>
+            Workspace local
+            <small>
+              Google somente leitura
+            </small>
+          </div>
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                y="3"
+              />
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="14"
+                y="12"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="3"
+                y="16"
+              />
+            </svg>
+            <span>
+              Visão geral
+            </span>
+          </button>
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-file-spreadsheet"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="M8 13h2"
+              />
+              <path
+                d="M14 13h2"
+              />
+              <path
+                d="M8 17h2"
+              />
+              <path
+                d="M14 17h2"
+              />
+            </svg>
+            ...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:317:29
+    315|     const user = await load();
+    316|     await openFirst(user);
+    317|     await user.click(screen.getByRole("checkbox", { name: /Receitas ID…
+       |                             ^
+    318|     await user.click(screen.getByRole("button", { name: "Salvar seleçã…
+    319|     await settled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  13:40:03
+   Duration  25.84s (transform 1.27s, setup 366ms, import 2.36s, tests 21.11s, environment 1.73s)
+

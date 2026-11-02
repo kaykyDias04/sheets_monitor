@@ -1,0 +1,1996 @@
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ❯ src/App.test.tsx (12 tests | 7 failed) 9050ms
+     × descobre e pagina arquivos compartilhados sem cadastro automático 542ms
+     × cadastra link válido como configuração pendente 477ms
+     × trata URL inválida e cadastro duplicado 541ms
+     × desabilita cadastro ao atingir 30 sem limitar descoberta 669ms
+     × salva abas, sugere rascunho e aprova apenas a captura revisada 580ms
+     × exige confirmação de remoção e escolha de histórico 672ms
+     × descarta resultado se a conta muda mesmo com envelope posterior válido 518ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > descobre e pagina arquivos compartilhados sem cadastro automático
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas0":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      0
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ src/App.test.tsx:256:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > cadastra link válido como configuração pendente
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas0":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      0
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ src/App.test.tsx:270:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > trata URL inválida e cadastro duplicado
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas1":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      1
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ src/App.test.tsx:290:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > desabilita cadastro ao atingir 30 sem limitar descoberta
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas30":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      30
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ src/App.test.tsx:309:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > salva abas, sugere rascunho e aprova apenas a captura revisada
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas1":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      1
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ openFirst src/App.test.tsx:230:9
+ ❯ src/App.test.tsx:316:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > exige confirmação de remoção e escolha de histórico
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas1":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      1
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ openFirst src/App.test.tsx:230:9
+ ❯ src/App.test.tsx:351:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > descarta resultado se a conta muda mesmo com envelope posterior válido
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/^Planilhas(?:\s+\d+)?$/`
+
+Here are the accessible roles:
+
+  button:
+
+  Name "Visão geral":
+  <button
+    aria-current="page"
+    class="nav-item active"
+  />
+
+  --------------------------------------------------button:
+
+  Name "Planilhas0":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Detalhes da planilha":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Atividades":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Regras e baselines":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------button:
+
+  Name "Configurações":
+  <button
+    class="nav-item "
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<nav
+  aria-label="Navegação principal"
+>
+  <button
+    aria-current="page"
+    class="nav-item active"
+  >
+    <svg
+      class="lucide lucide-layout-dashboard"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="3"
+        y="3"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="14"
+        y="3"
+      />
+      <rect
+        height="9"
+        rx="1"
+        width="7"
+        x="14"
+        y="12"
+      />
+      <rect
+        height="5"
+        rx="1"
+        width="7"
+        x="3"
+        y="16"
+      />
+    </svg>
+    <span>
+      Visão geral
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-file-spreadsheet"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+      />
+      <path
+        d="M14 2v4a2 2 0 0 0 2 2h4"
+      />
+      <path
+        d="M8 13h2"
+      />
+      <path
+        d="M14 13h2"
+      />
+      <path
+        d="M8 17h2"
+      />
+      <path
+        d="M14 17h2"
+      />
+    </svg>
+    <span>
+      Planilhas
+    </span>
+    <small>
+      0
+    </small>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-eye"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="3"
+      />
+    </svg>
+    <span>
+      Detalhes da planilha
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-activity"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+      />
+    </svg>
+    <span>
+      Atividades
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-list-checks"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m3 17 2 2 4-4"
+      />
+      <path
+        d="m3 7 2 2 4-4"
+      />
+      <path
+        d="M13 6h8"
+      />
+      <path
+        d="M13 12h8"
+      />
+      <path
+        d="M13 18h8"
+      />
+    </svg>
+    <span>
+      Regras e baselines
+    </span>
+  </button>
+  <button
+    class="nav-item "
+  >
+    <svg
+      class="lucide lucide-settings2"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M20 7h-9"
+      />
+      <path
+        d="M14 17H5"
+      />
+      <circle
+        cx="17"
+        cy="17"
+        r="3"
+      />
+      <circle
+        cx="7"
+        cy="7"
+        r="3"
+      />
+    </svg>
+    <span>
+      Configurações
+    </span>
+  </button>
+</nav>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ go src/App.test.tsx:223:77
+    221| async function go(user: ReturnType<typeof userEvent.setup>, label: str…
+    222|   await user.click(
+    223|     within(screen.getByRole("navigation", { name: "Navegação principal…
+       |                                                                             ^
+    224|       name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    225|     }),
+ ❯ src/App.test.tsx:412:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 5 passed (12)
+   Start at  13:39:33
+   Duration  13.33s (transform 787ms, setup 345ms, import 1.72s, tests 9.05s, environment 1.89s)
+

@@ -126,7 +126,7 @@ check('Sprint 04 scope and modular structure', () => {
     assert(fs.statSync(path.join(root,directory)).isDirectory(), `Missing module ${directory}`);
   }
   const app = read('src-tauri/src/app.rs');
-  assert((app.match(/#\[tauri::command\]/g) || []).length >= 21 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
+  assert((app.match(/#\[tauri::command\]/g) || []).length === 43 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
   const cargo = read('src-tauri/Cargo.toml');
   assert(!/^tauri-plugin-notification\s*=/m.test(cargo), 'Future notification dependency activated');
   for (const command of ['integration_get_state','integration_configure','integration_connect','integration_disconnect','integration_revoke','integration_test_sheet','integration_test_script']) assert(app.includes(command), `Missing command ${command}`);

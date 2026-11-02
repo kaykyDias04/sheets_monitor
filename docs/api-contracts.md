@@ -45,3 +45,13 @@ Argumentos top-level snapshotId usam a convenção camelCase do Tauri; campos de
 Aprovação exige confirmação explícita e vincula a geração da prévia à sessão do backend antes de gravar, além de conta, ID, fingerprint e versão esperada. O mutex protege o commit local e não fica preso à rede. Leituras longas podem terminar após troca de sessão, mas seus resultados antigos não são persistidos ou aplicados à nova conta.
 
 Os DTOs de snapshot schema1 e escopo schema1 são versionados. Conteúdo mínimo, incerteza, retenção e limites estão em [motor](integrity-engine.md), [baselines](baselines.md), [fórmulas](formula-analysis.md) e [scripts](apps-script-dependencies.md). Não há comando para alterar o Google ou iniciar monitoramento contínuo.
+
+## Sprint 04 — comandos operacionais
+
+Mantidos os 20 comandos anteriores, com wrappers operacionais que acrescentam cadastro/revisão ao fluxo de integridade. Todos os resultados operacionais usam EngineEnvelope<T> com geração e conta, sem aceitar identidade confiável do chamador. Argumentos ficam em input, com campos snake_case. Mutações usam spreadsheet_id, expected_generation e expected_revision.
+
+Comandos novos: discover_spreadsheets, list_registered_spreadsheets, register_spreadsheet, remove_spreadsheet, pause_spreadsheet, resume_spreadsheet, list_spreadsheet_tabs, update_monitored_tabs, update_integrity_rules, propose_integrity_rules, preview_baseline, approve_baseline, run_spreadsheet_check, list_baseline_versions, compare_baseline_versions, get_spreadsheet_diagnostics, list_change_events, list_associated_scripts, get_dashboard_summary, get_management_preferences, save_management_preferences, open_spreadsheet e integration_set_drive_opt_in. A leitura de regras usa o diagnóstico já existente nessa superfície; não há comando duplicado list_integrity_rules.
+
+Ao todo são 43 comandos registrados, incluindo os anteriores. Descoberta retorna DiscoveryPage com next_page_token e incomplete_search; limite de página até 100, padrão 50, separado da capacidade de cadastro. Atividades e versões usam Page<T> com offset/limit/total. Comparação de versões é local e limitada a 200 diferenças, com truncated explícito. Regras propostas não são salvas automaticamente.
+
+A remoção exige confirmed e history preserve/delete_activity; a segunda opção exclui atividades e preserva baselines. Preview/approval operacionais fixam revisão do cadastro, fingerprint e versão. Não equivalem aos comandos avançados, que não oferecem cadastro/seleção operacional; a persistência compartilhada também impede usar uma configuração antiga de um cadastro modificado.

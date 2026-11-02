@@ -423,6 +423,15 @@ async fn open_spreadsheet(
     blocking(move || rt.open_spreadsheet(input)).await
 }
 
+#[tauri::command]
+async fn propose_integrity_rules(
+    state: State<'_, FoundationState>,
+    input: crate::management::Mutation,
+) -> Result<EngineEnvelope<crate::integrity::MonitorScope>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.propose_integrity_rules(input)).await
+}
+
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
@@ -478,6 +487,7 @@ pub fn run() {
             resume_spreadsheet,
             update_monitored_tabs,
             update_integrity_rules,
+            propose_integrity_rules,
             preview_baseline,
             approve_baseline,
             run_spreadsheet_check,

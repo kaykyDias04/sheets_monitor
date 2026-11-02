@@ -155,7 +155,9 @@ impl Database {
         metadata: &SpreadsheetMetadata,
     ) -> Result<RegisteredSpreadsheet> {
         validate_google_id(&metadata.spreadsheet_id)?;
-        if metadata.title.is_empty() || metadata.title.len() > 4096 || metadata.sheets.len() > 1000
+        if metadata.title.is_empty()
+            || metadata.title.len() > 4096
+            || metadata.sheets.len() > crate::integrity::MAX_MONITORED_TABS
         {
             return Err(error(
                 "invalid_metadata",
@@ -226,7 +228,7 @@ impl Database {
         let row = current(&tx, subject, m)?;
         let set: BTreeSet<_> = sheet_ids.iter().copied().collect();
         if set.len() != sheet_ids.len()
-            || set.len() > 30
+            || set.len() > crate::integrity::MAX_MONITORED_TABS
             || set.iter().any(|id| {
                 !row.tabs.iter().any(|s| {
                     s.sheet_id == *id && s.sheet_type.as_deref().is_none_or(|k| k == "GRID")
@@ -235,7 +237,7 @@ impl Database {
         {
             return Err(error(
                 "invalid_tabs",
-                "Selecione até 30 abas de grade disponíveis.",
+                "Selecione abas de grade disponíveis, respeitando o limite de 1024 abas e 20.000 células por escopo.",
             ));
         }
         let aid = account(&tx, subject)?;

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { desktop } from "@/services/foundation";
+import { desktop } from "@/services/platform";
 import * as api from "@/services/google";
 import type { IntegrationState, SheetAccessResult, ScriptAccessResult } from "@/types/google";
 export function useGoogleIntegration() {

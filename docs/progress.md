@@ -93,3 +93,11 @@ Verificações: 146 testes unitários Rust e 2 integrações aprovados, 20 teste
 Leitura real no build final confirmou sessão recuperada, refresh e baseline v1 aprovada pelo usuário, restrita a uma aba e duas células, sem fórmulas protegidas/scripts. Online na repetição, zero eventos novos. Rascunho adicional de 800 células, duas regras de fórmulas e 23 arquivos de script foi capturado, mas não aprovado; AST parcial. Não declarar toda a planilha homologada.
 
 Pendência: ciclo destrutivo Google real não executado, coberto por fixtures. Nenhum recurso Google foi alterado e nenhuma baseline real foi aprovada pelo agente. CI remoto e PR publicado indisponíveis sem remoto autorizado; rascunho em docs/pr-sprint03.md. Diagnóstico encerrado, janela normal reaberta. Encerrar e aguardar Prompt 04; não iniciar SM-018 a SM-021.
+
+## Sprint 04 — execução autorizada em andamento
+
+Anexo preservado em docs/sprint04.original.md, SHA256 4AE6D43AFBD53694CC1AEC38B485EEA584344BC5D6BC16950DA637C8E58DAB1F. Branch codex/sprint-04-interface-management. SM-018 a SM-021 e adições explícitas SM-021A/SM-021B; sem antecipar Sprint 05.
+
+Fase 1 concluída no commit d6e9977: descoberta Drive, cadastro transacional por conta, migração 0004, histórico SQL e contratos operacionais. Gate 1 aprovado na segunda revisão após corrigir indicação da referência ativa entre escopos e referência histórica com configuração ainda ausente. Suíte completa: 180 unitários Rust e duas integrações aprovados, um teste de cofre ignorado por padrão; Clippy aprovado. Componentes iniciais: 32 testes React aprovados. Essas contagens são da fase 1, antes das adições seguintes.
+
+Fase 2 em execução: rotas operacionais sem demonstração, editor visual, aprovação visual, histórico e conta/preferências. Sugestão de regras adicionada para as abas selecionadas com leitura de até 240 células de cabeçalho; cinco testes focados aprovados, sem salvar ou aprovar automaticamente. Testes de jornada e revisão Gate 2 em andamento. A homologação real e a conclusão desta sprint ainda não foram declaradas.

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
   CircleAlert,
   CheckCircle2,
@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { desktop } from "@/services/foundation";
+import { desktop } from "@/services/platform";
 import {
   configureIntegration,
   connectIntegration,
@@ -35,7 +35,12 @@ import {
   integrationErrorMessage,
 } from "@/services/google";
 import { useGoogleIntegration } from "@/hooks/useGoogleIntegration";
-import type { OAuthConfiguration, ServiceResult, ValueRange } from "@/types/google";
+import type {
+  OAuthConfiguration,
+  ServiceResult,
+  ValueRange,
+  IntegrationState,
+} from "@/types/google";
 const scopes = {
   sheets: "https://www.googleapis.com/auth/spreadsheets.readonly",
   script: "https://www.googleapis.com/auth/script.projects.readonly",
@@ -47,7 +52,11 @@ const authLabels = {
   connected: "Conta autorizada",
   reconnect_required: "Nova autorização necessária",
 };
-export function GooglePage() {
+export function GooglePage({
+  onSessionChange,
+}: {
+  onSessionChange?: (state: IntegrationState) => void;
+}) {
   const {
     state,
     sheet,
@@ -60,6 +69,9 @@ export function GooglePage() {
     readScript,
     refresh,
   } = useGoogleIntegration();
+  useEffect(() => {
+    if (state) onSessionChange?.(state);
+  }, [state, onSessionChange]);
   const [driveOptIn, setDriveOptIn] = useState<boolean | null>(null);
   const [revokeOpen, setRevokeOpen] = useState(false);
   const [revokeConfirmed, setRevokeConfirmed] = useState(false);

@@ -3,6 +3,8 @@ use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 pub const SNAPSHOT_VERSION: u32 = 1;
 pub const MAX_CELLS: u64 = 20_000;
+/// Workbook tab count is independent from the 30 registered-file capacity.
+pub const MAX_MONITORED_TABS: usize = 1024;
 pub type EngineResult<T> = Result<T, EngineError>;
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -127,7 +129,7 @@ impl MonitorScope {
             return Err(EngineError::VersionUnsupported);
         }
         if self.sheets.is_empty()
-            || self.sheets.len() > 30
+            || self.sheets.len() > MAX_MONITORED_TABS
             || self.scripts.len() > 4
             || self.named_range_ids.len() > 50
             || !(1..=365).contains(&self.snapshot_retention_days)

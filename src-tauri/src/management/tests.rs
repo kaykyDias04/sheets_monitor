@@ -803,3 +803,46 @@ fn legacy_baselines_are_listed_inactive_before_operational_rules_are_configured(
             .active
     );
 }
+
+#[test]
+fn thirty_file_capacity_does_not_limit_selecting_all_thirty_one_tabs() {
+    let mut d = db();
+    let mut file = metadata("many_tabs");
+    let template = file.sheets[0].clone();
+    file.sheets = (0..31)
+        .map(|id| {
+            let mut tab = template.clone();
+            tab.sheet_id = id;
+            tab.index = id;
+            tab.title = format!("Tab {id}");
+            tab
+        })
+        .collect();
+    let row = d
+        .register_operational_spreadsheet("fixture_account", &file)
+        .unwrap();
+    let selected = (0..31).collect::<Vec<_>>();
+    let row = d
+        .set_registered_tabs("fixture_account", &mutation(&row), &selected)
+        .unwrap();
+    let mut scope = fixtures::scope();
+    let template = scope.sheets[0].clone();
+    scope.sheets = selected
+        .iter()
+        .map(|id| {
+            let mut sheet = template.clone();
+            sheet.sheet_id = *id;
+            sheet
+        })
+        .collect();
+    scope.validate().unwrap();
+    let row = d
+        .set_registered_rules("fixture_account", &mutation(&row), &scope)
+        .unwrap();
+    assert_eq!(row.selected_sheet_ids.len(), 31);
+    assert_eq!(row.scope.unwrap().sheets.len(), 31);
+    assert_eq!(
+        d.registered_spreadsheets("fixture_account").unwrap().len(),
+        1
+    );
+}

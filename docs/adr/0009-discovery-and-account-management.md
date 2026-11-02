@@ -13,3 +13,5 @@ A remoção altera somente dados locais, com escolha de preservar ou excluir ati
 O mantenedor provisiona o cliente OAuth Desktop no build; uma configuração protegida local preexistente nunca é sobrescrita na inicialização. O segredo desktop opcional é compatibilidade de cliente público, não mecanismo de confidencialidade. Não versionar credenciais reais. Sem configuração de distribuição autorizada, apresentar pendência de provisionamento ao mantenedor, sem pedir credenciais ao usuário comum.
 
 Preferências de intervalo/notificações são preparatórias. Autostart, execução minimizada, agendador e avisos nativos permanecem indisponíveis até a Sprint 05. Não há servidor hospedado obrigatório.
+
+A seleção de abas tem limite técnico independente de 1.024, com 20.000 células por escopo, sem confundir o teto de 30 arquivos cadastrados. Regressão com 31 abas comprova a distinção.

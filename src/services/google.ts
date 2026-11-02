@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
-import { desktop } from "@/services/foundation";
+import { desktop } from "@/services/platform";
 
 import type {
   IntegrationState,

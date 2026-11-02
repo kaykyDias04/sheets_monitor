@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "operational_import_modules": 27,
+  "fixture_module_reachable": false,
+  "foundation_demo_service_reachable": false,
+  "native_command_count": 43,
+  "native_command_registration_complete": true,
+  "tab_limit_separate_from_file_capacity": true,
+  "limitation": "Static module and command scan; runtime tested separately"
+}

@@ -1,0 +1,8 @@
+{
+  "existing_database": true,
+  "private_backup_available": true,
+  "schema_version_before": 3,
+  "baseline_versions_before": 1,
+  "drive_metadata_opt_in": true,
+  "private_data_output": false
+}

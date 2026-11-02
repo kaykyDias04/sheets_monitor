@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { desktop } from "./foundation";
+import { desktop } from "./platform";
 import { integrationErrorMessage } from "./google";
 import type {
   EngineEnvelope,

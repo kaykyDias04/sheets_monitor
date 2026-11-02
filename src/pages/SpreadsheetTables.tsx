@@ -12,10 +12,12 @@ export function RegisteredTable({
   rows,
   onOpen,
   onDiscover,
+  disabled = false,
 }: {
   rows: RegisteredSpreadsheet[];
   onOpen: (row: RegisteredSpreadsheet) => void;
   onDiscover: () => void;
+  disabled?: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
@@ -38,7 +40,7 @@ export function RegisteredTable({
               Arquivos selecionados por você. Verificações são executadas sob demanda.
             </CardDescription>
           </div>
-          <Button onClick={onDiscover}>
+          <Button onClick={onDiscover} disabled={disabled}>
             <Plus />
             Encontrar planilhas
           </Button>
@@ -97,7 +99,11 @@ export function RegisteredTable({
                   {visible.map((row) => (
                     <tr key={row.spreadsheet_id}>
                       <td>
-                        <button className="op-file-link" onClick={() => onOpen(row)}>
+                        <button
+                          className="op-file-link"
+                          disabled={disabled}
+                          onClick={() => onOpen(row)}
+                        >
                           <FileSpreadsheet size={20} />
                           <span>
                             <strong>{row.name}</strong>
@@ -124,6 +130,7 @@ export function RegisteredTable({
                           variant="ghost"
                           size="icon"
                           aria-label={`Abrir detalhes de ${row.name}`}
+                          disabled={disabled}
                           onClick={() => onOpen(row)}
                         >
                           <ArrowRight />

@@ -51,7 +51,7 @@ No desktop, as quatro telas consultam fixtures SQLite em `%APPDATA%\com.sheetsmo
 
 Os exemplos ilustram Online, Offline, Verificando e Indeterminado. Nenhum desses estados veio de uma consulta Google. O intervalo de 60–300 segundos e os 90 dias de histórico são parâmetros preparatórios; não há scheduler nem limpeza automática nesta sprint. Autostart permanece indisponível.
 
-O banco possui 22 tabelas de produto: onze da fundação, quatro de integração e sete do motor na migração 0003. Tokens, senhas e segredos não fazem parte do esquema. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
+O banco possui 24 tabelas de produto: onze da fundação, quatro de integração, sete do motor e duas operacionais na migração 0004. Tokens, senhas e segredos não fazem parte do esquema. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
 
 ## Verificar
 
@@ -83,7 +83,7 @@ O protótipo anterior está preservado em `archive/prototype/` e no commit `ffca
 
 Código próprio sob [MIT](LICENSE); dependências mantêm suas licenças. Não há remoto GitHub autorizado/configurado: o trabalho permanece local e a instrução mínima de autenticação está em [CONTRIBUTING.md](CONTRIBUTING.md). Nada foi publicado ou enviado ao Google.
 
-Ao encerrar a Sprint 03, aguardar o Prompt 04. Não avançar automaticamente.
+Ao encerrar a Sprint 04, aguardar o Prompt 05. Não avançar automaticamente.
 
 Documentação da integração: [APIs](docs/google-apis.md), [contratos IPC](docs/api-contracts.md), [segurança](docs/security.md) e [testes](docs/testing.md).
 

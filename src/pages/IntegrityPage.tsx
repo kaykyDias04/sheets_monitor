@@ -12,7 +12,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { desktop } from "@/services/foundation";
+import { desktop } from "@/services/platform";
 import { getIntegrationState } from "@/services/google";
 import * as api from "@/services/integrity";
 import type { IntegrationState } from "@/types/google";

@@ -1,0 +1,27 @@
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ❯ src/App.test.tsx (12 tests | 1 failed | 11 skipped) 5105ms
+     × salva abas, sugere rascunho e aprova apenas a captura revisada 5101ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > salva abas, sugere rascunho e aprova apenas a captura revisada
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/App.test.tsx:313:3
+    311|     expect(screen.getByText(/limite de 30 se aplica aos cadastros/)).t…
+    312|   });
+    313|   it("salva abas, sugere rascunho e aprova apenas a captura revisada",…
+       |   ^
+    314|     rows.push(fixtureRow());
+    315|     const user = await load();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 skipped (12)
+   Start at  13:40:56
+   Duration  9.16s (transform 1.03s, setup 240ms, import 1.85s, tests 5.11s, environment 1.66s)
+

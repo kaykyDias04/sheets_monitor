@@ -139,3 +139,46 @@ fn discovery_requires_effective_scope_even_after_requesting_drive() {
     assert_eq!(transport.calls.load(Ordering::SeqCst), 1);
     assert!(!runtime.database_path.exists());
 }
+
+#[test]
+fn registered_sheet_opens_only_canonical_google_url_without_oauth_opener_or_refresh() {
+    let (_dir, runtime, transport) = runtime(vec!["openid"]);
+    let mut db = Database::open(&runtime.database_path).unwrap();
+    db.upsert_account("fixture_account", None, None).unwrap();
+    let metadata: SpreadsheetMetadata = serde_json::from_value(serde_json::json!({
+        "spreadsheet_id":"browser_fixture", "title":"Fixture", "sheets":[]
+    }))
+    .unwrap();
+    db.register_operational_spreadsheet("fixture_account", &metadata)
+        .unwrap();
+    let opened = Cell::new(0);
+    runtime
+        .open_spreadsheet_with(
+            crate::management::SpreadsheetQuery {
+                spreadsheet_id: "browser_fixture".into(),
+            },
+            |url| {
+                assert_eq!(
+                    url.as_str(),
+                    "https://docs.google.com/spreadsheets/d/browser_fixture/edit"
+                );
+                opened.set(opened.get() + 1);
+                Ok(())
+            },
+        )
+        .unwrap();
+    assert_eq!(opened.get(), 1);
+    assert_eq!(transport.calls.load(Ordering::SeqCst), 0);
+    assert!(runtime
+        .open_spreadsheet_with(
+            crate::management::SpreadsheetQuery {
+                spreadsheet_id: "unregistered_fixture".into(),
+            },
+            |_| {
+                opened.set(opened.get() + 1);
+                Ok(())
+            }
+        )
+        .is_err());
+    assert_eq!(opened.get(), 1);
+}

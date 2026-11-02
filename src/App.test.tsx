@@ -1,206 +1,493 @@
-import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
-
-import { cleanup, render, screen, within } from "@testing-library/react";
-
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-
 import { invoke } from "@tauri-apps/api/core";
-
 import App from "./App";
-
-import { demoDashboard, type FoundationDashboard, type AppSettings } from "./fixtures";
-
-import { getDashboard, saveSettings } from "./services/foundation";
-
+import { scopeForTabs } from "./pages/ScopeEditor";
+import type { IntegrationState } from "./types/google";
+import type { RegisteredSpreadsheet, Preferences } from "./types/management";
 vi.mock("@tauri-apps/api/core", () => ({ isTauri: () => true, invoke: vi.fn() }));
-
-let persisted: FoundationDashboard;
-
-const invokeMock = vi.mocked(invoke);
-
+const call = vi.mocked(invoke);
+let session: IntegrationState;
+let rows: RegisteredSpreadsheet[];
+let preferences: Preferences;
+let readHook: ((command: string) => void) | null;
+const tabs = [
+  { sheet_id: 17, title: "Receitas", index: 0, hidden: false, row_count: 500, column_count: 8 },
+];
+function fixtureRow(): RegisteredSpreadsheet {
+  return {
+    spreadsheet_id: "fixture-file",
+    name: "Receitas de teste",
+    url: "https://docs.google.com/spreadsheets/d/fixture-file/edit",
+    account_email: "fixture@example.invalid",
+    paused: false,
+    removed: false,
+    status: "configuration_pending",
+    authorization: "available",
+    access_error: null,
+    last_checked_at: null,
+    baseline_version: null,
+    scope: null,
+    scope_hash: null,
+    revision: 1,
+    tabs,
+    selected_sheet_ids: [],
+    tabs_refreshed_at: null,
+  };
+}
+function envelope<T>(data: T) {
+  return {
+    generation: session.generation,
+    account_subject: session.auth.account?.subject ?? "",
+    data: structuredClone(data),
+  };
+}
 beforeEach(() => {
-  persisted = demoDashboard();
-
-  invokeMock.mockReset();
-
-  invokeMock.mockImplementation(async (command, args) => {
-    if (command === "foundation_get_dashboard") return structuredClone(persisted);
-
-    if (command === "foundation_save_settings") {
-      persisted.settings = { ...(args as { settings: AppSettings }).settings };
-
-      return;
+  session = {
+    generation: 1,
+    configured: true,
+    client_id: "fixture-client",
+    drive_metadata_opt_in: true,
+    auth: {
+      status: "connected",
+      account: {
+        subject: "fixture-account",
+        email: "fixture@example.invalid",
+        name: "Conta de teste",
+      },
+      granted_scopes: [
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/drive.metadata.readonly",
+      ],
+      expires_at: null,
+    },
+  };
+  rows = [];
+  readHook = null;
+  preferences = {
+    interval_seconds: 60,
+    notifications_enabled: false,
+    history_days: 90,
+    start_with_windows: false,
+    run_minimized: false,
+    theme: "light",
+  };
+  call.mockReset();
+  call.mockImplementation(async (command, args) => {
+    readHook?.(command);
+    const input = (args as { input?: Record<string, unknown> } | undefined)?.input ?? {};
+    if (command === "integration_get_state") return structuredClone(session);
+    if (command === "get_dashboard_summary")
+      return envelope({
+        registered: rows.length,
+        online: rows.filter((r) => r.status === "online").length,
+        offline: 0,
+        indeterminate: 0,
+        paused: 0,
+        pending: rows.filter((r) => r.status === "configuration_pending").length,
+        not_checked: 0,
+        spreadsheets: rows,
+        recent_events: [],
+        recent_failures: [],
+      });
+    if (command === "get_management_preferences") return envelope(preferences);
+    if (command === "save_management_preferences") {
+      preferences = structuredClone(input.preferences as Preferences);
+      return envelope(preferences);
     }
-
-    throw new Error(`Comando não permitido nesta sprint: ${command}`);
+    if (command === "discover_spreadsheets")
+      return envelope({
+        files: [
+          {
+            id: input.page_token ? "fixture-second" : "fixture-file",
+            name: input.page_token ? "Segunda planilha" : "Arquivo descoberto",
+            mime_type: "application/vnd.google-apps.spreadsheet",
+            modified_time: null,
+            shared: true,
+            drive_id: null,
+            resource_key: null,
+          },
+        ],
+        next_page_token: input.page_token ? null : "opaque-next",
+        incomplete_search: false,
+        complete: !!input.page_token,
+        corpus: "allDrives",
+      });
+    if (command === "register_spreadsheet") {
+      if (!String(input.url).startsWith("https://docs.google.com/spreadsheets/d/"))
+        throw { code: "invalid_input" };
+      if (rows.some((r) => String(input.url).includes(r.spreadsheet_id)))
+        throw { code: "duplicate" };
+      const row = fixtureRow();
+      rows.push(row);
+      return envelope(row);
+    }
+    if (command === "get_spreadsheet_diagnostics")
+      return envelope({
+        spreadsheet: rows.find((r) => r.spreadsheet_id === input.spreadsheet_id),
+        report: null,
+        baseline: null,
+        scripts: [],
+      });
+    if (command === "list_baseline_versions")
+      return envelope({ items: [], offset: Number(input.offset ?? 0), limit: 10, total: 0 });
+    if (command === "update_monitored_tabs") {
+      rows[0].selected_sheet_ids = input.sheet_ids as number[];
+      rows[0].revision++;
+      return envelope(rows[0]);
+    }
+    if (command === "update_integrity_rules") {
+      rows[0].scope = structuredClone(input.scope as RegisteredSpreadsheet["scope"]);
+      rows[0].scope_hash = "fixture-scope";
+      rows[0].revision++;
+      return envelope(rows[0]);
+    }
+    if (command === "propose_integrity_rules") {
+      const scope = scopeForTabs(null, [17]);
+      scope.sheets[0].regions[0].columns[0].header = "Código";
+      return envelope(scope);
+    }
+    if (command === "preview_baseline")
+      return envelope({
+        revision: rows[0].revision,
+        preview: {
+          session_generation: session.generation,
+          snapshot_fingerprint: "pinned-fingerprint",
+          active_baseline: null,
+          snapshot: {
+            schema_version: 1,
+            id: "pinned-snapshot",
+            account_subject: "fixture-account",
+            spreadsheet_id: "fixture-file",
+            capture_started_at: "2026-11-02T12:00:00Z",
+            captured_at: "2026-11-02T12:00:00Z",
+            scope_hash: "fixture-scope",
+            scope: rows[0].scope,
+            sheets: [
+              {
+                sheet_id: 17,
+                title: "Receitas",
+                index: 0,
+                row_count: 500,
+                column_count: 8,
+                regions: [],
+              },
+            ],
+            scripts: [],
+            connectivity: "available",
+            coverage: {
+              complete: true,
+              metadata_complete: true,
+              atomic_across_services: false,
+              issues: [],
+            },
+          },
+        },
+      });
+    if (command === "approve_baseline") {
+      rows[0].baseline_version = 1;
+      rows[0].status = "not_checked";
+      return envelope({});
+    }
+    if (command === "remove_spreadsheet") {
+      rows = rows.filter((r) => r.spreadsheet_id !== input.spreadsheet_id);
+      return envelope(null);
+    }
+    if (command === "list_change_events")
+      return envelope({ items: [], total: 0, offset: Number(input.offset ?? 0), limit: 25 });
+    if (command === "integration_disconnect") {
+      session = {
+        ...session,
+        generation: 2,
+        auth: { ...session.auth, status: "disconnected", account: null, granted_scopes: [] },
+      };
+      return structuredClone(session);
+    }
+    throw { code: "invalid_input" };
   });
 });
-
-afterEach(() => cleanup());
-
+afterEach(cleanup);
+async function settled() {
+  await waitFor(() =>
+    expect(screen.getByRole("button", { name: "Atualizar dados" })).toBeEnabled(),
+  );
+}
 async function load() {
   render(<App />);
-
-  await screen.findByRole("button", { name: "Ver exemplo de baseline de Indicadores comerciais" });
-
+  await settled();
   return userEvent.setup();
 }
-
-describe("Sprint 01 · interface demonstrativa", () => {
-  it("oferece as quatro telas demonstrativas e a nova integração e mantém identificação DEMO no desktop", async () => {
-    const user = await load();
-
-    const nav = screen.getByRole("navigation", { name: "Navegação principal" });
-
-    expect(within(nav).getAllByRole("button")).toHaveLength(6);
-
-    expect(screen.getByText(/Dados fictícios · Sprint 01/)).toBeInTheDocument();
-
-    expect(screen.getByText(/Este workspace usa fixtures locais/)).toBeInTheDocument();
-
-    for (const page of ["Planilhas", "Histórico", "Configurações", "Dashboard"]) {
-      await user.click(within(nav).getByRole("button", { name: page }));
-
-      expect(screen.getByRole("heading", { level: 1, name: page })).toBeInTheDocument();
-    }
+async function go(user: ReturnType<typeof userEvent.setup>, label: string) {
+  await user.click(
+    within(screen.getByRole("navigation", { name: "Navegação principal" })).getByRole("button", {
+      name: new RegExp(`^${label}(?:\\s+\\d+)?$`),
+    }),
+  );
+  await settled();
+}
+async function openFirst(user: ReturnType<typeof userEvent.setup>) {
+  await go(user, "Planilhas");
+  await user.click(screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" }));
+  await screen.findByRole("heading", { name: "Receitas de teste" });
+  await settled();
+}
+describe("Sprint 04 · operação sem demonstração", () => {
+  it("carrega seis destinos e dados do backend sem comandos foundation", async () => {
+    await load();
+    expect(
+      within(screen.getByRole("navigation", { name: "Navegação principal" })).getAllByRole(
+        "button",
+      ),
+    ).toHaveLength(6);
+    expect(screen.getByText("Encontre suas primeiras planilhas")).toBeInTheDocument();
+    expect(call.mock.calls.some(([name]) => name.startsWith("foundation_"))).toBe(false);
   });
-
-  it("representa os quatro estados sem tratar alteração comum como falha", async () => {
-    const user = await load();
-
-    expect(screen.getAllByText("Online").length).toBeGreaterThan(0);
-
-    expect(screen.getAllByText("Offline").length).toBeGreaterThan(0);
-
-    expect(screen.getAllByText("Verificando").length).toBeGreaterThan(0);
-
-    expect(screen.getAllByText("Indeterminado").length).toBeGreaterThan(0);
-
-    const row = screen
-
-      .getAllByText("Indicadores comerciais")
-
-      .find((node) => node.closest("tr"))!
-      .closest("tr")!;
-
-    expect(within(row).getByText("Online")).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: /Indicadores comerciais Conteúdo/ }));
-
-    expect(screen.getByRole("dialog")).toHaveTextContent("integridade permanece Online");
-
-    expect(screen.getByRole("dialog")).toHaveTextContent("Nenhuma alteração real foi observada");
+  it("mostra login sem pedir credenciais Cloud ao usuário comum", async () => {
+    session.auth.account = null;
+    session.auth.status = "disconnected";
+    await load();
+    expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeEnabled();
+    expect(screen.queryByLabelText(/Client ID/)).not.toBeInTheDocument();
+    expect(call.mock.calls.some(([name]) => name === "get_dashboard_summary")).toBe(false);
   });
-
-  it("mostra baseline apenas como exemplo, com diálogo acessível e sem aprovação real", async () => {
+  it("descobre e pagina arquivos compartilhados sem cadastro automático", async () => {
     const user = await load();
-
-    const opener = screen.getByRole("button", {
-      name: "Ver exemplo de baseline de Indicadores comerciais",
+    await go(user, "Planilhas");
+    await user.click(screen.getByRole("button", { name: "Buscar planilhas" }));
+    await screen.findByText("Arquivo descoberto");
+    await settled();
+    expect(screen.getByText("Compartilhada")).toBeInTheDocument();
+    expect(call.mock.calls.some(([name]) => name === "register_spreadsheet")).toBe(false);
+    await user.click(screen.getByRole("button", { name: "Próxima página" }));
+    await screen.findByText("Segunda planilha");
+    expect(call).toHaveBeenCalledWith("discover_spreadsheets", {
+      input: expect.objectContaining({ page_token: "opaque-next" }),
     });
-
-    await user.click(opener);
-
-    const dialog = screen.getByRole("dialog", { name: "Exemplo de baseline" });
-
-    expect(dialog).toHaveTextContent("SEM APROVAÇÃO REAL");
-
-    expect(dialog).toHaveTextContent("Sprint 03");
-
-    expect(within(dialog).queryByRole("button", { name: /Aprovar/ })).not.toBeInTheDocument();
-
-    await user.keyboard("{Escape}");
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    expect(opener).toHaveFocus();
   });
-
-  it("salva preferências no bridge local e recarrega valor persistido", async () => {
+  it("cadastra link válido como configuração pendente", async () => {
     const user = await load();
-
-    await user.click(screen.getByRole("button", { name: "Configurações" }));
-
-    const interval = screen.getByLabelText("Intervalo de verificação planejado");
-
-    expect(interval).toHaveValue(60);
-
+    await go(user, "Planilhas");
+    await user.click(screen.getByLabelText("Link da planilha"));
+    await user.paste("https://docs.google.com/spreadsheets/d/fixture-file/edit");
+    await user.click(screen.getByRole("button", { name: "Cadastrar por link" }));
+    await screen.findByRole("heading", { name: "Receitas de teste" });
+    await settled();
+    expect(screen.getByText("Configuração pendente")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Verificar agora" })).toBeDisabled();
+    expect(call).toHaveBeenCalledWith("register_spreadsheet", {
+      input: {
+        url: "https://docs.google.com/spreadsheets/d/fixture-file/edit",
+        expected_generation: 1,
+      },
+    });
+  });
+  it("trata URL inválida e cadastro duplicado", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await go(user, "Planilhas");
+    const input = screen.getByLabelText("Link da planilha");
+    await user.click(input);
+    await user.paste("https://example.invalid/file");
+    await user.click(screen.getByRole("button", { name: "Cadastrar por link" }));
+    await screen.findByRole("alert");
+    await settled();
+    expect(rows).toHaveLength(1);
+    await user.clear(input);
+    await user.click(input);
+    await user.paste("https://docs.google.com/spreadsheets/d/fixture-file/edit");
+    await user.click(screen.getByRole("button", { name: "Cadastrar por link" }));
+    await screen.findByText("Esta planilha já está cadastrada nesta conta.");
+  });
+  it("desabilita cadastro ao atingir 30 sem limitar descoberta", async () => {
+    rows = Array.from({ length: 30 }, (_, i) => ({
+      ...fixtureRow(),
+      spreadsheet_id: `fixture${i}`,
+      name: `Planilha ${i}`,
+    }));
+    const user = await load();
+    await go(user, "Planilhas");
+    expect(screen.getByRole("button", { name: "Cadastrar por link" })).toBeDisabled();
+    expect(screen.getByText(/limite de 30 se aplica aos cadastros/)).toBeInTheDocument();
+  });
+  it("salva abas, sugere rascunho e aprova apenas a captura revisada", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    await settled();
+    expect(rows[0].selected_sheet_ids).toEqual([17]);
+    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
+    await user.click(screen.getByRole("button", { name: "Sugerir regras para abas selecionadas" }));
+    await settled();
+    expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
+    expect(rows[0].scope).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
+    await settled();
+    await user.click(screen.getByRole("button", { name: "Referências" }));
+    await user.click(screen.getByRole("button", { name: "Capturar estrutura para revisão" }));
+    await screen.findByText("Revise antes de aprovar");
+    await settled();
+    expect(screen.getByRole("button", { name: "Aprovar referência versão 1" })).toBeDisabled();
+    await user.click(screen.getByRole("checkbox", { name: /Revisei o escopo/ }));
+    await user.click(screen.getByRole("button", { name: "Aprovar referência versão 1" }));
+    await settled();
+    expect(call).toHaveBeenCalledWith("approve_baseline", {
+      input: {
+        spreadsheet_id: "fixture-file",
+        expected_generation: 1,
+        expected_revision: 3,
+        snapshot_id: "pinned-snapshot",
+        snapshot_fingerprint: "pinned-fingerprint",
+        expected_version: 0,
+        confirmed: true,
+      },
+    });
+  }, 15000);
+  it("exige confirmação de remoção e escolha de histórico", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("button", { name: "Remover cadastro" }));
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByRole("button", { name: "Confirmar remoção" })).toBeDisabled();
+    await user.selectOptions(
+      within(dialog).getByLabelText("Histórico de atividades"),
+      "delete_activity",
+    );
+    await user.click(
+      within(dialog).getByRole("checkbox", { name: "Confirmo a remoção deste cadastro." }),
+    );
+    await user.click(within(dialog).getByRole("button", { name: "Confirmar remoção" }));
+    await screen.findByText("Cadastro removido localmente. O arquivo Google permanece intacto.");
+    expect(call).toHaveBeenCalledWith("remove_spreadsheet", {
+      input: {
+        spreadsheet_id: "fixture-file",
+        expected_generation: 1,
+        expected_revision: 1,
+        confirmed: true,
+        history: "delete_activity",
+      },
+    });
+  });
+  it("envia filtros do histórico ao backend com paginação", async () => {
+    const user = await load();
+    await go(user, "Atividades");
+    await user.selectOptions(screen.getByLabelText("Severidade"), "critical");
+    await user.selectOptions(screen.getByLabelText("Tipo de alteração"), "violation");
+    await user.click(screen.getByRole("button", { name: "Aplicar filtros" }));
+    await settled();
+    expect(call).toHaveBeenCalledWith("list_change_events", {
+      input: expect.objectContaining({
+        severity: "critical",
+        kind: "violation",
+        offset: 0,
+        limit: 25,
+      }),
+    });
+  });
+  it("persiste preferências após remontar sem ativar recursos futuros", async () => {
+    const user = await load();
+    await go(user, "Configurações");
+    const interval = screen.getByLabelText(/Intervalo planejado de verifica/);
     await user.clear(interval);
-
     await user.type(interval, "180");
-
-    await user.click(screen.getByRole("button", { name: "Salvar preferências locais" }));
-
-    await screen.findByText("Preferências demonstrativas salvas no SQLite local.");
-
-    expect(invokeMock).toHaveBeenCalledWith("foundation_save_settings", {
-      settings: { interval_seconds: 180, history_days: 90, start_with_windows: false },
+    await user.click(
+      screen.getByRole("checkbox", { name: "Preferência de notificações para a Sprint 05" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Salvar preferências" }));
+    await settled();
+    expect(preferences.interval_seconds).toBe(180);
+    expect(preferences.notifications_enabled).toBe(true);
+    expect(screen.getByRole("checkbox", { name: /Iniciar com o Windows/ })).toBeDisabled();
+    cleanup();
+    render(<App />);
+    await settled();
+    await go(user, "Configurações");
+    expect(screen.getByLabelText(/Intervalo planejado de verifica/)).toHaveValue(180);
+  });
+  it("descarta resultado se a conta muda mesmo com envelope posterior válido", async () => {
+    const user = await load();
+    await go(user, "Planilhas");
+    readHook = (command) => {
+      if (command === "discover_spreadsheets")
+        session = {
+          ...session,
+          generation: 2,
+          auth: { ...session.auth, account: { subject: "other-account", email: null, name: null } },
+        };
+    };
+    await user.click(screen.getByRole("button", { name: "Buscar planilhas" }));
+    await screen.findByRole("alert");
+    expect(screen.queryByText("Arquivo descoberto")).not.toBeInTheDocument();
+  });
+  it("desconecta e limpa a identidade da interface", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await go(user, "Configurações");
+    await user.click(screen.getByRole("button", { name: "Desconectar conta" }));
+    await settled();
+    expect(screen.queryByText("fixture@example.invalid")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeInTheDocument();
+  });
+  it("propaga desconexão pelas ferramentas avançadas sem aguardar seu fechamento manual", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await go(user, "Configurações");
+    await user.click(screen.getByRole("button", { name: "Configuração OAuth do mantenedor" }));
+    const disconnect = await screen.findByRole("button", { name: "Desconectar" });
+    await user.click(disconnect);
+    await waitFor(() =>
+      expect(screen.queryByText("fixture@example.invalid")).not.toBeInTheDocument(),
+    );
+    expect(screen.queryByRole("heading", { name: "Integração Google" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeInTheDocument();
+  });
+  it("bloqueia navegação de linha e marca durante consulta pendente sem invalidar seu resultado", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    const base = call.getMockImplementation()!;
+    let finish: (() => void) | undefined;
+    call.mockImplementation((command, args) => {
+      if (command === "discover_spreadsheets")
+        return new Promise((resolve) => {
+          finish = () =>
+            resolve(
+              envelope({
+                files: [
+                  {
+                    id: "fixture-late",
+                    name: "Resultado pendente",
+                    mime_type: "application/vnd.google-apps.spreadsheet",
+                    modified_time: null,
+                    shared: false,
+                    drive_id: null,
+                    resource_key: null,
+                  },
+                ],
+                next_page_token: null,
+                incomplete_search: false,
+                complete: true,
+                corpus: "allDrives",
+              }),
+            );
+        });
+      return base(command, args);
     });
-
-    expect((await getDashboard()).settings.interval_seconds).toBe(180);
-
-    expect(screen.getByRole("switch")).toBeDisabled();
-
-    expect(screen.getByText(/Configure a conta na tela/)).toBeInTheDocument();
-  });
-
-  it("filtra fixtures por nome e estado sem consulta externa", async () => {
-    const user = await load();
-
-    await user.click(screen.getByRole("button", { name: "Planilhas" }));
-
-    await user.type(screen.getByRole("textbox", { name: "Buscar planilhas" }), "financeiro");
-
-    expect(screen.getByText("Planejamento financeiro")).toBeInTheDocument();
-
-    expect(screen.queryByText("Indicadores comerciais")).not.toBeInTheDocument();
-
-    await user.selectOptions(screen.getByRole("combobox", { name: "Filtrar estado" }), "online");
-
-    expect(screen.getByText("Nenhuma planilha nesta seleção")).toBeInTheDocument();
-  });
-
-  it("atualiza somente fixtures e não invoca OAuth, baseline ou monitoramento", async () => {
-    const user = await load();
-
-    await user.click(screen.getByRole("button", { name: "Atualizar demonstração" }));
-
-    await screen.findByText("Demonstração atualizada. Nenhuma API Google foi consultada.");
-
-    expect(invokeMock.mock.calls.every(([name]) => name === "foundation_get_dashboard")).toBe(true);
-
-    await user.click(screen.getByRole("button", { name: "Sobre esta sprint" }));
-
-    const dialog = screen.getByRole("dialog", { name: "Sprint 03 · Motor de integridade" });
-
-    expect(dialog).toHaveTextContent("homologação Google real depende");
-
-    await user.click(within(dialog).getByRole("button", { name: "Entendi" }));
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-});
-
-describe("contrato da fundação", () => {
-  it("rejeita preferências fora dos limites antes de invocar o backend", async () => {
-    await expect(
-      saveSettings({ interval_seconds: 59, history_days: 90, start_with_windows: false }),
-    ).rejects.toThrow("60 e 300");
-
-    await expect(
-      saveSettings({ interval_seconds: 301, history_days: 90, start_with_windows: false }),
-    ).rejects.toThrow("60 e 300");
-
-    await expect(
-      saveSettings({ interval_seconds: 60, history_days: 90, start_with_windows: true }),
-    ).rejects.toThrow("inicialização automática desativada");
-
-    expect(invokeMock).not.toHaveBeenCalled();
-  });
-
-  it("recusa conteúdo sem marcação demonstrativa", async () => {
-    invokeMock.mockResolvedValue({ ...persisted, is_demo: false });
-
-    await expect(getDashboard()).rejects.toThrow("somente dados demonstrativos");
+    await user.click(
+      within(screen.getByRole("navigation", { name: "Navegação principal" })).getByRole("button", {
+        name: "Planilhas",
+      }),
+    );
+    await waitFor(() => expect(finish).toBeDefined());
+    const rowButton = screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" });
+    expect(rowButton).toBeDisabled();
+    await user.click(rowButton);
+    await user.click(screen.getByRole("link", { name: /SheetsMonitor/ }));
+    expect(screen.getByRole("heading", { level: 1, name: "Planilhas" })).toBeInTheDocument();
+    await act(async () => finish?.());
+    await screen.findByText("Resultado pendente");
+    expect(call.mock.calls.some(([name]) => name === "get_spreadsheet_diagnostics")).toBe(false);
   });
 });

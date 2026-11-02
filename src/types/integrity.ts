@@ -91,6 +91,9 @@ export interface CapturePreview {
   snapshot_fingerprint: string;
   active_baseline: BaselineSummary | null;
 }
+export interface BaselineVersion extends BaselineSummary {
+  snapshot: StructuralSnapshot;
+}
 export type IntegrityStatus = "online" | "offline" | "indeterminate" | "checking";
 export interface Finding {
   key: string;

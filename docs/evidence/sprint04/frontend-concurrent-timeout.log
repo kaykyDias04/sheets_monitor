@@ -1,0 +1,45 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ❯ src/App.test.tsx (14 tests | 2 failed) 33045ms
+     × cadastra link válido como configuração pendente 5321ms
+     × trata URL inválida e cadastro duplicado 5097ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > cadastra link válido como configuração pendente
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/App.test.tsx:268:3
+    266|     });
+    267|   });
+    268|   it("cadastra link válido como configuração pendente", async () => {
+       |   ^
+    269|     const user = await load();
+    270|     await go(user, "Planilhas");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > trata URL inválida e cadastro duplicado
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/App.test.tsx:287:3
+    285|     });
+    286|   });
+    287|   it("trata URL inválida e cadastro duplicado", async () => {
+       |   ^
+    288|     rows.push(fixtureRow());
+    289|     const user = await load();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  2 failed | 38 passed (40)
+   Start at  13:44:51
+   Duration  46.11s (transform 10.75s, setup 16.32s, import 28.06s, tests 64.70s, environment 37.68s)
+

@@ -1,4 +1,4 @@
-name: Sprint 03 - Windows integrity engine
+name: Sprint 04 - Windows integrity engine
 on:
   push:
   pull_request:

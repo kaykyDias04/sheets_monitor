@@ -402,3 +402,6 @@ fn diff_json(
         }
     }
 }
+
+#[path = "proposal.rs"]
+mod proposal;

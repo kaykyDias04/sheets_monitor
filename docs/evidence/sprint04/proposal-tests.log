@@ -1,0 +1,13 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.65s
+     Running unittests src\lib.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\sheets_monitor_lib-7f97c51d4b1bc40a.exe)
+
+running 5 tests
+test management::runtime::proposal::tests::selected_stable_ids_limit_requests_and_reject_unrequested_data ... ok
+test management::runtime::proposal::tests::valid_existing_rules_and_globals_are_preserved ... ok
+test management::runtime::proposal::tests::response_offsets_cannot_turn_different_row_into_header ... ok
+test management::runtime::proposal::tests::actual_headers_form_proposal_without_guessing_formulas_or_saving ... ok
+test management::runtime::proposal::tests::missing_duplicate_or_error_headers_require_manual_configuration ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 180 filtered out; finished in 0.00s
+
