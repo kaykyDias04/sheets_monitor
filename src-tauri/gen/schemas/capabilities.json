@@ -1,1 +1,0 @@
-{"main-capability":{"identifier":"main-capability","description":"Janela local sem acesso frontend a shell, rede ou arquivos","local":true,"windows":["main"],"permissions":["core:default"]}}

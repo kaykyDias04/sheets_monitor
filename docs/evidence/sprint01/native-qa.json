@@ -1,0 +1,84 @@
+{
+  "success": true,
+  "executable_sha256": "D1BF3B5CF3EB78F1EEF163A9D828F6CF097491F98BD4AE2BB4793F796A9D954B",
+  "renderer_origin": "http://tauri.localhost",
+  "desktop_bridge": true,
+  "native_window": {
+    "process_id": 11336,
+    "main_window_title": "Sheets Monitor · Demonstração — Sprint 01",
+    "native_window_handle": 4065340,
+    "running": true,
+    "debug_port_9227_closed": true,
+    "vite_1420_listener_count": 0,
+    "diagnostic_env_persisted": false
+  },
+  "navigation": [
+    "dashboard",
+    "sheets",
+    "history",
+    "settings"
+  ],
+  "persistence": {
+    "saved_interval": 120,
+    "after_restart_interval": 120,
+    "final_interval": 60,
+    "fixture_file_count": 4,
+    "table_count": 11,
+    "seed_duplicated": false
+  },
+  "a11y": {
+    "dashboard": {
+      "axe_version": "4.12.1",
+      "inapplicable": 59,
+      "incomplete": 0,
+      "passes": 30,
+      "violations": 0
+    },
+    "spreadsheets": {
+      "axe_version": "4.12.1",
+      "inapplicable": 54,
+      "incomplete": 0,
+      "passes": 35,
+      "violations": 0
+    },
+    "history": {
+      "axe_version": "4.12.1",
+      "inapplicable": 58,
+      "incomplete": 0,
+      "passes": 31,
+      "violations": 0
+    },
+    "settings": {
+      "axe_version": "4.12.1",
+      "inapplicable": 51,
+      "incomplete": 0,
+      "passes": 38,
+      "violations": 0
+    }
+  },
+  "capture": {
+    "method": "CDP of native Windows WebView2 renderer",
+    "windows_frame_captured": false,
+    "wrong_window_helper_capture_discarded": true,
+    "files": [
+      "native-dashboard.png",
+      "native-spreadsheets.png",
+      "native-history.png",
+      "native-settings.png",
+      "native-settings-after-restart.png"
+    ]
+  },
+  "cloud_access": false,
+  "baseline_approved": false,
+  "diagnostics": {
+    "process_only_variables": true,
+    "final_debug_port_closed": true,
+    "persistent_registry_or_environment_change": false
+  },
+  "limits": [
+    "Synthetic foundation only; no Google integration or installer validation.",
+    "Screenshots show native renderer content, not the Windows frame.",
+    "Automated axe results do not certify every accessibility requirement.",
+    "Hosted GitHub CI not run; no remote configured."
+  ]
+}

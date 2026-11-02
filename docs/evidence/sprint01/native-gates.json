@@ -37,5 +37,13 @@
     "installer",
     "human acceptance"
   ],
-  "runtime_window_verification": "principal agent records separate evidence"
+  "runtime_window_verification": "principal agent records separate evidence",
+  "post_contrast_build": {
+    "recorded_at": "2026-11-02 00:41:33 -03:00",
+    "command": ".\\scripts\\check-rust.ps1 -Task build",
+    "exit_code": 0,
+    "log": "docs/evidence/sprint01/rust-build.log",
+    "native_source_changed": false,
+    "prior_rust_tests_reused": true
+  }
 }

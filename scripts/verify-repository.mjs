@@ -124,6 +124,19 @@ check('known credential patterns', () => {
   }
   return `${count} text files scanned; no known credential signatures (not a complete secret audit)`;
 });
+check('completion evidence matches sprint status', () => {
+  const items = JSON.parse(read('docs/backlog.json')).items;
+  const complete = items.filter(item => item.sprint === 1).every(item => item.status === 'concluido');
+  if (!complete) return 'Sprint 01 still in progress; native acceptance is not inferred';
+  for (const item of items.filter(i => i.sprint === 1)) assert(item.evidence.length > 0, `Completed item lacks evidence: ${item.id}`);
+  const qa = JSON.parse(read('docs/evidence/sprint01/native-qa.json'));
+  assert(qa.success === true && qa.renderer_origin === 'http://tauri.localhost' && qa.desktop_bridge === true, 'Native runtime not established');
+  assert(['dashboard','sheets','history','settings'].every(page => qa.navigation.includes(page)), 'Native navigation not established');
+  assert(qa.persistence.saved_interval === 120 && qa.persistence.after_restart_interval === 120 && qa.persistence.final_interval === 60, 'Native persistence not established');
+  assert(qa.diagnostics.final_debug_port_closed === true && qa.cloud_access === false, 'Diagnostics or scope gate incomplete');
+  assert(items.filter(i => i.sprint > 1).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
+  return 'Completed foundation items have native evidence; future sprints remain uncompleted';
+});
 const success = checks.every(item => item.ok);
 const reportPath = path.join(root,'docs/evidence/repository/verification.json');
 fs.mkdirSync(path.dirname(reportPath), { recursive:true });

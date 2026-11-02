@@ -1,14 +1,14 @@
 [
   {
     "file": "dist/index.html",
-    "sha256": "09ea6c43e00f49741031a88dd39b72f336792d6632c752aafc09ca0a3d6d0cb9"
+    "sha256": "db0eaa34b69574ad4d5d89d45d600739e557dae4c853b4808d2426f8645655b2"
   },
   {
-    "file": "dist/assets/index-CKSleZlz.css",
-    "sha256": "c1b4db5bfa6ca79afeea8993d242f9e4456ec0eeca37ac3aeed7cf1164724bbd"
-  },
-  {
-    "file": "dist/assets/index-w7ovdo_U.js",
+    "file": "dist/assets/index-1RBYcupd.js",
     "sha256": "7804847f6142caea92a04fb3bd97feab4f52d22ebbc2ce1a5b0f47dc3772d78d"
+  },
+  {
+    "file": "dist/assets/index-gv9rKe2J.css",
+    "sha256": "205406e461f5e1ef4943517f8624e9407e68d7dbcd5a4135d7f3e466b83ed213"
   }
 ]

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "secondary",
+    "foreground": "#526747",
+    "background": "#edf3e3",
+    "contrast": 5.47
+  },
+  {
+    "name": "success",
+    "foreground": "#42632f",
+    "background": "#eef6e7",
+    "contrast": 6.21
+  },
+  {
+    "name": "error",
+    "foreground": "#8e4b34",
+    "background": "#fceee7",
+    "contrast": 5.78
+  },
+  {
+    "name": "online",
+    "foreground": "#3e632b",
+    "background": "#f0f7e7",
+    "contrast": 6.34
+  },
+  {
+    "name": "offline",
+    "foreground": "#8e4b34",
+    "background": "#fdf0e9",
+    "contrast": 5.87
+  },
+  {
+    "name": "checking",
+    "foreground": "#75591d",
+    "background": "#fdf7e8",
+    "contrast": 6.13
+  },
+  {
+    "name": "indeterminate",
+    "foreground": "#486570",
+    "background": "#eff4f6",
+    "contrast": 5.62
+  },
+  {
+    "name": "sidebar-label",
+    "foreground": "#9db89c",
+    "background": "#112e24",
+    "contrast": 6.78
+  }
+]

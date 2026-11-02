@@ -2,44 +2,44 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Autorização vigente: **Sprint 01 apenas**. Sprints 02–06 estão planejadas, sem autorização de execução. Prompts não são IDs de tarefas.
+Autorização vigente: **Sprint 01 concluída tecnicamente**. Sprints 02–06 estão planejadas, sem autorização de execução. Prompts não são IDs de tarefas.
 
 ## Sprint 01
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
 | SM-001 | Verificar e preparar ambiente Windows | concluido | — | Dependências instaladas |
-| SM-002 | Criar repositório e projeto Tauri | em_andamento | SM-001 | Aplicativo inicia |
-| SM-003 | Configurar React, TypeScript e UI | em_andamento | SM-002 | Interface navegável |
-| SM-004 | Estruturar backend Rust | em_andamento | SM-002 | Módulos organizados |
-| SM-005 | Criar SQLite e migrações | em_andamento | SM-004 | Persistência testada |
-| SM-006 | Configurar testes e documentação | em_andamento | SM-003, SM-004, SM-005 | Build e testes aprovados |
+| SM-002 | Criar repositório e projeto Tauri | concluido | SM-001 | Aplicativo inicia |
+| SM-003 | Configurar React, TypeScript e UI | concluido | SM-002 | Interface navegável |
+| SM-004 | Estruturar backend Rust | concluido | SM-002 | Módulos organizados |
+| SM-005 | Criar SQLite e migrações | concluido | SM-004 | Persistência testada |
+| SM-006 | Configurar testes e documentação | concluido | SM-003, SM-004, SM-005 | Build e testes aprovados |
 
 ### SM-002 — subtarefas
 
 - **SM-002.01** — Preservar protótipo e histórico sem sobrescrever (concluido).
-- **SM-002.02** — Organizar governança, licença, templates e branch (em_andamento).
-- **SM-002.03** — Abrir janela Tauri nativa com demonstração (em_andamento).
+- **SM-002.02** — Organizar governança, licença, templates e branch (concluido).
+- **SM-002.03** — Abrir janela Tauri nativa com demonstração (concluido).
 
 ### SM-003 — subtarefas
 
-- **SM-003.01** — Configurar Tailwind/shadcn, aliases e componentes (em_andamento).
-- **SM-003.02** — Navegar em quatro telas com fixtures explícitas (em_andamento).
+- **SM-003.01** — Configurar Tailwind/shadcn, aliases e componentes (concluido).
+- **SM-003.02** — Navegar em quatro telas com fixtures explícitas (concluido).
 
 ### SM-004 — subtarefas
 
-- **SM-004.01** — Separar shell, banco e contratos futuros sem acesso Google (em_andamento).
+- **SM-004.01** — Separar shell, banco e contratos futuros sem acesso Google (concluido).
 
 ### SM-005 — subtarefas
 
-- **SM-005.01** — Criar onze entidades e ledger de migrações (em_andamento).
-- **SM-005.02** — Testar criação/leitura, reabertura e rollback (em_andamento).
+- **SM-005.01** — Criar onze entidades e ledger de migrações (concluido).
+- **SM-005.02** — Testar criação/leitura, reabertura e rollback (concluido).
 
 ### SM-006 — subtarefas
 
-- **SM-006.01** — Documentar escopo, arquitetura, riscos e aceite (em_andamento).
-- **SM-006.02** — Executar lint, formatação, typecheck, testes e build (em_andamento).
-- **SM-006.03** — Configurar CI Windows e registrar execução nativa (em_andamento).
+- **SM-006.01** — Documentar escopo, arquitetura, riscos e aceite (concluido).
+- **SM-006.02** — Executar lint, formatação, typecheck, testes e build (concluido).
+- **SM-006.03** — Configurar CI Windows e registrar execução nativa (concluido).
 
 ## Sprint 02
 
@@ -170,4 +170,4 @@ Autorização vigente: **Sprint 01 apenas**. Sprints 02–06 estão planejadas, 
 - **SM-028.01** — Auditar licenças/avisos e dependências do bundle (planejado).
 - **SM-028.02** — Validar instalação/desinstalação Windows x64 e manual (planejado).
 
-Estimativa original: 25–41 dias úteis, apenas planejamento. Credenciais, consentimento e homologação não são presumidos. Consulte [critérios de aceite](acceptance.md) e [progresso](progress.md).
+Estimativa original: 25–41 dias úteis, apenas planejamento. Credenciais, consentimento e homologação final não são presumidos. Consulte [critérios de aceite](acceptance.md) e [progresso](progress.md).

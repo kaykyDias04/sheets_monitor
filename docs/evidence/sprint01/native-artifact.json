@@ -1,32 +1,38 @@
 {
-  "recorded_at": "2026-11-02 00:25:08 -03:00",
+  "recorded_at": "2026-11-02 00:41:33 -03:00",
   "artifact_type": "Sprint 01 standalone development executable; not an installer",
+  "revision": "contrast remediation; frontend CSS only, native source unchanged",
   "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\target\\x86_64-pc-windows-msvc\\debug\\sheets-monitor.exe",
-  "sha256": "64D329FC332B04D2491D2702E880318F7894304CB4A217DB70953978B3A071DF",
+  "sha256": "D1BF3B5CF3EB78F1EEF163A9D828F6CF097491F98BD4AE2BB4793F796A9D954B",
   "bytes": 14516736,
   "target": "x86_64-pc-windows-msvc",
   "custom_protocol": true,
   "vite_1420_listener_count": 0,
   "google_integration_active": false,
   "installer_generated": false,
-  "runtime_visual_verification": "pending principal agent Windows UI inspection",
+  "runtime_visual_verification": "passed principal native renderer navigation/persistence; see native-qa.json and native-qa.md",
   "assets": [
     {
       "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\index.html",
-      "sha256": "09EA6C43E00F49741031A88DD39B72F336792D6632C752AAFC09CA0A3D6D0CB9",
+      "sha256": "DB0EAA34B69574AD4D5D89D45D600739E557DAE4C853B4808D2426F8645655B2",
       "bytes": 452
     },
     {
-      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\assets\\index-CKSleZlz.css",
-      "sha256": "C1B4DB5BFA6CA79AFEEA8993D242F9E4456EC0EECA37AC3AEED7CF1164724BBD",
-      "bytes": 36926
-    },
-    {
-      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\assets\\index-w7ovdo_U.js",
+      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\assets\\index-1RBYcupd.js",
       "sha256": "7804847F6142CAEA92A04FB3BD97FEAB4F52D22EBBC2CE1A5B0F47DC3772D78D",
       "bytes": 329554
+    },
+    {
+      "path": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\dist\\assets\\index-gv9rKe2J.css",
+      "sha256": "205406E461F5E1EF4943517F8624E9407E68D7DBCD5A4135D7F3E466B83ED213",
+      "bytes": 35352
     }
   ],
   "build_log": "docs/evidence/sprint01/rust-build.log",
-  "build_exit_code": 0
+  "build_exit_code": 0,
+  "previous_artifact": "docs/evidence/sprint01/native-artifact-beforecontrast.json",
+  "previous_build_log": "docs/evidence/sprint01/rust-build-beforecontrast.log",
+  "rust_tests_repeated": false,
+  "rust_test_reuse_reason": "Only frontend CSS changed; prior native source and fixtures remain valid",
+  "qa_report": "docs/evidence/sprint01/native-qa.json"
 }

@@ -1,0 +1,7 @@
+{
+  "executable": "C:\\Users\\kayky\\Desktop\\Repositorios\\Monitoramento-bases-painéis\\src-tauri\\target\\x86_64-pc-windows-msvc\\debug\\sheets-monitor.exe",
+  "process_id": 41256,
+  "diagnostic_port": 9227,
+  "profile": "isolated .tooling/sprint01-native-qa-final-profile",
+  "capture_method": "Native WebView2 CDP; frame capture unavailable"
+}

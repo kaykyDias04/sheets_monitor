@@ -1,0 +1,24 @@
+{
+  "database_file": "app_data_dir/foundation-v1.db",
+  "tables": [
+    "accounts",
+    "app_settings",
+    "baselines",
+    "change_events",
+    "integrity_rules",
+    "monitored_sheets",
+    "monitoring_checks",
+    "notifications",
+    "script_dependencies",
+    "script_projects",
+    "spreadsheets"
+  ],
+  "table_count": 11,
+  "settings": {
+    "interval_seconds": 120,
+    "history_days": 90,
+    "start_with_windows": 0
+  },
+  "spreadsheet_count": 4,
+  "schema_version": 1
+}

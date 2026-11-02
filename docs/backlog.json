@@ -26,14 +26,15 @@
       "id": "SM-002",
       "title": "Criar repositório e projeto Tauri",
       "sprint": 1,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-001"
       ],
       "acceptance": "Aplicativo inicia",
       "evidence": [
-        "docs/evidence/repository/prototype-manifest.json"
+        "docs/evidence/repository/prototype-manifest.json",
+        "docs/evidence/sprint01/native-qa.json"
       ],
       "subtasks": [
         {
@@ -44,12 +45,12 @@
         {
           "id": "SM-002.02",
           "title": "Organizar governança, licença, templates e branch",
-          "status": "em_andamento"
+          "status": "concluido"
         },
         {
           "id": "SM-002.03",
           "title": "Abrir janela Tauri nativa com demonstração",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },
@@ -57,23 +58,26 @@
       "id": "SM-003",
       "title": "Configurar React, TypeScript e UI",
       "sprint": 1,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-002"
       ],
       "acceptance": "Interface navegável",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint01/frontend-tests.log",
+        "docs/evidence/sprint01/native-qa.json"
+      ],
       "subtasks": [
         {
           "id": "SM-003.01",
           "title": "Configurar Tailwind/shadcn, aliases e componentes",
-          "status": "em_andamento"
+          "status": "concluido"
         },
         {
           "id": "SM-003.02",
           "title": "Navegar em quatro telas com fixtures explícitas",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },
@@ -81,18 +85,21 @@
       "id": "SM-004",
       "title": "Estruturar backend Rust",
       "sprint": 1,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-002"
       ],
       "acceptance": "Módulos organizados",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint01/native-gates.json",
+        "docs/evidence/sprint01/review-frontend-bridge.md"
+      ],
       "subtasks": [
         {
           "id": "SM-004.01",
           "title": "Separar shell, banco e contratos futuros sem acesso Google",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },
@@ -100,23 +107,26 @@
       "id": "SM-005",
       "title": "Criar SQLite e migrações",
       "sprint": 1,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-004"
       ],
       "acceptance": "Persistência testada",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint01/rust-test.log",
+        "docs/evidence/sprint01/native-sqlite-after-restart.json"
+      ],
       "subtasks": [
         {
           "id": "SM-005.01",
           "title": "Criar onze entidades e ledger de migrações",
-          "status": "em_andamento"
+          "status": "concluido"
         },
         {
           "id": "SM-005.02",
           "title": "Testar criação/leitura, reabertura e rollback",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },
@@ -124,7 +134,7 @@
       "id": "SM-006",
       "title": "Configurar testes e documentação",
       "sprint": 1,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-003",
@@ -132,22 +142,27 @@
         "SM-005"
       ],
       "acceptance": "Build e testes aprovados",
-      "evidence": [],
+      "evidence": [
+        "docs/evidence/sprint01/native-gates.json",
+        "docs/evidence/sprint01/frontend-tests.log",
+        "docs/evidence/sprint01/native-qa.json",
+        "docs/evidence/repository/verification.json"
+      ],
       "subtasks": [
         {
           "id": "SM-006.01",
           "title": "Documentar escopo, arquitetura, riscos e aceite",
-          "status": "em_andamento"
+          "status": "concluido"
         },
         {
           "id": "SM-006.02",
           "title": "Executar lint, formatação, typecheck, testes e build",
-          "status": "em_andamento"
+          "status": "concluido"
         },
         {
           "id": "SM-006.03",
           "title": "Configurar CI Windows e registrar execução nativa",
-          "status": "em_andamento"
+          "status": "concluido"
         }
       ]
     },

@@ -24,7 +24,7 @@ Proxima etapa somente apos concluir este aceite e receber o **Prompt 02**. Nenhu
 
 Durante o Prompt 02, o usuário forneceu a especificação fechada e escolheu explicitamente substituir a etapa atual pela Sprint 01 do anexo. O registro anterior de ambiente permanece histórico; a autorização vigente inclui fundação executável e termina antes da Sprint 02.
 
-Estado: integração nativa em verificação. Protótipo preservado em `ffcaa49` e em `archive/prototype/` (47 hashes conferidos). IDs oficiais SM-001 a SM-028 mantidos, com 33 subtarefas e dependências sem ciclos. Licença própria MIT e templates configurados; nenhum remoto foi criado ou publicado.
+Estado: **Sprint 01 concluída tecnicamente**. Protótipo preservado em `ffcaa49` e em `archive/prototype/` (47 hashes conferidos). IDs oficiais SM-001 a SM-028 mantidos, com 33 subtarefas e dependências sem ciclos. Licença própria MIT e templates configurados; nenhum remoto foi criado ou publicado.
 
 Gates já executados:
 
@@ -33,4 +33,14 @@ Gates já executados:
 - Frontend: instalação limpa, format:check, typecheck, ESLint, oito testes Vitest e build aprovados; audit sem vulnerabilidades reportadas nesta resolução.
 - Repositório: especificação original, backlog, hashes do arquivo, links, templates, licença e padrões conhecidos de credenciais verificados. Esse scan não equivale a uma auditoria completa de segredos.
 
-Pendente antes de concluir: build standalone com assets finais, janela Windows, quatro telas e persistência de preferência após reabrir; reconciliação final de evidências e commit com status limpo. O workflow Windows está configurado, mas não foi executado no GitHub por não haver remoto autorizado.
+Gate final nativo: executável standalone MSVC x64 com assets incorporados, janela Windows e bridge Tauri confirmados; quatro telas navegadas, preferência60 ->120 persistida após reabertura e restaurada60; onze tabelas, quatro fixtures e seed sem duplicação. Axe4.12.1 retornou zero violações/itens incompletos nas quatro telas após corrigir contraste. A sessão diagnóstica foi encerrada e a aplicação reaberta normalmente, sem Vite ou porta de debug. Relatórios e limites em `docs/evidence/sprint01/native-qa.json` e `native-qa.md`. O workflow Windows foi configurado; CI GitHub não foi executado por não haver remoto autorizado.
+
+## Encerramento da Sprint 01
+
+SM-001 a SM-006 concluídos com evidências vinculadas no backlog. SM-007 a SM-028 permanecem planejados. A revisão independente reconciliou esquema/DTO/documentação; achados de FK, foco e contraste foram corrigidos e verificados. O helper de captura Windows retornou conteúdo fora do alvo e foi descartado: as imagens versionadas são do renderer WebView2 da instância nativa, sem a moldura do Windows. Não são screenshots da prévia Vite.
+
+Preservação: histórico de ambiente `46ae4fd`, snapshot original `ffcaa49`, fundação `a0f2a5d` e commits corretivos/finais consultáveis com `git log`. Fontes arquivadas conservam os47 hashes originais. Artefatos gerados (`target/`, `dist/`, schemas Tauri) ficam fora do versionamento; logs e relatórios sintéticos permanecem em docs.
+
+Pendências desta entrega: nenhuma técnica de fundação. Limites externos: integração Google, notificações, bandeja, autostart, carga30, instalador e homologação final do produto não executados. Inventário de licenças registra lacunas de dependências não presentes no cache; avisos de distribuição pertencem a SM-028. Nenhum segredo, recurso Google, remoto GitHub ou CI hospedado foi criado.
+
+**Próximo passo: aguardar nova instrução para a Sprint 02 do anexo (SM-007 a SM-011). Não avançar automaticamente.**

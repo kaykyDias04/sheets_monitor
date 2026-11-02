@@ -25,7 +25,7 @@
     {
       "name": "local documentation links",
       "ok": true,
-      "detail": "62 local links resolve (historical verbatim files excluded)"
+      "detail": "64 local links resolve (historical verbatim files excluded)"
     },
     {
       "name": "license metadata",
@@ -45,7 +45,12 @@
     {
       "name": "known credential patterns",
       "ok": true,
-      "detail": "209 text files scanned; no known credential signatures (not a complete secret audit)"
+      "detail": "235 text files scanned; no known credential signatures (not a complete secret audit)"
+    },
+    {
+      "name": "completion evidence matches sprint status",
+      "ok": true,
+      "detail": "Completed foundation items have native evidence; future sprints remain uncompleted"
     }
   ]
 }

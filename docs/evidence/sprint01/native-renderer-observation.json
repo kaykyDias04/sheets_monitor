@@ -1,0 +1,26 @@
+{
+  "demo": true,
+  "desktop": true,
+  "origin": "http://tauri.localhost",
+  "styleAssets": [
+    "/assets/index-gv9rKe2J.css"
+  ],
+  "versionColors": [
+    {
+      "color": "rgb(82, 103, 71)",
+      "text": "React + shadcn/ui"
+    },
+    {
+      "color": "rgb(82, 103, 71)",
+      "text": "SQLite local"
+    },
+    {
+      "color": "rgb(82, 103, 71)",
+      "text": "1"
+    },
+    {
+      "color": "rgb(82, 103, 71)",
+      "text": "100% demonstrativos"
+    }
+  ]
+}

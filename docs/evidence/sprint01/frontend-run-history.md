@@ -10,3 +10,11 @@ Problemas encontrados e corrigidos:
 4. Vitest foi limitado a `src/**/*.test.{ts,tsx}` para não executar os testes preservados no protótipo arquivado.
 
 Gate final executado, sem alterações de produto posteriores: instalação limpa `npm ci`, Prettier check, TypeScript, ESLint, 8 testes ativos aprovados, bundle de produção e npm audit com zero vulnerabilidades reportadas. As evidências atuais estão nos logs e nos hashes do diretório dist. A suíte de UI usa bridge nativo mockado; os testes não constituem prova de APIs Google nem de monitoramento real.
+
+## Remediação após QA nativa de contraste
+
+O audit axe 4.12.1 executado pelo agente principal no WebView2 nativo encontrou 34 nós com contraste insuficiente em Configurações. A saída original foi preservada em `native-a11y-before-contrast-fix.json`; os hashes e testes anteriores também foram preservados com sufixo `before-contrast-fix`.
+
+Foi feita uma remediação delimitada de cores, mantendo layout, conteúdo e fluxos. Textos secundários passaram a uma paleta com margem sobre 4,5:1 nos fundos usados; breadcrumb, avatar, feedback, campos, títulos, tabelas, estados e diálogos foram incluídos. O CSS deixou de acumular overrides de legibilidade. `frontend-contrast-palette.json` registra razões calculadas para a paleta; esse cálculo não substitui o novo audit nativo das quatro telas.
+
+Os logs principais de format/typecheck/lint/tests/build foram atualizados com a rodada após a remediação. A confirmação nativa final pertence à evidência registrada pelo agente principal.
