@@ -53,6 +53,7 @@ import { ActivitiesPanel } from "./ActivitiesPanel";
 import { AccountCard, PreferenceForm } from "./OperationalSettings";
 import { GooglePage } from "./GooglePage";
 import { IntegrityPage } from "./IntegrityPage";
+import { MonitoringWorkspace } from "./MonitoringWorkspace";
 
 type Route = "overview" | "sheets" | "details" | "activities" | "rules" | "settings";
 const routes = [
@@ -102,6 +103,8 @@ export function OperationalApp() {
   const current = useRef<IntegrationState | null>(null);
   const mounted = useRef(true);
   const locked = useRef(false);
+  const pendingRefresh = useRef(false);
+  const refreshRef = useRef<() => Promise<void>>(async () => undefined);
   const epoch = useRef(0);
   const clearPrivate = useCallback(() => {
     setSummary(null);
@@ -182,12 +185,20 @@ export function OperationalApp() {
       } finally {
         locked.current = false;
         if (mounted.current) setBusy(null);
+        if (pendingRefresh.current && mounted.current) {
+          pendingRefresh.current = false;
+          void Promise.resolve().then(() => refreshRef.current());
+        }
       }
     },
     [acceptSession, clearPrivate],
   );
   const refresh = useCallback(async () => {
     if (!desktop) return;
+    if (locked.current) {
+      pendingRefresh.current = true;
+      return;
+    }
     try {
       const state = await getIntegrationState();
       if (!mounted.current) return;
@@ -220,6 +231,9 @@ export function OperationalApp() {
       }
     }
   }, [acceptSession, clearPrivate, run]);
+  useEffect(() => {
+    refreshRef.current = refresh;
+  }, [refresh]);
   useEffect(() => {
     mounted.current = true;
     void Promise.resolve().then(() => {
@@ -439,7 +453,7 @@ export function OperationalApp() {
             </div>
           </div>
           <div className="version">
-            <span>v0.1.0 · SPRINT 04</span>
+            <span>v0.1.0 · SPRINT 05</span>
             <span>WINDOWS 11</span>
           </div>
         </div>
@@ -474,7 +488,7 @@ export function OperationalApp() {
         <main className="main-content op-main" id="operational-content">
           <div className="page-title">
             <div>
-              <p className="eyebrow">SHEETS MONITOR · VERIFICAÇÕES SOB DEMANDA</p>
+              <p className="eyebrow">SHEETS MONITOR · MONITORAMENTO CONTÍNUO</p>
               <h1>{pageTitle}</h1>
               <p>
                 {route === "overview"
@@ -517,6 +531,16 @@ export function OperationalApp() {
               {busy}…
             </div>
           )}
+          <MonitoringWorkspace
+            key={`${session?.generation ?? 0}:${session?.auth.account?.subject ?? "disconnected"}`}
+            session={session}
+            rows={rows}
+            route={route}
+            disabled={disabled}
+            onChanged={() => void refresh()}
+            onNavigate={navigate}
+            onOpenSheet={(id) => void loadDetail(id)}
+          />
           {!accountAvailable && route !== "settings" ? (
             <div className="op-stack">
               <Card className="op-welcome">
@@ -832,15 +856,15 @@ export function OperationalApp() {
                               ? api.resume(mutation())
                               : api.pause(mutation()),
                           detail.spreadsheet.paused
-                            ? "Cadastro retomado. As verificações continuam sob demanda."
+                            ? "Cadastro retomado. O serviço verificará a proteção quando o monitoramento estiver ativo."
                             : "Cadastro pausado.",
                         )
                       }
                       onCheck={() =>
                         void mutate(
-                          "Verificando integridade",
+                          "Adicionando verificação à fila",
                           () => api.check(mutation()),
-                          "Verificação concluída. Consulte o diagnóstico e as atividades.",
+                          "Verificação adicionada à fila. O resultado será atualizado pelo serviço.",
                         )
                       }
                       onRefresh={() =>
@@ -946,9 +970,7 @@ export function OperationalApp() {
                             () => api.savePreferences(next, generation),
                             (saved) => {
                               setPreferences(saved);
-                              setNotice(
-                                "Preferências salvas nesta conta. Recursos futuros permanecem inativos.",
-                              );
+                              setNotice("Preferências salvas nesta conta.");
                             },
                           );
                       }}
@@ -1006,7 +1028,7 @@ export function OperationalApp() {
           <footer className="op-footer">
             <ShieldCheck size={14} />
             Referências locais · Google somente leitura
-            <span>Monitoramento periódico disponível na próxima etapa</span>
+            <span>Verificações no aplicativo · Alertas conforme sua preferência</span>
           </footer>
         </main>
       </div>

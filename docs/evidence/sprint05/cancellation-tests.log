@@ -1,0 +1,19 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.26s
+     Running unittests src\lib.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\sheets_monitor_lib-7f97c51d4b1bc40a.exe)
+
+running 5 tests
+test auth::protocol::tests::loopback_is_single_use_times_out_and_can_be_cancelled_without_browser ... ok
+test database::monitoring_store::tests::cancellation_creates_no_failure ... ok
+test google::transport::tests::cancellation_stops_before_the_next_network_request ... ok
+test integrity::runtime::tests::cancelled_check_never_persists_a_report_or_changes_approval ... ok
+test monitoring::service::tests::pause_cancels_without_outage_and_resume_and_restart_stagger_without_catchup ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 229 filtered out; finished in 0.36s
+
+     Running tests\database_persistence.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\database_persistence-9e6eadc946c28da0.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

@@ -1,0 +1,10 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.88s
+     Running unittests src\lib.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\sheets_monitor_lib-e1b6e85adf8593e0.exe)
+
+running 2 tests
+test app::tests::dashboard_serializes_persisted_examples_with_explicit_demo_marker ... ok
+test app::tests::eligible_ui_and_queue_candidates_require_current_read_only_grants ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 241 filtered out; finished in 0.06s
+

@@ -10,7 +10,7 @@ use crate::{
 };
 use serde::Serialize;
 use std::{
-    collections::{BTreeSet, HashMap},
+    collections::{BTreeMap, HashMap},
     path::PathBuf,
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -31,7 +31,7 @@ struct State {
     last_tick: i64,
     interval: i64,
     active: HashMap<String, (Cancellation, bool)>,
-    manual: BTreeSet<String>,
+    manual: BTreeMap<String, (String, u64)>,
     warning: Option<String>,
     control_generation: Option<u64>,
     known: HashMap<String, (u64, String)>,
@@ -126,7 +126,7 @@ impl MonitoringService {
                 last_tick: 0,
                 interval: 60_000,
                 active: HashMap::new(),
-                manual: BTreeSet::new(),
+                manual: BTreeMap::new(),
                 warning: None,
                 control_generation: None,
                 known: HashMap::new(),
@@ -174,10 +174,33 @@ impl MonitoringService {
         self.wake();
     }
     pub fn request_check(&self, id: String) -> Result<(), CommandError> {
+        // Resolve the identity before taking scheduler state; callers inside an
+        // auth guard use request_check_for to avoid re-entering that guard.
+        let session = self.runtime.auth.state()?;
+        let account = session
+            .auth
+            .account
+            .ok_or_else(|| crate::auth::AuthError::new(crate::auth::AuthCode::ReconnectRequired))?;
+        self.request_check_for(&account.subject, session.generation, id)
+    }
+    pub fn request_check_for(
+        &self,
+        subject: &str,
+        generation: u64,
+        id: String,
+    ) -> Result<(), CommandError> {
         crate::google::validate_google_id(&id)?;
         let mut state = self.state.lock().map_err(|_| CommandError::local())?;
-        if !self.stopped.load(Ordering::SeqCst) && !state.active.contains_key(&id) {
-            state.manual.insert(id);
+        let already_active =
+            state
+                .subject
+                .as_ref()
+                .is_some_and(|(active_subject, active_generation)| {
+                    active_subject == subject && *active_generation == generation
+                })
+                && state.active.contains_key(&id);
+        if !self.stopped.load(Ordering::SeqCst) && !already_active {
+            state.manual.insert(id, (subject.to_owned(), generation));
         }
         drop(state);
         self.wake();
@@ -234,12 +257,18 @@ impl MonitoringService {
             for (token, _) in state.active.values() {
                 token.cancel();
             }
-            state.manual.clear();
             state.subject = identity.clone();
             state.last_tick = 0;
             state.known.clear();
             state.maintenance_ms = 0;
         }
+        state
+            .manual
+            .retain(|_, (queued_subject, queued_generation)| {
+                identity.as_ref().is_some_and(|(subject, generation)| {
+                    subject == queued_subject && generation == queued_generation
+                })
+            });
         if auth.auth.status != "connected"
             || !auth.auth.granted_scopes.iter().any(|s| s == SHEETS_SCOPE)
         {
@@ -332,7 +361,7 @@ impl MonitoringService {
                 .iter()
                 .find(|c| c.spreadsheet_id == row.spreadsheet_id)
             {
-                let manual = state.manual.contains(&row.spreadsheet_id);
+                let manual = state.manual.contains_key(&row.spreadsheet_id);
                 if ((manual && !(row.failure_count > 0 && row.next_run_ms > now))
                     || (control.enabled && row.next_run_ms <= now))
                     && !state.active.contains_key(&row.spreadsheet_id)

@@ -7,6 +7,15 @@ import { scopeForTabs } from "./pages/ScopeEditor";
 import type { IntegrationState } from "./types/google";
 import type { RegisteredSpreadsheet, Preferences } from "./types/management";
 vi.mock("@tauri-apps/api/core", () => ({ isTauri: () => true, invoke: vi.fn() }));
+const signals = vi.hoisted(() => ({ changed: null as (() => void) | null }));
+vi.mock("@tauri-apps/api/event", () => ({
+  listen: vi.fn(async (name: string, callback: () => void) => {
+    if (name === "monitoring:changed") signals.changed = callback;
+    return () => {
+      if (signals.changed === callback) signals.changed = null;
+    };
+  }),
+}));
 const call = vi.mocked(invoke);
 let session: IntegrationState;
 let rows: RegisteredSpreadsheet[];
@@ -64,6 +73,7 @@ beforeEach(() => {
     },
   };
   rows = [];
+  signals.changed = null;
   readHook = null;
   preferences = {
     interval_seconds: 60,
@@ -78,6 +88,23 @@ beforeEach(() => {
     readHook?.(command);
     const input = (args as { input?: Record<string, unknown> } | undefined)?.input ?? {};
     if (command === "integration_get_state") return structuredClone(session);
+    if (command === "desktop_get_status")
+      return {
+        tray_available: true,
+        notification_capability: "desktop_unverified",
+        startup: { registered: false, managed: false, os_execution: "unknown", error_code: null },
+        exiting: false,
+      };
+    if (command === "monitoring_get_status")
+      return envelope({
+        control: { enabled: false, generation: 0 },
+        schedules: [],
+        eligible_count: 0,
+        interval_seconds: preferences.interval_seconds,
+        service: { running: true, active: 0, queued: 0, warning: null },
+      });
+    if (command === "monitoring_notification_history")
+      return envelope({ items: [], total: 0, offset: 0, limit: 25 });
     if (command === "get_dashboard_summary")
       return envelope({
         registered: rows.length,
@@ -92,6 +119,7 @@ beforeEach(() => {
         recent_failures: [],
       });
     if (command === "get_management_preferences") return envelope(preferences);
+    if (command === "monitoring_check_file") return envelope(1);
     if (command === "save_management_preferences") {
       preferences = structuredClone(input.preferences as Preferences);
       return envelope(preferences);
@@ -371,6 +399,26 @@ describe("Sprint 04 · operação sem demonstração", () => {
       },
     });
   });
+  it("envia a verificação individual para a fila sem declarar coleta concluída", async () => {
+    rows.push({
+      ...fixtureRow(),
+      status: "not_checked",
+      baseline_version: 1,
+      selected_sheet_ids: [17],
+      scope: scopeForTabs(null, [17]),
+      scope_hash: "fixture-scope",
+    });
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("button", { name: "Verificar agora" }));
+    await screen.findByText(
+      "Verificação adicionada à fila. O resultado será atualizado pelo serviço.",
+    );
+    expect(call).toHaveBeenCalledWith("monitoring_check_file", {
+      input: { spreadsheet_id: "fixture-file", expected_generation: 1, expected_revision: 1 },
+    });
+    expect(call).not.toHaveBeenCalledWith("run_spreadsheet_check", expect.anything());
+  });
   it("envia filtros do histórico ao backend com paginação", async () => {
     const user = await load();
     await go(user, "Atividades");
@@ -387,25 +435,28 @@ describe("Sprint 04 · operação sem demonstração", () => {
       }),
     });
   });
-  it("persiste preferências após remontar sem ativar recursos futuros", async () => {
+  it("persiste preferências por conta sem alterar o registro Windows implicitamente", async () => {
     const user = await load();
     await go(user, "Configurações");
-    const interval = screen.getByLabelText(/Intervalo planejado de verifica/);
+    const interval = screen.getByLabelText(/Intervalo de verifica/);
     await user.clear(interval);
     await user.type(interval, "180");
     await user.click(
-      screen.getByRole("checkbox", { name: "Preferência de notificações para a Sprint 05" }),
+      screen.getByRole("checkbox", { name: "Enviar notificações de alterações e falhas" }),
     );
     await user.click(screen.getByRole("button", { name: "Salvar preferências" }));
     await settled();
     expect(preferences.interval_seconds).toBe(180);
     expect(preferences.notifications_enabled).toBe(true);
-    expect(screen.getByRole("checkbox", { name: /Iniciar com o Windows/ })).toBeDisabled();
+    expect(
+      screen.getByRole("checkbox", { name: /Registrar início com Windows/ }),
+    ).not.toBeChecked();
+    expect(call).not.toHaveBeenCalledWith("desktop_set_startup", expect.anything());
     cleanup();
     render(<App />);
     await settled();
     await go(user, "Configurações");
-    expect(screen.getByLabelText(/Intervalo planejado de verifica/)).toHaveValue(180);
+    expect(screen.getByLabelText(/Intervalo de verifica/)).toHaveValue(180);
   });
   it("descarta resultado se a conta muda mesmo com envelope posterior válido", async () => {
     const user = await load();
@@ -486,8 +537,17 @@ describe("Sprint 04 · operação sem demonstração", () => {
     await user.click(rowButton);
     await user.click(screen.getByRole("link", { name: /SheetsMonitor/ }));
     expect(screen.getByRole("heading", { level: 1, name: "Planilhas" })).toBeInTheDocument();
+    const dashboardReads = call.mock.calls.filter(
+      ([name]) => name === "get_dashboard_summary",
+    ).length;
+    rows[0].name = "Nome atualizado pelo serviço";
+    act(() => signals.changed?.());
     await act(async () => finish?.());
     await screen.findByText("Resultado pendente");
+    await screen.findByRole("button", { name: "Abrir detalhes de Nome atualizado pelo serviço" });
+    expect(
+      call.mock.calls.filter(([name]) => name === "get_dashboard_summary").length,
+    ).toBeGreaterThan(dashboardReads);
     expect(call.mock.calls.some(([name]) => name === "get_spreadsheet_diagnostics")).toBe(false);
   });
 });

@@ -4,7 +4,6 @@ import { engineError } from "./integrity";
 import type {
   EngineEnvelope,
   BaselineSummary,
-  ValidationResult,
   MonitorScope,
   BaselineVersion,
 } from "@/types/integrity";
@@ -65,7 +64,7 @@ export const diagnostics = (spreadsheet_id: string) =>
 export const events = (input: EventFilter) => command<Page<Activity>>("list_change_events", input);
 export const scripts = (spreadsheet_id: string) =>
   command<ScriptSummary[]>("list_associated_scripts", { spreadsheet_id });
-export const check = (input: Mutation) => command<ValidationResult>("run_spreadsheet_check", input);
+export const check = (input: Mutation) => command<number>("monitoring_check_file", input);
 export const getPreferences = () => command<Preferences>("get_management_preferences");
 export const savePreferences = (preferences: Preferences, expected_generation: number) =>
   command<Preferences>("save_management_preferences", { preferences, expected_generation });
@@ -91,7 +90,7 @@ const messages: Record<string, string> = {
     "Confirme a remo\u00e7\u00e3o do cadastro e escolha o tratamento do hist\u00f3rico.",
   invalid_history_choice: "Escolha se deseja preservar ou excluir as atividades.",
   invalid_preferences:
-    "Revise as prefer\u00eancias. Inicializa\u00e7\u00e3o autom\u00e1tica e execu\u00e7\u00e3o minimizada estar\u00e3o dispon\u00edveis posteriormente.",
+    "Revise intervalo, retenção e aparência. A inicialização com Windows é configurada separadamente neste dispositivo.",
   invalid_filter: "Revise os filtros, datas e pagina\u00e7\u00e3o.",
   invalid_page: "A p\u00e1gina solicitada n\u00e3o est\u00e1 dispon\u00edvel.",
   baseline_not_found: "A refer\u00eancia solicitada n\u00e3o pertence a esta planilha.",

@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Sheets Monitor - Sprint 04",
+        "title": "Sheets Monitor",
         "width": 1280,
         "height": 840,
         "minWidth": 900,
@@ -33,7 +33,7 @@
       "icons/icon.png",
       "icons/icon.ico"
     ],
-    "shortDescription": "Integridade estrutural sob demanda",
+    "shortDescription": "Monitoramento contínuo de integridade",
     "category": "Productivity"
   }
 }

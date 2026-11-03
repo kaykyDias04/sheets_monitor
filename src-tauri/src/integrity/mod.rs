@@ -11,7 +11,9 @@ pub mod scripts;
 pub use compare::{evaluate, validate_baseline_snapshot};
 #[cfg(test)]
 mod engine_tests;
-#[cfg(test)]
+#[cfg(any(test, feature = "native-probe"))]
+#[cfg_attr(not(test), allow(dead_code))]
+// Probe uses only the shared scope/snapshot fixture helpers.
 pub(crate) mod fixtures;
 
 #[cfg(test)]

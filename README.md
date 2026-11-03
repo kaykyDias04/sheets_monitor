@@ -2,9 +2,11 @@
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A **Sprint 04 esta concluida tecnicamente**: descoberta Drive, cadastro por URL, selecao de abas/regras, baselines visuais e historico. [Relatorio e evidencias](docs/evidence/sprint04/final-report.md). Sprints 01-03 preservadas. Aguardar Prompt 05 antes de iniciar a proxima etapa.
+A **Sprint 05 está em validação**: monitoramento contínuo Rust, notificações, bandeja e recuperação de falhas. [Relatório da etapa](docs/sprint-05-report.md). Sprints 01–04 e suas evidências foram preservadas. A Sprint 06, com homologação final em escala e instalador, exige nova autorização.
 
-O fluxo diario usa a conta Google conectada e dados do backend. O cadastro admite ate30 arquivos presentes, incluindo pausados; a descoberta nao limita a lista a30. Baseline real exige aprovacao humana e nenhuma operacao altera os arquivos Google. As capturas e regras protegem somente o escopo escolhido. O monitoramento nesta etapa e sob demanda.
+O fluxo diário usa a conta Google conectada e dados do backend. O cadastro admite até 30 arquivos, incluindo pausados; a descoberta não limita a lista a 30. Cada proteção exige abas, regras e uma baseline correspondente aprovada pelo usuário. Nenhuma operação altera arquivos Google ou executa Apps Script.
+
+Inicie o monitoramento na visão geral. O serviço verifica arquivos elegíveis a cada 60–300 segundos, com até três verificações concorrentes, mesmo com a janela oculta. Fechar oculta para a bandeja quando disponível; use **Sair** para encerrar. Autostart é opt-in por usuário Windows e permanece desligado até uma ação explícita. Notificações também ficam desligadas por padrão.
 
 O mantenedor provisiona o cliente OAuth Desktop da aplicacao antes da distribuicao; o usuario comum apenas entra com Google. O modo avancado serve ao desenvolvimento autorizado. Sem provisionamento, o aplicativo informa essa pendencia, sem fabricar integracao ou exigir credenciais Cloud no fluxo diario. Publicacao Google e homologacao local sao coisas distintas.
 
@@ -26,7 +28,7 @@ npm ci
 npm run dev
 ```
 
-A prévia no navegador usa exemplos em memória. Para abrir o aplicativo Tauri durante o desenvolvimento:
+A prévia operacional no navegador informa que o desktop é necessário e não simula uma conta conectada. Para abrir o aplicativo Tauri durante o desenvolvimento:
 
 ```powershell
 . .\scripts\environment-common.ps1
@@ -47,11 +49,13 @@ O build de fundação usa `custom-protocol`, incorpora `dist/` e não gera insta
 
 ## Dados locais e limites
 
-No desktop, as quatro telas consultam fixtures SQLite em `%APPDATA%\com.sheetsmonitor.desktop\foundation-v1.db`. O seed é explícito e idempotente. Preferências persistem ao reiniciar; o navegador usa uma sessão em memória. Bancos do protótipo não são alterados ou migrados.
+O desktop armazena dados operacionais por conta em `%APPDATA%\com.sheetsmonitor.desktop\foundation-v1.db`. As fixtures históricas da fundação ficam separadas e não aparecem como monitores reais. Bancos do protótipo não são alterados. Tokens e credenciais permanecem no cofre Windows, fora do SQLite e do renderer.
 
-Os exemplos ilustram Online, Offline, Verificando e Indeterminado. Nenhum desses estados veio de uma consulta Google. O intervalo de 60–300 segundos e os 90 dias de histórico são parâmetros preparatórios; não há scheduler nem limpeza automática nesta sprint. Autostart permanece indisponível.
+Online/Offline são resultados do motor; falhas de conexão, permissão ou API são Indeterminadas. Eventos distintos e sua fila de alertas são persistidos atomicamente. O histórico tem retenção de 90 dias por padrão, ajustável por proteção. Polling compara somente observações efetivas: não garante capturar edições intermediárias durante pausas ou indisponibilidade.
 
-O banco possui 24 tabelas de produto: onze da fundação, quatro de integração, sete do motor e duas operacionais na migração 0004. Tokens, senhas e segredos não fazem parte do esquema. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
+O banco possui 29 tabelas de produto após a migração 0005, que preserva as anteriores e acrescenta controle, agendas, eventos operacionais, outbox e tentativas. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
+
+Um alerta marcado **Submetida ao plugin** não comprova exibição ou leitura no Windows. Não incomodar e preferências do sistema podem silenciá-lo. Alertas desligados são registrados como suprimidos, sem envio retroativo ao ativar; pendências também respeitam a retenção. Uma interrupção entre submissão e confirmação local pode provocar repetição visual. A identidade final da aplicação instalada será validada na Sprint 06.
 
 ## Verificar
 
@@ -68,7 +72,7 @@ npm run build
 node scripts/verify-repository.mjs
 ```
 
-Resultados executados e limitações ficam em [docs/progress.md](docs/progress.md) e [docs/evidence/sprint03](docs/evidence/sprint03/). A presença de código, workflow ou fixture não comprova integração real ou execução do CI hospedado.
+Resultados executados e limitações ficam em [docs/progress.md](docs/progress.md) e [docs/evidence/sprint05](docs/evidence/sprint05/). A presença de código, workflow ou fixture não comprova integração real ou execução do CI hospedado.
 
 ## Documentação
 

@@ -1,0 +1,9 @@
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Start at  23:44:09
+   Duration  8.02s (transform 467ms, setup 1.43s, import 3.02s, tests 866ms, environment 8.63s)
+

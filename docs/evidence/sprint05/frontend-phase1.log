@@ -1,0 +1,58 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ✓ src/services/foundation.test.tsx > contrato da fundação > rejeita preferências fora dos limites antes de invocar o backend 12ms
+ ✓ src/services/foundation.test.tsx > contrato da fundação > recusa conteúdo sem marcação demonstrativa 3ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > exibe estados reais distintos de configuração pendente e não presume Online 149ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > expõe incerteza, ausência de antes/depois e autoria desconhecida 846ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > mostra dependências dinâmicas como não verificáveis e não promete descoberta total 116ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > mostra arquivos e dependências da captura não aprovada sem reutilizar análise de projeto ausente 95ms
+ ✓ src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > requires ready protection before checks and an explicit start action 1012ms
+ ✓ src/pages/IntegrityPage.test.tsx > does not call capture or approval while disconnected 1040ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > usa a retenção padrão somente em regras novas, preservando políticas salvas e rascunhos 10ms
+ ✓ src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > offers pause, queues checks and explains infeasible interval without overlap 336ms
+ ✓ src/pages/MonitoringPanel.test.tsx > notification event journal > keeps distinct events in the same group and never claims display or reading 270ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > exige confirmação explícita e encaminha exatamente a prévia revisada 1362ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > recusa aprovação de captura incompleta ou configuração editada 295ms
+ ✓ src/pages/GooglePage.test.tsx > does not enable Google reads before configuration and authorization 1726ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > preserva identidade da aba e exige cabeçalho explícito sem inventar proteção 2405ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > descarta confirmação quando uma nova captura substitui a prévia 413ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > remove regras dependentes quando a coluna é removida e mantém escopos independentes 716ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > permite próxima página vazia e não apresenta resultados incompletos como totais 1096ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > mostra mais de 30 descobertas, identifica compartilhadas e cadastra somente por ação 1455ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > explica falta de permissão sem habilitar descoberta 90ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > inicia cadastro com estado vazio sem fixtures de planilhas 25ms
+ ✓ src/pages/IntegrityPage.test.tsx > binds human approval to the displayed snapshot hash and expected version 2640ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > carrega seis destinos e dados do backend sem comandos foundation 1890ms
+ ✓ src/pages/GooglePage.test.tsx > clears the secret field immediately and displays only a safe consent error 1867ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > mostra login sem pedir credenciais Cloud ao usuário comum 521ms
+ ✓ src/pages/IntegrityPage.test.tsx > requires another preview after editing the scope and never approves partial capture 1336ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > descobre e pagina arquivos compartilhados sem cadastro automático 1246ms
+ ✓ src/pages/GooglePage.test.tsx > renders independent real-command results and removes them on logout 1354ms
+ ✓ src/pages/IntegrityPage.test.tsx > rejects a captured result after the authenticated session changes 1062ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > cadastra link válido como configuração pendente 1415ms
+ ✓ src/pages/GooglePage.test.tsx > rejects a result from another account and requires explicit revocation confirmation 1648ms
+ ✓ src/pages/GooglePage.test.tsx > never renders an arbitrary provider error body 1ms
+ ✓ src/pages/IntegrityPage.test.tsx > a JSON syntax error never reaches native capture 1225ms
+ ✓ src/pages/IntegrityPage.test.tsx > shows classification produced by Rust separately from connectivity 1362ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > trata URL inválida e cadastro duplicado 2004ms
+ ✓ src/pages/IntegrityPage.test.tsx > rejects a new-session result even when its envelope matches the final session 1084ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > desabilita cadastro ao atingir 30 sem limitar descoberta 2636ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > salva abas, sugere rascunho e aprova apenas a captura revisada 6612ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > exige confirmação de remoção e escolha de histórico 2534ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > envia filtros do histórico ao backend com paginação 1040ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > persiste preferências por conta sem alterar o registro Windows implicitamente 2086ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > descarta resultado se a conta muda mesmo com envelope posterior válido 751ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > desconecta e limpa a identidade da interface 1101ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > propaga desconexão pelas ferramentas avançadas sem aguardar seu fechamento manual 1466ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > bloqueia navegação de linha e marca durante consulta pendente sem invalidar seu resultado 1149ms
+
+ Test Files  9 passed (9)
+      Tests  45 passed (45)
+   Start at  20:42:06
+   Duration  37.40s (transform 5.20s, setup 11.03s, import 22.47s, tests 53.55s, environment 44.16s)
+

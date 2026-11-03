@@ -17,7 +17,7 @@ if (-not $cargo) { throw 'Cargo ausente. Consulte docs/environment.md.' }
 $root = Split-Path -Parent $PSScriptRoot
 $manifest = Join-Path $root 'src-tauri\Cargo.toml'
 $evidence = if ([string]::IsNullOrWhiteSpace($EvidenceDirectory)) {
-    Join-Path $root 'docs\evidence\sprint04'
+    Join-Path $root 'docs\evidence\sprint05'
 } else {
     [IO.Path]::GetFullPath($EvidenceDirectory)
 }

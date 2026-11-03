@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 04 concluida tecnicamente; nova baseline real ampliada depende de revisao/aprovacao humana. Aguardar Prompt 05; etapas05-06 nao autorizadas.",
+  "authorization": "Sprint 05 autorizada por docs/sprint05.original.md: somente SM-022 a SM-025. Sprint 06 permanece nao autorizada.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -588,7 +588,7 @@
       "id": "SM-022",
       "title": "Criar agendador",
       "sprint": 5,
-      "status": "planejado",
+      "status": "em_andamento",
       "owner": "engenharia",
       "depends_on": [
         "SM-016",
@@ -609,7 +609,7 @@
       "id": "SM-023",
       "title": "Criar notificações nativas",
       "sprint": 5,
-      "status": "planejado",
+      "status": "em_andamento",
       "owner": "engenharia",
       "depends_on": [
         "SM-017",
@@ -629,7 +629,7 @@
       "id": "SM-024",
       "title": "Implementar bandeja do sistema",
       "sprint": 5,
-      "status": "planejado",
+      "status": "em_andamento",
       "owner": "engenharia",
       "depends_on": [
         "SM-022",
@@ -649,7 +649,7 @@
       "id": "SM-025",
       "title": "Implementar recuperação de falhas",
       "sprint": 5,
-      "status": "planejado",
+      "status": "em_andamento",
       "owner": "engenharia",
       "depends_on": [
         "SM-009",

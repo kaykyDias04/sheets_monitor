@@ -327,6 +327,14 @@ fn integrity_event_outbox_is_atomic_and_deduplicated() {
         .remove(0);
     assert_eq!(n.source, "integrity");
     assert_eq!(n.state, "pending");
+    let sheet_notice = d
+        .notification_history(SUBJECT, 0, 10)
+        .unwrap()
+        .items
+        .into_iter()
+        .find(|notice| notice.sheet_id == Some(7))
+        .expect("fixture event identifies its sheet");
+    assert_eq!(sheet_notice.sheet_title.as_deref(), Some("Data"));
 }
 #[test]
 fn outbox_failure_rolls_back_integrity_event_transaction() {

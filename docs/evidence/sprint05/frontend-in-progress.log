@@ -1,0 +1,2617 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ✓ src/services/foundation.test.tsx > contrato da fundação > rejeita preferências fora dos limites antes de invocar o backend 17ms
+ ✓ src/services/foundation.test.tsx > contrato da fundação > recusa conteúdo sem marcação demonstrativa 1ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > usa a retenção padrão somente em regras novas, preservando políticas salvas e rascunhos 8ms
+ ✓ src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > requires ready protection before checks and an explicit start action 1324ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > exibe estados reais distintos de configuração pendente e não presume Online 202ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > expõe incerteza, ausência de antes/depois e autoria desconhecida 1160ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > mostra dependências dinâmicas como não verificáveis e não promete descoberta total 114ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > mostra arquivos e dependências da captura não aprovada sem reutilizar análise de projeto ausente 76ms
+ ✓ src/pages/IntegrityPage.test.tsx > does not call capture or approval while disconnected 1372ms
+ × src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > offers pause, queues checks and explains infeasible interval without overlap 533ms
+   → Found multiple elements with the role "button" and name "Verificar elegíveis agora"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"[39m
+  [33mdisabled[39m=[32m""[39m
+[36m>[39m
+  [36m<svg[39m
+    [33mclass[39m=[32m"lucide lucide-refresh-cw"[39m
+    [33mfill[39m=[32m"none"[39m
+    [33mheight[39m=[32m"24"[39m
+    [33mstroke[39m=[32m"currentColor"[39m
+    [33mstroke-linecap[39m=[32m"round"[39m
+    [33mstroke-linejoin[39m=[32m"round"[39m
+    [33mstroke-width[39m=[32m"2"[39m
+    [33mviewBox[39m=[32m"0 0 24 24"[39m
+    [33mwidth[39m=[32m"24"[39m
+    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+  [36m>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M21 3v5h-5"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M8 16H3v5"[39m
+    [36m/>[39m
+  [36m</svg>[39m
+  [0m Verificar elegíveis agora[0m
+[36m</button>[39m
+
+Ignored nodes: comments, script, style
+[36m<button[39m
+  [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"[39m
+[36m>[39m
+  [36m<svg[39m
+    [33mclass[39m=[32m"lucide lucide-refresh-cw"[39m
+    [33mfill[39m=[32m"none"[39m
+    [33mheight[39m=[32m"24"[39m
+    [33mstroke[39m=[32m"currentColor"[39m
+    [33mstroke-linecap[39m=[32m"round"[39m
+    [33mstroke-linejoin[39m=[32m"round"[39m
+    [33mstroke-width[39m=[32m"2"[39m
+    [33mviewBox[39m=[32m"0 0 24 24"[39m
+    [33mwidth[39m=[32m"24"[39m
+    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+  [36m>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M21 3v5h-5"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+    [36m/>[39m
+    [36m<path[39m
+      [33md[39m=[32m"M8 16H3v5"[39m
+    [36m/>[39m
+  [36m</svg>[39m
+  [0m Verificar elegíveis agora[0m
+[36m</button>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-xl border bg-card text-card-foreground shadow-sm op-monitoring"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+      [36m>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"font-semibold leading-none tracking-tight"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"lucide lucide-activity"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"18"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"18"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [0m Monitoramento contínuo[0m
+        [36m</h2>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mPausado. Inicie quando as proteções estiverem prontas.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 pt-0 op-stack"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"op-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-play"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<polygon[39m
+                [33mpoints[39m=[32m"6 3 20 12 6 21 6 3"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mIniciar monitoramento[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"[39m
+            [33mdisabled[39m=[32m""[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-refresh-cw"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 3v5h-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 16H3v5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0m Verificar elegíveis agora[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"op-hint"[39m
+          [33mrole[39m=[32m"status"[39m
+        [36m>[39m
+          [0m0[0m
+          [0m planilhas prontas · [0m
+          [0m0[0m
+          [0m em verificação · intervalo de[0m
+          [0m [0m
+          [0m60[0m
+          [0ms[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"op-hint"[39m
+        [36m>[39m
+          [0mSelecione abas, salve regras e aprove uma referência para habilitar verificações. Nenhuma referência é aprovada automaticamente.[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"op-hint"[39m
+        [36m>[39m
+          [0mFalhas de conexão não comprovam perda de integridade. Após uma interrupção, apenas o estado efetivamente observado pode ser comparado.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-xl border bg-card text-card-foreground shadow-sm op-monitoring"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6"[39m
+      [36m>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"font-semibold leading-none tracking-tight"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33mclass[39m=[32m"lucide lucide-activity"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"18"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"18"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [0m Monitoramento contínuo[0m
+        [36m</h2>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mAtivo no aplicativo, inclusive com a janela oculta.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 pt-0 op-stack"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"op-actions"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-pause"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"4"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"4"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"16"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"4"[39m
+                [33mx[39m=[32m"6"[39m
+                [33my[39m=[32m"4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mPausar monitoramento[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-refresh-cw"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 3v5h-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 16H3v5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0m Verificar elegíveis agora[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"op-hint"[39m
+          [33mrole[39m=[32m"status"[39m
+        [36m>[39m
+          [0m1[0m
+          [0m planilhas prontas · [0m
+          [0m0[0m
+          [0m em verificação · intervalo de[0m
+          [0m [0m
+          [0m300[0m
+          [0ms[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"op-hint"[39m
+          [33mrole[39m=[32m"status"[39m
+        [36m>[39m
+          [0mA duração das consultas excede o intervalo configurado. Aumente o intervalo ou reduza o escopo; verificações não são sobrepostas.[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"op-hint"[39m
+        [36m>[39m
+          [0mFalhas de conexão não comprovam perda de integridade. Após uma interrupção, apenas o estado efetivamente observado pode ser comparado.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ✓ src/pages/MonitoringPanel.test.tsx > notification event journal > keeps distinct events in the same group and never claims display or reading 457ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > exige confirmação explícita e encaminha exatamente a prévia revisada 1552ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > recusa aprovação de captura incompleta ou configuração editada 456ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > preserva identidade da aba e exige cabeçalho explícito sem inventar proteção 2912ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > descarta confirmação quando uma nova captura substitui a prévia 584ms
+ ✓ src/pages/GooglePage.test.tsx > does not enable Google reads before configuration and authorization 1933ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > remove regras dependentes quando a coluna é removida e mantém escopos independentes 905ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > permite próxima página vazia e não apresenta resultados incompletos como totais 1369ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > mostra mais de 30 descobertas, identifica compartilhadas e cadastra somente por ação 1738ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > explica falta de permissão sem habilitar descoberta 69ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > inicia cadastro com estado vazio sem fixtures de planilhas 15ms
+ ✓ src/pages/IntegrityPage.test.tsx > binds human approval to the displayed snapshot hash and expected version 2822ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > carrega seis destinos e dados do backend sem comandos foundation 2020ms
+ ✓ src/pages/GooglePage.test.tsx > clears the secret field immediately and displays only a safe consent error 1918ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > mostra login sem pedir credenciais Cloud ao usuário comum 857ms
+ ✓ src/pages/IntegrityPage.test.tsx > requires another preview after editing the scope and never approves partial capture 1659ms
+ ✓ src/pages/GooglePage.test.tsx > renders independent real-command results and removes them on logout 1488ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > descobre e pagina arquivos compartilhados sem cadastro automático 1644ms
+ ✓ src/pages/IntegrityPage.test.tsx > rejects a captured result after the authenticated session changes 1089ms
+ ✓ src/pages/GooglePage.test.tsx > rejects a result from another account and requires explicit revocation confirmation 1773ms
+ ✓ src/pages/GooglePage.test.tsx > never renders an arbitrary provider error body 1ms
+ ✓ src/pages/IntegrityPage.test.tsx > a JSON syntax error never reaches native capture 1382ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > cadastra link válido como configuração pendente 1707ms
+ ✓ src/pages/IntegrityPage.test.tsx > shows classification produced by Rust separately from connectivity 1374ms
+ ✓ src/pages/IntegrityPage.test.tsx > rejects a new-session result even when its envelope matches the final session 1217ms
+ × src/App.test.tsx > Sprint 04 · operação sem demonstração > trata URL inválida e cadastro duplicado 2404ms
+   → Found multiple elements with the role "alert"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"feedback error"[39m
+  [33mrole[39m=[32m"alert"[39m
+[36m>[39m
+  [0mRevise o link, os IDs e os intervalos informados.[0m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<p[39m
+  [33mclass[39m=[32m"feedback error"[39m
+  [33mrole[39m=[32m"alert"[39m
+[36m>[39m
+  [0mRevise o link, os IDs e os intervalos informados.[0m
+[36m</p>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell op-app"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"op-skip"[39m
+        [33mhref[39m=[32m"#operational-content"[39m
+      [36m>[39m
+        [0mIr para o conteúdo[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"sidebar"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mclass[39m=[32m"brand"[39m
+          [33mhref[39m=[32m"#overview"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-activity"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"25"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"25"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-name"[39m
+          [36m>[39m
+            [0mSheets[0m
+            [36m<span>[39m
+              [0mMonitor[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0mINTEGRIDADE DAS SUAS PLANILHAS[0m
+            [36m</small>[39m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"workspace-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"19"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"19"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m9 12 2 2 4-4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [0mWorkspace local[0m
+            [36m<small>[39m
+              [0mGoogle somente leitura[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"nav-label"[39m
+        [36m>[39m
+          [0mACOMPANHAMENTO[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Navegação principal"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"nav-item "[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-layout-dashboard"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"12"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"16"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVisão geral[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+            [33mclass[39m=[32m"nav-item active"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-file-spreadsheet"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 2v4a2 2 0 0 0 2 2h4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 17h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 17h2"[39m
+          ...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell op-app"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"op-skip"[39m
+        [33mhref[39m=[32m"#operational-content"[39m
+      [36m>[39m
+        [0mIr para o conteúdo[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"sidebar"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mclass[39m=[32m"brand"[39m
+          [33mhref[39m=[32m"#overview"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-activity"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"25"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"25"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-name"[39m
+          [36m>[39m
+            [0mSheets[0m
+            [36m<span>[39m
+              [0mMonitor[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0mINTEGRIDADE DAS SUAS PLANILHAS[0m
+            [36m</small>[39m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"workspace-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"19"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"19"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m9 12 2 2 4-4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [0mWorkspace local[0m
+            [36m<small>[39m
+              [0mGoogle somente leitura[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"nav-label"[39m
+        [36m>[39m
+          [0mACOMPANHAMENTO[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Navegação principal"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"nav-item "[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-layout-dashboard"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"12"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"16"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVisão geral[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+            [33mclass[39m=[32m"nav-item active"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-file-spreadsheet"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 2v4a2 2 0 0 0 2 2h4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 17h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 17h2"[39m
+          ...
+ × src/App.test.tsx > Sprint 04 · operação sem demonstração > desabilita cadastro ao atingir 30 sem limitar descoberta 5593ms
+   → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > salva abas, sugere rascunho e aprova apenas a captura revisada 12321ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > exige confirmação de remoção e escolha de histórico 2288ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > envia filtros do histórico ao backend com paginação 1440ms
+ × src/App.test.tsx > Sprint 04 · operação sem demonstração > persiste preferências após remontar sem ativar recursos futuros 1164ms
+   → Unable to find a label with the text of: /Intervalo planejado de verifica/
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell op-app"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"op-skip"[39m
+        [33mhref[39m=[32m"#operational-content"[39m
+      [36m>[39m
+        [0mIr para o conteúdo[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"sidebar"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mclass[39m=[32m"brand"[39m
+          [33mhref[39m=[32m"#overview"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-activity"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"25"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"25"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-name"[39m
+          [36m>[39m
+            [0mSheets[0m
+            [36m<span>[39m
+              [0mMonitor[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0mINTEGRIDADE DAS SUAS PLANILHAS[0m
+            [36m</small>[39m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"workspace-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"19"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"19"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m9 12 2 2 4-4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [0mWorkspace local[0m
+            [36m<small>[39m
+              [0mGoogle somente leitura[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"nav-label"[39m
+        [36m>[39m
+          [0mACOMPANHAMENTO[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Navegação principal"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"nav-item "[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-layout-dashboard"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"12"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"16"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVisão geral[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"nav-item "[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-file-spreadsheet"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 2v4a2 2 0 0 0 2 2h4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 17h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 17h2"[39m
+              [36m/>[39m...
+ × src/App.test.tsx > Sprint 04 · operação sem demonstração > descarta resultado se a conta muda mesmo com envelope posterior válido 2039ms
+   → Found multiple elements with the role "alert"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<div[39m
+  [33mclass[39m=[32m"feedback error"[39m
+  [33mrole[39m=[32m"alert"[39m
+[36m>[39m
+  [0mA conta mudou durante a operação. O resultado foi descartado.[0m
+[36m</div>[39m
+
+Ignored nodes: comments, script, style
+[36m<p[39m
+  [33mclass[39m=[32m"feedback error"[39m
+  [33mrole[39m=[32m"alert"[39m
+[36m>[39m
+  [0mRevise o link, os IDs e os intervalos informados.[0m
+[36m</p>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell op-app"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"op-skip"[39m
+        [33mhref[39m=[32m"#operational-content"[39m
+      [36m>[39m
+        [0mIr para o conteúdo[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"sidebar"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mclass[39m=[32m"brand"[39m
+          [33mhref[39m=[32m"#overview"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-activity"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"25"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"25"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-name"[39m
+          [36m>[39m
+            [0mSheets[0m
+            [36m<span>[39m
+              [0mMonitor[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0mINTEGRIDADE DAS SUAS PLANILHAS[0m
+            [36m</small>[39m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"workspace-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"19"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"19"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m9 12 2 2 4-4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [0mWorkspace local[0m
+            [36m<small>[39m
+              [0mGoogle somente leitura[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"nav-label"[39m
+        [36m>[39m
+          [0mACOMPANHAMENTO[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Navegação principal"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"nav-item "[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-layout-dashboard"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"12"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"16"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVisão geral[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+            [33mclass[39m=[32m"nav-item active"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-file-spreadsheet"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 2v4a2 2 0 0 0 2 2h4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 17h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                ...
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell op-app"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"op-skip"[39m
+        [33mhref[39m=[32m"#operational-content"[39m
+      [36m>[39m
+        [0mIr para o conteúdo[0m
+      [36m</a>[39m
+      [36m<aside[39m
+        [33mclass[39m=[32m"sidebar"[39m
+      [36m>[39m
+        [36m<a[39m
+          [33mclass[39m=[32m"brand"[39m
+          [33mhref[39m=[32m"#overview"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-activity"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"25"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"25"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"brand-name"[39m
+          [36m>[39m
+            [0mSheets[0m
+            [36m<span>[39m
+              [0mMonitor[0m
+            [36m</span>[39m
+            [36m<small>[39m
+              [0mINTEGRIDADE DAS SUAS PLANILHAS[0m
+            [36m</small>[39m
+          [36m</span>[39m
+        [36m</a>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"workspace"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"workspace-symbol"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-shield-check"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"19"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"19"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"m9 12 2 2 4-4"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [0mWorkspace local[0m
+            [36m<small>[39m
+              [0mGoogle somente leitura[0m
+            [36m</small>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"nav-label"[39m
+        [36m>[39m
+          [0mACOMPANHAMENTO[0m
+        [36m</p>[39m
+        [36m<nav[39m
+          [33maria-label[39m=[32m"Navegação principal"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"nav-item "[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-layout-dashboard"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"3"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"9"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"14"[39m
+                [33my[39m=[32m"12"[39m
+              [36m/>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"5"[39m
+                [33mrx[39m=[32m"1"[39m
+                [33mwidth[39m=[32m"7"[39m
+                [33mx[39m=[32m"3"[39m
+                [33my[39m=[32m"16"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span>[39m
+              [0mVisão geral[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33maria-current[39m=[32m"page"[39m
+            [33mclass[39m=[32m"nav-item active"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-file-spreadsheet"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"18"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"18"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 2v4a2 2 0 0 0 2 2h4"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M14 13h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 17h2"[39m
+              [36m/>[39m
+              [36m<path[39m
+                ...
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > desconecta e limpa a identidade da interface 1215ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > propaga desconexão pelas ferramentas avançadas sem aguardar seu fechamento manual 2271ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > bloqueia navegação de linha e marca durante consulta pendente sem invalidar seu resultado 1170ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > trata URL inválida e cadastro duplicado
+TestingLibraryElementError: Found multiple elements with the role "alert"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+<div
+  class="feedback error"
+  role="alert"
+>
+  Revise o link, os IDs e os intervalos informados.
+</div>
+
+Ignored nodes: comments, script, style
+<p
+  class="feedback error"
+  role="alert"
+>
+  Revise o link, os IDs e os intervalos informados.
+</p>
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="app-shell op-app"
+    >
+      <a
+        class="op-skip"
+        href="#operational-content"
+      >
+        Ir para o conteúdo
+      </a>
+      <aside
+        class="sidebar"
+      >
+        <a
+          class="brand"
+          href="#overview"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              INTEGRIDADE DAS SUAS PLANILHAS
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-shield-check"
+              fill="none"
+              height="19"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="19"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </span>
+          <div>
+            Workspace local
+            <small>
+              Google somente leitura
+            </small>
+          </div>
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                y="3"
+              />
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="14"
+                y="12"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="3"
+                y="16"
+              />
+            </svg>
+            <span>
+              Visão geral
+            </span>
+          </button>
+          <button
+            aria-current="page"
+            class="nav-item active"
+          >
+            <svg
+              class="lucide lucide-file-spreadsheet"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="M8 13h2"
+              />
+              <path
+                d="M14 13h2"
+              />
+              <path
+                d="M8 17h2"
+              />
+              <path
+                d="M14 17h2"
+          ...
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="app-shell op-app"
+    >
+      <a
+        class="op-skip"
+        href="#operational-content"
+      >
+        Ir para o conteúdo
+      </a>
+      <aside
+        class="sidebar"
+      >
+        <a
+          class="brand"
+          href="#overview"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              INTEGRIDADE DAS SUAS PLANILHAS
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-shield-check"
+              fill="none"
+              height="19"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="19"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </span>
+          <div>
+            Workspace local
+            <small>
+              Google somente leitura
+            </small>
+          </div>
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                y="3"
+              />
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="14"
+                y="12"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="3"
+                y="16"
+              />
+            </svg>
+            <span>
+              Visão geral
+            </span>
+          </button>
+          <button
+            aria-current="page"
+            class="nav-item active"
+          >
+            <svg
+              class="lucide lucide-file-spreadsheet"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="M8 13h2"
+              />
+              <path
+                d="M14 13h2"
+              />
+              <path
+                d="M8 17h2"
+              />
+              <path
+                d="M14 17h2"
+          ...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/App.test.tsx:293:18
+    291|     await user.paste("https://example.invalid/file");
+    292|     await user.click(screen.getByRole("button", { name: "Cadastrar por…
+    293|     await screen.findByRole("alert");
+       |                  ^
+    294|     await settled();
+    295|     expect(rows).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > desabilita cadastro ao atingir 30 sem limitar descoberta
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/App.test.tsx:302:3
+    300|     await screen.findByText("Esta planilha já está cadastrada nesta co…
+    301|   });
+    302|   it("desabilita cadastro ao atingir 30 sem limitar descoberta", async…
+       |   ^
+    303|     rows = Array.from({ length: 30 }, (_, i) => ({
+    304|       ...fixtureRow(),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > persiste preferências após remontar sem ativar recursos futuros
+TestingLibraryElementError: Unable to find a label with the text of: /Intervalo planejado de verifica/
+
+Ignored nodes: comments, script, style
+<body
+  style=""
+>
+  <div>
+    <div
+      class="app-shell op-app"
+    >
+      <a
+        class="op-skip"
+        href="#operational-content"
+      >
+        Ir para o conteúdo
+      </a>
+      <aside
+        class="sidebar"
+      >
+        <a
+          class="brand"
+          href="#overview"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              INTEGRIDADE DAS SUAS PLANILHAS
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-shield-check"
+              fill="none"
+              height="19"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="19"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </span>
+          <div>
+            Workspace local
+            <small>
+              Google somente leitura
+            </small>
+          </div>
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                y="3"
+              />
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="14"
+                y="12"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="3"
+                y="16"
+              />
+            </svg>
+            <span>
+              Visão geral
+            </span>
+          </button>
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-file-spreadsheet"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="M8 13h2"
+              />
+              <path
+                d="M14 13h2"
+              />
+              <path
+                d="M8 17h2"
+              />
+              <path
+                d="M14 17h2"
+              />...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/App.test.tsx:393:29
+    391|     const user = await load();
+    392|     await go(user, "Configurações");
+    393|     const interval = screen.getByLabelText(/Intervalo planejado de ver…
+       |                             ^
+    394|     await user.clear(interval);
+    395|     await user.type(interval, "180");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  src/App.test.tsx > Sprint 04 · operação sem demonstração > descarta resultado se a conta muda mesmo com envelope posterior válido
+TestingLibraryElementError: Found multiple elements with the role "alert"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+<div
+  class="feedback error"
+  role="alert"
+>
+  A conta mudou durante a operação. O resultado foi descartado.
+</div>
+
+Ignored nodes: comments, script, style
+<p
+  class="feedback error"
+  role="alert"
+>
+  Revise o link, os IDs e os intervalos informados.
+</p>
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+<body
+  style=""
+>
+  <div>
+    <div
+      class="app-shell op-app"
+    >
+      <a
+        class="op-skip"
+        href="#operational-content"
+      >
+        Ir para o conteúdo
+      </a>
+      <aside
+        class="sidebar"
+      >
+        <a
+          class="brand"
+          href="#overview"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              INTEGRIDADE DAS SUAS PLANILHAS
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-shield-check"
+              fill="none"
+              height="19"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="19"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </span>
+          <div>
+            Workspace local
+            <small>
+              Google somente leitura
+            </small>
+          </div>
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                y="3"
+              />
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="14"
+                y="12"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="3"
+                y="16"
+              />
+            </svg>
+            <span>
+              Visão geral
+            </span>
+          </button>
+          <button
+            aria-current="page"
+            class="nav-item active"
+          >
+            <svg
+              class="lucide lucide-file-spreadsheet"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="M8 13h2"
+              />
+              <path
+                d="M14 13h2"
+              />
+              <path
+                d="M8 17h2"
+              />
+              <path
+                ...
+
+Ignored nodes: comments, script, style
+<body
+  style=""
+>
+  <div>
+    <div
+      class="app-shell op-app"
+    >
+      <a
+        class="op-skip"
+        href="#operational-content"
+      >
+        Ir para o conteúdo
+      </a>
+      <aside
+        class="sidebar"
+      >
+        <a
+          class="brand"
+          href="#overview"
+        >
+          <span
+            class="brand-symbol"
+          >
+            <svg
+              class="lucide lucide-activity"
+              fill="none"
+              height="25"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="25"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+              />
+            </svg>
+          </span>
+          <span
+            class="brand-name"
+          >
+            Sheets
+            <span>
+              Monitor
+            </span>
+            <small>
+              INTEGRIDADE DAS SUAS PLANILHAS
+            </small>
+          </span>
+        </a>
+        <div
+          class="workspace"
+        >
+          <span
+            class="workspace-symbol"
+          >
+            <svg
+              class="lucide lucide-shield-check"
+              fill="none"
+              height="19"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="19"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </span>
+          <div>
+            Workspace local
+            <small>
+              Google somente leitura
+            </small>
+          </div>
+        </div>
+        <p
+          class="nav-label"
+        >
+          ACOMPANHAMENTO
+        </p>
+        <nav
+          aria-label="Navegação principal"
+        >
+          <button
+            class="nav-item "
+          >
+            <svg
+              class="lucide lucide-layout-dashboard"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="3"
+                y="3"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="14"
+                y="3"
+              />
+              <rect
+                height="9"
+                rx="1"
+                width="7"
+                x="14"
+                y="12"
+              />
+              <rect
+                height="5"
+                rx="1"
+                width="7"
+                x="3"
+                y="16"
+              />
+            </svg>
+            <span>
+              Visão geral
+            </span>
+          </button>
+          <button
+            aria-current="page"
+            class="nav-item active"
+          >
+            <svg
+              class="lucide lucide-file-spreadsheet"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="M8 13h2"
+              />
+              <path
+                d="M14 13h2"
+              />
+              <path
+                d="M8 17h2"
+              />
+              <path
+                ...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/App.test.tsx:422:18
+    420|     };
+    421|     await user.click(screen.getByRole("button", { name: "Buscar planil…
+    422|     await screen.findByRole("alert");
+       |                  ^
+    423|     expect(screen.queryByText("Arquivo descoberto")).not.toBeInTheDocu…
+    424|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > offers pause, queues checks and explains infeasible interval without overlap
+TestingLibraryElementError: Found multiple elements with the role "button" and name "Verificar elegíveis agora"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+<button
+  class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"
+  disabled=""
+>
+  <svg
+    class="lucide lucide-refresh-cw"
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+    />
+    <path
+      d="M21 3v5h-5"
+    />
+    <path
+      d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+    />
+    <path
+      d="M8 16H3v5"
+    />
+  </svg>
+   Verificar elegíveis agora
+</button>
+
+Ignored nodes: comments, script, style
+<button
+  class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"
+>
+  <svg
+    class="lucide lucide-refresh-cw"
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+    />
+    <path
+      d="M21 3v5h-5"
+    />
+    <path
+      d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+    />
+    <path
+      d="M8 16H3v5"
+    />
+  </svg>
+   Verificar elegíveis agora
+</button>
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="rounded-xl border bg-card text-card-foreground shadow-sm op-monitoring"
+    >
+      <div
+        class="flex flex-col space-y-1.5 p-6"
+      >
+        <h2
+          class="font-semibold leading-none tracking-tight"
+        >
+          <svg
+            class="lucide lucide-activity"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+            />
+          </svg>
+           Monitoramento contínuo
+        </h2>
+        <p
+          class="text-sm text-muted-foreground"
+        >
+          Pausado. Inicie quando as proteções estiverem prontas.
+        </p>
+      </div>
+      <div
+        class="p-6 pt-0 op-stack"
+      >
+        <div
+          class="op-actions"
+        >
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"
+          >
+            <svg
+              class="lucide lucide-play"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <polygon
+                points="6 3 20 12 6 21 6 3"
+              />
+            </svg>
+            Iniciar monitoramento
+          </button>
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"
+            disabled=""
+          >
+            <svg
+              class="lucide lucide-refresh-cw"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              />
+              <path
+                d="M21 3v5h-5"
+              />
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              />
+              <path
+                d="M8 16H3v5"
+              />
+            </svg>
+             Verificar elegíveis agora
+          </button>
+        </div>
+        <p
+          class="op-hint"
+          role="status"
+        >
+          0
+           planilhas prontas · 
+          0
+           em verificação · intervalo de
+           
+          60
+          s
+        </p>
+        <p
+          class="op-hint"
+        >
+          Selecione abas, salve regras e aprove uma referência para habilitar verificações. Nenhuma referência é aprovada automaticamente.
+        </p>
+        <p
+          class="op-hint"
+        >
+          Falhas de conexão não comprovam perda de integridade. Após uma interrupção, apenas o estado efetivamente observado pode ser comparado.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div
+      class="rounded-xl border bg-card text-card-foreground shadow-sm op-monitoring"
+    >
+      <div
+        class="flex flex-col space-y-1.5 p-6"
+      >
+        <h2
+          class="font-semibold leading-none tracking-tight"
+        >
+          <svg
+            class="lucide lucide-activity"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+            />
+          </svg>
+           Monitoramento contínuo
+        </h2>
+        <p
+          class="text-sm text-muted-foreground"
+        >
+          Ativo no aplicativo, inclusive com a janela oculta.
+        </p>
+      </div>
+      <div
+        class="p-6 pt-0 op-stack"
+      >
+        <div
+          class="op-actions"
+        >
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-4 py-2"
+          >
+            <svg
+              class="lucide lucide-pause"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="16"
+                rx="1"
+                width="4"
+                x="14"
+                y="4"
+              />
+              <rect
+                height="16"
+                rx="1"
+                width="4"
+                x="6"
+                y="4"
+              />
+            </svg>
+            Pausar monitoramento
+          </button>
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background text-foreground hover:bg-accent h-10 px-4 py-2"
+          >
+            <svg
+              class="lucide lucide-refresh-cw"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              />
+              <path
+                d="M21 3v5h-5"
+              />
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              />
+              <path
+                d="M8 16H3v5"
+              />
+            </svg>
+             Verificar elegíveis agora
+          </button>
+        </div>
+        <p
+          class="op-hint"
+          role="status"
+        >
+          1
+           planilhas prontas · 
+          0
+           em verificação · intervalo de
+           
+          300
+          s
+        </p>
+        <p
+          class="op-hint"
+          role="status"
+        >
+          A duração das consultas excede o intervalo configurado. Aumente o intervalo ou reduza o escopo; verificações não são sobrepostas.
+        </p>
+        <p
+          class="op-hint"
+        >
+          Falhas de conexão não comprovam perda de integridade. Após uma interrupção, apenas o estado efetivamente observado pode ser comparado.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/MonitoringPanel.test.tsx:52:34
+     50|     expect(screen.getByText(/verificações não são sobrepostas/)).toBeI…
+     51|     await userEvent.click(screen.getByRole("button", { name: "Pausar m…
+     52|     await userEvent.click(screen.getByRole("button", { name: "Verifica…
+       |                                  ^
+     53|     expect(toggle).toHaveBeenCalledWith(false);
+     54|     expect(check).toHaveBeenCalledOnce();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  2 failed | 7 passed (9)
+      Tests  5 failed | 40 passed (45)
+   Start at  20:40:19
+   Duration  49.70s (transform 7.03s, setup 13.26s, import 28.95s, tests 69.71s, environment 37.72s)
+

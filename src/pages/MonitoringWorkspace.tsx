@@ -1,0 +1,326 @@
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { desktop } from "@/services/platform";
+import { getIntegrationState } from "@/services/google";
+import { managementError } from "@/services/management";
+import * as api from "@/services/monitoring";
+import type { IntegrationState } from "@/types/google";
+import type { Page, RegisteredSpreadsheet } from "@/types/management";
+import type { DesktopStatus, MonitoringStatus, NotificationRecord } from "@/types/monitoring";
+import { MonitoringPanel, NotificationHistory } from "./MonitoringPanel";
+
+/** Event-driven view of the Rust service; no frontend scheduling timer. */
+export function MonitoringWorkspace({
+  session,
+  rows,
+  route,
+  disabled,
+  onChanged,
+  onNavigate,
+  onOpenSheet,
+}: {
+  session: IntegrationState | null;
+  rows: RegisteredSpreadsheet[];
+  route: string;
+  disabled: boolean;
+  onChanged: () => void;
+  onNavigate: (route: "settings" | "overview") => void;
+  onOpenSheet: (id: string) => void;
+}) {
+  const [status, setStatus] = useState<MonitoringStatus | null>(null);
+  const [native, setNative] = useState<DesktopStatus | null>(null);
+  const [history, setHistory] = useState<Page<NotificationRecord> | null>(null);
+  const [selected, setSelected] = useState<NotificationRecord | null>(null);
+  const [offset, setOffset] = useState(0);
+  const [working, setWorking] = useState(false);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const live = useRef({ session, route, offset, onChanged, onNavigate });
+  useLayoutEffect(() => {
+    live.current = { session, route, offset, onChanged, onNavigate };
+  }, [session, route, offset, onChanged, onNavigate]);
+  const mounted = useRef(false);
+  const loading = useRef(false);
+  const pending = useRef(false);
+  const same = (before: IntegrationState, after: IntegrationState) =>
+    before.generation === after.generation &&
+    before.auth.account?.subject === after.auth.account?.subject;
+  const load = useCallback(async () => {
+    if (!desktop || !mounted.current) return;
+    if (loading.current) {
+      pending.current = true;
+      return;
+    }
+    loading.current = true;
+    try {
+      do {
+        pending.current = false;
+        const before = live.current.session;
+        const nativeStatus = await api.getDesktopStatus();
+        if (mounted.current) setNative(nativeStatus);
+        if (!before?.auth.account) continue;
+        const [monitor, notifications] = await Promise.all([
+          api.getMonitoringStatus(),
+          api.notificationHistory(live.current.offset),
+        ]);
+        const after = await getIntegrationState();
+        if (
+          !mounted.current ||
+          !same(before, after) ||
+          !live.current.session ||
+          !same(before, live.current.session)
+        )
+          continue;
+        if (
+          [monitor, notifications].some(
+            (value) =>
+              value.generation !== after.generation ||
+              value.account_subject !== after.auth.account?.subject,
+          )
+        )
+          continue;
+        setStatus(monitor.data);
+        setHistory(notifications.data);
+        setError("");
+      } while (pending.current && mounted.current);
+    } catch (failure) {
+      if (mounted.current) setError(managementError(failure));
+    } finally {
+      loading.current = false;
+    }
+  }, []);
+  useEffect(() => {
+    mounted.current = true;
+    let subscribed = true;
+    const unlisten: (() => void)[] = [];
+    function retain(off: () => void) {
+      if (subscribed && mounted.current) unlisten.push(off);
+      else off();
+    }
+    if (desktop) {
+      void api
+        .onMonitoringChanged(() => {
+          void load();
+          live.current.onChanged();
+        })
+        .then(retain)
+        .catch(() => undefined);
+      void api
+        .onDesktopNavigate((target) =>
+          live.current.onNavigate(target === "settings" ? "settings" : "overview"),
+        )
+        .then(retain)
+        .catch(() => undefined);
+      void api
+        .onNotificationOpen((id) => {
+          const before = live.current.session;
+          if (!before?.auth.account) return;
+          void api
+            .notificationById(id)
+            .then(async (envelope) => {
+              const after = await getIntegrationState();
+              if (
+                mounted.current &&
+                same(before, after) &&
+                live.current.session &&
+                same(before, live.current.session) &&
+                envelope.generation === after.generation &&
+                envelope.account_subject === after.auth.account?.subject
+              ) {
+                setSelected(envelope.data);
+                if (!envelope.data)
+                  setNotice("O evento não está disponível nesta conta ou já expirou.");
+              }
+            })
+            .catch(() => {
+              if (mounted.current) setError("Não foi possível abrir o evento nesta sessão.");
+            });
+        })
+        .then(retain)
+        .catch(() => undefined);
+    }
+    return () => {
+      mounted.current = false;
+      subscribed = false;
+      unlisten.forEach((off) => off());
+    };
+  }, [load]);
+  useEffect(() => {
+    void Promise.resolve().then(load);
+  }, [route, offset, load]);
+  async function action(work: () => Promise<unknown>, message: string) {
+    if (working || disabled) return;
+    setWorking(true);
+    setError("");
+    setNotice("");
+    try {
+      await work();
+      setNotice(message);
+      await load();
+      live.current.onChanged();
+    } catch (failure) {
+      setError(managementError(failure));
+    } finally {
+      if (mounted.current) setWorking(false);
+    }
+  }
+  const blocked = disabled || working;
+  const generation = session?.generation;
+  return (
+    <div className="op-stack op-monitoring-workspace">
+      {error && (
+        <p className="feedback error" role="alert">
+          {error}
+        </p>
+      )}
+      {notice && (
+        <p className="feedback success" role="status">
+          {notice}
+        </p>
+      )}
+      {session?.auth.account && (route === "overview" || route === "settings") && (
+        <MonitoringPanel
+          status={status}
+          rows={rows}
+          disabled={blocked}
+          onToggle={(enabled) => {
+            if (generation !== undefined)
+              void action(
+                () => api.setMonitoringEnabled(enabled, generation),
+                enabled
+                  ? "Monitoramento iniciado."
+                  : "Monitoramento pausado; verificações automáticas canceladas.",
+              );
+          }}
+          onCheck={() => {
+            if (generation !== undefined)
+              void action(
+                () => api.checkNow(generation),
+                "Verificações elegíveis adicionadas à fila.",
+              );
+          }}
+        />
+      )}
+      {session?.auth.account && route !== "overview" && route !== "settings" && (
+        <p className="op-hint" role="status">
+          Monitoramento {status?.control.enabled ? "ativo" : "pausado"} ·{" "}
+          {status?.eligible_count ?? 0} planilhas prontas
+        </p>
+      )}
+      {route === "settings" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Windows e segundo plano</CardTitle>
+            <CardDescription>
+              Configuração deste usuário Windows, independente da conta Google.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="op-stack">
+            <p>
+              {native?.tray_available
+                ? "Bandeja disponível. Fechar a janela mantém o aplicativo em execução."
+                : "Bandeja indisponível. A janela permanecerá acessível ao tentar fechar."}
+            </p>
+            <label className="op-check">
+              <input
+                type="checkbox"
+                checked={native?.startup.registered ?? false}
+                disabled={
+                  blocked || !native || (!!native.startup.error_code && !native.startup.managed)
+                }
+                onChange={(event) => {
+                  const enabled = event.target.checked;
+                  void action(
+                    () => api.setStartup(enabled),
+                    enabled
+                      ? "Registro de inicialização ativado para este usuário Windows."
+                      : "Registro de inicialização desativado.",
+                  );
+                }}
+              />
+              Registrar início com Windows
+            </label>
+            <p className="op-hint">
+              Registro {native?.startup.registered ? "ativo" : "desativado"}. A execução no login
+              também depende das configurações de inicialização do Windows.
+            </p>
+            {native?.startup.error_code && (
+              <p className="op-hint">
+                Não foi possível confirmar ou alterar o registro de inicialização com segurança.
+                Nenhuma entrada conflitante foi sobrescrita.
+              </p>
+            )}
+            <p className="op-hint">
+              O Windows pode silenciar alertas nas configurações de notificações ou em Não
+              incomodar. O retorno do plugin não confirma que um alerta foi exibido.
+            </p>
+            <div className="op-actions">
+              <Button
+                variant="outline"
+                disabled={blocked || !native}
+                onClick={() => void action(api.exitDesktop, "Encerrando aplicativo…")}
+              >
+                Sair do aplicativo
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      {session?.auth.account && (route === "activities" || route === "settings") && (
+        <NotificationHistory
+          page={history}
+          disabled={blocked}
+          onPage={setOffset}
+          onOpen={setSelected}
+        />
+      )}
+      <Dialog
+        open={selected !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelected(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Evento da notificação</DialogTitle>
+            <DialogDescription>
+              {selected?.spreadsheet_name} ·{" "}
+              {selected ? new Date(selected.detected_at).toLocaleString("pt-BR") : ""}
+            </DialogDescription>
+          </DialogHeader>
+          {selected && (
+            <>
+              <p>{selected.diagnosis}</p>
+              <p className="op-hint">
+                Origem: {selected.source === "integrity" ? "Integridade" : "Operação"} ·{" "}
+                {selected.sheet_title ??
+                  (selected.sheet_id !== null ? `Aba ${selected.sheet_id}` : "Arquivo")}
+              </p>
+              <p className="op-hint">
+                {selected.attempt_count} tentativas registradas. A submissão ao plugin não comprova
+                exibição ou leitura.
+              </p>
+              <Button
+                onClick={() => {
+                  const id = selected.spreadsheet_id;
+                  setSelected(null);
+                  onOpenSheet(id);
+                }}
+              >
+                Abrir detalhes da planilha
+              </Button>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

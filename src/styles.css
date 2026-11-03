@@ -2797,3 +2797,38 @@ button.op-file-link:hover strong {
     display: none;
   }
 }
+/* Continuous service controls share the operational layout and color system. */
+.op-monitoring-workspace {
+  margin-bottom: 1.5rem;
+}
+.op-monitoring .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.op-notification-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.op-notification-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.op-notification-list p {
+  margin: 0.3rem 0;
+  overflow-wrap: anywhere;
+}
+.op-notification-list small {
+  color: var(--muted-foreground);
+}
+@media (max-width: 780px) {
+  .op-notification-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

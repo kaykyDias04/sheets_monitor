@@ -24,3 +24,5 @@ Fonte alterada revisada, limitada aos achados anteriores. Correções aceitas: r
 O principal recebeu evidência da lane store: sete testes do dispatcher com sink falso aprovados, inclusive preferência, conta/logout, envio terminal após restart, retentativa, parada e geração mantida durante submissão; duas integrações de disco aprovadas. Fonte dos testes foi inspecionada. Os dez testes focados core (oito iniciais mais duas regressões) aguardam resultado final no momento deste parecer.
 
 **Parecer: aprovado para fase nativa condicionado somente ao resultado positivo dos dez testes core e reconciliação de seus logs pelo principal.** Não é necessário novo gate material para registrar esses resultados se não houver mudança de comportamento. Sem novo bloqueio de fonte. Esta aprovação não afirma execução nativa ou entrega Windows.
+
+Condição posteriormente satisfeita e GO emitido pelo principal: scheduler-tests.log registra dez testes focados aprovados, 0 falhas, 1.26s. Gate1 aprovado; não confundir com a rodada posterior de doze testes do Gate2, que acrescentou regressões de identidade da fila.

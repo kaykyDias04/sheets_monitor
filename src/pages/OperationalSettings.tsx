@@ -132,8 +132,8 @@ export function PreferenceForm({
       <CardHeader>
         <CardTitle>Preferências do aplicativo</CardTitle>
         <CardDescription>
-          Salvas por conta no SQLite. O monitoramento periódico e as notificações serão ativados na
-          Sprint 05.
+          Salvas por conta no SQLite. O início automático com Windows é configurado separadamente
+          neste dispositivo.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -148,7 +148,7 @@ export function PreferenceForm({
             <legend className="sr-only">Preferências persistidas</legend>
             <div className="op-form-grid">
               <label className="op-field">
-                Intervalo planejado de verificação (segundos)
+                Intervalo de verificação (segundos)
                 <Input
                   type="number"
                   min={60}
@@ -159,7 +159,7 @@ export function PreferenceForm({
                     setPreferences({ ...preferences, interval_seconds: Number(e.target.value) })
                   }
                 />
-                <small>Apenas preferência: não inicia consultas periódicas nesta etapa.</small>
+                <small>Aplicado pelo serviço Rust enquanto o monitoramento estiver ativo.</small>
               </label>
               <label className="op-field">
                 Política padrão de histórico (dias)
@@ -200,18 +200,20 @@ export function PreferenceForm({
                   setPreferences({ ...preferences, notifications_enabled: e.target.checked })
                 }
               />
-              Preferência de notificações para a Sprint 05
+              Enviar notificações de alterações e falhas
             </label>
             <p className="op-hint">
-              A preferência é salva agora; nenhum alerta nativo é enviado nesta sprint.
+              Alertas desativados ficam registrados como suprimidos, sem envio retroativo ao ativar.
             </p>
             <label className="op-check">
-              <input type="checkbox" checked={false} disabled />
-              Iniciar com o Windows · disponível posteriormente
-            </label>
-            <label className="op-check">
-              <input type="checkbox" checked={false} disabled />
-              Executar minimizado · disponível posteriormente
+              <input
+                type="checkbox"
+                checked={preferences.run_minimized}
+                onChange={(event) =>
+                  setPreferences({ ...preferences, run_minimized: event.target.checked })
+                }
+              />
+              Ocultar a janela ao iniciar com Windows, se a bandeja estiver disponível
             </label>
           </fieldset>
           <Button type="submit" disabled={disabled}>

@@ -9,6 +9,12 @@ pub mod monitoring;
 pub mod notifications;
 
 #[cfg(feature = "desktop")]
+pub mod desktop;
+
+#[cfg(all(feature = "desktop", feature = "native-probe"))]
+pub mod native_probe;
+
+#[cfg(feature = "desktop")]
 mod app;
 
 #[cfg(feature = "desktop")]

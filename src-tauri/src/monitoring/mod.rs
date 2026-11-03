@@ -3,6 +3,6 @@ pub mod models;
 pub use models::*;
 mod policy;
 pub use policy::*;
-pub mod work;
 mod service;
+pub mod work;
 pub use service::*;

@@ -1,4 +1,4 @@
-name: Sprint 04 - Windows integrity engine
+name: Sprint 05 - Windows continuous monitoring
 on:
   push:
   pull_request:

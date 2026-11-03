@@ -194,7 +194,7 @@ fn fixture(
             last_tick: 0,
             interval: 60_000,
             active: HashMap::new(),
-            manual: BTreeSet::new(),
+            manual: BTreeMap::new(),
             warning: None,
             control_generation: None,
             known: HashMap::new(),
@@ -382,5 +382,65 @@ fn logout_before_failure_commit_discards_old_account_operational_transition() {
     assert!(db.monitoring_schedules("fixture_account").unwrap()[0]
         .operational_code
         .is_none());
+    assert!(service.shutdown(Duration::from_secs(5)));
+}
+
+#[test]
+fn current_identity_manual_queue_survives_first_tick_while_globally_paused() {
+    let (_dir, service, clock, executor) = fixture(2, 2);
+    let mut db = Database::open(&service.runtime.database_path).unwrap();
+    db.set_monitoring_enabled("fixture_account", false, clock.now_ms())
+        .unwrap();
+    service
+        .request_check_for("fixture_account", 0, "file_1".into())
+        .unwrap();
+    service.tick().unwrap();
+    until(|| service.status().active == 0);
+    assert_eq!(executor.started.load(Ordering::SeqCst), 1);
+    let rows = db.monitoring_schedules("fixture_account").unwrap();
+    assert!(rows
+        .iter()
+        .find(|row| row.spreadsheet_id == "file_1")
+        .unwrap()
+        .last_completed_ms
+        .is_some());
+    assert!(rows
+        .iter()
+        .find(|row| row.spreadsheet_id == "file_0")
+        .unwrap()
+        .last_completed_ms
+        .is_none());
+    assert!(service.shutdown(Duration::from_secs(5)));
+}
+#[test]
+fn new_account_queue_survives_old_tick_identity_and_old_generation_is_discarded() {
+    let (_dir, service, clock, executor) = fixture(2, 2);
+    let mut db = Database::open(&service.runtime.database_path).unwrap();
+    db.set_monitoring_enabled("fixture_account", false, clock.now_ms())
+        .unwrap();
+    service.state.lock().unwrap().subject = Some(("previous_subject".into(), 999));
+    service
+        .request_check_for("fixture_account", 0, "file_1".into())
+        .unwrap();
+    service
+        .request_check_for("previous_subject", 999, "file_0".into())
+        .unwrap();
+    service.tick().unwrap();
+    until(|| service.status().active == 0);
+    assert_eq!(executor.started.load(Ordering::SeqCst), 1);
+    assert!(db
+        .monitoring_schedules("fixture_account")
+        .unwrap()
+        .iter()
+        .find(|row| row.spreadsheet_id == "file_1")
+        .unwrap()
+        .last_completed_ms
+        .is_some());
+    service
+        .request_check_for("fixture_account", 999, "file_0".into())
+        .unwrap();
+    service.tick().unwrap();
+    assert_eq!(executor.started.load(Ordering::SeqCst), 1);
+    assert!(service.state.lock().unwrap().manual.is_empty());
     assert!(service.shutdown(Duration::from_secs(5)));
 }

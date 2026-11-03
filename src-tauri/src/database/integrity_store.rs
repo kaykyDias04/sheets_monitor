@@ -546,7 +546,12 @@ impl Database {
         lease: &crate::monitoring::models::MonitoringLease,
         now_ms: i64,
     ) -> EngineResult<Vec<IntegrityEvent>> {
-        self.persist_integrity_report_guarded(snapshot, report, registry_revision, Some((lease, now_ms)))
+        self.persist_integrity_report_guarded(
+            snapshot,
+            report,
+            registry_revision,
+            Some((lease, now_ms)),
+        )
     }
     fn persist_integrity_report_guarded(
         &mut self,
@@ -586,7 +591,14 @@ impl Database {
         let stored = snapshot_from(&transaction, &snapshot.account_subject, &snapshot.id)?;
         if let Some((lease, now_ms)) = monitoring {
             if lease.spreadsheet_id != snapshot.spreadsheet_id
-                || !super::monitoring_store::lease_current(&transaction, &snapshot.account_subject, lease, now_ms).map_err(|_| EngineError::Storage)? {
+                || !super::monitoring_store::lease_current(
+                    &transaction,
+                    &snapshot.account_subject,
+                    lease,
+                    now_ms,
+                )
+                .map_err(|_| EngineError::Storage)?
+            {
                 return Err(EngineError::BaselineConflict);
             }
         }

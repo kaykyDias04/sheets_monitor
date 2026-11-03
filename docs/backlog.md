@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Sprint 04 concluida tecnicamente: SM-018 a SM-021 e adicoes SM-021A/SM-021B. Evidencias e limites no [relatorio final](evidence/sprint04/final-report.md). Baseline humana real restrita a duas celulas; selecao atual28abas exige revisao/aprovacao humana. Etapas05-06 aguardam autorizacao.
+Sprint 05 autorizada e em execucao: SM-022 a SM-025. Evidencias anteriores preservadas. Relatorio atual em [sprint-05-report.md](sprint-05-report.md). Sprint 06 ainda nao autorizada.
 
 ## Sprint 01
 
@@ -137,10 +137,10 @@ Os 28 IDs originais permanecem preservados. As adicoes ficam separadas em backlo
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-022 | Criar agendador | planejado | SM-016, SM-017, SM-020 | Consultas automáticas |
-| SM-023 | Criar notificações nativas | planejado | SM-017, SM-022 | Alertas no Windows |
-| SM-024 | Implementar bandeja do sistema | planejado | SM-022, SM-023 | Monitoramento minimizado |
-| SM-025 | Implementar recuperação de falhas | planejado | SM-009, SM-010, SM-011, SM-022 | Tratamento de internet e cotas |
+| SM-022 | Criar agendador | em_andamento | SM-016, SM-017, SM-020 | Consultas automáticas |
+| SM-023 | Criar notificações nativas | em_andamento | SM-017, SM-022 | Alertas no Windows |
+| SM-024 | Implementar bandeja do sistema | em_andamento | SM-022, SM-023 | Monitoramento minimizado |
+| SM-025 | Implementar recuperação de falhas | em_andamento | SM-009, SM-010, SM-011, SM-022 | Tratamento de internet e cotas |
 
 ### SM-022 — subtarefas
 

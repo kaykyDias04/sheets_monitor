@@ -381,7 +381,10 @@ impl Database {
         {
             return Err(error("invalid_preferences", "Revise intervalo, retenção e aparência. A inicialização com Windows é configurada separadamente neste dispositivo."));
         }
-        let tx = self.connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(sql)?;
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)
+            .map_err(sql)?;
         let aid = account(&tx, subject)?;
         tx.execute("INSERT INTO management_preferences(account_id,preferences_json) VALUES(?1,?2) ON CONFLICT(account_id) DO UPDATE SET preferences_json=excluded.preferences_json",params![aid,encode(p)?]).map_err(sql)?;
         if !p.notifications_enabled {
