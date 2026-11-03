@@ -132,3 +132,8 @@ Suíte final: 257 unitários Rust, duas integrações e 50 React aprovados; um t
 A primeira tentativa de alerta não foi exibida; após a correção WinRT, o usuário confirmou a exibição do segundo alerta autorizado. Preservadas as duas observações e a interrupção do probe corrigido antes do JSON/callbacks finais; sem alegação de coleta completa ou saída limpa nessa execução específica. Fonte, mock, processo Windows e confirmação humana permanecem separados.
 
 Quatro cadastros reais pendentes e zero proteções elegíveis foram preservados durante a inspeção. Nenhuma nova baseline real, escrita Google, ativação autostart, instalador ou campanha final de 30 arquivos foi realizada pelo agente. Identidade instalada e cliques físicos permanecem fora da homologação executada. Sem remoto autorizado: PR apenas em rascunho local. Próxima etapa: aguardar Prompt06, sem executar a Sprint06.
+
+
+## Publicação no GitHub autorizada
+
+Em 03/11/2026 o usuário autorizou o remoto `https://github.com/kaykyDias04/sheets_monitor.git`. Branches `codex/` publicadas por push normal, sem force-push e sem alterar `main` remoto (commit inicial independente com `LICENSE`). Antes do envio: verificador do repositório, typecheck, lint e Vitest reexecutados; evidências históricas da Sprint 05 não foram regravadas. Estado das sprints inalterado; aguardar Prompt 06.
