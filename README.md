@@ -85,7 +85,7 @@ O protótipo anterior está preservado em `archive/prototype/` e no commit `ffca
 
 ## Publicação e licença
 
-Código próprio sob [MIT](LICENSE); dependências mantêm suas licenças. Remoto GitHub autorizado em 03/11/2026: `https://github.com/kaykyDias04/sheets_monitor.git`, com branches `codex/` publicadas sem force-push; regras em [CONTRIBUTING.md](CONTRIBUTING.md). Nada foi enviado ao Google.
+Código próprio sob [MIT](LICENSE); dependências mantêm suas licenças. Remoto GitHub autorizado em 03/11/2026: `https://github.com/kaykyDias04/sheets_monitor.git`, com `main` e branches `codex/` publicadas sem force-push; regras em [CONTRIBUTING.md](CONTRIBUTING.md). Nada foi enviado ao Google.
 
 Ao encerrar a Sprint 04, aguardar o Prompt 05. Não avançar automaticamente.
 

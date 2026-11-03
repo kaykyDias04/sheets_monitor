@@ -116,4 +116,4 @@ A inspeção real encontrou quatro cadastros pendentes e zero escopos elegíveis
 
 ## Publicação autorizada — remoto GitHub
 
-Em 03/11/2026 o usuário autorizou expressamente publicar o trabalho em `https://github.com/kaykyDias04/sheets_monitor.git` (`origin`). As menções anteriores a "sem remoto autorizado" são históricas. Publicar somente branches `codex/` por push normal, sem force-push, sem reescrever `origin/main` (histórico inicial independente, apenas `LICENSE`) e sem criar PRs, issues ou CI remoto sem nova instrução. A publicação não altera o estado da Sprint 05 nem autoriza a Sprint 06. Aguardar Prompt 06.
+Em 03/11/2026 o usuário autorizou expressamente criar e publicar todo o repositório em `https://github.com/kaykyDias04/sheets_monitor.git` (`origin`), incluindo `main` e todas as branches `codex/` por push normal, sem force-push. As menções anteriores a "sem remoto autorizado" são históricas. A publicação não altera o estado da Sprint 05 nem autoriza a Sprint 06. Aguardar Prompt 06.

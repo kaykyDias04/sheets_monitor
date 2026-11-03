@@ -136,4 +136,4 @@ Quatro cadastros reais pendentes e zero proteções elegíveis foram preservados
 
 ## Publicação no GitHub autorizada
 
-Em 03/11/2026 o usuário autorizou o remoto `https://github.com/kaykyDias04/sheets_monitor.git`. Branches `codex/` publicadas por push normal, sem force-push e sem alterar `main` remoto (commit inicial independente com `LICENSE`). Antes do envio: verificador do repositório, typecheck, lint e Vitest reexecutados; evidências históricas da Sprint 05 não foram regravadas. Estado das sprints inalterado; aguardar Prompt 06.
+Em 03/11/2026 o usuário autorizou criar e publicar o repositório `https://github.com/kaykyDias04/sheets_monitor.git`, enviando `main` e todas as branches `codex/` por push normal, sem force-push. Antes do envio: verificador do repositório, typecheck, lint e Vitest reexecutados; evidências históricas da Sprint 05 não foram regravadas. Estado das sprints inalterado; aguardar Prompt 06.

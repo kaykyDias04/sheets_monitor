@@ -35,7 +35,7 @@ gh auth status
 
 Depois de indicar o repositório correto e autorizar a publicação, configurar `origin` e enviar a branch. Nenhum remoto de outro projeto será reutilizado. Os templates locais já estão em `.github/`.
 
-Atualização 03/11/2026: o usuário autorizou `origin` = `https://github.com/kaykyDias04/sheets_monitor.git`. Branches `codex/` são enviadas por `git push` normal; sem force-push e sem reescrever `main` remoto. PRs, issues e CI hospedado exigem instrução própria.
+Atualização 03/11/2026: o usuário autorizou criar e publicar `origin` = `https://github.com/kaykyDias04/sheets_monitor.git`, enviando `main` e as branches `codex/` por `git push` normal, sem force-push.
 
 ## Atualização de execução — Sprint 04
 
