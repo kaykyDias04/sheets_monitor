@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "scope": "Sprint05 public evidence; current private identifiers compared only in memory",
+  "files_scanned": 90,
+  "private_values_printed": false,
+  "findings": []
+}

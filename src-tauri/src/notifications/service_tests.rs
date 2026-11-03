@@ -169,7 +169,8 @@ fn service(runtime: IntegrationRuntime, sink: Arc<dyn NotificationSink>) -> Noti
         owner: uuid::Uuid::new_v4().to_string(),
         stopped: AtomicBool::new(false),
         active: Mutex::new(false),
-        wake: Condvar::new(),
+        wake: Arc::new(Condvar::new()),
+        failures: Arc::default(),
     }
 }
 #[test]
@@ -334,7 +335,7 @@ fn authentication_generation_is_locked_through_native_submission() {
     });
     let pump = Arc::new(service(rt.clone(), sink.clone()));
     let running = pump.clone();
-    let handle = thread::spawn(move || running.pump().unwrap());
+    let handle = thread::spawn(move || running.pump());
     entered_rx.recv_timeout(Duration::from_secs(3)).unwrap();
     let (done_tx, done_rx) = mpsc::channel();
     let auth = rt.auth.clone();
@@ -344,10 +345,249 @@ fn authentication_generation_is_locked_through_native_submission() {
     });
     assert!(done_rx.recv_timeout(Duration::from_millis(20)).is_err());
     release_tx.send(()).unwrap();
-    handle.join().unwrap();
+    // Logout may win after the protected submission completes and before the
+    // next admission in this pump. Discarding that stale generation is expected.
+    if let Err(error) = handle.join().unwrap() {
+        assert_eq!(error.code, "operation_superseded");
+    }
     done_rx.recv_timeout(Duration::from_secs(3)).unwrap();
     disconnect.join().unwrap();
     pump.pump().unwrap();
     assert_eq!(sink.calls.load(Ordering::SeqCst), 1);
     assert_eq!(rt.auth.state().unwrap().auth.status, "disconnected");
+}
+
+type FailedCallback = Arc<dyn Fn(String) + Send + Sync>;
+struct FailureSink {
+    inline: bool,
+    calls: AtomicUsize,
+    callbacks: Mutex<Vec<FailedCallback>>,
+}
+impl FailureSink {
+    fn new(inline: bool) -> Arc<Self> {
+        Arc::new(Self {
+            inline,
+            calls: AtomicUsize::new(0),
+            callbacks: Mutex::new(Vec::new()),
+        })
+    }
+    fn fail(&self) {
+        let callback = self.callbacks.lock().unwrap()[0].clone();
+        callback("native_async_failed".into());
+    }
+}
+impl NotificationSink for FailureSink {
+    fn submit(&self, _: &NotificationRecord) -> NotificationOutcome {
+        panic!("dispatcher must install the asynchronous failure callback")
+    }
+    fn submit_with_failure(
+        &self,
+        _: &NotificationRecord,
+        failed: FailedCallback,
+    ) -> NotificationOutcome {
+        self.calls.fetch_add(1, Ordering::SeqCst);
+        self.callbacks.lock().unwrap().push(failed.clone());
+        if self.inline {
+            failed("native_async_failed".into());
+        }
+        NotificationOutcome::DispatchSubmitted
+    }
+}
+
+#[test]
+fn inline_native_failure_during_submit_completes_without_auth_deadlock() {
+    let (_dir, rt, id) = fixture(true);
+    let sink = FailureSink::new(true);
+    let worker = service(rt.clone(), sink.clone());
+    let (done_tx, done_rx) = mpsc::channel();
+    let handle = thread::spawn(move || {
+        let result = worker.pump();
+        done_tx.send(result).unwrap();
+    });
+    done_rx
+        .recv_timeout(Duration::from_secs(3))
+        .expect("inline failure must enqueue without reentering the auth mutex")
+        .unwrap();
+    handle.join().unwrap();
+    let row = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "retry");
+    assert!(row.submitted_ms.is_some());
+    assert_eq!(row.attempt_count, 1);
+    assert_eq!(sink.calls.load(Ordering::SeqCst), 1);
+}
+
+#[test]
+fn deferred_native_failure_is_reconciled_by_next_pump_preserving_submission_fact() {
+    let (_dir, rt, id) = fixture(true);
+    let sink = FailureSink::new(false);
+    let worker = service(rt.clone(), sink.clone());
+    worker.pump().unwrap();
+    let submitted = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(submitted.state, "dispatch_submitted");
+    assert!(submitted.submitted_ms.is_some());
+    sink.fail();
+    assert_eq!(
+        Database::open(&rt.database_path)
+            .unwrap()
+            .notification_by_id("fixture_account", &id)
+            .unwrap()
+            .unwrap()
+            .state,
+        "dispatch_submitted"
+    );
+    worker.pump().unwrap();
+    let retried = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(retried.state, "retry");
+    assert_eq!(retried.submitted_ms, submitted.submitted_ms);
+    assert_eq!(retried.attempt_count, 1);
+    // A repeated receipt cannot postpone/recreate the same durable attempt.
+    sink.fail();
+    worker.pump().unwrap();
+    assert_eq!(sink.calls.load(Ordering::SeqCst), 1);
+    assert_eq!(
+        Database::open(&rt.database_path)
+            .unwrap()
+            .notification_by_id("fixture_account", &id)
+            .unwrap()
+            .unwrap()
+            .attempt_count,
+        1
+    );
+}
+
+#[test]
+fn old_account_native_failure_after_logout_is_discarded_without_other_account_write() {
+    let (_dir, rt, id) = fixture(true);
+    let sink = FailureSink::new(false);
+    let worker = service(rt.clone(), sink.clone());
+    worker.pump().unwrap();
+    let submitted = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    rt.auth.disconnect().unwrap();
+    sink.fail();
+    worker.pump().unwrap();
+    let db = Database::open(&rt.database_path).unwrap();
+    let row = db
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "dispatch_submitted");
+    assert_eq!(row.submitted_ms, submitted.submitted_ms);
+    assert_eq!(
+        db.notification_history("other_account", 0, 10)
+            .unwrap()
+            .total,
+        0
+    );
+    assert!(worker.failures.lock().unwrap().is_empty());
+    let current_sink = FailureSink::new(false);
+    service(
+        runtime(rt.database_path.clone(), "other_account"),
+        current_sink.clone(),
+    )
+    .pump()
+    .unwrap();
+    assert_eq!(current_sink.calls.load(Ordering::SeqCst), 0);
+}
+
+#[test]
+fn native_failure_after_preference_off_remains_suppressed_after_reenable() {
+    let (_dir, rt, id) = fixture(true);
+    let sink = FailureSink::new(false);
+    let worker = service(rt.clone(), sink.clone());
+    worker.pump().unwrap();
+    let submitted = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    Database::open(&rt.database_path)
+        .unwrap()
+        .save_management_preferences("fixture_account", &Preferences::default())
+        .unwrap();
+    sink.fail();
+    worker.pump().unwrap();
+    let row = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "suppressed_by_preference");
+    assert_eq!(row.submitted_ms, submitted.submitted_ms);
+    Database::open(&rt.database_path)
+        .unwrap()
+        .save_management_preferences(
+            "fixture_account",
+            &Preferences {
+                notifications_enabled: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    sink.fail();
+    worker.pump().unwrap();
+    assert_eq!(sink.calls.load(Ordering::SeqCst), 1);
+    assert_eq!(
+        Database::open(&rt.database_path)
+            .unwrap()
+            .notification_by_id("fixture_account", &id)
+            .unwrap()
+            .unwrap()
+            .state,
+        "suppressed_by_preference"
+    );
+}
+
+#[test]
+fn native_failure_database_error_requeues_current_and_remaining_receipts() {
+    let (dir, rt, id) = fixture(true);
+    let sink = FailureSink::new(false);
+    let mut worker = service(rt.clone(), sink.clone());
+    worker.pump().unwrap();
+    sink.fail();
+    sink.fail();
+    assert_eq!(worker.failures.lock().unwrap().len(), 2);
+    // A synthetic file used as the database's parent forces an immediate open
+    // error without holding a SQLite lock or waiting for its busy timeout.
+    let blocker = dir.path().join("synthetic-parent-file");
+    std::fs::write(&blocker, b"synthetic fixture").unwrap();
+    worker.runtime.database_path = blocker.join("unavailable.db");
+    assert!(worker.pump().is_err());
+    assert_eq!(worker.failures.lock().unwrap().len(), 2);
+    assert_eq!(
+        Database::open(&rt.database_path)
+            .unwrap()
+            .notification_by_id("fixture_account", &id)
+            .unwrap()
+            .unwrap()
+            .state,
+        "dispatch_submitted"
+    );
+    worker.runtime.database_path = rt.database_path.clone();
+    worker.pump().unwrap();
+    assert!(worker.failures.lock().unwrap().is_empty());
+    assert_eq!(sink.calls.load(Ordering::SeqCst), 1);
+    let row = Database::open(&rt.database_path)
+        .unwrap()
+        .notification_by_id("fixture_account", &id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "retry");
+    assert!(row.submitted_ms.is_some());
+    assert_eq!(row.attempt_count, 1);
 }

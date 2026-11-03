@@ -19,3 +19,7 @@ O [inventário adicional](evidence/sprint02/dependency-licenses.json) registra m
 Tree-sitter e a grammar JavaScript foram escolhidos a partir das APIs e metadados oficiais. O [inventário adicional](evidence/sprint03/dependency-licenses.json) registra versões/licenças do cache usado na compilação. A resolução está fixada no Cargo.lock; o inventário não substitui revisão dos avisos de distribuição em SM-028.
 
 Sprint 04 não adicionou dependências de produto. O inventário revisado da Sprint03 permanece aplicável aos mesmos pacotes e respectivas licenças; ferramentas locais de QA não integram o bundle. Distribuição final e avisos completos continuam sujeitos à etapa autorizada de instalador.
+
+## Dependências da Sprint 05
+
+O [inventário adicional](evidence/sprint05/dependency-licenses.json) registra metadados dos manifests resolvidos para Tauri, notificações, instância única e acesso HKCU. Cargo.lock fixa as versões usadas. Esse registro não constitui auditoria jurídica nem homologação de distribuição; os avisos transitivos e o artefato instalado continuam sujeitos à Sprint 06. O exemplo `native-probe` é opt-in e não integra o build padrão do produto.

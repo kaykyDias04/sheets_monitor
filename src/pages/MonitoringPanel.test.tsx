@@ -92,7 +92,7 @@ describe("notification event journal", () => {
       />,
     );
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
-    expect(screen.getByText(/Submetida ao plugin/)).toBeInTheDocument();
+    expect(screen.getByText(/Submissão nativa registrada/)).toBeInTheDocument();
     expect(screen.getByText(/Suprimida pela preferência/)).toBeInTheDocument();
     expect(screen.getByText(/não confirma exibição nem leitura/)).toBeInTheDocument();
     await userEvent.click(screen.getAllByRole("button", { name: "Abrir evento" })[1]);

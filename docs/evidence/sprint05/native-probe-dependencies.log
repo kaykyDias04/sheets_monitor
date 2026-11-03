@@ -1,0 +1,45 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35229.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file src-tauri\target\debug\examples\native_probe.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Image has the following dependencies:
+
+    kernel32.dll
+    bcryptprimitives.dll
+    advapi32.dll
+    ntdll.dll
+    user32.dll
+    shlwapi.dll
+    comctl32.dll
+    ole32.dll
+    shell32.dll
+    api-ms-win-core-synch-l1-2-0.dll
+    combase.dll
+    api-ms-win-core-winrt-l1-1-0.dll
+    gdi32.dll
+    dwmapi.dll
+    imm32.dll
+    oleaut32.dll
+    api-ms-win-core-winrt-error-l1-1-0.dll
+    bcrypt.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-string-l1-1-0.dll
+    api-ms-win-crt-convert-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-utility-l1-1-0.dll
+    api-ms-win-crt-time-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+
+  Summary
+
+       2F000 .data
+       EC000 .pdata
+      3AF000 .rdata
+        B000 .reloc
+      E4F000 .text

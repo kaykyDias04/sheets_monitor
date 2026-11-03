@@ -1,5 +1,6 @@
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { MonitoringWorkspace } from "./MonitoringWorkspace";
 import type { IntegrationState } from "@/types/google";
 import type { NotificationRecord } from "@/types/monitoring";
@@ -9,6 +10,8 @@ const mocks = vi.hoisted(() => ({
   status: vi.fn(),
   history: vi.fn(),
   native: vi.fn(),
+  readiness: vi.fn(),
+  retry: vi.fn(),
   byId: vi.fn(),
   changed: null as (() => void) | null,
   open: null as ((id: string) => void) | null,
@@ -20,6 +23,8 @@ vi.mock("@/services/monitoring", () => ({
   getMonitoringStatus: mocks.status,
   notificationHistory: mocks.history,
   getDesktopStatus: mocks.native,
+  getNotificationReadiness: mocks.readiness,
+  retryBlockedNotifications: mocks.retry,
   notificationById: mocks.byId,
   onMonitoringChanged: vi.fn(async (callback: () => void) => {
     mocks.changed = callback;
@@ -81,6 +86,12 @@ function view() {
 beforeEach(() => {
   vi.clearAllMocks();
   session = original;
+  mocks.retry.mockImplementation(async () => envelope(1));
+  mocks.readiness.mockResolvedValue({
+    identity_mode: "development_powershell",
+    setting: "enabled",
+    error_code: null,
+  });
   mocks.state.mockImplementation(async () => session);
   mocks.native.mockResolvedValue({
     tray_available: true,
@@ -102,6 +113,49 @@ beforeEach(() => {
   );
 });
 afterEach(cleanup);
+it("explains a Windows notification block without changing startup or stopping monitoring", async () => {
+  mocks.readiness.mockResolvedValue({
+    identity_mode: "development_powershell",
+    setting: "disabled_for_user",
+    error_code: null,
+  });
+  render(
+    <MonitoringWorkspace
+      session={session}
+      rows={[]}
+      route="settings"
+      disabled={false}
+      onChanged={vi.fn()}
+      onNavigate={vi.fn()}
+      onOpenSheet={vi.fn()}
+    />,
+  );
+  expect(
+    await screen.findByText(/As notificações estão desativadas no Windows para este usuário/),
+  ).toBeInTheDocument();
+  expect(screen.getByText(/os alertas usam o remetente Windows PowerShell/)).toBeInTheDocument();
+  expect(screen.getByRole("checkbox", { name: "Registrar início com Windows" })).not.toBeChecked();
+  expect(screen.getByRole("button", { name: "Reenviar alertas bloqueados" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Pausar monitoramento" })).toBeInTheDocument();
+});
+it("retries blocked alerts only after an explicit action in the current generation", async () => {
+  render(
+    <MonitoringWorkspace
+      session={session}
+      rows={[]}
+      route="settings"
+      disabled={false}
+      onChanged={vi.fn()}
+      onNavigate={vi.fn()}
+      onOpenSheet={vi.fn()}
+    />,
+  );
+  const button = await screen.findByRole("button", { name: "Reenviar alertas bloqueados" });
+  await waitFor(() => expect(button).toBeEnabled());
+  expect(mocks.retry).not.toHaveBeenCalled();
+  await userEvent.click(button);
+  await waitFor(() => expect(mocks.retry).toHaveBeenCalledWith(1));
+});
 it("refreshes from a Tauri signal and resolves the exact opaque notification in the current session", async () => {
   render(view());
   await waitFor(() => expect(mocks.status).toHaveBeenCalled());

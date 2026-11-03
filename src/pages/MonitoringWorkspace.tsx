@@ -14,7 +14,12 @@ import { managementError } from "@/services/management";
 import * as api from "@/services/monitoring";
 import type { IntegrationState } from "@/types/google";
 import type { Page, RegisteredSpreadsheet } from "@/types/management";
-import type { DesktopStatus, MonitoringStatus, NotificationRecord } from "@/types/monitoring";
+import type {
+  DesktopStatus,
+  MonitoringStatus,
+  NotificationRecord,
+  NativeReadiness,
+} from "@/types/monitoring";
 import { MonitoringPanel, NotificationHistory } from "./MonitoringPanel";
 
 /** Event-driven view of the Rust service; no frontend scheduling timer. */
@@ -37,6 +42,7 @@ export function MonitoringWorkspace({
 }) {
   const [status, setStatus] = useState<MonitoringStatus | null>(null);
   const [native, setNative] = useState<DesktopStatus | null>(null);
+  const [readiness, setReadiness] = useState<NativeReadiness | null>(null);
   const [history, setHistory] = useState<Page<NotificationRecord> | null>(null);
   const [selected, setSelected] = useState<NotificationRecord | null>(null);
   const [offset, setOffset] = useState(0);
@@ -64,8 +70,14 @@ export function MonitoringWorkspace({
       do {
         pending.current = false;
         const before = live.current.session;
-        const nativeStatus = await api.getDesktopStatus();
-        if (mounted.current) setNative(nativeStatus);
+        const [nativeStatus, notificationReadiness] = await Promise.all([
+          api.getDesktopStatus(),
+          api.getNotificationReadiness(),
+        ]);
+        if (mounted.current) {
+          setNative(nativeStatus);
+          setReadiness(notificationReadiness);
+        }
         if (!before?.auth.account) continue;
         const [monitor, notifications] = await Promise.all([
           api.getMonitoringStatus(),
@@ -260,9 +272,47 @@ export function MonitoringWorkspace({
             )}
             <p className="op-hint">
               O Windows pode silenciar alertas nas configurações de notificações ou em Não
-              incomodar. O retorno do plugin não confirma que um alerta foi exibido.
+              incomodar. O retorno da API nativa não confirma que um alerta foi exibido.
             </p>
+            {readiness?.identity_mode === "development_powershell" && (
+              <p className="op-hint">
+                Neste build de desenvolvimento, os alertas usam o remetente Windows PowerShell. A
+                identidade instalada será validada na distribuição.
+              </p>
+            )}
+            {readiness && readiness.setting !== "enabled" && (
+              <p className="feedback error" role="status">
+                {readiness.setting === "disabled_for_user"
+                  ? "As notificações estão desativadas no Windows para este usuário."
+                  : readiness.setting === "disabled_for_application"
+                    ? "As notificações deste remetente estão desativadas no Windows."
+                    : readiness.setting === "disabled_by_group_policy"
+                      ? "Uma política do Windows bloqueia as notificações."
+                      : readiness.setting === "disabled_by_manifest"
+                        ? "A identidade de notificações ainda não está habilitada neste build."
+                        : "Não foi possível confirmar a disponibilidade das notificações no Windows."}{" "}
+                O monitoramento continua; revise as configurações do Windows quando desejar.
+              </p>
+            )}
             <div className="op-actions">
+              <Button
+                variant="outline"
+                disabled={
+                  blocked ||
+                  !session?.auth.account ||
+                  !readiness ||
+                  readiness.setting.startsWith("disabled")
+                }
+                onClick={() => {
+                  if (generation !== undefined)
+                    void action(
+                      () => api.retryBlockedNotifications(generation),
+                      "Reenvio solicitado para alertas bloqueados ainda elegíveis. Itens suprimidos ou expirados permanecem encerrados.",
+                    );
+                }}
+              >
+                Reenviar alertas bloqueados
+              </Button>
               <Button
                 variant="outline"
                 disabled={blocked || !native}
@@ -305,7 +355,7 @@ export function MonitoringWorkspace({
                   (selected.sheet_id !== null ? `Aba ${selected.sheet_id}` : "Arquivo")}
               </p>
               <p className="op-hint">
-                {selected.attempt_count} tentativas registradas. A submissão ao plugin não comprova
+                {selected.attempt_count} tentativas registradas. A submissão nativa não comprova
                 exibição ou leitura.
               </p>
               <Button

@@ -1,0 +1,19 @@
+{
+  "recorded_on": "2026-11-03",
+  "synthetic": true,
+  "backend": "windows_winrt",
+  "user_authorized_one_corrected_test_alert": true,
+  "corrected_test_attempts": 1,
+  "total_authorized_alert_attempts_this_sprint": 2,
+  "run_evidence": "docs/evidence/sprint05/native-toast-winrt-run.json",
+  "user_reported_display": true,
+  "user_response": "Sim, apareceu",
+  "sender_disclosed_to_user": "Windows PowerShell (development build)",
+  "user_reading_confirmed": false,
+  "toast_click_verified": false,
+  "production_preferences_modified": false,
+  "google_files_modified": false,
+  "startup_setting_modified": false,
+  "first_negative_observation_preserved": "docs/evidence/sprint05/native-toast-observation.json",
+  "conclusion": "Corrected native display established by human observation for this authorized synthetic development alert. Installed application identity and notification clicks remain separate."
+}

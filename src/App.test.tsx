@@ -88,6 +88,8 @@ beforeEach(() => {
     readHook?.(command);
     const input = (args as { input?: Record<string, unknown> } | undefined)?.input ?? {};
     if (command === "integration_get_state") return structuredClone(session);
+    if (command === "notification_get_readiness")
+      return { identity_mode: "development_powershell", setting: "enabled", error_code: null };
     if (command === "desktop_get_status")
       return {
         tray_available: true,

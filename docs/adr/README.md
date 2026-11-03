@@ -19,3 +19,5 @@ Propostas futuras não autorizam sua implementação antes do prompt/sprint corr
 - [0009 — Descoberta e operação por conta](0009-discovery-and-account-management.md): Drive, capacidade transacional, configuração e baseline, histórico e cliente OAuth da aplicação.
 
 - [0010 — Monitoramento contínuo e limites de entrega](0010-continuous-monitoring-delivery.md): coordenação Rust, outbox transacional, retenção, consentimento de alertas e estado real do Windows.
+
+- [0011 — Entrega Windows com erros observáveis](0011-windows-notification-errors.md): correção após evidência visual negativa, identidade explícita e eventos WinRT de falha.

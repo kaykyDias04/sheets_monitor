@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 05 autorizada por docs/sprint05.original.md: somente SM-022 a SM-025. Sprint 06 permanece nao autorizada.",
+  "authorization": "Sprint 05 concluida tecnicamente: SM-022 a SM-025. Aguardar Prompt06; Sprint06 ainda nao autorizada. Homologacao instalada e recursos reais conforme limites do relatorio.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -588,7 +588,7 @@
       "id": "SM-022",
       "title": "Criar agendador",
       "sprint": 5,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-016",
@@ -596,12 +596,17 @@
         "SM-020"
       ],
       "acceptance": "Consultas automáticas",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-05-report.md",
+        "docs/evidence/sprint05/local-validation.json",
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/native-probe-validated.json"
+      ],
       "subtasks": [
         {
           "id": "SM-022.01",
           "title": "Intervalo 60–300s, até três coletas e aviso de frequência inviável",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -609,19 +614,25 @@
       "id": "SM-023",
       "title": "Criar notificações nativas",
       "sprint": 5,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-017",
         "SM-022"
       ],
       "acceptance": "Alertas no Windows",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-05-report.md",
+        "docs/evidence/sprint05/local-validation.json",
+        "docs/evidence/sprint05/native-toast-observation.json",
+        "docs/evidence/sprint05/native-toast-winrt-observation.json",
+        "docs/evidence/sprint05/native-failure-dispatcher-requeue-corrected-tests.log"
+      ],
       "subtasks": [
         {
           "id": "SM-023.01",
           "title": "Outbox durável e consolidação sem perda de eventos",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -629,19 +640,24 @@
       "id": "SM-024",
       "title": "Implementar bandeja do sistema",
       "sprint": 5,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-022",
         "SM-023"
       ],
       "acceptance": "Monitoramento minimizado",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-05-report.md",
+        "docs/evidence/sprint05/local-validation.json",
+        "docs/evidence/sprint05/native-qa.json",
+        "docs/evidence/sprint05/native-adapters-tests.md"
+      ],
       "subtasks": [
         {
           "id": "SM-024.01",
           "title": "Minimização/bandeja e autostart opcional explícito",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -649,7 +665,7 @@
       "id": "SM-025",
       "title": "Implementar recuperação de falhas",
       "sprint": 5,
-      "status": "em_andamento",
+      "status": "concluido",
       "owner": "engenharia",
       "depends_on": [
         "SM-009",
@@ -658,12 +674,17 @@
         "SM-022"
       ],
       "acceptance": "Tratamento de internet e cotas",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-05-report.md",
+        "docs/evidence/sprint05/local-validation.json",
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/scenario-matrix.json"
+      ],
       "subtasks": [
         {
           "id": "SM-025.01",
           "title": "Rede/cotas/permissões e recuperação com estado Indeterminado",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },

@@ -1,0 +1,24 @@
+    Blocking waiting for file lock on build directory
+    Checking windows v0.62.2
+    Checking ring v0.17.14
+    Checking tauri-utils v2.10.2
+    Checking libsqlite3-sys v0.35.0
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Checking tree-sitter v0.25.10
+    Checking tree-sitter-javascript v0.25.0
+    Checking tempfile v3.27.0
+    Checking rusqlite v0.37.0
+    Checking rustls-webpki v0.103.16
+    Checking rustls v0.23.46
+    Checking tokio-rustls v0.26.6
+    Checking hyper-rustls v0.27.10
+    Checking reqwest v0.12.28
+    Checking webview2-com-sys v0.39.1
+    Checking tao v0.37.2
+    Checking webview2-com v0.39.1
+    Checking wry v0.57.1
+    Checking tauri-runtime v2.12.2
+    Checking tauri-runtime-wry v2.12.3
+    Checking tauri v2.12.5
+    Checking tauri-plugin-single-instance v2.5.5
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 31s

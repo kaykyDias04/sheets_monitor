@@ -54,15 +54,13 @@ pub struct DesktopShell(Arc<Inner>);
 
 /// Register this builder before setup so a second process never starts services.
 pub fn builder() -> tauri::Builder<tauri::Wry> {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _, _| {
-            if let Some(window) = app.get_webview_window("main") {
-                let _ = window.show();
-                let _ = window.unminimize();
-                let _ = window.set_focus();
-            }
-        }))
-        .plugin(tauri_plugin_notification::init())
+    tauri::Builder::default().plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        if let Some(window) = app.get_webview_window("main") {
+            let _ = window.show();
+            let _ = window.unminimize();
+            let _ = window.set_focus();
+        }
+    }))
 }
 pub fn install(app: &AppHandle, callbacks: DesktopCallbacks) -> DesktopShell {
     let shell = DesktopShell(Arc::new(Inner {

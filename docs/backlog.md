@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Sprint 05 autorizada e em execucao: SM-022 a SM-025. Evidencias anteriores preservadas. Relatorio atual em [sprint-05-report.md](sprint-05-report.md). Sprint 06 ainda nao autorizada.
+Sprint 05 concluida tecnicamente: SM-022 a SM-025. Relatorio e limites em [sprint-05-report.md](sprint-05-report.md). Aguardar Prompt06; nao iniciar a etapa seguinte automaticamente.
 
 ## Sprint 01
 
@@ -137,26 +137,26 @@ Os 28 IDs originais permanecem preservados. As adicoes ficam separadas em backlo
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-022 | Criar agendador | em_andamento | SM-016, SM-017, SM-020 | Consultas automáticas |
-| SM-023 | Criar notificações nativas | em_andamento | SM-017, SM-022 | Alertas no Windows |
-| SM-024 | Implementar bandeja do sistema | em_andamento | SM-022, SM-023 | Monitoramento minimizado |
-| SM-025 | Implementar recuperação de falhas | em_andamento | SM-009, SM-010, SM-011, SM-022 | Tratamento de internet e cotas |
+| SM-022 | Criar agendador | concluido | SM-016, SM-017, SM-020 | Consultas automáticas |
+| SM-023 | Criar notificações nativas | concluido | SM-017, SM-022 | Alertas no Windows |
+| SM-024 | Implementar bandeja do sistema | concluido | SM-022, SM-023 | Monitoramento minimizado |
+| SM-025 | Implementar recuperação de falhas | concluido | SM-009, SM-010, SM-011, SM-022 | Tratamento de internet e cotas |
 
 ### SM-022 — subtarefas
 
-- **SM-022.01** — Intervalo 60–300s, até três coletas e aviso de frequência inviável (planejado).
+- **SM-022.01** — Intervalo 60–300s, até três coletas e aviso de frequência inviável (concluido).
 
 ### SM-023 — subtarefas
 
-- **SM-023.01** — Outbox durável e consolidação sem perda de eventos (planejado).
+- **SM-023.01** — Outbox durável e consolidação sem perda de eventos (concluido).
 
 ### SM-024 — subtarefas
 
-- **SM-024.01** — Minimização/bandeja e autostart opcional explícito (planejado).
+- **SM-024.01** — Minimização/bandeja e autostart opcional explícito (concluido).
 
 ### SM-025 — subtarefas
 
-- **SM-025.01** — Rede/cotas/permissões e recuperação com estado Indeterminado (planejado).
+- **SM-025.01** — Rede/cotas/permissões e recuperação com estado Indeterminado (concluido).
 
 ## Sprint 06
 

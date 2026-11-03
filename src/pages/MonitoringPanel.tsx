@@ -147,8 +147,8 @@ export function MonitoringPanel({
 const notificationStates: Record<string, string> = {
   pending: "Aguardando tentativa",
   claimed: "Tentativa em andamento",
-  dispatch_submitted: "Submetida ao plugin",
-  submitted: "Submetida ao plugin",
+  dispatch_submitted: "Submissão nativa registrada",
+  submitted: "Submissão nativa registrada",
   retryable: "Nova tentativa programada",
   retry: "Nova tentativa programada",
   dispatching: "Tentativa em andamento",
@@ -173,8 +173,8 @@ export function NotificationHistory({
       <CardHeader>
         <CardTitle>Notificações</CardTitle>
         <CardDescription>
-          Cada alteração detectada tem um registro próprio. Submissão ao plugin não confirma
-          exibição nem leitura no Windows.
+          Cada alteração detectada tem um registro próprio. Submissão nativa não confirma exibição
+          nem leitura no Windows.
         </CardDescription>
       </CardHeader>
       <CardContent className="op-stack">

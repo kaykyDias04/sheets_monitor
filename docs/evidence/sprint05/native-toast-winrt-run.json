@@ -1,0 +1,17 @@
+{
+  "recorded_on": "2026-11-03",
+  "synthetic": true,
+  "authorized_corrected_alert_attempts": 1,
+  "process_id": 28320,
+  "requested_test_toast": true,
+  "process_exit_code": -1073741510,
+  "process_exit_hex": "0xc000013a",
+  "process_status": "interrupted_before_final_report",
+  "expected_probe_json_written": false,
+  "native_callback_observation_completed": false,
+  "agent_forced_termination": false,
+  "stdout_evidence": "docs/evidence/sprint05/native-toast-winrt-stdout.log",
+  "stderr_evidence": "docs/evidence/sprint05/native-toast-winrt-stderr.log",
+  "human_display_observation": "docs/evidence/sprint05/native-toast-winrt-observation.json",
+  "limits": "The process reported a Windows control/close interruption during the observation period. The exact source of that signal was not established. Human confirmation proves display for this attempt; completed callback collection or clean exit is not claimed for this run. No additional alert was sent to regenerate the report."
+}

@@ -1,0 +1,33 @@
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.42s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\sheets_monitor_lib-32ea91790231a8e9.exe)
+
+running 12 tests
+test notifications::service::tests::generation_change_to_disconnected_keeps_pending_without_submission ... ok
+test notifications::service::tests::actual_pump_preference_off_never_submits ... ok
+test notifications::service::tests::actual_pump_does_not_dispatch_another_accounts_outbox ... ok
+test notifications::service::tests::actual_pump_submits_once_and_restart_does_not_replay ... ok
+test notifications::service::tests::old_account_native_failure_after_logout_is_discarded_without_other_account_write ... ok
+test notifications::service::tests::actual_worker_shutdown_is_bounded_while_submission_drains ... ok
+test notifications::service::tests::preparation_failure_is_a_durable_retry_without_busy_loop ... ok
+test notifications::service::tests::inline_native_failure_during_submit_completes_without_auth_deadlock ... ok
+
+thread '<unnamed>' (15316) panicked at src\notifications\service_tests.rs:338:55:
+called `Result::unwrap()` on an `Err` value: CommandError { code: "operation_superseded", message: "A sessão mudou durante a operação. O resultado anterior foi descartado.", retryable: false }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'notifications::service::tests::authentication_generation_is_locked_through_native_submission' (29600) panicked at src\notifications\service_tests.rs:348:19:
+called `Result::unwrap()` on an `Err` value: Any { .. }
+test notifications::service::tests::authentication_generation_is_locked_through_native_submission ... FAILED
+test notifications::service::tests::native_failure_database_error_requeues_current_and_remaining_receipts ... ok
+test notifications::service::tests::deferred_native_failure_is_reconciled_by_next_pump_preserving_submission_fact ... ok
+test notifications::service::tests::native_failure_after_preference_off_remains_suppressed_after_reenable ... ok
+
+failures:
+
+failures:
+    notifications::service::tests::authentication_generation_is_locked_through_native_submission
+
+test result: FAILED. 11 passed; 1 failed; 0 ignored; 0 measured; 234 filtered out; finished in 0.46s
+
+error: test failed, to rerun pass `--lib`

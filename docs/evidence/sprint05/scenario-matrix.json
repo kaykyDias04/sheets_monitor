@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "source": "docs/sprint05.original.md#ETAPA 8 — TESTES",
+  "scope": "SM-022 a SM-025; exclusivamente Sprint05",
+  "recorded_on": "2026-11-02",
+  "final_rust_suite": {
+    "status": "passed",
+    "unit": 257,
+    "integration": 2,
+    "ignored": 1,
+    "evidence": "docs/evidence/sprint05/winrt-final/rust-test.log"
+  },
+  "native_probe": {
+    "compile_status": "passed",
+    "execution_status": "passed_synthetic_native_no_toast",
+    "notes": "docs/evidence/sprint05/native-probe-notes.md",
+    "evidence": "docs/evidence/sprint05/native-probe-validated.json"
+  },
+  "interpretation": {
+    "passed_synthetic": "Teste aprovado com relógio/transporte/vault/sink/recursos sintéticos; não é prova Google ou de exibição Windows.",
+    "passed_baseline_synthetic": "Teste existente preservado e reexecutado com sucesso na suite final de 257 unitarios e duas integracoes.",
+    "pending_native": "Cobertura sintética existe, porém falta execução Windows real deste cenário.",
+    "live_google": "Nenhuma homologação Google real nova é afirmada. Evidências Sprint02–04 permanecem históricas e não são sobrescritas.",
+    "notifications": "Submissão nativa não confirma exibição/leitura. Alerta WinRT corrigido foi confirmado pelo usuário; primeira tentativa negativa e interrupção do probe permanecem registradas.",
+    "excluded": "Campanha final de carga30 planilhas e instalador permanecem Sprint06."
+  },
+  "source_audit": {
+    "google_reader": "src-tauri/src/google/transport.rs::ReadTransport / HttpsTransport::get",
+    "oauth_scopes": "src-tauri/src/auth/protocol.rs",
+    "no_google_file_mutation_in_this_lane": true,
+    "no_automatic_real_baseline_approval": true
+  },
+  "scenarios": [
+    {
+      "number": 1,
+      "scenario": "Agendamento padrão de 60 segundos.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::policy::tests::default_and_configured_intervals_and_completion_are_bounded"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Relógio injetado; sem espera real de 60s."
+    },
+    {
+      "number": 2,
+      "scenario": "Alteração da frequência para 300 segundos.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::service::tests::interval_change_to_300_is_persisted_from_completion_and_restart_replans_once"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Intervalo e próxima execução persistidos; reinício replaneja uma vez."
+    },
+    {
+      "number": 3,
+      "scenario": "Respeito ao limite de três verificações concorrentes.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::service::tests::backend_workers_have_no_webview_and_share_global_three_file_dedup",
+        "monitoring::work::tests::global_three_manual_and_auto_and_per_file_gate_release"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Admissão compartilhada manual/automática. Não é campanha de carga com 30 planilhas."
+    },
+    {
+      "number": 4,
+      "scenario": "Ausência de execução duplicada para o mesmo arquivo.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::work::tests::global_three_manual_and_auto_and_per_file_gate_release",
+        "database::monitoring_store::tests::lease_prevents_duplicate_and_stale_owner_completion"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Exclusão por arquivo, lease UUID e CAS de proprietário/geração/revisão."
+    },
+    {
+      "number": 5,
+      "scenario": "Monitoramento contínuo com janela oculta.",
+      "status": "passed_native_synthetic",
+      "tests": [
+        "monitoring::service::tests::backend_workers_have_no_webview_and_share_global_three_file_dedup"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/native-probe-validated.json",
+        "docs/evidence/sprint05/native-qa.json",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "passed_hidden_window_real_process_simulated_resources",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Windows real e janela oculta: um check observado no probe com relógio/recursos sintéticos; nenhum acesso Google. Configurações reais pendentes preservadas."
+    },
+    {
+      "number": 6,
+      "scenario": "Pausa e retomada.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::service::tests::pause_cancels_without_outage_and_resume_and_restart_stagger_without_catchup",
+        "database::monitoring_store::tests::paused_lease_cannot_commit_report_inside_transaction",
+        "integrity::runtime::tests::cancelled_check_never_persists_a_report_or_changes_approval"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/cancellation-tests.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Cancelamento não cria indisponibilidade nem relatório tardio. Retomada não inventa alterações intermediárias."
+    },
+    {
+      "number": 7,
+      "scenario": "Identificação de alteração de conteúdo sem status Offline.",
+      "status": "passed_synthetic",
+      "tests": [
+        "integrity::engine_tests::common_value_edit_generates_cell_difference_without_offline"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Comparador da Sprint03 preservado; baseline pré-implementação reexecutado nesta sprint. Suíte final após integração permanece pendente."
+    },
+    {
+      "number": 8,
+      "scenario": "Detecção de violação crítica com status Offline.",
+      "status": "passed_synthetic",
+      "tests": [
+        "integrity::engine_tests::protected_column_deletion_is_offline",
+        "integrity::engine_tests::protected_formula_removed_or_replaced_is_offline",
+        "integrity::engine_tests::confirmed_violation_precedes_uncertainty_without_hiding_it"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Mutações somente em fixtures. Nenhuma coluna/fórmula Google modificada para homologação."
+    },
+    {
+      "number": 9,
+      "scenario": "Persistência exata de eventos distintos.",
+      "status": "passed_synthetic",
+      "tests": [
+        "database::monitoring_store::tests::integrity_event_outbox_is_atomic_and_deduplicated",
+        "database::monitoring_store::tests::outbox_failure_rolls_back_integrity_event_transaction",
+        "database::monitoring_store::tests::operational_transition_rolls_back_with_outbox_failure",
+        "database::monitoring_store::tests::changed_operational_condition_is_a_distinct_event"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Cada evento distinto tem outbox na mesma transação; rollback não deixa detecção sem notificação."
+    },
+    {
+      "number": 10,
+      "scenario": "Deduplicação de notificações de condições persistentes.",
+      "status": "passed_synthetic",
+      "tests": [
+        "database::monitoring_store::tests::operational_failure_deduplicates_and_recovers_without_integrity_report",
+        "database::monitoring_store::tests::integrity_event_outbox_is_atomic_and_deduplicated",
+        "notifications::service::tests::actual_pump_submits_once_and_restart_does_not_replay"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log",
+        "docs/evidence/sprint05/native-failure-store-tests.log",
+        "docs/evidence/sprint05/native-failure-dispatcher-requeue-corrected-tests.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Deduplicação local aprovada. Crash entre submissão assíncrona e ACK SQLite ainda pode duplicar exibição física; não há garantia exactly-once no Windows."
+    },
+    {
+      "number": 11,
+      "scenario": "Falha de internet com status Indeterminado.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::service::tests::network_is_indeterminate_backoff_and_recovery_is_distinct",
+        "integrity::engine_tests::network_and_auth_failures_are_indeterminate_not_offline"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Falha operacional separada de relatório/violação; prova anterior de integridade preservada. Nenhuma desconexão física de rede executada."
+    },
+    {
+      "number": 12,
+      "scenario": "Recuperação após reconexão.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::service::tests::network_is_indeterminate_backoff_and_recovery_is_distinct",
+        "database::monitoring_store::tests::operational_failure_deduplicates_and_recovers_without_integrity_report"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Reconexão simulada gera recuperação distinta, sem alegar observação de mudanças intermediárias."
+    },
+    {
+      "number": 13,
+      "scenario": "Tratamento de 429 e Retry-After.",
+      "status": "passed_synthetic",
+      "tests": [
+        "monitoring::policy::tests::backoff_honors_entire_server_delay_and_jitter",
+        "monitoring::service::tests::retry_after_embargo_survives_restart_pause_resume_interval_and_manual_queue",
+        "database::monitoring_store::tests::manual_claim_respects_persisted_operational_backoff"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Embargo preservado em reinicio, pausa/retomada, intervalo e fila manual. Regressao do transporte aprovada na suite final."
+    },
+    {
+      "number": 14,
+      "scenario": "Renovação de token quando permitida.",
+      "status": "passed_synthetic",
+      "tests": [
+        "integration::tests::api_401_refreshes_once_and_never_loops",
+        "auth::manager::tests::code_exchange_recovers_refresh_session_without_serializing_secrets",
+        "auth::manager::tests::logout_during_refresh_cannot_restore_or_persist_the_old_session"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Reuso do refresh Sprint02 com transporte/vault simulados; nenhuma nova renovação Google real afirmada nesta matriz."
+    },
+    {
+      "number": 15,
+      "scenario": "Falha de permissão com necessidade de nova autorização.",
+      "status": "passed_synthetic_and_baseline",
+      "tests": [
+        "auth::manager::tests::invalid_grant_clears_session_network_failure_preserves_it",
+        "auth::manager::tests::partial_consent_does_not_claim_ungranted_service_scopes",
+        "app::tests::eligible_ui_and_queue_candidates_require_current_read_only_grants",
+        "notifications::service::tests::generation_change_to_disconnected_keeps_pending_without_submission",
+        "database::monitoring_store::tests::permission_denied_does_not_interrupt_monitoring"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/app-wiring-tests.log",
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Permissão Google, refresh revogado e permissão de notificação são condições distintas. Consentimento oficial continua humano; permissão desktop do plugin não comprova configurações Windows/DND."
+    },
+    {
+      "number": 16,
+      "scenario": "Reinício após encerramento inesperado.",
+      "status": "passed_synthetic",
+      "tests": [
+        "database::monitoring_store::tests::lease_prevents_duplicate_and_stale_owner_completion",
+        "database::monitoring_store::tests::interrupted_dispatch_is_ambiguous_and_retried_durably",
+        "notifications::service::tests::actual_pump_submits_once_and_restart_does_not_replay",
+        "monitoring::service::tests::retry_after_embargo_survives_restart_pause_resume_interval_and_manual_queue"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Recuperação de proprietário abandonado e journal de tentativa ambígua simulados. Não foi encerrado à força processo de produção."
+    },
+    {
+      "number": 17,
+      "scenario": "Saída limpa pelo menu da bandeja.",
+      "status": "passed_native_shutdown_physical_menu_pending",
+      "tests": [
+        "notifications::service::tests::actual_worker_shutdown_is_bounded_while_submission_drains",
+        "monitoring::service::tests::pause_cancels_without_outage_and_resume_and_restart_stagger_without_catchup"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/scheduler-gate2-tests.log",
+        "docs/evidence/sprint05/native-adapters-tests.md",
+        "docs/evidence/sprint05/native-probe-validated.json",
+        "docs/evidence/sprint05/native-qa.json",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "bounded_shutdown_and_exit_button_passed_physical_tray_click_not_verified",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Saída voluntária e término de processo comprovados no Windows pelo botão e pelo mesmo shell do probe. Clique físico no menu da bandeja não foi automatizado."
+    },
+    {
+      "number": 18,
+      "scenario": "Migrações SQLite preservando dados existentes.",
+      "status": "passed_synthetic",
+      "tests": [
+        "database::migrations::tests::sprint05_upgrade_preserves_v4_data_and_original_ledger",
+        "database_reopens_with_same_data_settings_and_migration_ledger",
+        "existing_future_database_is_not_downgraded",
+        "database::monitoring_store::tests::pending_ttl_expires_explicitly_and_prunes_without_success",
+        "database::monitoring_store::tests::explicit_erase_cascades_outbox_attempts_and_operational_activity"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/database-tests.md",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Migration0005 acrescentada; 0001–0004 não alteradas. Banco temporário reaberto; TTL explícito e cascatas não falsificam entrega."
+    },
+    {
+      "number": 19,
+      "scenario": "Nenhuma correção automática em planilhas ou scripts.",
+      "status": "passed_read_only_audit_and_synthetic",
+      "tests": [
+        "auth::protocol::tests::pkce_matches_official_rfc7636_vector_and_requested_scopes_are_read_only",
+        "google::transport::tests::endpoints_reject_arbitrary_bearer_targets_and_unsafe_paths",
+        "integrity::runtime::tests::cancelled_check_never_persists_a_report_or_changes_approval"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/cancellation-tests.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Auditoria de fonte: ReadTransport expõe get; HttpsTransport valida URL permitida e usa Client.get sem redirecionamentos. Não há escrita de planilha/script no fluxo. POST OAuth de token/revogação é separado e não é mutação de arquivo Google."
+    },
+    {
+      "number": 20,
+      "scenario": "Detecção de código Apps Script acessível segundo as permissões existentes.",
+      "status": "passed_synthetic",
+      "tests": [
+        "integrity::engine_tests::script_code_change_is_informative_without_false_offline",
+        "integrity::engine_tests::script_file_addition_and_removal_each_have_events",
+        "integrity::engine_tests::missing_critical_script_is_uncertain_not_proven_deleted",
+        "database::management_store::tests::scripts_require_authorized_association_and_preferences_are_validated"
+      ],
+      "evidence": [
+        "docs/evidence/sprint05/baseline-rust/rust-test.log",
+        "docs/evidence/sprint05/winrt-final/rust-test.log"
+      ],
+      "synthetic_coverage": "passed",
+      "native_coverage": "not_claimed",
+      "google_live_coverage": "not_executed_this_sprint",
+      "limits": "Código/parser e grants testados com fixtures; comparador Sprint03 preservado. Sem nova mudança/consulta Apps Script real nesta matriz."
+    }
+  ],
+  "native_display": {
+    "status": "human_confirmed_corrected_alert",
+    "evidence": "docs/evidence/sprint05/native-toast-winrt-observation.json",
+    "first_negative_preserved": true,
+    "callback_observation_interrupted": true
+  }
+}

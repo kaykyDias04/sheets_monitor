@@ -311,6 +311,36 @@ fn desktop_get_status(shell: State<'_, DesktopShell>) -> DesktopStatus {
     shell.status()
 }
 #[tauri::command]
+async fn notification_get_readiness(
+    app: tauri::AppHandle,
+) -> Result<crate::notifications::native::NativeReadiness, CommandError> {
+    blocking(move || Ok(crate::notifications::native::readiness(&app))).await
+}
+#[tauri::command]
+async fn notification_retry_blocked(
+    app: tauri::AppHandle,
+    state: State<'_, FoundationState>,
+    expected_generation: u64,
+) -> Result<EngineEnvelope<usize>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || {
+        let readiness = crate::notifications::native::readiness(&app);
+        if readiness.setting.starts_with("disabled") {
+            return Err(CommandError {
+                code: "native_permission_blocked".into(),
+                message: "O Windows ainda bloqueia os alertas deste remetente.".into(),
+                retryable: false,
+            });
+        }
+        let queued = rt.management_local(Some(expected_generation), |db, subject| {
+            db.retry_blocked_notifications(subject, chrono::Utc::now().timestamp_millis())
+        })?;
+        wake_services(&app);
+        Ok(queued)
+    })
+    .await
+}
+#[tauri::command]
 async fn desktop_set_startup(
     shell: State<'_, DesktopShell>,
     enabled: bool,
@@ -959,6 +989,8 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             desktop_get_status,
+            notification_get_readiness,
+            notification_retry_blocked,
             desktop_set_startup,
             desktop_exit,
             foundation_get_dashboard,

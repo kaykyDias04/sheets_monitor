@@ -104,33 +104,6 @@ fn observe_retry_after(status: u16, headers: &reqwest::header::HeaderMap) {
         }
     }
 }
-#[cfg(test)]
-mod retry_hint_tests {
-    use super::*;
-    #[test]
-    fn oauth_retry_after_survives_without_replaying_post_or_leaking_context() {
-        let mut headers = reqwest::header::HeaderMap::new();
-        headers.insert(
-            "retry-after",
-            reqwest::header::HeaderValue::from_static("7200"),
-        );
-        let (_, hint) = crate::monitoring::work::in_operation(
-            crate::monitoring::work::Cancellation::default(),
-            None,
-            || observe_retry_after(429, &headers),
-        );
-        assert_eq!(hint, Some(7_200_000));
-        assert_eq!(
-            crate::monitoring::work::in_operation(
-                crate::monitoring::work::Cancellation::default(),
-                None,
-                || observe_retry_after(401, &headers)
-            )
-            .1,
-            None
-        );
-    }
-}
 impl OAuthTransport for HttpsOAuthTransport {
     fn open_browser(&self, url: &Url) -> AuthResult<()> {
         if url.scheme() != "https"
@@ -245,5 +218,33 @@ impl OAuthTransport for HttpsOAuthTransport {
             400 => Err(AuthError::new(AuthCode::AuthorizationFailed)),
             _ => Err(AuthError::new(AuthCode::Network)),
         }
+    }
+}
+
+#[cfg(test)]
+mod retry_hint_tests {
+    use super::*;
+    #[test]
+    fn oauth_retry_after_survives_without_replaying_post_or_leaking_context() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert(
+            "retry-after",
+            reqwest::header::HeaderValue::from_static("7200"),
+        );
+        let (_, hint) = crate::monitoring::work::in_operation(
+            crate::monitoring::work::Cancellation::default(),
+            None,
+            || observe_retry_after(429, &headers),
+        );
+        assert_eq!(hint, Some(7_200_000));
+        assert_eq!(
+            crate::monitoring::work::in_operation(
+                crate::monitoring::work::Cancellation::default(),
+                None,
+                || observe_retry_after(401, &headers)
+            )
+            .1,
+            None
+        );
     }
 }

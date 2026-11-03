@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "profile": "development",
+  "target": "x86_64-pc-windows-msvc",
+  "custom_protocol": true,
+  "subsystem": "Windows GUI",
+  "subsystem_evidence": "docs/evidence/sprint05/final-pe-headers.log",
+  "installer_generated": false,
+  "executable": "src-tauri/target/x86_64-pc-windows-msvc/debug/sheets-monitor.exe",
+  "bytes": 28468224,
+  "sha256": "EBAE530EF871C440F9F9E5F79422C2730AE486CE7B2F7F2C5CA582E70067A08B",
+  "build_log": "docs/evidence/sprint05/gui-final/rust-build.log",
+  "frontend_log": "docs/evidence/sprint05/winrt-final-build.log",
+  "gui_probe": "docs/evidence/sprint05/gui-probe-run.json",
+  "final_visual_relaunch_verified": false,
+  "computer_use_stopped_by_user": true,
+  "user_interaction_preserved": true
+}

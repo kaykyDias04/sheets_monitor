@@ -1,0 +1,22 @@
+   Compiling embed-resource v3.0.12
+   Compiling rustls-webpki v0.103.16
+   Compiling rusqlite v0.37.0
+   Compiling tauri-winres v0.3.7
+   Compiling tauri-build v2.7.4
+   Compiling rustls v0.23.46
+   Compiling tokio-rustls v0.26.6
+   Compiling hyper-rustls v0.27.10
+   Compiling reqwest v0.12.28
+   Compiling sheets-monitor v0.1.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 37.47s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\sheets_monitor_lib-32ea91790231a8e9.exe)
+
+running 5 tests
+test database::monitoring_store::tests::native_failure_before_submit_ack_keeps_retry_and_rejects_late_ack ... ok
+test database::monitoring_store::tests::native_failure_after_submit_ack_preserves_submission_fact ... ok
+test database::monitoring_store::tests::native_failure_account_and_attempt_cas_cannot_cancel_replacement ... ok
+test database::monitoring_store::tests::native_failure_cannot_resurrect_preference_suppressed_attempt ... ok
+test database::monitoring_store::tests::native_failure_expiry_is_terminal_before_or_after_submit_ack ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 236 filtered out; finished in 0.06s
+

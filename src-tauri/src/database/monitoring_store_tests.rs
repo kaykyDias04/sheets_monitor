@@ -700,3 +700,294 @@ fn paused_lease_cannot_commit_report_inside_transaction() {
         0
     );
 }
+
+#[test]
+fn native_failure_before_submit_ack_keeps_retry_and_rejects_late_ack() {
+    let (mut d, c, _) = fixture();
+    preference(&mut d, true);
+    failure(&mut d, &c, "network_failed", NOW);
+    let a = d
+        .claim_notification(SUBJECT, "native", NOW + 2)
+        .unwrap()
+        .unwrap();
+    assert!(d
+        .retry_native_submission(
+            SUBJECT,
+            &a.record.id,
+            &a.attempt_id,
+            "native_async_failed",
+            NOW + 60_000,
+            NOW + 3
+        )
+        .unwrap());
+    assert!(!d
+        .finish_notification_attempt(
+            SUBJECT,
+            &a.record.id,
+            &a.attempt_id,
+            NotificationOutcome::DispatchSubmitted,
+            NOW + 4
+        )
+        .unwrap());
+    let row = d
+        .notification_by_id(SUBJECT, &a.record.id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "retry");
+    assert_eq!(row.attempt_count, 1);
+    assert_eq!(row.submitted_ms, None);
+    assert!(d
+        .claim_notification(SUBJECT, "native", NOW + 59_999)
+        .unwrap()
+        .is_none());
+    let journal: (String, Option<String>) = d
+        .connection
+        .query_row(
+            "SELECT outcome,code FROM notification_attempts WHERE id=?1",
+            [&a.attempt_id],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .unwrap();
+    assert_eq!(
+        journal,
+        ("retry".into(), Some("native_async_failed".into()))
+    );
+}
+
+#[test]
+fn native_failure_after_submit_ack_preserves_submission_fact() {
+    let (mut d, c, _) = fixture();
+    preference(&mut d, true);
+    failure(&mut d, &c, "network_failed", NOW);
+    let a = d
+        .claim_notification(SUBJECT, "native", NOW + 2)
+        .unwrap()
+        .unwrap();
+    assert!(d
+        .finish_notification_attempt(
+            SUBJECT,
+            &a.record.id,
+            &a.attempt_id,
+            NotificationOutcome::DispatchSubmitted,
+            NOW + 3
+        )
+        .unwrap());
+    assert!(d
+        .retry_native_submission(
+            SUBJECT,
+            &a.record.id,
+            &a.attempt_id,
+            "native_async_failed",
+            NOW + 60_000,
+            NOW + 4
+        )
+        .unwrap());
+    let row = d
+        .notification_by_id(SUBJECT, &a.record.id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "retry");
+    assert_eq!(row.submitted_ms, Some(NOW + 3));
+    assert_eq!(row.attempt_count, 1);
+    assert!(!d
+        .retry_native_submission(
+            SUBJECT,
+            &a.record.id,
+            &a.attempt_id,
+            "native_async_failed",
+            NOW + 120_000,
+            NOW + 5
+        )
+        .unwrap());
+    let next = d
+        .claim_notification(SUBJECT, "native", NOW + 60_000)
+        .unwrap()
+        .unwrap();
+    assert_eq!(next.record.submitted_ms, Some(NOW + 3));
+    assert_eq!(next.record.attempt_count, 2);
+    assert_ne!(next.attempt_id, a.attempt_id);
+}
+
+#[test]
+fn native_failure_account_and_attempt_cas_cannot_cancel_replacement() {
+    let (mut d, c, _) = fixture();
+    preference(&mut d, true);
+    failure(&mut d, &c, "network_failed", NOW);
+    let old = d
+        .claim_notification(SUBJECT, "native", NOW + 2)
+        .unwrap()
+        .unwrap();
+    assert!(!d
+        .retry_native_submission(
+            "other_account",
+            &old.record.id,
+            &old.attempt_id,
+            "native_async_failed",
+            NOW + 60_000,
+            NOW + 3
+        )
+        .unwrap());
+    assert!(d
+        .retry_native_submission(
+            SUBJECT,
+            &old.record.id,
+            &old.attempt_id,
+            "native_async_failed",
+            NOW + 60_000,
+            NOW + 3
+        )
+        .unwrap());
+    let new = d
+        .claim_notification(SUBJECT, "native", NOW + 60_000)
+        .unwrap()
+        .unwrap();
+    // Even a stale callback carrying a later wall clock cannot expire or
+    // otherwise alter the replacement attempt's row.
+    let late = NOW + 91 * 86_400_000;
+    assert!(!d
+        .retry_native_submission(
+            SUBJECT,
+            &old.record.id,
+            &old.attempt_id,
+            "native_async_failed",
+            late + 1,
+            late
+        )
+        .unwrap());
+    let row = d
+        .notification_by_id(SUBJECT, &new.record.id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(row.state, "dispatching");
+    assert_eq!(row.attempt_count, 2);
+    assert!(d
+        .finish_notification_attempt(
+            SUBJECT,
+            &new.record.id,
+            &new.attempt_id,
+            NotificationOutcome::DispatchSubmitted,
+            NOW + 60_001
+        )
+        .unwrap());
+}
+
+#[test]
+fn native_failure_cannot_resurrect_preference_suppressed_attempt() {
+    for submitted in [false, true] {
+        let (mut d, c, _) = fixture();
+        preference(&mut d, true);
+        failure(&mut d, &c, "network_failed", NOW);
+        let a = d
+            .claim_notification(SUBJECT, "native", NOW + 2)
+            .unwrap()
+            .unwrap();
+        if submitted {
+            d.finish_notification_attempt(
+                SUBJECT,
+                &a.record.id,
+                &a.attempt_id,
+                NotificationOutcome::DispatchSubmitted,
+                NOW + 3,
+            )
+            .unwrap();
+        }
+        preference(&mut d, false);
+        let changed = d
+            .retry_native_submission(
+                SUBJECT,
+                &a.record.id,
+                &a.attempt_id,
+                "native_async_failed",
+                NOW + 60_000,
+                NOW + 4,
+            )
+            .unwrap();
+        // Saving the preference already suppresses a dispatching row; a
+        // submitted row is reconciled by its later native failure callback.
+        assert_eq!(changed, submitted);
+        let row = d
+            .notification_by_id(SUBJECT, &a.record.id)
+            .unwrap()
+            .unwrap();
+        assert_eq!(row.state, "suppressed_by_preference");
+        assert_eq!(row.submitted_ms, submitted.then_some(NOW + 3));
+        preference(&mut d, true);
+        assert!(d
+            .claim_notification(SUBJECT, "native", NOW + 60_000)
+            .unwrap()
+            .is_none());
+        assert!(!d
+            .retry_native_submission(
+                SUBJECT,
+                &a.record.id,
+                &a.attempt_id,
+                "native_async_failed",
+                NOW + 120_000,
+                NOW + 60_001
+            )
+            .unwrap());
+    }
+}
+
+#[test]
+fn native_failure_expiry_is_terminal_before_or_after_submit_ack() {
+    for submitted in [false, true] {
+        let (mut d, c, _) = fixture();
+        preference(&mut d, true);
+        failure(&mut d, &c, "network_failed", NOW);
+        let a = d
+            .claim_notification(SUBJECT, "native", NOW + 2)
+            .unwrap()
+            .unwrap();
+        if submitted {
+            d.finish_notification_attempt(
+                SUBJECT,
+                &a.record.id,
+                &a.attempt_id,
+                NotificationOutcome::DispatchSubmitted,
+                NOW + 3,
+            )
+            .unwrap();
+        }
+        let expired = NOW + 91 * 86_400_000;
+        assert!(d
+            .retry_native_submission(
+                SUBJECT,
+                &a.record.id,
+                &a.attempt_id,
+                "native_async_failed",
+                expired + 60_000,
+                expired
+            )
+            .unwrap());
+        let row = d
+            .notification_by_id(SUBJECT, &a.record.id)
+            .unwrap()
+            .unwrap();
+        assert_eq!(row.state, "expired");
+        assert_eq!(row.submitted_ms, submitted.then_some(NOW + 3));
+        let outcome: String = d
+            .connection
+            .query_row(
+                "SELECT outcome FROM notification_attempts WHERE id=?1",
+                [&a.attempt_id],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!(outcome, "expired");
+        assert!(d
+            .claim_notification(SUBJECT, "native", expired + 60_000)
+            .unwrap()
+            .is_none());
+        assert!(!d
+            .retry_native_submission(
+                SUBJECT,
+                &a.record.id,
+                &a.attempt_id,
+                "native_async_failed",
+                expired + 120_000,
+                expired + 60_001
+            )
+            .unwrap());
+    }
+}

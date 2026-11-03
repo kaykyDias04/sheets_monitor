@@ -73,3 +73,16 @@ A conclusão técnica não representa homologação destrutiva real nem aprovaç
 | Privacidade | Sem identificadores/conteúdo reais nos textos verificados; imagem pública redigida visualmente | private-identifier-scan.json e native-overview-redacted.png |
 
 Aceite é técnico e não constitui homologação de toda a planilha real. A baseline humana cobre uma aba/duas células; a seleção atual de28 abas exige revisar regras e aprovar nova referência no aplicativo. Não houve nova aprovação real pelo agente, mutações destrutivas Google, CI hospedado, PR remoto ou publicação externa Google. Ver [relatório final](evidence/sprint04/final-report.md). Aguardar Prompt 05.
+
+## Sprint 05 — aceite técnico e limites reais
+
+| Critério | Evidência e resultado |
+|---|---|
+| SM-022 serviço independente | Fila Rust, três verificações globais, exclusão por arquivo, conta/geração e intervalos 60/300s; testes e probe Windows com check oculto |
+| SM-023 cada evento e entrega | Outbox/tentativas atômicos, callbacks WinRT, falhas reconciliadas; primeiro alerta não apareceu, alerta corrigido foi exibido e confirmado pelo usuário |
+| SM-024 ciclo de vida | Janela oculta e restaurada, segunda instância terminou sem outro serviço, pausa e Sair com processo/porta encerrados; autostart apenas consultado, sem ativação |
+| SM-025 recuperação | Retry-After persistido inclusive após reinício/pausa, backoff, lease, recuperação e cancelamento; falha operacional não inventa Offline |
+| Qualidade | 257 unitários Rust, duas integrações e 50 React aprovados; lint, tipos, formato e Clippy; build Windows com assets incorporados |
+| Privacidade/limites | Sem Google writes, baseline real aprovada pelo agente ou identidade/conteúdo real nos novos relatórios; migrações e evidências anteriores preservadas |
+
+O [relatório](sprint-05-report.md) e a [matriz de 20 cenários](evidence/sprint05/scenario-matrix.json) distinguem fonte, fixtures, Windows real e confirmação humana. Os quatro cadastros reais continuam pendentes e não foram forçados a ficar elegíveis. Clique físico no menu/toast, identidade final instalada, autostart no login e carga Google de 30 arquivos não foram homologados. O teste corrigido de toast teve interrupção antes de finalizar seu JSON; não se afirma saída limpa ou coleta completa de callbacks nessa execução específica. As provas de saída limpa sem toast permanecem separadas. Sprint 06 exige novo prompt.

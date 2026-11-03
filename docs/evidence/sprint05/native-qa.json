@@ -1,0 +1,63 @@
+{
+  "recorded_on": "2026-11-03",
+  "scope": "Windows 11 lifecycle and existing local configuration; no new Google integration claim",
+  "success": true,
+  "synthetic": false,
+  "application": {
+    "title": "Sheets Monitor",
+    "renderer_origin_observed": "http://tauri.localhost/",
+    "windows_build": "26200",
+    "schema_version": 5,
+    "product_tables": 29,
+    "account_connected_in_ui": true,
+    "registered_files": 4,
+    "configuration_pending_in_ui": 4,
+    "eligible_scopes_in_ui": 0,
+    "existing_choices_preserved": true
+  },
+  "lifecycle": {
+    "tray_available_in_ui": true,
+    "explicit_start_persisted_enabled": true,
+    "zero_eligible_did_not_create_schedules": true,
+    "close_hid_window": true,
+    "same_process_alive_while_hidden": true,
+    "enabled_control_preserved_while_hidden": true,
+    "second_process_exited": true,
+    "second_process_exit_code": 0,
+    "process_count_after_second_launch": 1,
+    "second_launch_restored_first_window": true,
+    "pause_persisted_disabled": true,
+    "final_monitoring_enabled": false,
+    "settings_exit_button_used": true,
+    "voluntary_exit_completed": true,
+    "monitor_processes_after_exit": 0,
+    "debug_port_9234_closed_after_exit": true,
+    "forced_termination_used": false,
+    "physical_tray_menu_click_verified": false
+  },
+  "notifications": {
+    "history_empty_in_current_account": true,
+    "native_alert_requested": false,
+    "visual_confirmation": "pending_human_authorization_and_observation"
+  },
+  "startup": {
+    "registration_observed_disabled_in_ui": true,
+    "registration_modified": false,
+    "login_execution_tested": false
+  },
+  "privacy": {
+    "private_database_backup_created": true,
+    "backup_excluded_from_git": true,
+    "public_screenshot_saved": false,
+    "google_files_modified": false,
+    "real_baseline_approved_by_agent": false,
+    "identity_or_resource_content_in_this_report": false
+  },
+  "limits": [
+    "Continuous checks with an actual hidden native window were established separately with synthetic resources and a simulated clock in native-probe-validated.json.",
+    "Current real scopes remain pending; no real continuous Google query was forced by restoring or approving a baseline.",
+    "Agent-browser CDP evaluation timed out, including a simple expression; a fresh named session also timed out. Native UI validation used the Windows computer-use API instead. No new Axe audit or DOM screenshot redaction is claimed.",
+    "The tray was created and closing/restoring worked. The physical tray menu was not exposed by the Windows automation inventory; Exit was tested through the application button and the same native shutdown path in the isolated probe.",
+    "An immediate post-click window snapshot preceded asynchronous cleanup; subsequent process and listener checks confirmed complete exit."
+  ]
+}

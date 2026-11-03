@@ -1,0 +1,170 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35229.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file src-tauri\target\x86_64-pc-windows-msvc\debug\sheets-monitor.exe
+
+PE signature found
+
+File Type: EXECUTABLE IMAGE
+
+FILE HEADER VALUES
+            8664 machine (x64)
+               6 number of sections
+        6AE9C0BD time date stamp Tue Nov  3 08:08:45 2026
+               0 file pointer to symbol table
+               0 number of symbols
+              F0 size of optional header
+              22 characteristics
+                   Executable
+                   Application can handle large (>2GB) addresses
+
+OPTIONAL HEADER VALUES
+             20B magic # (PE32+)
+           14.44 linker version
+         1460E00 size of code
+          6C8200 size of initialized data
+               0 size of uninitialized data
+         1458290 entry point (0000000141458290) mainCRTStartup
+            1000 base of code
+       140000000 image base (0000000140000000 to 0000000141B2AFFF)
+            1000 section alignment
+             200 file alignment
+            6.00 operating system version
+            0.00 image version
+            6.00 subsystem version
+               0 Win32 version
+         1B2B000 size of image
+             400 size of headers
+               0 checksum
+               2 subsystem (Windows GUI)
+            8160 DLL characteristics
+                   High Entropy Virtual Addresses
+                   Dynamic base
+                   NX compatible
+                   Terminal Server Aware
+          100000 size of stack reserve
+            1000 size of stack commit
+          100000 size of heap reserve
+            1000 size of heap commit
+               0 loader flags
+              10 number of directories
+         1982B90 [      5C] RVA [size] of Export Directory
+         1982BEC [     244] RVA [size] of Import Directory
+         1B1B000 [     A88] RVA [size] of Resource Directory
+         19B6000 [  164E20] RVA [size] of Exception Directory
+               0 [       0] RVA [size] of Certificates Directory
+         1B1C000 [    EE6C] RVA [size] of Base Relocation Directory
+         16EDB60 [      54] RVA [size] of Debug Directory
+               0 [       0] RVA [size] of Architecture Directory
+               0 [       0] RVA [size] of Global Pointer Directory
+         16EDD80 [      28] RVA [size] of Thread Storage Directory
+         16EDA20 [     140] RVA [size] of Load Configuration Directory
+               0 [       0] RVA [size] of Bound Import Directory
+         1462000 [     ED8] RVA [size] of Import Address Table Directory
+               0 [       0] RVA [size] of Delay Import Directory
+               0 [       0] RVA [size] of COM Descriptor Directory
+               0 [       0] RVA [size] of Reserved Directory
+
+
+SECTION HEADER #1
+   .text name
+ 1460CD0 virtual size
+    1000 virtual address (0000000140001000 to 0000000141461CCF)
+ 1460E00 size of raw data
+     400 file pointer to raw data (00000400 to 014611FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+60000020 flags
+         Code
+         Execute Read
+
+SECTION HEADER #2
+  .rdata name
+  523FF4 virtual size
+ 1462000 virtual address (0000000141462000 to 0000000141985FF3)
+  524000 size of raw data
+ 1461200 file pointer to raw data (01461200 to 019851FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+  Debug Directories
+
+        Time Type        Size      RVA  Pointer
+    -------- ------- -------- -------- --------
+    6AE9C0BD cv            2B 016EEB9C  16EDD9C    Format: RSDS, {7A44D666-8947-420B-9CAC-7D827295038F}, 1, sheets_monitor.pdb
+    6AE9C0BD feat          14 016EEBC8  16EDDC8    Counts: Pre-VC++ 11.00=801, C/C++=78, /GS=78, /sdl=0, guardN=62
+    6AE9C0BD coffgrp      424 016EEBDC  16EDDDC
+
+SECTION HEADER #3
+   .data name
+   2F5C0 virtual size
+ 1986000 virtual address (0000000141986000 to 00000001419B55BF)
+   2C600 size of raw data
+ 1985200 file pointer to raw data (01985200 to 019B17FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+C0000040 flags
+         Initialized Data
+         Read Write
+
+SECTION HEADER #4
+  .pdata name
+  164E20 virtual size
+ 19B6000 virtual address (00000001419B6000 to 0000000141B1AE1F)
+  165000 size of raw data
+ 19B1800 file pointer to raw data (019B1800 to 01B167FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+SECTION HEADER #5
+   .rsrc name
+     A88 virtual size
+ 1B1B000 virtual address (0000000141B1B000 to 0000000141B1BA87)
+     C00 size of raw data
+ 1B16800 file pointer to raw data (01B16800 to 01B173FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+SECTION HEADER #6
+  .reloc name
+    EE6C virtual size
+ 1B1C000 virtual address (0000000141B1C000 to 0000000141B2AE6B)
+    F000 size of raw data
+ 1B17400 file pointer to raw data (01B17400 to 01B263FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+42000040 flags
+         Initialized Data
+         Discardable
+         Read Only
+
+  Summary
+
+       30000 .data
+      165000 .pdata
+      524000 .rdata
+        F000 .reloc
+        1000 .rsrc
+     1461000 .text

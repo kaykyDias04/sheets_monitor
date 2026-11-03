@@ -1,0 +1,37 @@
+{
+  "scope": "direct desktop dependency metadata; obsolete notification plugin removed; distribution notices remain Sprint06",
+  "packages": [
+    {
+      "name": "tauri",
+      "version": "2.12.5",
+      "license": "Apache-2.0 OR MIT",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "metadata_source": "locally_resolved_official_crate_manifest",
+      "manifest_available": true
+    },
+    {
+      "name": "tauri-plugin-single-instance",
+      "version": "2.5.5",
+      "license": "Apache-2.0 OR MIT",
+      "repository": "https://github.com/tauri-apps/plugins-workspace",
+      "metadata_source": "locally_resolved_official_crate_manifest",
+      "manifest_available": true
+    },
+    {
+      "name": "windows",
+      "version": "0.62.2",
+      "license": "MIT OR Apache-2.0",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "metadata_source": "locally_resolved_official_crate_manifest",
+      "manifest_available": true
+    },
+    {
+      "name": "winreg",
+      "version": "0.56.0",
+      "license": "MIT",
+      "repository": "https://github.com/gentoo90/winreg-rs",
+      "metadata_source": "locally_resolved_official_crate_manifest",
+      "manifest_available": true
+    }
+  ]
+}

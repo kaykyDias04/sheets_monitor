@@ -93,6 +93,22 @@ check('Sprint 04 original and authorized additions', () => {
  }
  return 'source preserved; 28 original IDs and two explicit additions';
 });
+check('Sprint 05 authorization and evidence boundary', () => {
+ const digest=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'docs/sprint05.original.md'))).digest('hex');
+ assert(digest==='4681bc47821fa65e35de208207c22f7b6a61dcd78095e42173c3d838ea34c08f','Sprint 05 original changed');
+ const items=JSON.parse(read('docs/backlog.json')).items;
+ assert(items.filter(i=>i.sprint===6).every(i=>i.status!=='concluido'),'Sprint 06 is not authorized');
+ if(items.filter(i=>i.sprint===5).some(i=>i.status==='concluido')){
+  const local=JSON.parse(read('docs/evidence/sprint05/local-validation.json'));
+  const native=JSON.parse(read('docs/evidence/sprint05/native-qa.json'));
+  const display=JSON.parse(read('docs/evidence/sprint05/native-toast-winrt-observation.json'));
+  const negative=JSON.parse(read('docs/evidence/sprint05/native-toast-observation.json'));
+  assert(local.success===true&&native.success===true&&display.user_reported_display===true,'Completion needs local, native and human display evidence');
+  assert(negative.user_reported_display===false&&display.first_negative_observation_preserved,'Initial negative evidence must be preserved');
+  assert(local.real_baseline_approved_by_agent===false&&local.google_file_writes===false&&local.installer_generated===false,'Sprint 05 scope boundaries changed');
+ }
+ return 'source preserved; human display confirmation remains separate from native submission and installed identity';
+});
 check('raw prototype archive', () => {
   const manifest = JSON.parse(read('docs/evidence/repository/prototype-manifest.json'));
   for (const entry of manifest.files) {
@@ -133,21 +149,22 @@ check('issue and PR templates', () => {
   assert(read('.github/PULL_REQUEST_TEMPLATE.md').includes('Critérios de aceite'), 'PR template lacks acceptance');
   return 'two issue templates and PR acceptance/evidence sections';
 });
-check('Sprint 04 scope and modular structure', () => {
+check('Sprint 05 scope and modular structure', () => {
   for (const directory of ['src/components','src/pages','src/hooks','src/services','src/types','src-tauri/src/database','src-tauri/src/auth','src-tauri/src/google','src-tauri/src/integrity','src-tauri/src/monitoring','src-tauri/src/notifications','src-tauri/migrations']) {
     assert(fs.statSync(path.join(root,directory)).isDirectory(), `Missing module ${directory}`);
   }
   const app = read('src-tauri/src/app.rs');
-  assert((app.match(/#\[tauri::command\]/g) || []).length === 43 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
+  assert((app.match(/#\[tauri::command\]/g) || []).length === 54 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
   const cargo = read('src-tauri/Cargo.toml');
-  assert(!/^tauri-plugin-notification\s*=/m.test(cargo), 'Future notification dependency activated');
+  assert(/^windows\s*=.*UI_Notifications/m.test(cargo), 'Authorized Windows notification adapter is missing');
+  assert(/^native-probe\s*=\s*\[\]/m.test(cargo) && !/^default\s*=.*native-probe/m.test(cargo), 'Synthetic native probe must remain opt-in');
   for (const command of ['integration_get_state','integration_configure','integration_connect','integration_disconnect','integration_revoke','integration_test_sheet','integration_test_script']) assert(app.includes(command), `Missing command ${command}`);
   assert(!/pub mod (oauth|store|engine|fixtures|analysis);/.test(read('src-tauri/src/lib.rs')), 'Prototype modules exported');
   for (const file of trackedAndNew.filter(p => /^(src|src-tauri\/src)\//.test(p) && /\.(rs|tsx?|css)$/.test(p))) {
     const content = read(file);
     assert(!/(?:from\s*["']|include!\s*\(\s*["'])[^"']*archive\//.test(content), `Active import of archive: ${file}`);
   }
-  return 'foundation + Google + operational management, future scheduler and notifications isolated';
+  return 'foundation + read-only Google + management + authorized continuous monitoring; synthetic native probe excluded from defaults';
 });
 check('active source encoding', () => {
   const source=trackedAndNew.filter(p=>/^(src|src-tauri\/src)\//.test(p) && /\.(tsx?|rs|css)$/.test(p));
@@ -179,11 +196,11 @@ check('completion evidence matches sprint status', () => {
   assert(['dashboard','sheets','history','settings'].every(page => qa.navigation.includes(page)), 'Native navigation not established');
   assert(qa.persistence.saved_interval === 120 && qa.persistence.after_restart_interval === 120 && qa.persistence.final_interval === 60, 'Native persistence not established');
   assert(qa.diagnostics.final_debug_port_closed === true && qa.cloud_access === false, 'Diagnostics or scope gate incomplete');
-  assert(items.filter(i => i.sprint > 4).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
+  assert(items.filter(i => i.sprint > 5).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
   return 'Completed foundation items have native evidence; future sprints remain uncompleted';
 });
 const success = checks.every(item => item.ok);
-const reportPath = path.join(root,'docs/evidence/sprint04/repository-verification.json');
+const reportPath = path.join(root,'docs/evidence/sprint05/repository-verification.json');
 fs.mkdirSync(path.dirname(reportPath), { recursive:true });
-fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 04 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
+fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 05 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
 process.exitCode = success ? 0 : 1;

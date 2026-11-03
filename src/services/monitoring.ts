@@ -3,7 +3,12 @@ import { listen } from "@tauri-apps/api/event";
 import { desktop } from "./platform";
 import type { EngineEnvelope } from "@/types/integrity";
 import type { Page } from "@/types/management";
-import type { DesktopStatus, MonitoringStatus, NotificationRecord } from "@/types/monitoring";
+import type {
+  DesktopStatus,
+  MonitoringStatus,
+  NotificationRecord,
+  NativeReadiness,
+} from "@/types/monitoring";
 
 function command<T>(name: string, args: Record<string, unknown> = {}): Promise<T> {
   if (!desktop) return Promise.reject({ code: "desktop_required" });
@@ -28,6 +33,10 @@ export const notificationHistory = (offset = 0) =>
 export const notificationById = (id: string) =>
   command<EngineEnvelope<NotificationRecord | null>>("monitoring_notification", { id });
 export const getDesktopStatus = () => command<DesktopStatus>("desktop_get_status");
+export const retryBlockedNotifications = (expectedGeneration: number) =>
+  command<EngineEnvelope<number>>("notification_retry_blocked", { expectedGeneration });
+export const getNotificationReadiness = () =>
+  command<NativeReadiness>("notification_get_readiness");
 export const setStartup = (enabled: boolean) =>
   command<DesktopStatus>("desktop_set_startup", { enabled });
 export const exitDesktop = () => command<void>("desktop_exit");

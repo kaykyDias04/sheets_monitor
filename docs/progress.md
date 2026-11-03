@@ -117,8 +117,18 @@ Uma instância diagnóstica sem janela precisou ser encerrada após tentativas n
 Commits das fases d6e9977/f84efae; fechamento em commit final na mesma branch codex/sprint-04-interface-management. Sem remoto autorizado: somente rascunho PR local. Encerrar e aguardar Prompt 05; não executar Sprint 05.
 
 A preferência padrão de histórico agora alimenta novas regras e a proposta quando não existe escopo salvo. Escopos e rascunhos existentes mantêm seus prazos. Nova regressão e prova nativa confirmaram365 dias em um novo rascunho, restauração do padrão 90 e ausência de mudanças nas regras/seleções salvas. Totais finais188 unitários Rust+2 integrações+42 React; artefato atualizado em native-qa.json. Após o ajuste, a instância diagnóstica fechou normalmente, porta 9234 foi confirmada fechada e a janela normal foi reaberta. O estado mais recente observado contém 4 cadastros pendentes, com alterações externas aos testes preservadas.
-# Sprint 05 — execução autorizada em andamento
+## Sprint 05 — execução autorizada em andamento
 
 Autorização: `docs/sprint05.original.md`, SHA256 `4681BC47821FA65E35DE208207C22F7B6A61DCD78095E42173C3D838EA34C08F`. Branch `codex/sprint-05-continuous-monitoring`, base Sprint 04 `4041b71`. Implementar somente SM-022 a SM-025. Sem instalador, campanha final de 30 planilhas, escrita Google ou aprovação automática de baseline.
 
 Baseline anterior reproduzido antes das mudanças: 188 unitários Rust e duas integrações, 42 testes React. Gate 0 aceito com contratos explícitos. A fase de persistência passou 71 testes focados; a interface passou 45 testes após os primeiros controles. Gate 1 encontrou correções necessárias no embargo de Retry-After, na guarda de sessão ao concluir falhas e na recuperação de falha de criação de worker. Implementação e verificação continuam; nenhum aceite nativo ou conclusão da Sprint 05 é inferido deste registro. Evidências novas ficam em `docs/evidence/sprint05/`.
+
+## Sprint 05 — encerramento técnico
+
+SM-022 a SM-025 concluídos tecnicamente. O [relatório](sprint-05-report.md) substitui o estado de execução acima. Fases iniciais em `dac71dc` e `23e781e`; correção Windows e fechamento em commits seguintes da mesma branch `codex/sprint-05-continuous-monitoring`.
+
+Suíte final: 257 unitários Rust, duas integrações e 50 React aprovados; um teste de cofre ignorado por padrão e evidência histórica preservada. Lint, formato, tipos, Clippy e build Tauri MSVC com assets incorporados aprovados. O probe nativo comprovou verificações ocultas, intervalo 60/300s, pausa/retomada e saída limitada com recursos sintéticos. O aplicativo real comprovou início/pausa, ocultação, instância única/restauração e saída voluntária.
+
+A primeira tentativa de alerta não foi exibida; após a correção WinRT, o usuário confirmou a exibição do segundo alerta autorizado. Preservadas as duas observações e a interrupção do probe corrigido antes do JSON/callbacks finais; sem alegação de coleta completa ou saída limpa nessa execução específica. Fonte, mock, processo Windows e confirmação humana permanecem separados.
+
+Quatro cadastros reais pendentes e zero proteções elegíveis foram preservados durante a inspeção. Nenhuma nova baseline real, escrita Google, ativação autostart, instalador ou campanha final de 30 arquivos foi realizada pelo agente. Identidade instalada e cliques físicos permanecem fora da homologação executada. Sem remoto autorizado: PR apenas em rascunho local. Próxima etapa: aguardar Prompt06, sem executar a Sprint06.

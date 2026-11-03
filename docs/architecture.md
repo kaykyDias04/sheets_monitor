@@ -15,7 +15,7 @@ flowchart LR
  Runtime --> DB
  Scheduler[Serviço Rust / relógio e fila] --> Runtime
  Engine --> Outbox[Eventos e outbox na mesma transação]
- Outbox --> Notify[Dispatcher / plugin Windows]
+ Outbox --> Notify[Dispatcher / WinRT Windows]
  Tray[Bandeja e ciclo de vida] --> Scheduler
  Runtime -->|Eventos Tauri sem conteúdo privado| UI
 ```
@@ -44,8 +44,8 @@ O registro operacional acrescenta gerenciamento por conta sobre os snapshots imu
 
 `database/monitoring_store.rs` e a migração 0005 acrescentam cinco tabelas. Cada evento novo recebe outbox na mesma transação, sem backfill histórico. Falhas e recuperações operacionais têm identidade própria e condições persistentes são deduplicadas. Preferência desligada suprime a fila atomicamente; TTL segue o escopo. Estado de envio e tentativas não se confundem com exibição/leitura.
 
-`notifications/service.rs` reivindica tentativas duráveis e mantém o guard da geração até a curta submissão nativa. O adaptador não realiza chamadas Google. Callbacks carregam só ID opaco; o IPC resolve novamente na conta atual. Eventos Tauri atualizam a interface sem agendar consultas no React, com coalescência durante ações em andamento.
+`notifications/service.rs` reivindica tentativas duráveis e mantém o guard da geração até a curta submissão nativa. O adaptador WinRT não realiza chamadas Google. `Failed` enfileira recibos sem reentrar no lock de autenticação; o serviço persiste falhas por conta/tentativa com CAS e preserva a submissão anterior como fato. Erro de banco mantém os recibos para reconciliação. Delegates têm quantidade/tempo limitados, sem thread por alerta. Callbacks de ativação carregam só ID opaco; o IPC resolve novamente na conta atual. Eventos Tauri atualizam a interface sem agendar consultas no React, com coalescência durante ações em andamento.
 
 `desktop.rs` registra instância única antes dos serviços, cria a bandeja e preserva a janela se não conseguir ocultá-la com segurança. Sair cancela serviços em thread auxiliar com espera limitada e permite a saída depois da limpeza. Inicialização usa somente HKCU, comando fixo do executável atual e opt-in explícito; entrada conflitante é preservada. Consultar registro não comprova execução futura pelo Windows.
 
-O recurso `native-probe` fica desligado no produto. Seu executável de teste usa identificador e banco temporários, autenticação sintética sem rede e relógio injetado para observar a execução nativa oculta. Não compartilha cofre ou dados de produção; toast de teste exige flag explícita e autorização. Essa evidência nunca é classificada como integração Google real. Decisões e limites em [ADR 0010](adr/0010-continuous-monitoring-delivery.md).
+O recurso `native-probe` fica desligado no produto. Seu executável de teste usa identificador e banco temporários, autenticação sintética sem rede e relógio injetado para observar a execução nativa oculta. Não compartilha cofre ou dados de produção; toast de teste exige flag explícita e autorização. Essa evidência nunca é classificada como integração Google real. Decisões e limites em [ADR 0010](adr/0010-continuous-monitoring-delivery.md) e [ADR 0011](adr/0011-windows-notification-errors.md). Identidade de desenvolvimento é explícita; release não usa fallback após bloqueio de usuário/política.

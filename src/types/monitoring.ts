@@ -35,6 +35,11 @@ export interface NotificationRecord {
   submitted_ms: number | null;
   group_id: string;
 }
+export interface NativeReadiness {
+  identity_mode: string;
+  setting: string;
+  error_code: string | null;
+}
 export interface DesktopStatus {
   tray_available: boolean;
   notification_capability: string;

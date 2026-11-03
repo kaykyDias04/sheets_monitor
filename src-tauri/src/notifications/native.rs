@@ -1,32 +1,56 @@
-//! Windows notification submission. Plugin success proves preparation, not OS delivery.
+//! Direct Windows submission. Native API success never proves display or reading.
 use super::service::NotificationSink;
 use crate::monitoring::{NotificationOutcome, NotificationRecord};
 use std::sync::Arc;
 use tauri::AppHandle;
-use tauri_plugin_notification::NotificationExt;
+#[cfg(windows)]
+#[path = "windows.rs"]
+mod windows;
+
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct NativeReadiness {
+    pub identity_mode: String,
+    pub setting: String,
+    pub error_code: Option<String>,
+}
 
 pub struct NativeNotifier {
-    app: AppHandle,
+    #[cfg(windows)]
+    windows: windows::WindowsNotifier,
 }
 impl NativeNotifier {
     /// Callback receives only an opaque outbox ID; the caller must recheck account.
     pub fn new(app: AppHandle, open: Arc<dyn Fn(String) + Send + Sync>) -> Self {
-        let _ = app.notification().on_action(move |action| {
-            if action.action_id() != "tap" {
-                return;
+        #[cfg(windows)]
+        {
+            Self {
+                windows: windows::WindowsNotifier::new(app.config().identifier.clone(), open),
             }
-            if let Some(id) = action
-                .notification()
-                .and_then(|notification| notification.extra().get("outbox_id"))
-                .and_then(serde_json::Value::as_str)
-            {
-                if id.len() <= 160 {
-                    open(id.to_owned());
-                }
-            }
-        });
-        Self { app }
+        }
+        #[cfg(not(windows))]
+        {
+            let _ = (app, open);
+            Self {}
+        }
     }
+    pub fn readiness(&self) -> NativeReadiness {
+        #[cfg(windows)]
+        {
+            self.windows.readiness()
+        }
+        #[cfg(not(windows))]
+        {
+            NativeReadiness {
+                identity_mode: "unsupported".into(),
+                setting: "unknown".into(),
+                error_code: Some("unsupported".into()),
+            }
+        }
+    }
+}
+/// Reads identity/settings without showing a toast or modifying Windows configuration.
+pub fn readiness(app: &AppHandle) -> NativeReadiness {
+    NativeNotifier::new(app.clone(), Arc::new(|_| {})).readiness()
 }
 fn clipped(value: &str, max: usize) -> String {
     value
@@ -62,30 +86,22 @@ fn payload(record: &NotificationRecord) -> (String, String) {
 }
 impl NotificationSink for NativeNotifier {
     fn submit(&self, record: &NotificationRecord) -> NotificationOutcome {
-        if !cfg!(windows) {
-            return NotificationOutcome::Unsupported;
-        }
+        self.submit_with_failure(record, Arc::new(|_| {}))
+    }
+    fn submit_with_failure(
+        &self,
+        record: &NotificationRecord,
+        failure: Arc<dyn Fn(String) + Send + Sync>,
+    ) -> NotificationOutcome {
         let (title, body) = payload(record);
-        match self
-            .app
-            .notification()
-            .builder()
-            .title(title)
-            .body(body)
-            .extra("outbox_id", serde_json::Value::String(record.id.clone()))
-            .show()
+        #[cfg(windows)]
         {
-            Ok(()) => NotificationOutcome::DispatchSubmitted,
-            Err(_) => NotificationOutcome::Retryable {
-                code: "native_prepare_failed".into(),
-                next_attempt_ms: chrono::Utc::now().timestamp_millis().saturating_add(
-                    crate::monitoring::retry_delay_ms(
-                        record.attempt_count,
-                        rand::random::<u64>() % 1001,
-                        None,
-                    ),
-                ),
-            },
+            self.windows.submit(record, &title, &body, failure)
+        }
+        #[cfg(not(windows))]
+        {
+            let _ = (title, body, failure);
+            NotificationOutcome::Unsupported
         }
     }
 }

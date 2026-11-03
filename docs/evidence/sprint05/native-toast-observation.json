@@ -1,0 +1,17 @@
+{
+  "recorded_on": "2026-11-03",
+  "synthetic": true,
+  "user_authorized_one_test_alert": true,
+  "attempts_executed": 1,
+  "submission_evidence": "docs/evidence/sprint05/native-toast-submission.json",
+  "plugin_dispatch_submitted": true,
+  "user_reported_display": false,
+  "user_response": "Não apareceu",
+  "os_acceptance_confirmed": false,
+  "user_reading_confirmed": false,
+  "conclusion": "Native display validation failed. SM-023 remains pending; plugin submission is not successful visual delivery.",
+  "another_alert_authorized": false,
+  "production_preferences_modified": false,
+  "google_files_modified": false,
+  "startup_setting_modified": false
+}

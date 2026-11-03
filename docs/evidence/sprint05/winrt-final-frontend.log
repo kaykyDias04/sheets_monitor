@@ -1,0 +1,63 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+ ✓ src/services/foundation.test.tsx > contrato da fundação > rejeita preferências fora dos limites antes de invocar o backend 10ms
+ ✓ src/services/foundation.test.tsx > contrato da fundação > recusa conteúdo sem marcação demonstrativa 1ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > exibe estados reais distintos de configuração pendente e não presume Online 149ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > expõe incerteza, ausência de antes/depois e autoria desconhecida 944ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > mostra dependências dinâmicas como não verificáveis e não promete descoberta total 104ms
+ ✓ src/pages/OperationalShared.test.tsx > Diagnóstico operacional > mostra arquivos e dependências da captura não aprovada sem reutilizar análise de projeto ausente 63ms
+ ✓ src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > requires ready protection before checks and an explicit start action 1066ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > usa a retenção padrão somente em regras novas, preservando políticas salvas e rascunhos 14ms
+ ✓ src/pages/IntegrityPage.test.tsx > does not call capture or approval while disconnected 1063ms
+ ✓ src/pages/MonitoringPanel.test.tsx > continuous monitoring controls > offers pause, queues checks and explains infeasible interval without overlap 428ms
+ ✓ src/pages/MonitoringPanel.test.tsx > notification event journal > keeps distinct events in the same group and never claims display or reading 275ms
+ ✓ src/pages/MonitoringWorkspace.test.tsx > explains a Windows notification block without changing startup or stopping monitoring 1337ms
+ ✓ src/pages/MonitoringWorkspace.test.tsx > retries blocked alerts only after an explicit action in the current generation 428ms
+ ✓ src/pages/GooglePage.test.tsx > does not enable Google reads before configuration and authorization 1755ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > exige confirmação explícita e encaminha exatamente a prévia revisada 1460ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > recusa aprovação de captura incompleta ou configuração editada 349ms
+ ✓ src/pages/MonitoringWorkspace.test.tsx > refreshes from a Tauri signal and resolves the exact opaque notification in the current session 389ms
+ ✓ src/pages/MonitoringWorkspace.test.tsx > discards an old account's pending notification after the session changes 58ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > preserva identidade da aba e exige cabeçalho explícito sem inventar proteção 2650ms
+ ✓ src/pages/BaselineFlow.test.tsx > Aprovação visual > descarta confirmação quando uma nova captura substitui a prévia 360ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > permite próxima página vazia e não apresenta resultados incompletos como totais 1149ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > mostra mais de 30 descobertas, identifica compartilhadas e cadastra somente por ação 1531ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > explica falta de permissão sem habilitar descoberta 67ms
+ ✓ src/pages/SpreadsheetTables.test.tsx > Descoberta e cadastro visual > inicia cadastro com estado vazio sem fixtures de planilhas 24ms
+ ✓ src/pages/ScopeEditor.test.tsx > Regras estruturadas > remove regras dependentes quando a coluna é removida e mantém escopos independentes 638ms
+ ✓ src/pages/IntegrityPage.test.tsx > binds human approval to the displayed snapshot hash and expected version 2651ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > carrega seis destinos e dados do backend sem comandos foundation 1752ms
+ ✓ src/pages/GooglePage.test.tsx > clears the secret field immediately and displays only a safe consent error 1691ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > mostra login sem pedir credenciais Cloud ao usuário comum 460ms
+ ✓ src/pages/IntegrityPage.test.tsx > requires another preview after editing the scope and never approves partial capture 1330ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > descobre e pagina arquivos compartilhados sem cadastro automático 1131ms
+ ✓ src/pages/GooglePage.test.tsx > renders independent real-command results and removes them on logout 1355ms
+ ✓ src/pages/IntegrityPage.test.tsx > rejects a captured result after the authenticated session changes 1054ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > cadastra link válido como configuração pendente 1433ms
+ ✓ src/pages/GooglePage.test.tsx > rejects a result from another account and requires explicit revocation confirmation 1539ms
+ ✓ src/pages/GooglePage.test.tsx > never renders an arbitrary provider error body 1ms
+ ✓ src/pages/IntegrityPage.test.tsx > a JSON syntax error never reaches native capture 1270ms
+ ✓ src/pages/IntegrityPage.test.tsx > shows classification produced by Rust separately from connectivity 1487ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > trata URL inválida e cadastro duplicado 2081ms
+ ✓ src/pages/IntegrityPage.test.tsx > rejects a new-session result even when its envelope matches the final session 1208ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > desabilita cadastro ao atingir 30 sem limitar descoberta 3518ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > salva abas, sugere rascunho e aprova apenas a captura revisada 5238ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > exige confirmação de remoção e escolha de histórico 2090ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > envia a verificação individual para a fila sem declarar coleta concluída 1078ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > envia filtros do histórico ao backend com paginação 1064ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > persiste preferências por conta sem alterar o registro Windows implicitamente 1862ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > descarta resultado se a conta muda mesmo com envelope posterior válido 853ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > desconecta e limpa a identidade da interface 1176ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > propaga desconexão pelas ferramentas avançadas sem aguardar seu fechamento manual 1466ms
+ ✓ src/App.test.tsx > Sprint 04 · operação sem demonstração > bloqueia navegação de linha e marca durante consulta pendente sem invalidar seu resultado 956ms
+
+ Test Files  10 passed (10)
+      Tests  50 passed (50)
+   Start at  07:46:31
+   Duration  33.33s (transform 5.56s, setup 3.96s, import 25.55s, tests 56.11s, environment 21.77s)
+

@@ -301,6 +301,13 @@ fn exercise(
     app: &tauri::AppHandle,
     report: &Arc<Mutex<Value>>,
 ) -> Result<(), String> {
+    let readiness = crate::notifications::native::readiness(app);
+    {
+        let mut result = report.lock().map_err(|_| "probe_report_lock")?;
+        result["notification_backend"] = json!("windows_winrt");
+        result["notification_readiness"] =
+            serde_json::to_value(readiness).map_err(|_| "probe_readiness_encode")?;
+    }
     until(|| executor.completed.load(Ordering::SeqCst) >= 1 && service.status().active == 0)?;
     let db = Database::open(&runtime.database_path)?;
     let schedule = db
@@ -354,6 +361,8 @@ fn exercise(
     drop(db);
     shell.show_main();
     until(|| window.is_visible().unwrap_or(false))?;
+    let native_failures = Arc::new(Mutex::new(Vec::<String>::new()));
+    let mut native_submission_error = None::<String>;
     let toast_submission = if toast {
         let mut db = Database::open(&runtime.database_path)?;
         db.save_management_preferences(
@@ -384,16 +393,39 @@ fn exercise(
             submitted_ms: None,
             group_id: "synthetic-probe-test-toast".into(),
         };
-        match NativeNotifier::new(app.clone(), Arc::new(|_| {})).submit(&record) {
+        let notifier = NativeNotifier::new(app.clone(), Arc::new(|_| {}));
+        let callback_failures = native_failures.clone();
+        let failed = Arc::new(move |code: String| {
+            // Failure callbacks only capture diagnostics; never enter auth/DB.
+            callback_failures
+                .lock()
+                .unwrap_or_else(|error| error.into_inner())
+                .push(code);
+        });
+        let submission = match notifier.submit_with_failure(&record, failed) {
             NotificationOutcome::DispatchSubmitted => {
-                // The plugin dispatches asynchronously. Explicitly authorized
-                // toast QA keeps the native event loop alive for observation;
+                // Native failure callbacks can outlive Show. Keep this notifier
+                // and the event loop alive during explicitly authorized QA;
                 // elapsed time still does not prove OS display or user reading.
                 thread::sleep(Duration::from_secs(15));
                 "dispatch_submitted"
             }
-            _ => "not_submitted",
-        }
+            NotificationOutcome::Retryable { code, .. } => {
+                native_submission_error = Some(code);
+                "not_submitted"
+            }
+            NotificationOutcome::PermissionBlocked => {
+                native_submission_error = Some("permission_blocked".into());
+                "not_submitted"
+            }
+            NotificationOutcome::Unsupported => {
+                native_submission_error = Some("unsupported".into());
+                "not_submitted"
+            }
+        };
+        // Explicit lifetime: keep native delegates alive throughout observation.
+        drop(notifier);
+        submission
     } else {
         "not_requested"
     };
@@ -407,6 +439,10 @@ fn exercise(
     result["resumed"] = json!(true);
     result["window_reopened"] = json!(true);
     result["toast_submission"] = json!(toast_submission);
+    result["native_failure_codes"] = json!(*native_failures
+        .lock()
+        .unwrap_or_else(|error| error.into_inner()));
+    result["native_submission_error"] = json!(native_submission_error);
     if delta60 != 60_000 || delta300 != 300_000 || !paused || !shell.status().tray_available {
         return Err("probe_invariant_failed".into());
     }

@@ -2,7 +2,7 @@
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A **Sprint 05 está em validação**: monitoramento contínuo Rust, notificações, bandeja e recuperação de falhas. [Relatório da etapa](docs/sprint-05-report.md). Sprints 01–04 e suas evidências foram preservadas. A Sprint 06, com homologação final em escala e instalador, exige nova autorização.
+A **Sprint 05 está concluída tecnicamente**: monitoramento contínuo Rust, notificações, bandeja e recuperação de falhas. O alerta corrigido foi exibido e confirmado pelo usuário. [Relatório da etapa](docs/sprint-05-report.md). Sprints 01–04 e suas evidências foram preservadas. A Sprint 06, com homologação final em escala e instalador, exige nova autorização.
 
 O fluxo diário usa a conta Google conectada e dados do backend. O cadastro admite até 30 arquivos, incluindo pausados; a descoberta não limita a lista a 30. Cada proteção exige abas, regras e uma baseline correspondente aprovada pelo usuário. Nenhuma operação altera arquivos Google ou executa Apps Script.
 
@@ -55,7 +55,7 @@ Online/Offline são resultados do motor; falhas de conexão, permissão ou API s
 
 O banco possui 29 tabelas de produto após a migração 0005, que preserva as anteriores e acrescenta controle, agendas, eventos operacionais, outbox e tentativas. Não compartilhe bancos reais, relatórios privados ou credenciais em issues/evidências.
 
-Um alerta marcado **Submetida ao plugin** não comprova exibição ou leitura no Windows. Não incomodar e preferências do sistema podem silenciá-lo. Alertas desligados são registrados como suprimidos, sem envio retroativo ao ativar; pendências também respeitam a retenção. Uma interrupção entre submissão e confirmação local pode provocar repetição visual. A identidade final da aplicação instalada será validada na Sprint 06.
+Um alerta marcado **Submissão nativa registrada** não comprova exibição ou leitura no Windows. Não incomodar e preferências do sistema podem silenciá-lo. O adaptador WinRT registra erros imediatos e tardios; neste build de desenvolvimento, o remetente é Windows PowerShell. Alertas desligados são registrados como suprimidos, sem envio retroativo ao ativar; pendências também respeitam a retenção. Alertas bloqueados ainda elegíveis podem ser reenviados por ação explícita após revisar a configuração Windows. Uma interrupção entre submissão e confirmação local pode provocar repetição visual. A identidade final da aplicação instalada será validada na Sprint 06.
 
 ## Verificar
 

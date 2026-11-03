@@ -322,7 +322,8 @@ impl Database {
         if !confirmed {
             return Err(EngineError::ApprovalRequired);
         }
-        let permitted = origin == "human:native" || cfg!(test) && origin == "synthetic:test";
+        let permitted = origin == "human:native"
+            || cfg!(any(test, feature = "native-probe")) && origin == "synthetic:test";
         if !permitted {
             return Err(EngineError::ApprovalRequired);
         }

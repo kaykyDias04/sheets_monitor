@@ -541,6 +541,54 @@ impl Database {
         tx.commit().map_err(sql)?;
         Ok(changed == 1)
     }
+    /// Reconcile an asynchronous native failure with its exact durable attempt.
+    /// A prior submission timestamp remains evidence of that request, even when
+    /// the adapter later reports failure. True means the current row changed.
+    #[allow(clippy::too_many_arguments)]
+    pub fn retry_native_submission(
+        &mut self,
+        subject: &str,
+        id: &str,
+        attempt_id: &str,
+        code: &str,
+        next_ms: i64,
+        now_ms: i64,
+    ) -> Result<bool> {
+        clean_code(code)?;
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)
+            .map_err(sql)?;
+        let aid = account(&tx, subject)?;
+        // Inspect only this current attempt: an old callback must not alter a
+        // replacement attempt, including its terminal housekeeping decisions.
+        let expires: Option<i64> = tx.query_row(
+            "SELECT expires_ms FROM notification_outbox WHERE account_id=?1 AND id=?2 AND attempt_id=?3 AND state IN('dispatching','dispatch_submitted')",
+            params![aid,id,attempt_id],|r|r.get(0)
+        ).optional().map_err(sql)?;
+        let Some(expires) = expires else {
+            return Ok(false);
+        };
+        let state = if expires <= now_ms {
+            "expired"
+        } else if !enabled(&tx, &aid)? {
+            "suppressed_by_preference"
+        } else {
+            "retry"
+        };
+        let changed=tx.execute(
+            "UPDATE notification_outbox SET state=?4,next_attempt_ms=?5,lease_owner=NULL,lease_until_ms=NULL WHERE account_id=?1 AND id=?2 AND attempt_id=?3 AND state IN('dispatching','dispatch_submitted')",
+            params![aid,id,attempt_id,state,next_ms.max(now_ms.saturating_add(1000))]
+        ).map_err(sql)?;
+        if changed == 1 {
+            tx.execute(
+                "UPDATE notification_attempts SET outcome=?3,code=?4,completed_ms=?5 WHERE id=?1 AND notification_id=?2 AND outcome IN('dispatching','dispatch_submitted')",
+                params![attempt_id,id,state,code,now_ms]
+            ).map_err(sql)?;
+        }
+        tx.commit().map_err(sql)?;
+        Ok(changed == 1)
+    }
     /// Only an explicit permission/preference action requeues denied deliveries.
     pub fn retry_blocked_notifications(&mut self, subject: &str, now_ms: i64) -> Result<usize> {
         let tx = self
