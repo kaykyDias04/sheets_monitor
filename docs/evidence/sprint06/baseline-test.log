@@ -1,0 +1,30 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run --reporter=dot
+
+
+ RUN  v4.1.12 C:/Users/kayky/Desktop/Repositorios/Monitoramento-bases-painéis
+
+······················x···························
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/IntegrityPage.test.tsx > binds human approval to the displayed snapshot hash and expected version
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/pages/IntegrityPage.test.tsx:144:1
+    142|   expect(mock.mock.calls.every((c) => c[0] === "integration_get_state"…
+    143| });
+    144| it("binds human approval to the displayed snapshot hash and expected v…
+       | ^
+    145|   const user = await capture();
+    146|   const approve = screen.getByRole("button", { name: "Aprovar nova ver…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  1 failed | 49 passed (50)
+   Start at  12:57:57
+   Duration  52.17s (transform 9.97s, setup 24.66s, import 50.75s, tests 80.15s, environment 104.15s)
+

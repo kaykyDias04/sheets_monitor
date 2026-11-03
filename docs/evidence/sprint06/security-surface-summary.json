@@ -1,0 +1,25 @@
+{
+  "command": "security-surface.sh . (raw candidate lines retained only in process memory)",
+  "exitCode": 0,
+  "sections": {
+    "Repository state": 0,
+    "codex/sprint-06-homologation": 8,
+    "Detected manifests and security-sensitive project files": 12,
+    "Tracked executable, symlink, and submodule modes": 0,
+    "Process and dynamic execution candidates": 49,
+    "Network, redirect, webhook, and SSRF candidates": 76,
+    "Authentication, authorization, and tenant-scope candidates": 76,
+    "Query, template, deserialization, and injection candidates": 76,
+    "Filesystem, archive, upload, and path candidates": 76,
+    "Secrets, logs, telemetry, and environment candidates": 76,
+    "Cryptography and randomness candidates": 37,
+    "Bounds, queues, retries, and denial-of-service candidates": 76,
+    "Supply-chain, download, and workflow candidates": 20,
+    "Obfuscation, encoded payload, and persistence candidates": 50,
+    "Documentation install and execution snippets": 6,
+    "Documentation prompt-injection and secret-handling candidates": 25,
+    "Unicode bidi controls": 0,
+    "Candidate scan complete": 1
+  },
+  "limitation": "Candidate inventory only; not proof of exploitability or exhaustive secret scanning."
+}
