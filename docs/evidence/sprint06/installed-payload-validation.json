@@ -1,0 +1,5 @@
+{
+  "installed_sha256": "16a3189731d39ff1382ebce70e2fbfc0908bce56fe68899cf66b21206f50bcba",
+  "normalized_payload_matches_build": true,
+  "only_difference": "Tauri bundle marker NSS versus UNK"
+}

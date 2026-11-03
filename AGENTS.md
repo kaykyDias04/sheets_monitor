@@ -123,3 +123,7 @@ Em 03/11/2026 o usuário autorizou o Prompt 06.1, preservado em `docs/sprint06.1
 ### Registro histórico de publicação
 
 Em 03/11/2026 o usuário autorizou expressamente criar e publicar todo o repositório em `https://github.com/kaykyDias04/sheets_monitor.git` (`origin`), incluindo `main` e todas as branches `codex/` por push normal, sem force-push. As menções anteriores a "sem remoto autorizado" são históricas. A publicação não altera o estado da Sprint 05 nem autoriza a Sprint 06. Aguardar Prompt 06.
+
+## Publicação técnica autorizada após a retomada 06.1
+
+O usuário autorizou expressamente instalar o pacote e publicar a release no GitHub. Pré-release técnica v0.1.0-sprint06-preview publicada; instalação e startup verificados no limite registrado em docs/SPRINT_06_PROGRESS.md. Isso não aprova a Sprint 06, não autoriza baselines automáticas nem amplia o escopo para V1.1.

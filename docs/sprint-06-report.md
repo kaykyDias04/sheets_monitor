@@ -21,3 +21,13 @@ Correções: normalização LF das fontes em checkout Windows (falha inicial Pre
 Pendências: configuração OAuth da aplicação ausente; campanha Google real com 30 recursos autorizados e referências humanas compatíveis; instalação/abertura independente/persistência/desinstalação; identidade instalada de notificações, interação física e autostart no login. O pacote técnico não tem login provisionado. Solicitação ao usuário pede somente caminho local seguro do arquivo OAuth Desktop do projeto autorizado, nunca tokens/senhas/conteúdo no chat. Mudança de configuração de empacotamento exigirá novo build.
 
 Nenhuma escrita Google, aprovação de baseline, ativação de autostart ou envio de novo toast real. Encerrar a execução técnica disponível e aguardar intervenção para os bloqueios; não iniciar V1.1.
+
+## Atualização autorizada — instalação e pré-release
+
+O usuário autorizou expressamente instalar o pacote e publicar a release no GitHub nesta conversa. Essa autorização substitui a recusa de instalação anterior e a restrição anterior de publicação para este pacote técnico.
+
+Instalado por usuário em `%LOCALAPPDATA%\Programs\Sheets Monitor`. Processo permaneceu ativo após abertura com Node/Rust/MSVC fora do PATH; avisos de terceiros, biblioteca padrão Rust e manual presentes. A comparação integral do payload confirmou diferença exclusiva do marcador Tauri `NSS` (NSIS) versus `UNK` (executável solto); hashes e resultado em `docs/evidence/sprint06/installed-payload-validation.json` e `install-authorized-result.json`. A comparação inicial de hashes falhou por esse marcador; não houve alteração de código ou rebuild.
+
+Pré-release publicada: https://github.com/kaykyDias04/sheets_monitor/releases/tag/v0.1.0-sprint06-preview . Instalador e SHA256SUMS.txt enviados, com digests retornados pelo GitHub conferidos. Registro em `docs/evidence/sprint06/github-release.json`. Tag aponta para `f19f1ad`, fonte do pacote. Não é aprovação da V1.0: OAuth ausente, carga Google real, persistência após reinício, desinstalação e homologação Windows completa continuam pendentes. Nenhuma baseline aprovada, autostart ativado ou arquivo Google alterado.
+
+Próxima ação: disponibilizar a configuração OAuth da aplicação por caminho local seguro e concluir a homologação pendente. Preservar o pacote instalado; não reinstalar nem reconstruir sem necessidade.

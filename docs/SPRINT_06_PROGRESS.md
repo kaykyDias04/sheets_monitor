@@ -41,3 +41,13 @@ Atualizado em 03/11/2026. **PENDENTE DE HOMOLOGAÇÃO**. Autorização: Prompt 0
 ## Próxima ação
 
 Aguardar intervenção: revisão/instalação manual autorizada do pacote técnico e caminho local seguro da configuração OAuth Desktop do projeto autorizado; depois prover recursos de leitura e referências aprovadas humanamente para a campanha real. Concluir homologação instalada/notificações/autostart quando autorizada. Não repetir os gates locais aprovados sem alteração relevante; não iniciar V1.1.
+
+## Atualização autorizada — instalação e pré-release
+
+O usuário autorizou expressamente instalar o pacote e publicar a release no GitHub nesta conversa. Essa autorização substitui a recusa de instalação anterior e a restrição anterior de publicação para este pacote técnico.
+
+Instalado por usuário em `%LOCALAPPDATA%\Programs\Sheets Monitor`. Processo permaneceu ativo após abertura com Node/Rust/MSVC fora do PATH; avisos de terceiros, biblioteca padrão Rust e manual presentes. A comparação integral do payload confirmou diferença exclusiva do marcador Tauri `NSS` (NSIS) versus `UNK` (executável solto); hashes e resultado em `docs/evidence/sprint06/installed-payload-validation.json` e `install-authorized-result.json`. A comparação inicial de hashes falhou por esse marcador; não houve alteração de código ou rebuild.
+
+Pré-release publicada: https://github.com/kaykyDias04/sheets_monitor/releases/tag/v0.1.0-sprint06-preview . Instalador e SHA256SUMS.txt enviados, com digests retornados pelo GitHub conferidos. Registro em `docs/evidence/sprint06/github-release.json`. Tag aponta para `f19f1ad`, fonte do pacote. Não é aprovação da V1.0: OAuth ausente, carga Google real, persistência após reinício, desinstalação e homologação Windows completa continuam pendentes. Nenhuma baseline aprovada, autostart ativado ou arquivo Google alterado.
+
+Próxima ação: disponibilizar a configuração OAuth da aplicação por caminho local seguro e concluir a homologação pendente. Preservar o pacote instalado; não reinstalar nem reconstruir sem necessidade.
