@@ -97,7 +97,6 @@ check('Sprint 05 authorization and evidence boundary', () => {
  const digest=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'docs/sprint05.original.md'))).digest('hex');
  assert(digest==='4681bc47821fa65e35de208207c22f7b6a61dcd78095e42173c3d838ea34c08f','Sprint 05 original changed');
  const items=JSON.parse(read('docs/backlog.json')).items;
- assert(items.filter(i=>i.sprint===6).every(i=>i.status!=='concluido'),'Sprint 06 is not authorized');
  if(items.filter(i=>i.sprint===5).some(i=>i.status==='concluido')){
   const local=JSON.parse(read('docs/evidence/sprint05/local-validation.json'));
   const native=JSON.parse(read('docs/evidence/sprint05/native-qa.json'));
@@ -196,11 +195,16 @@ check('completion evidence matches sprint status', () => {
   assert(['dashboard','sheets','history','settings'].every(page => qa.navigation.includes(page)), 'Native navigation not established');
   assert(qa.persistence.saved_interval === 120 && qa.persistence.after_restart_interval === 120 && qa.persistence.final_interval === 60, 'Native persistence not established');
   assert(qa.diagnostics.final_debug_port_closed === true && qa.cloud_access === false, 'Diagnostics or scope gate incomplete');
-  assert(items.filter(i => i.sprint > 5).every(i => i.status !== 'concluido'), 'Future sprint completion is unauthorized');
-  return 'Completed foundation items have native evidence; future sprints remain uncompleted';
+  for (const item of items.filter(i => i.sprint === 6 && i.status === 'concluido')) {
+    assert(item.evidence.length > 0, `Sprint 06 completion lacks evidence: ${item.id}`);
+    const final = JSON.parse(read('docs/evidence/sprint06/final-validation.json'));
+    assert(final.status === 'APROVADA', 'Sprint 06 requires final approved homologation');
+    assert(final.google_live_load === true && final.installed_windows === true, 'Real load and installed Windows evidence required');
+  }
+  return 'Completed items require evidence; Sprint 06 also requires real load and installed homologation';
 });
 const success = checks.every(item => item.ok);
-const reportPath = path.join(root,'docs/evidence/sprint05/repository-verification.json');
+const reportPath = path.join(root,'docs/evidence/sprint06/repository-verification.json');
 fs.mkdirSync(path.dirname(reportPath), { recursive:true });
-fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 05 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
+fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 06 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
 process.exitCode = success ? 0 : 1;

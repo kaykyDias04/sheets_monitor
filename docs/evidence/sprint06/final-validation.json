@@ -1,0 +1,42 @@
+{
+  "status": "PENDENTE DE HOMOLOGAÇÃO",
+  "automated_gates_passed": true,
+  "rust_unit_passed": 258,
+  "rust_integration_passed": 2,
+  "rust_ignored": 1,
+  "ignored_test_limit": "Windows vault test remains ignored by default and unchanged; historical real evidence is separate, not a new execution.",
+  "react_passed": 50,
+  "checks_passed": ["typecheck", "lint", "prettier", "rustfmt", "clippy", "frontend production build", "Windows production build", "NSIS bundle", "repository verification"],
+  "synthetic_load": {
+    "files": 30,
+    "checks": 90,
+    "max_parallel": 3,
+    "intervals_seconds": [60, 300],
+    "quota_failures": 30,
+    "recoveries": 30,
+    "metrics": "load-validation.json",
+    "soak_test": false,
+    "real_google": false
+  },
+  "installer_generated": true,
+  "artifact_manifest": "artifact-manifest.json",
+  "artifact_kind": "unsigned technical build, version 0.1.0, OAuth application configuration absent",
+  "installed_windows": false,
+  "installation_permission": "Execution request rejected by user; installation command did not execute",
+  "google_live_load": false,
+  "new_google_integration_homologation": false,
+  "google_file_writes": false,
+  "real_baseline_approved_by_agent": false,
+  "autostart_enabled_by_agent": false,
+  "new_real_notifications_sent": false,
+  "release_published": false,
+  "blockers": [
+    "Installation, independent startup, persistence after installation and uninstall remain unexecuted after permission rejection",
+    "Application OAuth Desktop configuration absent in this machine; requested only a secure local file path",
+    "Real authorized thirty-resource campaign and compatible human-approved baselines unavailable",
+    "Installed sender, physical notification/tray interaction and autostart login remain without new homologation"
+  ],
+  "notice_inventory": "389 dependency packages plus official Rust standard-library notices; conservative build/dev inventory, not exact binary composition or legal certification",
+  "notice_provenance_limit": "react-remove-scroll-bar MIT notice retrieved from current upstream master; unavailable at the published gitHead/tag; see supplemental-licenses.json",
+  "next_action": "Human review/install technical package and supply application OAuth configuration by secure local path; then finish authorized real/installed homologation. No V1.1 or release publication."
+}

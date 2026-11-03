@@ -1,5 +1,11 @@
 # Progresso por etapa
 
+## Sprint 06 — retomada incremental autorizada em 03/11/2026
+
+Estado **PENDENTE DE HOMOLOGAÇÃO**. Prompt 06.1 preservado em `sprint06.1.original.md`; base `b2c68ce`, branch `codex/sprint-06-homologation`. Não foi encontrado trabalho anterior da Sprint 06 neste checkout. Evidências históricas permanecem preservadas. Checkpoint corrente e próxima ação: [SPRINT_06_PROGRESS.md](SPRINT_06_PROGRESS.md).
+
+Frontend: 50 testes, tipos, lint, formatação normalizada e build produção aprovados. Rust: 258 unitários, duas integrações, um cofre ignorado por padrão, Clippy/rustfmt aprovados. Ambiente restaurado com autorização humana. Carga sintética de 30 arquivos aprovada; instalador técnico x64 gerado com hashes, sem configuração OAuth. Instalação recusada na solicitação de execução e não realizada. Carga Google real/validação instalada permanecem pendentes. [Relatório](sprint-06-report.md). Não publicar release nem iniciar V1.1.
+
 ## Prompt 00 — contrato
 
 Concluido: contrato registrado em `AGENTS.md`. Implementacao anterior interrompida e arquivos preservados. O contrato revoga o avanco automatico entre etapas.

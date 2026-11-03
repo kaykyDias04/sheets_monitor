@@ -1,0 +1,15 @@
+PASS required governance files: 17 files
+PASS official specification preserved: 994a2faa0e1d9c48450c5fe2b7b88ab9e237c17054efe3a70e1ec291671f765e
+FAIL official backlog and dependency graph: Markdown backlog drift: SM-026
+PASS Sprint 02 original and completion honesty: source hash preserved; live success is never inferred from mocks
+PASS Sprint 03 contract and evidence boundary: original preserved; Sprint 03 operations only; real and synthetic evidence separate
+PASS Sprint 04 original and authorized additions: source preserved; 28 original IDs and two explicit additions
+PASS Sprint 05 authorization and evidence boundary: source preserved; human display confirmation remains separate from native submission and installed identity
+PASS raw prototype archive: 47 original file hashes match
+PASS local documentation links: 209 local links resolve (historical verbatim files excluded)
+PASS license metadata: MIT applies to own package; external inventory reviewed separately
+PASS issue and PR templates: two issue templates and PR acceptance/evidence sections
+PASS Sprint 05 scope and modular structure: foundation + read-only Google + management + authorized continuous monitoring; synthetic native probe excluded from defaults
+PASS active source encoding: 112 source files without replacement characters
+PASS known credential patterns: 644 text files scanned; no known credential signatures (not a complete secret audit)
+PASS completion evidence matches sprint status: Completed items require evidence; Sprint 06 also requires real load and installed homologation

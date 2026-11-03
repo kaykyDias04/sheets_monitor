@@ -1,0 +1,21 @@
+{
+  "kind": "technical_build",
+  "version": "0.1.0",
+  "target": "x86_64-pc-windows-msvc",
+  "oauth_configured": false,
+  "release_published": false,
+  "artifacts": [
+    {
+      "path": "src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/Sheets Monitor_0.1.0_x64-setup.exe",
+      "bytes": 4946164,
+      "sha256": "AFE8F45A09276A7948A0C41F4102A5091BCC71324967A6E0A2E09C7C157D8527",
+      "signature_status": "NotSigned"
+    },
+    {
+      "path": "src-tauri/target/x86_64-pc-windows-msvc/release/sheets-monitor.exe",
+      "bytes": 19415040,
+      "sha256": "A877967BFFB679B2B3DA1CBBE7514BA66D393BE89D49BA1A0FACE1D81764BBBB",
+      "signature_status": "NotSigned"
+    }
+  ]
+}

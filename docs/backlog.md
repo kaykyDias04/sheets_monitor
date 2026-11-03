@@ -2,7 +2,7 @@
 
 IDs, títulos e aceite principal preservam o anexo. Dependências e subtarefas são detalhamento de engenharia. Status exige evidência; código arquivado não conclui tarefa. A fonte estruturada é [backlog.json](backlog.json).
 
-Sprint 05 concluida tecnicamente: SM-022 a SM-025. Relatorio e limites em [sprint-05-report.md](sprint-05-report.md). Aguardar Prompt06; nao iniciar a etapa seguinte automaticamente.
+Sprint 06 autorizada pelo Prompt 06.1 em 03/11/2026, exclusivamente SM-026 a SM-028. Checkpoint: [SPRINT_06_PROGRESS.md](SPRINT_06_PROGRESS.md). Preservar provas da Sprint 05; sem release externa ou V1.1 automática.
 
 ## Sprint 01
 
@@ -162,22 +162,22 @@ Os 28 IDs originais permanecem preservados. As adicoes ficam separadas em backlo
 
 | ID | Tarefa oficial | Estado | Dependências | Aceite |
 |---|---|---|---|---|
-| SM-026 | Testes integrados | planejado | SM-006, SM-008, SM-016, SM-017, SM-020, SM-023, SM-024, SM-025 | Cenários críticos aprovados |
-| SM-027 | Teste de carga com 30 planilhas | planejado | SM-022, SM-026 | Estabilidade comprovada |
-| SM-028 | Gerar instalador | planejado | SM-026, SM-027 | Instalação Windows validada |
+| SM-026 | Testes integrados | bloqueado | SM-006, SM-008, SM-016, SM-017, SM-020, SM-023, SM-024, SM-025 | Cenários críticos aprovados |
+| SM-027 | Teste de carga com 30 planilhas | bloqueado | SM-022, SM-026 | Estabilidade comprovada |
+| SM-028 | Gerar instalador | bloqueado | SM-026, SM-027 | Instalação Windows validada |
 
 ### SM-026 — subtarefas
 
-- **SM-026.01** — Matriz de cenários reais autorizados e fixtures separadas (planejado).
+- **SM-026.01** — Matriz de cenários reais autorizados e fixtures separadas (concluido).
 
 ### SM-027 — subtarefas
 
-- **SM-027.01** — Medir memória, duração e quotas com trinta arquivos (planejado).
+- **SM-027.01** — Medir memória, duração e quotas com trinta arquivos (bloqueado).
 
 ### SM-028 — subtarefas
 
-- **SM-028.01** — Auditar licenças/avisos e dependências do bundle (planejado).
-- **SM-028.02** — Validar instalação/desinstalação Windows x64 e manual (planejado).
+- **SM-028.01** — Auditar licenças/avisos e dependências do bundle (bloqueado).
+- **SM-028.02** — Validar instalação/desinstalação Windows x64 e manual (bloqueado).
 
 Estimativa original: 25–41 dias úteis, apenas planejamento. Credenciais, consentimento e homologação final não são presumidos. Consulte [critérios de aceite](acceptance.md) e [progresso](progress.md).
 

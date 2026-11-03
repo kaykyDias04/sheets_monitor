@@ -116,4 +116,10 @@ A inspeção real encontrou quatro cadastros pendentes e zero escopos elegíveis
 
 ## Publicação autorizada — remoto GitHub
 
+## Autorização vigente — Sprint 06, retomada 06.1
+
+Em 03/11/2026 o usuário autorizou o Prompt 06.1, preservado em `docs/sprint06.1.original.md`: executar exclusivamente SM-026 a SM-028 de forma incremental, reaproveitando provas válidas. Checkpoint obrigatório em `docs/SPRINT_06_PROGRESS.md`; novas evidências em `docs/evidence/sprint06/`. Não refazer funcionalidades concluídas nem sobrescrever evidências históricas. Sem publicação de release/distribuição a terceiros ou V1.1 automática. Carga simulada não substitui Google real; baseline real continua humana. O usuário autorizou nesta retomada instalar Rust/C++/SDK oficiais e eventual UAC para recuperar o ambiente desta máquina.
+
+### Registro histórico de publicação
+
 Em 03/11/2026 o usuário autorizou expressamente criar e publicar todo o repositório em `https://github.com/kaykyDias04/sheets_monitor.git` (`origin`), incluindo `main` e todas as branches `codex/` por push normal, sem force-push. As menções anteriores a "sem remoto autorizado" são históricas. A publicação não altera o estado da Sprint 05 nem autoriza a Sprint 06. Aguardar Prompt 06.

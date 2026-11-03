@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 05 concluida tecnicamente: SM-022 a SM-025. Aguardar Prompt06; Sprint06 ainda nao autorizada. Homologacao instalada e recursos reais conforme limites do relatorio.",
+  "authorization": "Sprint 06 autorizada pelo Prompt 06.1 em 03/11/2026, exclusivamente SM-026 a SM-028. Retomada incremental; homologacao real e instalada exige evidencias. Sem release ou distribuicao externa automatica.",
   "statuses": [
     "planejado",
     "em_andamento",
@@ -692,7 +692,7 @@
       "id": "SM-026",
       "title": "Testes integrados",
       "sprint": 6,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-006",
@@ -705,12 +705,15 @@
         "SM-025"
       ],
       "acceptance": "Cenários críticos aprovados",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-06-report.md",
+        "docs/evidence/sprint06/final-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-026.01",
           "title": "Matriz de cenários reais autorizados e fixtures separadas",
-          "status": "planejado"
+          "status": "concluido"
         }
       ]
     },
@@ -718,19 +721,22 @@
       "id": "SM-027",
       "title": "Teste de carga com 30 planilhas",
       "sprint": 6,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-022",
         "SM-026"
       ],
       "acceptance": "Estabilidade comprovada",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-06-report.md",
+        "docs/evidence/sprint06/final-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-027.01",
           "title": "Medir memória, duração e quotas com trinta arquivos",
-          "status": "planejado"
+          "status": "bloqueado"
         }
       ]
     },
@@ -738,24 +744,27 @@
       "id": "SM-028",
       "title": "Gerar instalador",
       "sprint": 6,
-      "status": "planejado",
+      "status": "bloqueado",
       "owner": "engenharia",
       "depends_on": [
         "SM-026",
         "SM-027"
       ],
       "acceptance": "Instalação Windows validada",
-      "evidence": [],
+      "evidence": [
+        "docs/sprint-06-report.md",
+        "docs/evidence/sprint06/final-validation.json"
+      ],
       "subtasks": [
         {
           "id": "SM-028.01",
           "title": "Auditar licenças/avisos e dependências do bundle",
-          "status": "planejado"
+          "status": "bloqueado"
         },
         {
           "id": "SM-028.02",
           "title": "Validar instalação/desinstalação Windows x64 e manual",
-          "status": "planejado"
+          "status": "bloqueado"
         }
       ]
     }
