@@ -97,3 +97,11 @@ Usar escopos mínimos adequados; mudanças exigem consentimento oficial, sem amp
 SM-018 a SM-021 e adições autorizadas SM-021A/SM-021B implementados e aprovados nos três gates. Evidências em docs/evidence/sprint04/final-report.md. Testes: 188 unitários Rust, duas integrações e 42 React aprovados; builds/checks e inspeção nativa aprovados. Descoberta e operações Google reais comprovadas no escopo registrado, sem alterações Google ou aprovação de baseline pelo agente.
 
 A referência humana anterior cobre uma aba e duas células; a seleção atual de 28 abas está em Configuração pendente e foi preservada. Nova referência ampliada exige revisão/aprovação humana. Publicação Google externa permanece separada da validação local. Preservar migrações/evidências anteriores. Encerrar e aguardar Prompt 05, sem antecipar scheduler, notificações, bandeja, autostart ou instalador.
+
+## Autorização vigente — Sprint 05
+
+O usuário autorizou docs/sprint05.original.md: implementar exclusivamente SM-022 a SM-025, serviço Rust contínuo, fila e limite global de três verificações, intervalo60–300s, outbox transacional, notificações Windows, bandeja/instância única, autostart opt-in desligado por padrão e recuperação segura. Reutilizar Sprints01–04 e preservar configurações, referências e migrações aplicadas. Evidências novas em docs/evidence/sprint05 e relatório em docs/sprint-05-report.md.
+
+Executar o agendamento sem depender do React/WebView. X oculta para bandeja quando disponível; Sair encerra voluntariamente e limpa recursos. Não modificar Google nem aprovar baselines; somente escopos válidos com referência correspondente são elegíveis. Não enviar notificações reais sem preferência/permissão apropriada; testes explícitos devem ser identificados como testes. Não confundir OS aceitou solicitação com exibição/leitura pelo usuário. Não ampliar scopes ou habilitar autostart silenciosamente.
+
+Aplicar deepwork com lanes e gates e testes com relógio/transporte simulados. Preservar dados privados fora das evidências públicas. Solicitar intervenção apenas quando autenticação, consentimento, UAC, baseline ou confirmação humana de notificação forem indispensáveis. Não executar campanha final de carga30planilhas nem gerar instalador; isso pertence à Sprint06. Ao concluir, encerrar e aguardar Prompt06.

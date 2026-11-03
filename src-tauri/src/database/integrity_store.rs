@@ -536,6 +536,25 @@ impl Database {
         report: &IntegrityReport,
         registry_revision: Option<u64>,
     ) -> EngineResult<Vec<IntegrityEvent>> {
+        self.persist_integrity_report_guarded(snapshot, report, registry_revision, None)
+    }
+    pub fn persist_monitored_integrity_report(
+        &mut self,
+        snapshot: &StructuralSnapshot,
+        report: &IntegrityReport,
+        registry_revision: Option<u64>,
+        lease: &crate::monitoring::models::MonitoringLease,
+        now_ms: i64,
+    ) -> EngineResult<Vec<IntegrityEvent>> {
+        self.persist_integrity_report_guarded(snapshot, report, registry_revision, Some((lease, now_ms)))
+    }
+    fn persist_integrity_report_guarded(
+        &mut self,
+        snapshot: &StructuralSnapshot,
+        report: &IntegrityReport,
+        registry_revision: Option<u64>,
+        monitoring: Option<(&crate::monitoring::models::MonitoringLease, i64)>,
+    ) -> EngineResult<Vec<IntegrityEvent>> {
         snapshot.validate()?;
         if report.snapshot_id != snapshot.id
             || report.account_subject != snapshot.account_subject
@@ -565,6 +584,12 @@ impl Database {
             .transaction_with_behavior(TransactionBehavior::Immediate)
             .map_err(storage)?;
         let stored = snapshot_from(&transaction, &snapshot.account_subject, &snapshot.id)?;
+        if let Some((lease, now_ms)) = monitoring {
+            if lease.spreadsheet_id != snapshot.spreadsheet_id
+                || !super::monitoring_store::lease_current(&transaction, &snapshot.account_subject, lease, now_ms).map_err(|_| EngineError::Storage)? {
+                return Err(EngineError::BaselineConflict);
+            }
+        }
         guard_registered_snapshot(&transaction, snapshot, registry_revision, true)?;
         if fingerprint(&stored) != fingerprint(snapshot) {
             return Err(EngineError::InvalidSnapshot);
@@ -766,6 +791,9 @@ impl Database {
         };
         let history_cutoff = format!("-{history_days} days");
         let snapshot_cutoff = format!("-{snapshot_days} days");
+        // TTL expiration is explicit; pending delivery never becomes a false success.
+        transaction.execute("UPDATE notification_attempts SET outcome='expired',completed_ms=CAST((julianday('now')-2440587.5)*86400000 AS INTEGER) WHERE outcome='dispatching' AND notification_id IN(SELECT n.id FROM notification_outbox n JOIN integrity_events e ON e.event_id=n.integrity_event_id WHERE e.scope_id=?1 AND julianday(e.detected_at)<julianday('now',?2))",params![scope_id,history_cutoff]).map_err(storage)?;
+        transaction.execute("UPDATE notification_outbox SET state='expired',lease_owner=NULL,lease_until_ms=NULL WHERE integrity_event_id IN(SELECT event_id FROM integrity_events WHERE scope_id=?1 AND julianday(detected_at)<julianday('now',?2)) AND state NOT IN('dispatch_submitted','suppressed_by_preference','unsupported','expired')",params![scope_id,history_cutoff]).map_err(storage)?;
         let events=transaction.execute("DELETE FROM integrity_events WHERE scope_id=?1 AND julianday(detected_at)<julianday('now',?2)",params![scope_id,history_cutoff]).map_err(storage)?;
         let reports=transaction.execute("DELETE FROM integrity_reports WHERE scope_id=?1 AND check_id NOT IN(SELECT latest_report_id FROM integrity_scopes WHERE id=?1 AND latest_report_id IS NOT NULL) AND julianday(detected_at)<julianday('now',?2) AND NOT EXISTS(SELECT 1 FROM integrity_events e WHERE e.check_id=integrity_reports.check_id)",params![scope_id,history_cutoff]).map_err(storage)?;
         let snapshots=transaction.execute("DELETE FROM structural_snapshots WHERE scope_id=?1 AND julianday(captured_at)<julianday('now',?2) AND NOT EXISTS(SELECT 1 FROM baseline_versions b WHERE b.snapshot_id=structural_snapshots.id) AND NOT EXISTS(SELECT 1 FROM integrity_scopes s WHERE s.previous_snapshot_id=structural_snapshots.id) AND NOT EXISTS(SELECT 1 FROM integrity_reports r JOIN integrity_scopes s ON s.latest_report_id=r.check_id WHERE r.snapshot_id=structural_snapshots.id)",params![scope_id,snapshot_cutoff]).map_err(storage)?;

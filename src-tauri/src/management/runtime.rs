@@ -15,7 +15,7 @@ fn error(code: &str, message: &str) -> CommandError {
     }
 }
 impl IntegrationRuntime {
-    fn management_local<T>(
+    pub(crate) fn management_local<T>(
         &self,
         expected: Option<u64>,
         operation: impl FnOnce(&mut Database, &str) -> Result<T, CommandError>,
@@ -220,11 +220,59 @@ impl IntegrationRuntime {
         &self,
         input: Mutation,
     ) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
+        self.run_spreadsheet_check_controlled(
+            input,
+            crate::monitoring::work::Cancellation::default(),
+            None,
+        )
+        .0
+    }
+    pub(crate) fn run_spreadsheet_check_controlled(
+        &self,
+        input: Mutation,
+        cancel: crate::monitoring::work::Cancellation,
+        lease: Option<crate::monitoring::MonitoringLease>,
+    ) -> (
+        Result<EngineEnvelope<ValidationResult>, CommandError>,
+        Option<i64>,
+    ) {
+        let coordinator =
+            crate::monitoring::work::WorkCoordinator::for_database(&self.database_path);
+        let permit = match coordinator.acquire(&input.spreadsheet_id, cancel.clone()) {
+            Ok(permit) => permit,
+            Err(error) => return (Err(error), None),
+        };
+        let result = crate::monitoring::work::in_operation(cancel, lease, || {
+            self.run_spreadsheet_check_inner(input)
+        });
+        drop(permit);
+        result
+    }
+    pub(crate) fn run_spreadsheet_check_inner(
+        &self,
+        input: Mutation,
+    ) -> Result<EngineEnvelope<ValidationResult>, CommandError> {
+        crate::monitoring::work::checkpoint()?;
         let row = self
             .management_local(Some(input.expected_generation), |db, s| {
                 db.check_registry_mutation(s, &input)
             })?
             .data;
+        if crate::monitoring::work::current_lease().is_none() {
+            self.management_local(Some(input.expected_generation), |db, subject| {
+                if db.monitoring_schedules(subject)?.iter().any(|schedule| {
+                    schedule.spreadsheet_id == input.spreadsheet_id
+                        && schedule.failure_count > 0
+                        && schedule.next_run_ms > chrono::Utc::now().timestamp_millis()
+                }) {
+                    return Err(error(
+                        "retry_deferred",
+                        "A próxima tentativa respeitará o prazo de recuperação da API.",
+                    ));
+                }
+                Ok(())
+            })?;
+        }
         if row.paused || row.baseline_version.is_none() || row.status == "configuration_pending" {
             return Err(error(
                 "configuration_pending",
@@ -237,7 +285,7 @@ impl IntegrationRuntime {
                 "Configure a proteção desta planilha.",
             )
         })?;
-        let capture = self.capture_integrity_snapshot(CaptureInput {
+        let capture = self.capture_integrity_snapshot_inner(CaptureInput {
             url: row.url,
             scope,
         })?;
@@ -402,6 +450,5 @@ fn diff_json(
         }
     }
 }
-
 #[path = "proposal.rs"]
 mod proposal;

@@ -105,33 +105,6 @@ impl From<BaselineVersion> for BaselineSummary {
         }
     }
 }
-static CAPTURES: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
-struct CapturePermit;
-impl CapturePermit {
-    fn acquire() -> Result<Self, CommandError> {
-        use std::sync::atomic::Ordering;
-        let mut count = CAPTURES.load(Ordering::SeqCst);
-        loop {
-            if count >= 3 {
-                return Err(EngineError::Busy.into());
-            }
-            match CAPTURES.compare_exchange_weak(
-                count,
-                count + 1,
-                Ordering::SeqCst,
-                Ordering::SeqCst,
-            ) {
-                Ok(_) => return Ok(Self),
-                Err(actual) => count = actual,
-            }
-        }
-    }
-}
-impl Drop for CapturePermit {
-    fn drop(&mut self) {
-        CAPTURES.fetch_sub(1, std::sync::atomic::Ordering::SeqCst);
-    }
-}
 impl IntegrationRuntime {
     fn engine_database(&self) -> Result<Database, CommandError> {
         Database::open(&self.database_path).map_err(|_| CommandError::local())
@@ -142,6 +115,7 @@ impl IntegrationRuntime {
         operation: impl FnOnce() -> Result<T, CommandError>,
     ) -> Result<EngineEnvelope<T>, CommandError> {
         self.auth.with_current(session, || {
+            crate::monitoring::work::checkpoint()?;
             operation().map(|data| EngineEnvelope {
                 generation: session.generation,
                 account_subject: session.account.subject.clone(),
@@ -153,8 +127,10 @@ impl IntegrationRuntime {
         &self,
         url: String,
     ) -> Result<EngineEnvelope<ScopeProposal>, CommandError> {
-        let _permit = CapturePermit::acquire()?;
         let id = parse_spreadsheet_id(&url)?;
+        let coordinator =
+            crate::monitoring::work::WorkCoordinator::for_database(&self.database_path);
+        let _permit = coordinator.acquire(&id, crate::monitoring::work::Cancellation::default())?;
         let session = self.auth.authorized()?;
         if !session.has_scope(SHEETS_SCOPE) {
             return Err(
@@ -269,7 +245,20 @@ impl IntegrationRuntime {
         &self,
         input: CaptureInput,
     ) -> Result<EngineEnvelope<CapturePreview>, CommandError> {
-        let _permit = CapturePermit::acquire()?;
+        let id = parse_spreadsheet_id(&input.url)?;
+        let coordinator =
+            crate::monitoring::work::WorkCoordinator::for_database(&self.database_path);
+        let permit = coordinator.acquire(&id, crate::monitoring::work::Cancellation::default())?;
+        crate::monitoring::work::in_operation(permit.cancel.clone(), None, || {
+            self.capture_integrity_snapshot_inner(input)
+        })
+        .0
+    }
+    pub(crate) fn capture_integrity_snapshot_inner(
+        &self,
+        input: CaptureInput,
+    ) -> Result<EngineEnvelope<CapturePreview>, CommandError> {
+        crate::monitoring::work::checkpoint()?;
         input.scope.validate()?;
         let id = parse_spreadsheet_id(&input.url)?;
         let mut session = self.auth.authorized()?;
@@ -443,7 +432,18 @@ impl IntegrationRuntime {
             report.previous_snapshot_id = previous.as_ref().map(|s| s.id.clone());
             report.observation_revision = observation.revision;
             let events = if persist {
-                db.persist_registered_integrity_report(&snapshot, &report, registry_revision)?
+                crate::monitoring::work::checkpoint()?;
+                if let Some(lease) = crate::monitoring::work::current_lease() {
+                    db.persist_monitored_integrity_report(
+                        &snapshot,
+                        &report,
+                        registry_revision,
+                        &lease,
+                        chrono::Utc::now().timestamp_millis(),
+                    )?
+                } else {
+                    db.persist_registered_integrity_report(&snapshot, &report, registry_revision)?
+                }
             } else {
                 vec![]
             };
@@ -480,7 +480,6 @@ impl IntegrationRuntime {
         })
     }
 }
-
 #[cfg(test)]
 #[path = "runtime_tests.rs"]
 mod tests;

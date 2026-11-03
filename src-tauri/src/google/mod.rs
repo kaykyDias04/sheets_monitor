@@ -11,12 +11,12 @@ use std::{
     collections::BTreeSet,
     time::{Duration, Instant},
 };
+pub(crate) use transport::parse_retry_after;
 pub use transport::{ApiError, HttpReply, HttpsTransport, ReadTransport, MAX_RESPONSE_BYTES};
 use url::Url;
 use zeroize::Zeroize;
 pub const MAX_RANGES: usize = 20;
 const QUERY_BUDGET: Duration = Duration::from_secs(60);
-
 pub fn validate_google_id(id: &str) -> Result<(), ApiError> {
     if id.is_empty()
         || id.len() > 256
@@ -282,8 +282,6 @@ impl<T: ReadTransport> GoogleApi<T> {
 fn endpoint(origin: &str, path: &str) -> Result<Url, ApiError> {
     Url::parse(&format!("{origin}{path}")).map_err(|_| ApiError::InvalidInput)
 }
-
+pub mod grid;
 #[cfg(test)]
 mod tests;
-
-pub mod grid;

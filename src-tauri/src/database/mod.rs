@@ -6,6 +6,7 @@ mod integrity_store;
 #[path = "../management/store.rs"]
 mod management_store;
 mod migrations;
+mod monitoring_store;
 pub use integration::*;
 
 use rusqlite::{params, Connection, OpenFlags, TransactionBehavior};

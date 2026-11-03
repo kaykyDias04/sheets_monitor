@@ -112,6 +112,9 @@ pub fn capture_with<T: ReadTransport>(
     id: &str,
     scope: MonitorScope,
 ) -> EngineResult<StructuralSnapshot> {
+    if crate::monitoring::work::cancelled() {
+        return Err(EngineError::Busy);
+    }
     scope.validate()?;
     crate::google::validate_google_id(id).map_err(|_| EngineError::InvalidScope)?;
     let mut snapshot = failed_snapshot(
@@ -225,6 +228,9 @@ pub fn capture_with<T: ReadTransport>(
     let mut unavailable = BTreeSet::new();
     let mut offset = 0;
     while offset < requests.len() {
+        if crate::monitoring::work::cancelled() {
+            return Err(EngineError::Busy);
+        }
         let begin = offset;
         let mut length = 0;
         while offset < requests.len()
@@ -292,6 +298,9 @@ pub fn capture_with<T: ReadTransport>(
     }
     let scripts = snapshot.scope.scripts.clone();
     for rule in scripts {
+        if crate::monitoring::work::cancelled() {
+            return Err(EngineError::Busy);
+        }
         if started.elapsed() > Duration::from_secs(180) {
             issue(
                 &mut snapshot,
@@ -304,6 +313,9 @@ pub fn capture_with<T: ReadTransport>(
         }
         match api.script_project(&rule.script_id) {
             Ok(project) => {
+                if crate::monitoring::work::cancelled() {
+                    return Err(EngineError::Busy);
+                }
                 match super::scripts::analyze_sources(
                     &project.files,
                     id,
@@ -369,6 +381,9 @@ pub fn capture_with<T: ReadTransport>(
                 snapshot.connectivity = Connectivity::Partial;
             }
         }
+    }
+    if crate::monitoring::work::cancelled() {
+        return Err(EngineError::Busy);
     }
     snapshot.captured_at = chrono::Utc::now().to_rfc3339();
     snapshot.validate()?;

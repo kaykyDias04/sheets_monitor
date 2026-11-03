@@ -73,7 +73,7 @@ fn second_migration_preserves_first_schema_and_preferences() {
             .unwrap();
     }
     let db = Database::open(&path).unwrap();
-    assert_eq!(db.schema_version().unwrap(), 4);
+    assert_eq!(db.schema_version().unwrap(), 5);
     assert_eq!(db.settings().unwrap().interval_seconds, 180);
     assert_eq!(db.integration_queries("account_a").unwrap().len(), 0);
 }

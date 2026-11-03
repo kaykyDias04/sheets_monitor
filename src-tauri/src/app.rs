@@ -528,7 +528,7 @@ mod tests {
         state.database().unwrap().seed_demo().unwrap();
         let dashboard = state.dashboard().unwrap();
         assert_eq!(dashboard["is_demo"], true);
-        assert_eq!(dashboard["database_version"], 4);
+        assert_eq!(dashboard["database_version"], 5);
         let sheets = dashboard["spreadsheets"].as_array().unwrap();
         assert!(!sheets.is_empty());
         assert!(sheets.iter().all(|sheet| sheet["is_demo"] == true));

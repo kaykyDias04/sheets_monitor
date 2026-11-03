@@ -1,0 +1,19 @@
+# SM-022/023/025 persistence validation
+
+Executed locally on Windows, synthetic in-memory/temp-directory databases only. No production database, Google mutation or baseline approval was performed.
+
+Command: `cargo test --manifest-path src-tauri/Cargo.toml --lib --no-default-features database:: -- --nocapture`
+
+Observed result: **71 passed, 0 failed, 150 filtered out**, finished in 0.75s (test execution; compilation 23.94s). This includes 23 new monitoring-store tests, the new migration-v4-to-v5 preservation test, and existing database/integrity/management regressions.
+
+New coverage: per-account disabled default and isolation; due-date persistence; manual/automatic admission; generation/revision/owner/expiry CAS; crash lease replacement; operational failure dedup/recovery/cancellation; atomic event-to-outbox rollback; every distinct integrity event represented; repeated condition dedup; terminal preference suppression; off/on-before-dispatch suppression; durable attempts and ambiguous interruption; account-safe lookup/ack; permission blocked independence; explicit TTL expiration without false delivery; explicit activity erasure with cascading attempts; invalid pagination/error codes; and pause validation inside the integrity commit transaction.
+
+An earlier run passed 67/68 tests: the new event-count assertion assumed one event although the existing engine correctly detected two distinct fixture events. It was corrected to compare each persisted source event with an outbox row and verify unchanged-condition checks produce no additional events. Intermediate compilation attempts encountered concurrent scheduler refactor references and UTF-8/line-ending issues; the owning lane corrected these before the successful run.
+
+Scope TTL expiration intentionally bounds queued notification storage. Expired/suppressed rows are never called delivered. `DispatchSubmitted` records only submission to the asynchronous Tauri plugin, with no claim of OS receipt, display or user reading. Crash-after-submit may cause physical duplicate display on retry because the researched desktop plugin does not implement stable native replacement groups.
+
+Disk persistence integration command: `cargo test --manifest-path src-tauri/Cargo.toml --no-default-features --test database_persistence`. Observed: **2 passed, 0 failed**, finished in 0.11s. Reopening preserves metadata/settings/checksum ledger and schema version 5; unsupported future schema is rejected. One dead-code warning in the concurrently edited OAuth retry adapter was reported to its owner.
+
+Notification actual dispatcher command: `cargo test --manifest-path src-tauri/Cargo.toml --lib --no-default-features notifications::service::tests -- --nocapture`. Observed: **7 passed, 0 failed**, 227 filtered out, finished in 0.27s. The actual pump and worker use synthetic credential-vault/OAuth adapters and a fake sink; no native Windows notification or Google request is sent. Tests cover submission followed by process-style restart without replay, terminal preference suppression, account isolation, logout generation, durable retry without a busy loop, bounded shutdown while a submission drains, and the authentication generation lock held through submission. These tests establish dispatcher behavior and cannot establish Windows notification display.
+
+Gate 1 addition: `cargo test --manifest-path src-tauri/Cargo.toml --lib --no-default-features database::monitoring_store -- --nocapture` passed **24 tests**, 0 failed, 210 filtered out, in 0.30s. Includes the additional database CAS regression proving that manual checks cannot bypass a persisted operational backoff/Retry-After deadline. Manual checks may bypass an ordinary healthy periodic due date only. `git diff --check` for the database changes, management store and persistence integration test passed.

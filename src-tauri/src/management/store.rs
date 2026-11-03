@@ -338,6 +338,8 @@ impl Database {
         let aid = account(&tx, subject)?;
         let id = &input.spreadsheet_id;
         if input.history == "delete_activity" {
+            tx.execute("DELETE FROM monitoring_operational_events WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,id]).map_err(sql)?;
+            tx.execute("UPDATE monitoring_schedules SET operational_code=NULL,failure_count=0,lease_id=NULL,lease_owner=NULL,lease_until_ms=NULL WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,id]).map_err(sql)?;
             tx.execute("UPDATE integrity_scopes SET latest_report_id=NULL,previous_snapshot_id=NULL,observation_revision=observation_revision+1 WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,id]).map_err(sql)?;
             for table in [
                 "integrity_events",
@@ -376,12 +378,16 @@ impl Database {
             || !(1..=3650).contains(&p.history_days)
             || !matches!(p.theme.as_str(), "system" | "light" | "dark")
             || p.start_with_windows
-            || p.run_minimized
         {
-            return Err(error("invalid_preferences","Revise as preferências. Inicialização automática e execução minimizada estarão disponíveis posteriormente."));
+            return Err(error("invalid_preferences", "Revise intervalo, retenção e aparência. A inicialização com Windows é configurada separadamente neste dispositivo."));
         }
-        let aid = account(&self.connection, subject)?;
-        self.connection.execute("INSERT INTO management_preferences(account_id,preferences_json) VALUES(?1,?2) ON CONFLICT(account_id) DO UPDATE SET preferences_json=excluded.preferences_json",params![aid,encode(p)?]).map_err(sql)?;
+        let tx = self.connection.transaction_with_behavior(TransactionBehavior::Immediate).map_err(sql)?;
+        let aid = account(&tx, subject)?;
+        tx.execute("INSERT INTO management_preferences(account_id,preferences_json) VALUES(?1,?2) ON CONFLICT(account_id) DO UPDATE SET preferences_json=excluded.preferences_json",params![aid,encode(p)?]).map_err(sql)?;
+        if !p.notifications_enabled {
+            super::monitoring_store::suppress(&tx, &aid, chrono::Utc::now().timestamp_millis())?;
+        }
+        tx.commit().map_err(sql)?;
         Ok(p.clone())
     }
 }

@@ -4,7 +4,6 @@ use serde::Deserialize;
 use std::{io::Read, time::Duration};
 use url::Url;
 use zeroize::Zeroizing;
-
 pub struct TokenRequest {
     pub client_id: String,
     pub client_secret: Option<Zeroizing<String>>,
@@ -49,7 +48,6 @@ impl Drop for TokenResponse {
         }
     }
 }
-
 pub trait OAuthTransport: Send + Sync {
     fn open_browser(&self, authorization_url: &Url) -> AuthResult<()>;
     fn token(&self, request: &TokenRequest) -> AuthResult<TokenResponse>;
@@ -95,6 +93,44 @@ fn bounded(mut response: reqwest::blocking::Response) -> AuthResult<Zeroizing<Ve
     }
     Ok(bytes)
 }
+fn observe_retry_after(status: u16, headers: &reqwest::header::HeaderMap) {
+    if matches!(status, 429 | 500..=599) {
+        if let Some(delay) = headers
+            .get("retry-after")
+            .and_then(|h| h.to_str().ok())
+            .and_then(crate::google::parse_retry_after)
+        {
+            crate::monitoring::work::defer_retry(delay);
+        }
+    }
+}
+#[cfg(test)]
+mod retry_hint_tests {
+    use super::*;
+    #[test]
+    fn oauth_retry_after_survives_without_replaying_post_or_leaking_context() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert(
+            "retry-after",
+            reqwest::header::HeaderValue::from_static("7200"),
+        );
+        let (_, hint) = crate::monitoring::work::in_operation(
+            crate::monitoring::work::Cancellation::default(),
+            None,
+            || observe_retry_after(429, &headers),
+        );
+        assert_eq!(hint, Some(7_200_000));
+        assert_eq!(
+            crate::monitoring::work::in_operation(
+                crate::monitoring::work::Cancellation::default(),
+                None,
+                || observe_retry_after(401, &headers)
+            )
+            .1,
+            None
+        );
+    }
+}
 impl OAuthTransport for HttpsOAuthTransport {
     fn open_browser(&self, url: &Url) -> AuthResult<()> {
         if url.scheme() != "https"
@@ -137,6 +173,7 @@ impl OAuthTransport for HttpsOAuthTransport {
             .send()
             .map_err(network)?;
         let status = response.status().as_u16();
+        observe_retry_after(status, response.headers());
         let bytes = bounded(response)?;
         if status != 200 {
             let invalid_grant = serde_json::from_slice::<serde_json::Value>(&bytes)
@@ -164,6 +201,7 @@ impl OAuthTransport for HttpsOAuthTransport {
             .send()
             .map_err(network)?;
         let status = response.status().as_u16();
+        observe_retry_after(status, response.headers());
         if status != 200 {
             return Err(AuthError::new(if status == 401 {
                 AuthCode::InvalidGrant

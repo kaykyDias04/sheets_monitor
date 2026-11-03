@@ -9,11 +9,9 @@ use std::{
     time::{Duration, Instant},
 };
 use url::Url;
-
 pub const MAX_RESPONSE_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_ATTEMPTS: u32 = 3;
-const MAX_RETRY_AFTER: Duration = Duration::from_secs(10);
-
+const MAX_INLINE_RETRY: Duration = Duration::from_secs(1);
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ApiError {
@@ -28,6 +26,7 @@ pub enum ApiError {
     InvalidResponse,
     ResponseTooLarge,
     InvalidInput,
+    Cancelled,
 }
 impl ApiError {
     pub fn kind(&self) -> &'static str {
@@ -43,6 +42,7 @@ impl ApiError {
             Self::InvalidResponse => "invalid_response",
             Self::ResponseTooLarge => "response_too_large",
             Self::InvalidInput => "invalid_input",
+            Self::Cancelled => "cancelled",
         }
     }
 }
@@ -62,11 +62,11 @@ impl std::fmt::Display for ApiError {
             Self::InvalidResponse => "A resposta Google não corresponde ao formato esperado.",
             Self::ResponseTooLarge => "A resposta excedeu 8 MiB; reduza os intervalos consultados.",
             Self::InvalidInput => "ID, URL ou intervalos inválidos.",
+            Self::Cancelled => "Consulta cancelada; resultado descartado.",
         })
     }
 }
 impl std::error::Error for ApiError {}
-
 pub struct HttpReply {
     pub status: u16,
     pub body: Vec<u8>,
@@ -80,7 +80,17 @@ pub trait ReadTransport {
         timeout: Duration,
     ) -> Result<HttpReply, ApiError>;
     fn wait(&self, duration: Duration) {
-        thread::sleep(duration);
+        let deadline = Instant::now().checked_add(duration);
+        while !crate::monitoring::work::cancelled() {
+            let Some(remaining) = deadline.and_then(|d| d.checked_duration_since(Instant::now()))
+            else {
+                break;
+            };
+            if remaining.is_zero() {
+                break;
+            }
+            thread::sleep(remaining.min(Duration::from_millis(50)));
+        }
     }
     fn jitter(&self) -> Duration {
         Duration::from_millis(rand::random::<u64>() % 101)
@@ -157,16 +167,16 @@ impl ReadTransport for HttpsTransport {
         })
     }
 }
-fn parse_retry_after(raw: &str) -> Option<Duration> {
+pub(crate) fn parse_retry_after(raw: &str) -> Option<Duration> {
     if raw.len() > 128 {
         return None;
     }
     if let Ok(seconds) = raw.trim().parse::<u64>() {
-        return Some(Duration::from_secs(seconds).min(MAX_RETRY_AFTER));
+        return Some(Duration::from_secs(seconds));
     }
     let date = chrono::DateTime::parse_from_rfc2822(raw).ok()?;
     let seconds = (date.timestamp() - chrono::Utc::now().timestamp()).max(0) as u64;
-    Some(Duration::from_secs(seconds).min(MAX_RETRY_AFTER))
+    Some(Duration::from_secs(seconds))
 }
 pub(super) fn validate_api_url(url: &Url) -> Result<(), ApiError> {
     if url.scheme() != "https"
@@ -197,6 +207,9 @@ pub(super) fn get_bounded<T: ReadTransport>(
 ) -> Result<Vec<u8>, ApiError> {
     validate_api_url(url)?;
     for attempt in 0..MAX_ATTEMPTS {
+        if crate::monitoring::work::cancelled() {
+            return Err(ApiError::Cancelled);
+        }
         let remaining = deadline
             .checked_duration_since(Instant::now())
             .filter(|d| !d.is_zero())
@@ -230,12 +243,18 @@ pub(super) fn get_bounded<T: ReadTransport>(
             result,
             ApiError::RateLimited | ApiError::Server { .. } | ApiError::Network | ApiError::Timeout
         );
+        if let Some(delay) = retry_after {
+            crate::monitoring::work::defer_retry(delay);
+            // Preserve the full server embargo without blocking a worker for minutes.
+            if retry && delay > MAX_INLINE_RETRY {
+                return Err(result);
+            }
+        }
         if !retry || attempt + 1 == MAX_ATTEMPTS {
             return Err(result);
         }
-        let delay = retry_after
-            .map(|d| d.min(MAX_RETRY_AFTER))
-            .unwrap_or(Duration::from_millis(250 * (1 << attempt)) + transport.jitter());
+        let delay =
+            retry_after.unwrap_or(Duration::from_millis(250 * (1 << attempt)) + transport.jitter());
         if Instant::now()
             .checked_add(delay)
             .is_none_or(|end| end >= deadline)
@@ -254,12 +273,16 @@ fn rate_limited(body: &[u8]) -> bool {
             errors.iter().any(|e| {
                 matches!(
                     e.get("reason").and_then(serde_json::Value::as_str),
-                    Some("rateLimitExceeded" | "userRateLimitExceeded")
+                    Some(
+                        "rateLimitExceeded"
+                            | "userRateLimitExceeded"
+                            | "dailyLimitExceeded"
+                            | "quotaExceeded"
+                    )
                 )
             })
         })
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -291,8 +314,74 @@ mod tests {
         );
     }
     #[test]
-    fn retry_after_is_bounded_and_errors_have_no_provider_body() {
-        assert_eq!(parse_retry_after("999999"), Some(Duration::from_secs(10)));
+    fn cancellation_stops_before_the_next_network_request() {
+        struct NoNetwork;
+        impl ReadTransport for NoNetwork {
+            fn get(&self, _: &Url, _: &HeaderValue, _: Duration) -> Result<HttpReply, ApiError> {
+                panic!("cancelled GET must not run")
+            }
+        }
+        let token = crate::monitoring::work::Cancellation::default();
+        token.cancel();
+        let (result, _) = crate::monitoring::work::in_operation(token, None, || {
+            get_bounded(
+                &NoNetwork,
+                &Url::parse("https://sheets.googleapis.com/v4/spreadsheets/fixture").unwrap(),
+                &HeaderValue::from_static("Bearer synthetic"),
+                Instant::now() + Duration::from_secs(60),
+            )
+        });
+        assert_eq!(result, Err(ApiError::Cancelled));
+    }
+    #[test]
+    fn long_retry_after_defers_without_sleep_and_survives_operation_scope() {
+        use std::cell::Cell;
+        struct Limited(Cell<usize>);
+        impl ReadTransport for Limited {
+            fn get(&self, _: &Url, _: &HeaderValue, _: Duration) -> Result<HttpReply, ApiError> {
+                self.0.set(self.0.get() + 1);
+                Ok(HttpReply {
+                    status: 429,
+                    body: b"SENSITIVE".to_vec(),
+                    retry_after: Some(Duration::from_secs(3600)),
+                })
+            }
+            fn wait(&self, _: Duration) {
+                panic!("long Retry-After must defer, not block")
+            }
+        }
+        let transport = Limited(Cell::new(0));
+        let (result, hint) = crate::monitoring::work::in_operation(
+            crate::monitoring::work::Cancellation::default(),
+            None,
+            || {
+                get_bounded(
+                    &transport,
+                    &Url::parse("https://sheets.googleapis.com/v4/spreadsheets/fixture").unwrap(),
+                    &HeaderValue::from_static("Bearer synthetic"),
+                    Instant::now() + Duration::from_secs(60),
+                )
+            },
+        );
+        assert_eq!(result, Err(ApiError::RateLimited));
+        assert_eq!(hint, Some(3_600_000));
+        assert_eq!(transport.0.get(), 1);
+        assert_eq!(
+            crate::monitoring::work::in_operation(
+                crate::monitoring::work::Cancellation::default(),
+                None,
+                || ()
+            )
+            .1,
+            None
+        );
+    }
+    #[test]
+    fn retry_after_is_preserved_and_errors_have_no_provider_body() {
+        assert_eq!(
+            parse_retry_after("999999"),
+            Some(Duration::from_secs(999999))
+        );
         assert_eq!(parse_retry_after("invalid"), None);
         assert!(!ApiError::Forbidden.to_string().contains("SECRET"));
         assert_eq!(

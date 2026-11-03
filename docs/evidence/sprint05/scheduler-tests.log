@@ -1,0 +1,23 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.65s
+     Running unittests src\lib.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\sheets_monitor_lib-7f97c51d4b1bc40a.exe)
+
+running 10 tests
+test monitoring::policy::tests::backoff_honors_entire_server_delay_and_jitter ... ok
+test monitoring::policy::tests::default_and_configured_intervals_and_completion_are_bounded ... ok
+test monitoring::service::tests::backend_workers_have_no_webview_and_share_global_three_file_dedup ... ok
+test monitoring::service::tests::interval_change_to_300_is_persisted_from_completion_and_restart_replans_once ... ok
+test monitoring::service::tests::logout_before_failure_commit_discards_old_account_operational_transition ... ok
+test monitoring::service::tests::network_is_indeterminate_backoff_and_recovery_is_distinct ... ok
+test monitoring::service::tests::pause_cancels_without_outage_and_resume_and_restart_stagger_without_catchup ... ok
+test monitoring::service::tests::retry_after_embargo_survives_restart_pause_resume_interval_and_manual_queue ... ok
+test monitoring::work::tests::contexts_reset_after_error_and_panic_and_databases_are_independent ... ok
+test monitoring::work::tests::global_three_manual_and_auto_and_per_file_gate_release ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 224 filtered out; finished in 1.26s
+
+     Running tests\database_persistence.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\database_persistence-9e6eadc946c28da0.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

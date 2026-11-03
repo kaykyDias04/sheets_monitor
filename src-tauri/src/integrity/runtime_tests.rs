@@ -161,7 +161,6 @@ fn validation_uses_persisted_baseline_and_cas_context_without_network_reads() {
         .unwrap()
         .contains("synthetic-access"));
 }
-
 #[test]
 fn stale_human_approval_generation_is_rejected_before_any_baseline_write() {
     let (_dir, rt, snapshot) = fixture();
@@ -182,19 +181,20 @@ fn stale_human_approval_generation_is_rejected_before_any_baseline_write() {
         .unwrap()
         .is_none());
 }
-
 #[test]
 fn capture_permits_limit_concurrency_and_release_on_drop() {
-    let a = CapturePermit::acquire().unwrap();
-    let b = CapturePermit::acquire().unwrap();
-    let c = CapturePermit::acquire().unwrap();
-    assert!(CapturePermit::acquire().is_err());
+    use crate::monitoring::work::{Cancellation, WorkCoordinator};
+    let dir = tempfile::tempdir().unwrap();
+    let gate = WorkCoordinator::for_database(&dir.path().join("permits.db"));
+    let a = gate.acquire("a", Cancellation::default()).unwrap();
+    let b = gate.acquire("b", Cancellation::default()).unwrap();
+    let c = gate.acquire("c", Cancellation::default()).unwrap();
+    assert!(gate.acquire("d", Cancellation::default()).is_err());
     drop(b);
-    let d = CapturePermit::acquire().unwrap();
+    let d = gate.acquire("d", Cancellation::default()).unwrap();
     drop((a, c, d));
-    assert_eq!(CAPTURES.load(std::sync::atomic::Ordering::SeqCst), 0);
+    assert_eq!(gate.active_count(), 0);
 }
-
 #[test]
 fn detection_timestamp_is_the_analysis_time_not_an_old_capture_time() {
     let (_dir, rt, mut snapshot) = fixture();
@@ -213,4 +213,35 @@ fn detection_timestamp_is_the_analysis_time_not_an_old_capture_time() {
         .data
         .report;
     assert!(chrono::DateTime::parse_from_rfc3339(&report.detected_at).unwrap() >= start);
+}
+#[test]
+fn cancelled_check_never_persists_a_report_or_changes_approval() {
+    let (_dir, rt, snapshot) = fixture();
+    rt.approve_integrity_baseline(input(&snapshot)).unwrap();
+    let token = crate::monitoring::work::Cancellation::default();
+    token.cancel();
+    let (result, _) = crate::monitoring::work::in_operation(token, None, || {
+        rt.validate_integrity_snapshot(snapshot.id.clone(), true)
+    });
+    assert_eq!(result.err().unwrap().code, "cancelled");
+    let db = rt.engine_database().unwrap();
+    assert!(db
+        .latest_integrity_report(
+            &snapshot.account_subject,
+            &snapshot.spreadsheet_id,
+            &snapshot.scope_hash
+        )
+        .unwrap()
+        .is_none());
+    assert_eq!(
+        db.active_structural_baseline(
+            &snapshot.account_subject,
+            &snapshot.spreadsheet_id,
+            &snapshot.scope_hash
+        )
+        .unwrap()
+        .unwrap()
+        .version,
+        1
+    );
 }

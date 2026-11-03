@@ -29,6 +29,11 @@ const MIGRATIONS: &[Migration] = &[
         name: "0004_operational_management",
         sql: include_str!("../../migrations/0004_operational_management.sql"),
     },
+    Migration {
+        version: 5,
+        name: "0005_continuous_monitoring",
+        sql: include_str!("../../migrations/0005_continuous_monitoring.sql"),
+    },
 ];
 
 pub(super) fn apply(connection: &mut Connection) -> Result<(), String> {
@@ -232,6 +237,65 @@ mod tests {
     }
 
     #[test]
+    fn sprint05_upgrade_preserves_v4_data_and_original_ledger() {
+        let mut connection = Connection::open_in_memory().unwrap();
+        connection.execute_batch("PRAGMA foreign_keys=ON;").unwrap();
+        apply_list(&mut connection, &MIGRATIONS[..4]).unwrap();
+        connection
+            .execute(
+                "UPDATE app_settings SET interval_seconds=180 WHERE id=1",
+                [],
+            )
+            .unwrap();
+        let before: Vec<(i64, String)> = connection
+            .prepare("SELECT version,checksum FROM _schema_migrations ORDER BY version")
+            .unwrap()
+            .query_map([], |r| Ok((r.get(0)?, r.get(1)?)))
+            .unwrap()
+            .collect::<rusqlite::Result<_>>()
+            .unwrap();
+        apply(&mut connection).unwrap();
+        assert_eq!(
+            connection
+                .query_row(
+                    "SELECT interval_seconds FROM app_settings WHERE id=1",
+                    [],
+                    |r| r.get::<_, i64>(0)
+                )
+                .unwrap(),
+            180
+        );
+        for (version, expected) in before {
+            assert_eq!(
+                connection
+                    .query_row(
+                        "SELECT checksum FROM _schema_migrations WHERE version=?1",
+                        [version],
+                        |r| r.get::<_, String>(0)
+                    )
+                    .unwrap(),
+                expected
+            );
+        }
+        assert_eq!(
+            connection
+                .query_row("SELECT count(*) FROM pragma_foreign_key_check", [], |r| r
+                    .get::<_, i64>(
+                    0
+                ))
+                .unwrap(),
+            0
+        );
+        assert_eq!(
+            connection
+                .query_row("SELECT count(*) FROM notification_outbox", [], |r| r
+                    .get::<_, i64>(0))
+                .unwrap(),
+            0
+        );
+    }
+
+    #[test]
     fn future_version_and_ledger_are_rejected() {
         let mut connection = Connection::open_in_memory().unwrap();
         connection.pragma_update(None, "user_version", 99).unwrap();
@@ -243,7 +307,7 @@ mod tests {
         apply(&mut connection).unwrap();
         connection
             .execute(
-                "INSERT INTO _schema_migrations VALUES(5,'future','unknown','demo')",
+                "INSERT INTO _schema_migrations VALUES(6,'future','unknown','demo')",
                 [],
             )
             .unwrap();

@@ -6,7 +6,7 @@ fn database_reopens_with_same_data_settings_and_migration_ledger() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path().join("app-data").join("foundation.db");
     let mut database = Database::open(&path).unwrap();
-    assert_eq!(database.schema_version().unwrap(), 4);
+    assert_eq!(database.schema_version().unwrap(), 5);
     database.seed_demo().unwrap();
     let before = database.list_demo_spreadsheets().unwrap();
     let history = database.demo_history().unwrap();
@@ -22,7 +22,7 @@ fn database_reopens_with_same_data_settings_and_migration_ledger() {
     assert_eq!(database.list_demo_spreadsheets().unwrap(), before);
     assert_eq!(database.demo_history().unwrap(), history);
     assert_eq!(database.settings().unwrap().interval_seconds, 180);
-    assert_eq!(database.table_names().unwrap().len(), 24);
+    assert_eq!(database.table_names().unwrap().len(), 29);
     drop(database);
     let connection = Connection::open(&path).unwrap();
     assert_eq!(
@@ -30,7 +30,7 @@ fn database_reopens_with_same_data_settings_and_migration_ledger() {
             .query_row("SELECT count(*) FROM _schema_migrations", [], |row| row
                 .get::<_, i64>(0))
             .unwrap(),
-        4
+        5
     );
     let checksum: String = connection
         .query_row("SELECT checksum FROM _schema_migrations", [], |row| {
