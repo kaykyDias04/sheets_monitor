@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { invoke } from "@tauri-apps/api/core";
@@ -374,6 +374,44 @@ describe("Sprint 04 · operação sem demonstração", () => {
         confirmed: true,
       },
     });
+  }, 15000);
+  it("explica no próprio formulário por que regras incompletas não foram salvas", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    await settled();
+    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
+    // A regra inicial tem cabeçalho vazio: o usuário vê o botão ativo, mas sem texto digitado.
+    const save = screen.getByRole("button", { name: "Salvar regras de proteção" });
+    await user.click(save);
+    const problem = await screen.findByText(/informe o cabeçalho protegido/);
+    expect(problem).toBeInTheDocument();
+    expect(call.mock.calls.some(([name]) => name === "update_integrity_rules")).toBe(false);
+    expect(save.closest("form")).toContainElement(problem);
+    // Corrigido o campo, o salvamento é enviado ao backend e o aviso desaparece.
+    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
+    await user.click(save);
+    await settled();
+    expect(call.mock.calls.some(([name]) => name === "update_integrity_rules")).toBe(true);
+    expect(rows[0].scope?.sheets[0].regions[0].columns[0].header).toBe("Código");
+    expect(screen.queryByText(/informe o cabeçalho protegido/)).not.toBeInTheDocument();
+  }, 15000);
+  it("mantém a seção de regras aberta e mostra a confirmação após salvar", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    await settled();
+    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
+    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
+    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
+    await settled();
+    expect(await screen.findByText(/Regras salvas\./)).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
+    expect(screen.getByRole("button", { name: "Salvar regras de proteção" })).toBeDisabled();
   }, 15000);
   it("exige confirmação de remoção e escolha de histórico", async () => {
     rows.push(fixtureRow());

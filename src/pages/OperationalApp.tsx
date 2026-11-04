@@ -106,6 +106,14 @@ export function OperationalApp() {
   const pendingRefresh = useRef(false);
   const refreshRef = useRef<() => Promise<void>>(async () => undefined);
   const epoch = useRef(0);
+  const detailTab = useRef<string | null>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const noticeRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // O resultado de salvar aparece no topo da página; rola até ele para o usuário que está no fim de
+    // um formulário longo não concluir que o botão não fez nada.
+    (feedbackRef.current ?? noticeRef.current)?.scrollIntoView?.({ block: "nearest" });
+  }, [error, notice]);
   const clearPrivate = useCallback(() => {
     setSummary(null);
     setPreferences(null);
@@ -302,6 +310,7 @@ export function OperationalApp() {
   async function loadDetail(id: string, destination: Route = "details") {
     if (locked.current) return;
     epoch.current++;
+    if (id !== selectedId || destination !== route) detailTab.current = null;
     setSelectedId(id);
     setDetail(null);
     setPreview(null);
@@ -516,12 +525,12 @@ export function OperationalApp() {
             </p>
           )}
           {error && (
-            <div className="feedback error" role="alert">
+            <div className="feedback error" role="alert" ref={feedbackRef}>
               {error}
             </div>
           )}
           {notice && (
-            <div className="feedback success" role="status">
+            <div className="feedback success" role="status" ref={noticeRef}>
               {notice}
             </div>
           )}
@@ -773,7 +782,10 @@ export function OperationalApp() {
                     <SpreadsheetDetails
                       key={`${detail.spreadsheet.spreadsheet_id}:${detail.spreadsheet.revision}:${route}`}
                       data={detail}
-                      initialTab={route === "rules" ? "rules" : "tabs"}
+                      initialTab={detailTab.current ?? (route === "rules" ? "rules" : "tabs")}
+                      onTabChange={(tab) => {
+                        detailTab.current = tab;
+                      }}
                       preview={preview}
                       versions={versions}
                       comparison={comparison}

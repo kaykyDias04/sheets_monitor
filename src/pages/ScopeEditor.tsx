@@ -47,6 +47,49 @@ export function scopeForTabs(
     ),
   };
 }
+/**
+ * Pendências de preenchimento que o formulário precisa explicar antes de enviar.
+ * São apenas campos obrigatórios vazios ou inválidos; o motor Rust continua sendo a
+ * autoridade sobre as regras de integridade e revalida o escopo ao salvar.
+ */
+export function scopeFormProblems(scope: MonitorScope, tabs: Tab[]): string[] {
+  const problems: string[] = [];
+  const title = (id: number) => tabs.find((tab) => tab.sheet_id === id)?.title ?? `ID ${id}`;
+  for (const sheet of scope.sheets) {
+    sheet.regions.forEach((region, ri) => {
+      const where = `Aba "${title(sheet.sheet_id)}", região ${ri + 1}`;
+      region.columns.forEach((column, ci) => {
+        if (column.header.trim() === "")
+          problems.push(
+            `${where}: informe o cabeçalho protegido da coluna ${ci + 1} ou remova a coluna.`,
+          );
+      });
+      if (region.columns.length === 0)
+        problems.push(`${where}: adicione ao menos uma coluna protegida ou remova a região.`);
+      const numbers = [
+        region.range.start_row,
+        region.range.end_row,
+        region.range.start_col,
+        region.range.end_col,
+        region.header_row,
+        ...region.columns.map((c) => c.position),
+        ...region.formulas.map((f) => f.baseline_row),
+      ];
+      if (numbers.some((n) => !Number.isInteger(n) || n < 0))
+        problems.push(`${where}: preencha linhas e colunas com números inteiros a partir de 1.`);
+    });
+    if (sheet.regions.length === 0)
+      problems.push(`Aba "${title(sheet.sheet_id)}": adicione ao menos uma região protegida.`);
+  }
+  scope.scripts.forEach((script, i) => {
+    if (script.script_id.trim() === "")
+      problems.push(`Dependência de Apps Script ${i + 1}: informe o ID do projeto ou remova-a.`);
+  });
+  for (const field of ["snapshot_retention_days", "history_retention_days"] as const)
+    if (!Number.isInteger(scope[field]) || scope[field] < 1)
+      problems.push("Retenção: informe a quantidade de dias com um número inteiro positivo.");
+  return [...new Set(problems)];
+}
 function nextId(prefix: string, existing: string[]) {
   let n = 1;
   while (existing.includes(`${prefix}_${n}`)) n++;

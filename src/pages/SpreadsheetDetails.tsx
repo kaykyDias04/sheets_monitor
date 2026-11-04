@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Pause,
   Play,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import type { MonitorScope, BaselineSummary } from "@/types/integrity";
 import type { BaselineComparison, Diagnostics, OperationalPreview } from "@/types/management";
-import { ScopeEditor, scopeForTabs } from "./ScopeEditor";
+import { ScopeEditor, scopeForTabs, scopeFormProblems } from "./ScopeEditor";
 import { BaselineFlow } from "./BaselineFlow";
 import { ScriptCoverage } from "./ScriptCoverage";
 import { dateLabel, diagnosticText, StatusBadge } from "./OperationalShared";
@@ -34,7 +34,8 @@ interface Props {
   versionOffset: number;
   disabled: boolean;
   defaultHistoryDays?: number;
-  initialTab?: "tabs" | "rules";
+  initialTab?: string;
+  onTabChange?: (tab: string) => void;
   onPreview: () => void;
   onInvalidate: () => void;
   onApprove: (preview: OperationalPreview) => void;
@@ -61,6 +62,7 @@ export function SpreadsheetDetails({
   disabled,
   defaultHistoryDays = 90,
   initialTab = "tabs",
+  onTabChange,
   onPreview,
   onInvalidate,
   onApprove,
@@ -79,7 +81,18 @@ export function SpreadsheetDetails({
   onAssociateScript,
 }: Props) {
   const row = data.spreadsheet;
-  const [tab, setTab] = useState<string>(initialTab);
+  const [tab, setTabState] = useState<string>(initialTab);
+  const setTab = (next: string) => {
+    setTabState(next);
+    onTabChange?.(next);
+  };
+  const [ruleProblems, setRuleProblems] = useState<string[]>([]);
+  const problemsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ruleProblems.length === 0) return;
+    problemsRef.current?.scrollIntoView?.({ block: "center" });
+    problemsRef.current?.focus();
+  }, [ruleProblems]);
   const [selected, setSelected] = useState(row.selected_sheet_ids);
   const [scope, setScope] = useState(() =>
     scopeForTabs(row.scope, row.selected_sheet_ids, defaultHistoryDays),
@@ -102,6 +115,7 @@ export function SpreadsheetDetails({
   function select(ids: number[]) {
     setSelected(ids);
     setScope(scopeForTabs(scope, ids, defaultHistoryDays));
+    setRuleProblems([]);
     onInvalidate();
   }
   return (
@@ -318,6 +332,7 @@ export function SpreadsheetDetails({
                   void onSuggestRules().then((proposal) => {
                     if (proposal) {
                       setScope(proposal);
+                      setRuleProblems([]);
                       onInvalidate();
                     }
                   });
@@ -333,9 +348,12 @@ export function SpreadsheetDetails({
               </p>
             </div>
             <form
+              noValidate
               onSubmit={(e) => {
                 e.preventDefault();
-                onSaveRules(scope);
+                const found = scopeFormProblems(scope, row.tabs);
+                setRuleProblems(found);
+                if (found.length === 0) onSaveRules(scope);
               }}
             >
               <ScopeEditor
@@ -344,6 +362,7 @@ export function SpreadsheetDetails({
                 disabled={disabled}
                 onChange={(next) => {
                   setScope(next);
+                  setRuleProblems([]);
                   onInvalidate();
                 }}
               />
@@ -359,7 +378,21 @@ export function SpreadsheetDetails({
                   Revisar referência
                 </Button>
               </div>
+              {ruleProblems.length > 0 && (
+                <div className="feedback error" role="alert" ref={problemsRef} tabIndex={-1}>
+                  <strong>As regras não foram salvas. Revise os campos abaixo:</strong>
+                  <ul>
+                    {ruleProblems.slice(0, 10).map((problem) => (
+                      <li key={problem}>{problem}</li>
+                    ))}
+                  </ul>
+                  {ruleProblems.length > 10 && (
+                    <p>Há mais {ruleProblems.length - 10} pendências semelhantes.</p>
+                  )}
+                </div>
+              )}
               {tabsDirty && <p className="op-hint">Salve primeiro a seleção de abas.</p>}
+
               <p className="op-hint">
                 A severidade é definida pela criticidade da região ou do script. Dependências de
                 fórmulas e scripts são derivadas pelo motor, sem comparações no frontend.
