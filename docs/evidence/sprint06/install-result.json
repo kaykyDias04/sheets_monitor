@@ -1,0 +1,7 @@
+{
+  "status": "not_executed",
+  "reason": "Installation execution permission request rejected by user",
+  "installed_validation": false,
+  "test_directory_present": false,
+  "google_live_tested": false
+}

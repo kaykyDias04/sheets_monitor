@@ -1,0 +1,39 @@
+[
+  {
+    "name": "alloc-stdlib",
+    "url": "https://raw.githubusercontent.com/dropbox/rust-alloc-no-stdlib/0a81fd6928ea3b33c8cd484aa4575d50ffb98012/LICENSE",
+    "sha256": "C0C56F26D9C051CAC4D200C34C84E7AE9AAA853E01A982A1DF08B09931E518AE",
+    "status": "downloaded"
+  },
+  {
+    "name": "tree-sitter",
+    "url": "https://raw.githubusercontent.com/tree-sitter/tree-sitter/da6fe9beb4f7f67beb75914ca8e0d48ae48d6406/LICENSE",
+    "sha256": "5F9CF9FB6ACB1972B35AE29119CE563BB60EC097656BC4B69B9BAC2D04C7A147",
+    "status": "downloaded"
+  },
+  {
+    "name": "webview2-com",
+    "url": "https://raw.githubusercontent.com/wravery/webview2-rs/edc2caf886175ccaebe86078c9cfe1ae2a187328/LICENSE",
+    "sha256": "0DCF41516E608BBCB6CDC5229FEB7B86FE4A643B85E7DF251133C93408FDAC73",
+    "status": "downloaded"
+  },
+  {
+    "name": "webview2-com-macros",
+    "url": "https://raw.githubusercontent.com/wravery/webview2-rs/dffa41a8a46d3f5565eefbff2de57d38d399f158/LICENSE",
+    "sha256": "0DCF41516E608BBCB6CDC5229FEB7B86FE4A643B85E7DF251133C93408FDAC73",
+    "status": "downloaded"
+  },
+  {
+    "name": "selectors",
+    "url": "https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt",
+    "sha256": "3F3D9E0024B1921B067D6F7F88DEB4A60CBE7A78E76C64E3F1D7FC3B779B9D04",
+    "status": "downloaded"
+  },
+  {
+    "name": "react-remove-scroll-bar",
+    "url": "https://raw.githubusercontent.com/theKashey/react-remove-scroll-bar/master/LICENSE",
+    "sha256": "A79AAE0C0F21990D9D963BB3C5A79CDCEA9A46F8523BA55C58D7FE776B6EBC84",
+    "status": "downloaded",
+    "limitation": "Published npm gitHead and v2.3.8 tag do not expose LICENSE. Public upstream MIT notice retrieved from master; matching MIT metadata, not exact release provenance."
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "memory_sample_ms": 100,
+  "exit_code": 0,
+  "executable_sha256": "D504818674F9C3001809909BA0A6AA7EB16D82622A9D2A1B88F84A13ABC409E4",
+  "sampled_max_private_bytes": 4190208,
+  "passed": true,
+  "soak_test": false,
+  "limits": "Synthetic clock/transport/account; not full desktop memory or Google throughput. No claim of sustained wall-clock duration.",
+  "observed_peak_working_set_bytes": 14798848,
+  "elapsed_ms": 4772,
+  "files": 30,
+  "kind": "synthetic_scheduler_sqlite_test_process",
+  "test": "monitoring::service::tests::thirty_workbooks_queue_quota_recovery_and_persistence",
+  "google_live": false
+}

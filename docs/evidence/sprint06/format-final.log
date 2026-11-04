@@ -1,0 +1,6 @@
+
+> sheets-monitor@0.1.0 format:check
+> prettier --check src package.json package-lock.json tsconfig.json vite.config.ts index.html components.json eslint.config.js .prettierrc.json
+
+Checking formatting...
+All matched files use Prettier code style!

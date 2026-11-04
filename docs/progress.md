@@ -1,5 +1,11 @@
 # Progresso por etapa
 
+## Sprint 06 — retomada incremental autorizada em 03/11/2026
+
+Estado **PENDENTE DE HOMOLOGAÇÃO**. Prompt 06.1 preservado em `sprint06.1.original.md`; base `b2c68ce`, branch `codex/sprint-06-homologation`. Não foi encontrado trabalho anterior da Sprint 06 neste checkout. Evidências históricas permanecem preservadas. Checkpoint corrente e próxima ação: [SPRINT_06_PROGRESS.md](SPRINT_06_PROGRESS.md).
+
+Frontend: 50 testes, tipos, lint, formatação normalizada e build produção aprovados. Rust: 258 unitários, duas integrações, um cofre ignorado por padrão, Clippy/rustfmt aprovados. Ambiente restaurado com autorização humana. Carga sintética de 30 arquivos aprovada; instalador técnico x64 gerado com hashes, sem configuração OAuth. Instalação recusada na solicitação de execução e não realizada. Carga Google real/validação instalada permanecem pendentes. [Relatório](sprint-06-report.md). Não publicar release nem iniciar V1.1.
+
 ## Prompt 00 — contrato
 
 Concluido: contrato registrado em `AGENTS.md`. Implementacao anterior interrompida e arquivos preservados. O contrato revoga o avanco automatico entre etapas.
@@ -137,3 +143,13 @@ Quatro cadastros reais pendentes e zero proteções elegíveis foram preservados
 ## Publicação no GitHub autorizada
 
 Em 03/11/2026 o usuário autorizou criar e publicar o repositório `https://github.com/kaykyDias04/sheets_monitor.git`, enviando `main` e todas as branches `codex/` por push normal, sem force-push. Antes do envio: verificador do repositório, typecheck, lint e Vitest reexecutados; evidências históricas da Sprint 05 não foram regravadas. Estado das sprints inalterado; aguardar Prompt 06.
+
+## Atualização autorizada — instalação e pré-release
+
+O usuário autorizou expressamente instalar o pacote e publicar a release no GitHub nesta conversa. Essa autorização substitui a recusa de instalação anterior e a restrição anterior de publicação para este pacote técnico.
+
+Instalado por usuário em `%LOCALAPPDATA%\Programs\Sheets Monitor`. Processo permaneceu ativo após abertura com Node/Rust/MSVC fora do PATH; avisos de terceiros, biblioteca padrão Rust e manual presentes. A comparação integral do payload confirmou diferença exclusiva do marcador Tauri `NSS` (NSIS) versus `UNK` (executável solto); hashes e resultado em `docs/evidence/sprint06/installed-payload-validation.json` e `install-authorized-result.json`. A comparação inicial de hashes falhou por esse marcador; não houve alteração de código ou rebuild.
+
+Pré-release publicada: https://github.com/kaykyDias04/sheets_monitor/releases/tag/v0.1.0-sprint06-preview . Instalador e SHA256SUMS.txt enviados, com digests retornados pelo GitHub conferidos. Registro em `docs/evidence/sprint06/github-release.json`. Tag aponta para `f19f1ad`, fonte do pacote. Não é aprovação da V1.0: OAuth ausente, carga Google real, persistência após reinício, desinstalação e homologação Windows completa continuam pendentes. Nenhuma baseline aprovada, autostart ativado ou arquivo Google alterado.
+
+Próxima ação: disponibilizar a configuração OAuth da aplicação por caminho local seguro e concluir a homologação pendente. Preservar o pacote instalado; não reinstalar nem reconstruir sem necessidade.
