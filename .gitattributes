@@ -33,3 +33,4 @@ distribution/** -text -whitespace
 docs/evidence/context-transfer/** -text -whitespace
 docs/evidence/release-integration/*.log -text -whitespace
 docs/evidence/release-integration/rust/*.log -text -whitespace
+docs/evidence/release-oauth/*.log -text -whitespace

@@ -1,0 +1,28 @@
+
+> sheets-monitor@1.0.0 tauri
+> tauri build --target x86_64-pc-windows-msvc --bundles nsis
+
+        Info Looking up installed tauri packages to check mismatched versions...
+     Running beforeBuildCommand `npm run build`
+
+> sheets-monitor@1.0.0 build
+> tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1665 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.45 kB │ gzip:   0.29 kB
+dist/assets/index-BOD9HJN-.css   56.98 kB │ gzip:  12.12 kB
+dist/assets/index-ClqIgZKs.js   436.32 kB │ gzip: 132.90 kB
+✓ built in 5.46s
+   Compiling sheets-monitor v1.0.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 21s
+       Built application at: C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\x86_64-pc-windows-msvc\release\sheets-monitor.exe
+        Info Patching C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\x86_64-pc-windows-msvc\release\sheets-monitor.exe with bundle type information: nsis
+        Info Target: x64
+     Running makensis to produce C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\x86_64-pc-windows-msvc\release\bundle\nsis\Sheets Monitor_1.0.0_x64-setup.exe
+    Finished 1 bundle at:
+        C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\x86_64-pc-windows-msvc\release\bundle\nsis\Sheets Monitor_1.0.0_x64-setup.exe (4.71 MiB)
+
