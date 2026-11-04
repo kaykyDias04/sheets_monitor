@@ -1,0 +1,10 @@
+{
+  "cargo_clean_exit": 0,
+  "target_checked_within_workspace": true,
+  "target_was_reparse_point": false,
+  "preserved_installer": ".tooling/release-artifacts/v1.0.0/Sheets.Monitor_1.0.0_x64-setup.exe",
+  "preserved_installer_sha256": "2B2D5E71361871AA8AC47490FF14B0258E8C218B2BC6B4DE69D0D6CCA1BEAA26",
+  "unprovisioned_candidate_preserved": ".tooling/release-integration/unprovisioned",
+  "preexisting_node_modules_preserved": true,
+  "shared_caches_preserved": true
+}

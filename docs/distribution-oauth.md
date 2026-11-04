@@ -27,3 +27,7 @@ O usuário informou que o console Google dispensa verificação porque o projeto
 ### Configuração fornecida após a integração
 
 O usuário identificou o projeto interno autorizado e forneceu o JSON Desktop por caminho local. A configuração foi validada e incorporada ao novo candidato; relatório em `docs/evidence/release-oauth/report.md`. Não publicar valores, caminho privado ou cópia do JSON. O rascunho de release contém apenas instalador,checksums e manifesto sanitizado. A pendência atual é homologar o novo candidato com conta interna elegível e concluir os demais critérios, sem exigir verificação pública indevida.
+
+## Publicação OAuth interna
+
+A configuração já foi incorporada e o usuário confirmou login e leitura no novo instalador. Pré-release1.0.0 publicada,com limites de audiência interna e homologação integral explicitados. Não é necessária verificação pública para esse público; contas externas à organização permanecem fora da audiência. O JSON privado não é asset de distribuição; configuração de cliente Desktop é incorporada ao binário conforme o protocolo instalado. Evidências sanitizadas em docs/evidence/release-oauth.

@@ -74,3 +74,7 @@ O usuário informou que o console Google dispensa verificação porque o projeto
 ## Atualização vigente de continuidade
 
 Integração original concluída em main b0ef2c6 e OAuth interno incorporado em novo pacote. O projeto e o JSON foram fornecidos e validados localmente; não repetir solicitação de credenciais. Rascunho1.0.0 disponível no GitHub, ainda não publicado definitivamente. Consultar `docs/evidence/release-oauth/report.md` e o checkpoint humano pendente antes de publicar. Não exigir verificação pública para a audiência interna; respeitar organização e políticas administrativas.
+
+## Publicação atual
+
+Pré-release pública1.0.0 disponível em https://github.com/kaykyDias04/sheets_monitor/releases/tag/v1.0.0 . O usuário confirmou login e leitura do candidato; não repetir esse checkpoint como se estivesse ausente. A homologação integral continua pendente nos demais critérios documentados. Consultar report.md,human-confirmation.json,ci-source.json e github-published.json em docs/evidence/release-oauth. Nenhuma V1.1/expansão está autorizada por esta publicação.

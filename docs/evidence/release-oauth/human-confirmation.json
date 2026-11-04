@@ -1,0 +1,18 @@
+{
+  "confirmation": "Login e leitura funcionaram",
+  "source": "explicit user reply in this chat about the OAuth candidate installer",
+  "scope": [
+    "Google login",
+    "spreadsheet reading"
+  ],
+  "evidence_type": "human_reported",
+  "agent_observed_login": false,
+  "does_not_prove": [
+    "all Google APIs on this candidate",
+    "30 real approved spreadsheets",
+    "24h soak",
+    "full Windows clean-image homologation",
+    "all Sprint06 acceptance criteria"
+  ],
+  "oauth_audience": "internal_user_reported"
+}

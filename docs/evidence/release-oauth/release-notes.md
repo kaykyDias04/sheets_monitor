@@ -1,13 +1,13 @@
-# Sheets Monitor 1.0.0 — candidato para homologação interna
+# Sheets Monitor 1.0.0 — pré-release para uso e homologação interna
 
-Instalador Windows11 x64 NSIS com configuração OAuth Desktop da aplicação incorporada. Login Google restrito aos membros da organização do projeto OAuth configurado como Interno; verificação pública Google é dispensada nesse cenário. Não oferece login geral para contas externas à organização. Escopos Google somente leitura; baselines continuam com aprovação humana.
+Instalador Windows11 x64 NSIS com OAuth Desktop da aplicação incorporado. Login Google restrito aos membros da organização do projeto OAuth configurado como Interno, sujeito às políticas do administrador. Verificação pública Google é dispensada nesse cenário. Acesso Google somente leitura; baselines com aprovação humana.
 
-Fonte: b0ef2c67da2786afc5ef1e9fd77bdb5735db3205.
+O usuário confirmou login e leitura de planilha no novo candidato. Esta confirmação é humana, sem observação direta pelo agente, e cobre esses dois fluxos.
 
-Validação local:261 testes unitários Rust,2 integrações SQLite,50 React, lint,formatação,tipos,Clippy e build de produção aprovados. Um teste de cofre permanece ignorado por padrão. Cliente Desktop e configuração autorizada conferidos no binário sem registrar seus valores. CI da fonte: https://github.com/kaykyDias04/sheets_monitor/actions/runs/41756837978 .
+Fonte: b0ef2c67da2786afc5ef1e9fd77bdb5735db3205. CI Windows completo aprovado: https://github.com/kaykyDias04/sheets_monitor/actions/runs/41756837978 . Validação local:261 unitários Rust,2 integrações SQLite,50 React,lint,formatação,tipos,Clippy e build aprovados. Um teste de cofre é ignorado por padrão. Configuração OAuth conferida no binário sem registrar valores.
 
-Este rascunho não declara a V1.0 homologada. Ainda faltam login/consentimento no novo pacote, validação instalada, carga Google real e demais critérios humanos documentados. Testes sintéticos não comprovam Google real ou24h. Instalação em outra pasta compartilha perfil/cofre; usar ambiente de homologação autorizado e preservar dados. Nenhum candidato foi iniciado pelo agente no perfil real.
+Pré-release: a Sprint06 permanece pendente de homologação integral. Carga Google real5/15/30,ensaio24h,imagem Windows limpa e demais critérios instalados/notificações documentados não foram comprovados. As campanhas sintéticas são evidências distintas. Não há afirmação de100% de funcionamento ou aprovação estável da V1.0.
 
-Pacote sem assinatura. Conferir SHA-256 em SHA256SUMS.txt antes de instalar. Instalador: Sheets.Monitor_1.0.0_x64-setup.exe. Não exige Node/Rust/MSVC para uso; requer Windows11 x64 e WebView2. Preferências de notificações e autostart permanecem opt-in.
+Baixar Sheets.Monitor_1.0.0_x64-setup.exe e conferir SHA-256 em SHA256SUMS.txt. O instalador não é assinado. Requisitos:Windows11 x64 e WebView2; ferramentas de desenvolvimento não são requisitos de uso. Instalação em outra pasta compartilha perfil/cofre; preservar dados e usar o ambiente de homologação autorizado. Autostart e notificações dependem de preferências explícitas.
 
-Publicação definitiva aguarda homologação humana; não apresentar este candidato como100% funcional comprovado.
+Manifesto sanitizado acompanha o pacote. Nenhum JSON OAuth privado,token,banco real ou conteúdo de planilha é distribuído como asset. Não houve escrita Google,aprovação de baseline real pelo agente,ativação de autostart ou novo toast nesta execução.

@@ -193,3 +193,9 @@ O usuário identificou o projeto autorizado e disponibilizou seu JSON Desktop em
 Instalador1.0.0,manifesto e hashes enviados ao rascunho GitHub; arquivo local e digest remoto conferidos. Relatório em [candidato OAuth](evidence/release-oauth/report.md). Audiência interna limita login à organização; dispensa verificação pública Google conforme informação do usuário. CI da fonte e homologação humana do novo pacote continuam condições separadas. O agente não abriu o candidato no perfil real nem declarou100% de funcionamento. Publicação definitiva aguarda os critérios de aceite e a validação humana solicitada. Nenhuma tag definitiva publicada.
 
 CI da fonte b0ef2c6 concluído com sucesso, incluindo todos os passos Windows. Evidência sanitizada em `docs/evidence/release-oauth/ci-source.json`. Novos commits de evidência não representam nova execução nem CI exato em seus próprios heads. Rascunho1.0.0 com OAuth interno permanece aguardando homologação humana; nenhum release definitivo/tag publicado.
+
+## Publicação da pré-release1.0.0
+
+Usuário confirmou “Login e leitura funcionaram” no novo instalador. Evidência humana específica registrada em `docs/evidence/release-oauth/human-confirmation.json`; não equivale à homologação completa. Publicada a pré-release autorizada [v1.0.0](https://github.com/kaykyDias04/sheets_monitor/releases/tag/v1.0.0), com OAuth interno,NSIS,checksums e manifesto. Tag anotada aponta para b0ef2c6,fonte com CI Windows completo aprovado. Digests dos três assets conferidos na API GitHub.
+
+Sprint06 permanece pendente de homologação integral,sem afirmação stable/100%. Carga Google real/24h,Windows limpo e demais critérios reais documentados continuam pendentes; não iniciar expansão automaticamente. O download público do binário não amplia a audiência do OAuth,restrita à organização. Relatório de publicação e limpeza em `docs/evidence/release-oauth/`.

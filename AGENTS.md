@@ -155,3 +155,9 @@ O candidato usa versão 1.0.0 conforme o escopo original; a pré-release histór
 ### Atualização — audiência OAuth interna
 
 O usuário informou que o console Google dispensa verificação porque o projeto está configurado com tipo de usuário Interno. Nesse cenário, não exigir aprovação pública como pré-condição: o OAuth limita-se aos membros da organização Google Cloud/Workspace do projeto e às políticas administrativas correspondentes. Fonte: https://support.google.com/cloud/answer/15549945#user-type-internal . A informação é relato do usuário; o nome/ID do projeto e o JSON Desktop ainda não foram fornecidos. O bloqueio atual é obter a configuração Desktop autorizada e comprovar login do candidato com conta interna elegível, além das homologações já pendentes. Não alterar a audiência para Externo nem ampliar escopos automaticamente. A futura release deve informar que o login é restrito à organização.
+
+## Publicação autorizada após integração — pré-release1.0.0
+
+O pedido atual autorizou integrar codex/sprint-06-homologation,recompilar com OAuth e publicar no GitHub. Após fornecer JSON Desktop do projeto interno autorizado,o usuário confirmou “Login e leitura funcionaram” no novo instalador. Publicada pré-release1.0.0,target b0ef2c6 com CI Windows completo aprovado,tag anotada e três assets com hashes conferidos. Evidências sanitizadas em docs/evidence/release-oauth. Não expor configuração privada,contas ou conteúdo real.
+
+Esta publicação não classifica Sprint06 como APROVADA,não prova100% de funcionamento nem homologa carga Google real/24h/Windows limpo e demais critérios pendentes. Preservar esses limites,as evidências anteriores e o controle humano de baseline. Nenhuma expansão automática foi autorizada. O pacote mantém OAuth interno; verificação pública é dispensada nesse cenário,login restrito à organização. Novos toasts/autostart e mudanças reais continuam sujeitos às autorizações próprias.
