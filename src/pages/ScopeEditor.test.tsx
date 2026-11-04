@@ -2,7 +2,7 @@ import { useState } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ScopeEditor, scopeForTabs } from "./ScopeEditor";
+import { ScopeEditor, scopeForTabs, scopeFormProblems, MAX_SCOPE_CELLS } from "./ScopeEditor";
 import type { MonitorScope } from "@/types/integrity";
 afterEach(cleanup);
 const tabs = [{ sheet_id: 17, title: "Receitas", index: 0, hidden: false }];
@@ -66,5 +66,20 @@ describe("Regras estruturadas", () => {
     // Adicionar uma 6ª coluna também expande automaticamente a "Última coluna" para 6 (Coluna F).
     await user.click(screen.getByRole("button", { name: "Adicionar coluna protegida" }));
     expect(screen.getByLabelText(/Última coluna/)).toHaveValue(6);
+  });
+  it("aceita escopos amplos de pelo menos 30 colunas por 20 mil linhas dentro do novo limite", () => {
+    expect(MAX_SCOPE_CELLS).toBeGreaterThanOrEqual(30 * 20_000);
+    const scope = scopeForTabs(null, [17]);
+    const region = scope.sheets[0].regions[0];
+    region.range = { start_row: 0, end_row: 20_000, start_col: 0, end_col: 50 };
+    region.header_row = 0;
+    region.columns = Array.from({ length: 35 }, (_, i) => ({
+      id: `column_${i}`,
+      header: `Coluna ${i + 1}`,
+      position: i,
+      protect_position: true,
+      required: true,
+    }));
+    expect(scopeFormProblems(scope, tabs)).toEqual([]);
   });
 });

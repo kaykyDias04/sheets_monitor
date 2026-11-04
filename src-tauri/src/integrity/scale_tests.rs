@@ -35,6 +35,7 @@ fn thirty_workbooks_with_one_thousand_records_have_bounded_payloads_and_precise_
 #[test]
 fn configured_cell_budget_is_enforced_before_collection() {
     let mut scope = fixtures::scope();
-    scope.sheets[0].regions[0].range.end_row = 5001;
+    scope.sheets[0].regions[0].range.end_col = 100;
+    scope.sheets[0].regions[0].range.end_row = (MAX_CELLS / 100) as u32 + 1;
     assert_eq!(scope.validate(), Err(EngineError::Limit));
 }

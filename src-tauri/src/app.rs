@@ -899,7 +899,7 @@ async fn open_spreadsheet(
 #[tauri::command]
 async fn propose_integrity_rules(
     state: State<'_, FoundationState>,
-    input: crate::management::Mutation,
+    input: crate::management::ProposeRulesInput,
 ) -> Result<EngineEnvelope<crate::integrity::MonitorScope>, CommandError> {
     let rt = runtime(&state)?;
     blocking(move || rt.propose_integrity_rules(input)).await

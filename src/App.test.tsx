@@ -183,8 +183,13 @@ beforeEach(() => {
       return envelope(rows[0]);
     }
     if (command === "propose_integrity_rules") {
+      const anchor = Number(input.header_row ?? 1);
       const scope = scopeForTabs(null, [17]);
-      scope.sheets[0].regions[0].columns[0].header = "Código";
+      scope.sheets[0].regions[0].range.start_row = anchor - 1;
+      scope.sheets[0].regions[0].range.end_row = Math.min(500, anchor - 1 + 20_000);
+      scope.sheets[0].regions[0].range.end_col = 8;
+      scope.sheets[0].regions[0].header_row = anchor - 1;
+      scope.sheets[0].regions[0].columns[0].header = anchor === 3 ? "Código Linha 3" : "Código";
       return envelope(scope);
     }
     if (command === "preview_baseline") {
@@ -326,6 +331,7 @@ async function openFirst(user: ReturnType<typeof userEvent.setup>) {
   await go(user, "Planilhas");
   await user.click(screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" }));
   await screen.findByRole("heading", { name: "Receitas de teste" });
+  expect(screen.queryByLabelText("Planilha selecionada")).not.toBeInTheDocument();
   await settled();
 }
 
@@ -333,7 +339,8 @@ describe("Sprint 04 · operação sem demonstração", () => {
   it("simplifica sidebar, footer e configurações sem ferramentas avançadas do mantenedor", async () => {
     const user = await load();
     const nav = within(screen.getByRole("navigation", { name: "Navegação principal" }));
-    expect(nav.getAllByRole("button")).toHaveLength(5);
+    expect(nav.getAllByRole("button")).toHaveLength(4);
+    expect(nav.queryByRole("button", { name: /Detalhes da planilha/i })).not.toBeInTheDocument();
     expect(nav.queryByRole("button", { name: /Regras e baselines/i })).not.toBeInTheDocument();
     expect(screen.queryByText(/Seu controle, sua referência/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Workspace local/i)).not.toBeInTheDocument();
@@ -366,6 +373,7 @@ describe("Sprint 04 · operação sem demonstração", () => {
   it("exibe a listagem do Google Drive exclusivamente dentro de + Adicionar planilhas", async () => {
     rows.push(fixtureRow());
     const user = await load();
+    expect(screen.queryByRole("button", { name: /Abrir detalhes/i })).not.toBeInTheDocument();
     await go(user, "Planilhas");
     expect(
       screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" }),
@@ -469,10 +477,24 @@ describe("Sprint 04 · operação sem demonstração", () => {
     );
     expect(screen.queryByRole("button", { name: "Revisar referência" })).not.toBeInTheDocument();
 
-    // Etapa 2: sugerir regras, salvar e avançar automaticamente para Referência
+    // Etapa 2: informar linha âncora dos cabeçalhos, sugerir regras, salvar e avançar automaticamente para Referência
+    const anchorInput = screen.getByLabelText("Linha âncora dos cabeçalhos");
+    expect(anchorInput).toHaveValue(1);
+    await user.clear(anchorInput);
+    await user.type(anchorInput, "3");
     await user.click(screen.getByRole("button", { name: "Sugerir regras para abas selecionadas" }));
     await settled();
-    expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
+    expect(call).toHaveBeenCalledWith("propose_integrity_rules", {
+      input: {
+        spreadsheet_id: "fixture-file",
+        expected_generation: 1,
+        expected_revision: 2,
+        header_row: 3,
+      },
+    });
+    expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue(
+      "Código Linha 3",
+    );
     expect(rows[0].scope).toBeNull();
     await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
     await settled();

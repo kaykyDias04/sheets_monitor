@@ -8,7 +8,7 @@ import {
   RefreshCw,
   LoaderCircle,
   ArrowRight,
-  Eye,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -54,7 +54,6 @@ type Route = "overview" | "sheets" | "details" | "activities" | "settings";
 const routes = [
   { id: "overview", label: "Visão geral", icon: LayoutDashboard },
   { id: "sheets", label: "Planilhas", icon: FileSpreadsheet },
-  { id: "details", label: "Detalhes da planilha", icon: Eye },
   { id: "activities", label: "Atividades", icon: ActivityIcon },
   { id: "settings", label: "Configurações", icon: Settings2 },
 ] as const;
@@ -85,7 +84,6 @@ export function OperationalApp() {
   const [route, setRoute] = useState<Route>("overview");
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [preferences, setPreferences] = useState<Preferences | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<Diagnostics | null>(null);
   const [detailResetKey, setDetailResetKey] = useState(0);
   const [initialDetailTab, setInitialDetailTab] = useState<string>("tabs");
@@ -117,10 +115,6 @@ export function OperationalApp() {
   const noticeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    selectedIdRef.current = selectedId;
-  }, [selectedId]);
-
-  useEffect(() => {
     (feedbackRef.current ?? noticeRef.current)?.scrollIntoView?.({ block: "nearest" });
   }, [error, notice]);
 
@@ -128,7 +122,6 @@ export function OperationalApp() {
     setSummary(null);
     setPreferences(null);
     selectedIdRef.current = null;
-    setSelectedId(null);
     setDetail(null);
     setPreview(null);
     setVersions([]);
@@ -525,7 +518,6 @@ export function OperationalApp() {
       setInitialDetailTab(detailTab.current ?? "tabs");
     }
     selectedIdRef.current = id;
-    setSelectedId(id);
     setDetail(null);
     setPreview(null);
     setComparison(null);
@@ -694,7 +686,11 @@ export function OperationalApp() {
   const canDiscover =
     session?.drive_metadata_opt_in === true &&
     session.auth.granted_scopes.includes("https://www.googleapis.com/auth/drive.metadata.readonly");
-  const pageTitle = routes.find((item) => item.id === route)?.label ?? "Sheets Monitor";
+  const activeNavId = route === "details" ? "sheets" : route;
+  const pageTitle =
+    route === "details"
+      ? "Detalhes da planilha"
+      : (routes.find((item) => item.id === route)?.label ?? "Sheets Monitor");
   const feedbackInsideDetails = route === "details" && detail !== null;
   const feedbackInsideAddDialog = route === "sheets" && addOpen;
   const feedbackDelegated = feedbackInsideDetails || feedbackInsideAddDialog;
@@ -779,7 +775,7 @@ export function OperationalApp() {
           {routes.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
-              className={`nav-item ${route === id ? "active" : ""}`}
+              className={`nav-item ${activeNavId === id ? "active" : ""}`}
               aria-current={route === id ? "page" : undefined}
               disabled={busy !== null}
               onClick={() => navigate(id)}
@@ -792,7 +788,7 @@ export function OperationalApp() {
         </nav>
         <div className="sidebar-foot">
           <div className="version">
-            <span>v1.0.3</span>
+            <span>v1.0.4</span>
             <span>WINDOWS 11</span>
           </div>
         </div>
@@ -803,7 +799,22 @@ export function OperationalApp() {
             <div className="breadcrumbs">
               <span>Workspace</span>
               <ChevronRight size={14} aria-hidden="true" />
-              <strong>{pageTitle}</strong>
+              {route === "details" ? (
+                <>
+                  <button
+                    type="button"
+                    className="op-breadcrumb-link"
+                    disabled={busy !== null}
+                    onClick={() => navigate("sheets")}
+                  >
+                    Planilhas
+                  </button>
+                  <ChevronRight size={14} aria-hidden="true" />
+                  <strong>{detail?.spreadsheet.name ?? pageTitle}</strong>
+                </>
+              ) : (
+                <strong>{pageTitle}</strong>
+              )}
             </div>
             <div className="topbar-tools">
               <span
@@ -816,7 +827,7 @@ export function OperationalApp() {
                 }`}
               >
                 <span className="op-connection-dot" aria-hidden="true" />
-                <span>
+                <span className="op-connection-label">
                   {session?.auth.status === "connected"
                     ? "Google conectado"
                     : session?.auth.status === "reconnect_required"
@@ -900,7 +911,7 @@ export function OperationalApp() {
             suppressedError={feedbackDelegated ? "" : error}
             onChanged={() => void silentRefresh()}
             onNavigate={navigate}
-            onOpenSheet={(id) => void loadDetail(id)}
+            onOpenSheet={() => navigate("sheets")}
           />
           {!accountAvailable && route !== "settings" ? (
             <div className="op-stack">
@@ -969,7 +980,6 @@ export function OperationalApp() {
                                 <th>Planilha</th>
                                 <th>Integridade</th>
                                 <th>Última verificação</th>
-                                <th>Diagnóstico</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -987,17 +997,6 @@ export function OperationalApp() {
                                       <StatusBadge status={row.status} />
                                     </td>
                                     <td>{dateLabel(row.last_checked_at)}</td>
-                                    <td>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        disabled={disabled}
-                                        onClick={() => void loadDetail(row.spreadsheet_id)}
-                                      >
-                                        Abrir detalhes
-                                        <ArrowRight />
-                                      </Button>
-                                    </td>
                                   </tr>
                                 ))}
                             </tbody>
@@ -1086,23 +1085,17 @@ export function OperationalApp() {
               )}
               {route === "details" && (
                 <div className="op-stack">
-                  <label className="op-field op-file-selector">
-                    Planilha selecionada
-                    <select
-                      value={selectedId ?? ""}
+                  <div className="op-detail-backbar">
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       disabled={disabled}
-                      onChange={(e) => {
-                        if (e.target.value) void loadDetail(e.target.value);
-                      }}
+                      onClick={() => navigate("sheets")}
                     >
-                      <option value="">Selecione uma planilha cadastrada</option>
-                      {rows.map((row) => (
-                        <option key={row.spreadsheet_id} value={row.spreadsheet_id}>
-                          {row.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      <ArrowLeft size={16} />
+                      Voltar para planilhas
+                    </Button>
+                  </div>
                   {detail ? (
                     <SpreadsheetDetails
                       key={`${detail.spreadsheet.spreadsheet_id}:${detailResetKey}`}
@@ -1196,11 +1189,11 @@ export function OperationalApp() {
                         if (saved) detailTab.current = "baselines";
                         return saved;
                       }}
-                      onSuggestRules={async () => {
+                      onSuggestRules={async (headerRow) => {
                         let proposal: import("@/types/integrity").MonitorScope | null = null;
                         await run(
                           "Lendo cabeçalhos para sugerir proteção",
-                          () => api.proposeRules(mutation()),
+                          () => api.proposeRules({ ...mutation(), header_row: headerRow }),
                           (scope) => {
                             proposal = scope;
                             setNotice(
@@ -1273,7 +1266,6 @@ export function OperationalApp() {
                             )
                           ) {
                             selectedIdRef.current = null;
-                            setSelectedId(null);
                             setDetail(null);
                             setPreview(null);
                             setRoute("sheets");

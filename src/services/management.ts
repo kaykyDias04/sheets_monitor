@@ -19,6 +19,7 @@ import type {
   OperationalPreview,
   Page,
   Preferences,
+  ProposeRulesInput,
   RegisteredSpreadsheet,
   RemoveInput,
   RulesInput,
@@ -51,7 +52,7 @@ export const saveTabs = (input: TabsInput) =>
   command<RegisteredSpreadsheet>("update_monitored_tabs", input);
 export const saveRules = (input: RulesInput) =>
   command<RegisteredSpreadsheet>("update_integrity_rules", input);
-export const proposeRules = (input: Mutation) =>
+export const proposeRules = (input: ProposeRulesInput) =>
   command<MonitorScope>("propose_integrity_rules", input);
 export const previewBaseline = (input: Mutation) =>
   command<OperationalPreview>("preview_baseline", input);
@@ -106,6 +107,10 @@ const messages: Record<string, string> = {
     "A página solicitada não está mais disponível para esta consulta. Volte para a primeira página e tente novamente.",
   baseline_not_found:
     "A versão de referência selecionada não foi encontrada para esta planilha. Atualize os dados e escolha outra versão.",
+  invalid_anchor_row:
+    "Informe uma linha âncora válida (entre 1 e 1.000.000) antes de sugerir as regras.",
+  anchor_row_out_of_range:
+    "A linha âncora informada ultrapassa o total de linhas de uma ou mais abas selecionadas. Informe uma linha existente na planilha ou atualize as abas.",
   configuration_pending:
     "O cadastro desta planilha ainda está pendente. Selecione abas, salve regras de proteção e aprove uma referência antes de verificar.",
   check_failed:
@@ -133,6 +138,10 @@ const messages: Record<string, string> = {
 
 export function managementError(error: unknown, context?: string) {
   const code = extractErrorCode(error);
+  if (code === "configuration_pending" && context === "ler os cabeçalhos da planilha") {
+    logErrorDiagnostic(error, context);
+    return "Não foi possível identificar cabeçalhos únicos na linha âncora escolhida em todas as abas selecionadas. Confira o número da linha âncora, atualize as abas ou preencha os cabeçalhos manualmente.";
+  }
   if (code && Object.hasOwn(messages, code)) {
     logErrorDiagnostic(error, context);
     return messages[code];

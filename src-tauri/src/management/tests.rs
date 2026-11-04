@@ -580,12 +580,23 @@ fn ipc_flat_json_inputs_accept_valid_and_reject_unknown_keys() {
     assert!(serde_json::from_value::<ApprovalInput>(approval.clone()).is_ok());
     approval["unexpected"] = serde_json::json!(true);
     assert!(serde_json::from_value::<ApprovalInput>(approval).is_err());
-    let mut removal = base;
+    let mut removal = base.clone();
     removal["confirmed"] = serde_json::json!(true);
     removal["history"] = serde_json::json!("delete_activity");
     assert!(serde_json::from_value::<RemoveInput>(removal.clone()).is_ok());
     removal["unexpected"] = serde_json::json!(true);
     assert!(serde_json::from_value::<RemoveInput>(removal).is_err());
+    assert!(serde_json::from_value::<ProposeRulesInput>(base.clone()).is_ok());
+    let mut propose = base;
+    propose["header_row"] = serde_json::json!(3);
+    assert_eq!(
+        serde_json::from_value::<ProposeRulesInput>(propose.clone())
+            .unwrap()
+            .header_row,
+        Some(3)
+    );
+    propose["unexpected"] = serde_json::json!(true);
+    assert!(serde_json::from_value::<ProposeRulesInput>(propose).is_err());
 }
 #[test]
 fn diagnostics_do_not_invent_integrity_for_unapproved_scope() {

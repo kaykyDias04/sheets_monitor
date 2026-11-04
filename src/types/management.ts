@@ -47,6 +47,9 @@ export interface TabsInput extends Mutation {
 export interface RulesInput extends Mutation {
   scope: MonitorScope;
 }
+export interface ProposeRulesInput extends Mutation {
+  header_row?: number;
+}
 export interface ApprovalInput extends Mutation {
   snapshot_id: string;
   snapshot_fingerprint: string;

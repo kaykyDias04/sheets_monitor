@@ -9,7 +9,7 @@ type Sheet = MonitorScope["sheets"][number];
 type Region = Sheet["regions"][number];
 type Tab = SpreadsheetMetadata["sheets"][number];
 
-const MAX_SCOPE_CELLS = 20_000;
+export const MAX_SCOPE_CELLS = 30_000_000;
 
 export function columnLetter(zeroBasedIndex: number): string {
   if (!Number.isInteger(zeroBasedIndex) || zeroBasedIndex < 0) return "?";
@@ -656,7 +656,7 @@ export function ScopeEditor({
                   <h4>3. Qual área da aba faz parte desta tabela? ({rangeA1(region.range)})</h4>
                   <p className="op-hint">
                     Delimitamos apenas as linhas e colunas necessárias para respeitar o orçamento de
-                    20 mil células por planilha.
+                    até 30 milhões de células por planilha.
                   </p>
                   <div className="op-form-grid">
                     <Numeric

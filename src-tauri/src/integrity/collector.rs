@@ -214,12 +214,25 @@ pub fn capture_with<T: ReadTransport>(
                 end_col: rule.range.end_col.min(sheet.column_count),
             };
             if r.start_row < r.end_row && r.start_col < r.end_col {
-                requests.push((
-                    sheet.sheet_id,
-                    rule.id.clone(),
-                    a1_range(&sheet.title, &r),
-                    r,
-                ));
+                let cols = u64::from(r.end_col.saturating_sub(r.start_col)).max(1);
+                let rows_per_chunk = (40_000_u64 / cols).max(1) as u32;
+                let mut chunk_start = r.start_row;
+                while chunk_start < r.end_row {
+                    let chunk_end = chunk_start.saturating_add(rows_per_chunk).min(r.end_row);
+                    let chunk_rect = GridRect {
+                        start_row: chunk_start,
+                        end_row: chunk_end,
+                        start_col: r.start_col,
+                        end_col: r.end_col,
+                    };
+                    requests.push((
+                        sheet.sheet_id,
+                        rule.id.clone(),
+                        a1_range(&sheet.title, &chunk_rect),
+                        chunk_rect,
+                    ));
+                    chunk_start = chunk_end;
+                }
             }
         }
     }
@@ -233,11 +246,14 @@ pub fn capture_with<T: ReadTransport>(
         }
         let begin = offset;
         let mut length = 0;
+        let mut batch_cells = 0_u64;
         while offset < requests.len()
             && offset - begin < 20
             && length + requests[offset].2.len() <= 2800
+            && (offset == begin || batch_cells.saturating_add(requests[offset].3.cells()) <= 40_000)
         {
             length += requests[offset].2.len();
+            batch_cells = batch_cells.saturating_add(requests[offset].3.cells());
             offset += 1;
         }
         if offset == begin {
@@ -438,7 +454,7 @@ fn merge_cells(
                             + cell.formula().map_or(0, str::len)
                             + cell.error().map_or(0, str::len)
                             + 64;
-                        if retained_bytes.saturating_add(estimated) > 16 * 1024 * 1024 {
+                        if retained_bytes.saturating_add(estimated) > 256 * 1024 * 1024 {
                             if !snapshot
                                 .coverage
                                 .issues
@@ -689,5 +705,53 @@ mod tests {
         let snapshot = capture(8, data);
         assert!(!snapshot.coverage.complete);
         assert!(!snapshot.sheets[0].regions[0].complete);
+    }
+    #[test]
+    fn large_thirty_column_twenty_thousand_row_region_is_chunked_and_normalized() {
+        let mut scope = super::super::fixtures::scope();
+        let region = &mut scope.sheets[0].regions[0];
+        region.range.start_row = 0;
+        region.range.end_row = 20_000;
+        region.range.start_col = 0;
+        region.range.end_col = 30;
+        region.formulas.clear();
+        let meta = json!({"spreadsheetId":"fixture_sheet","sheets":[{"properties":{"sheetId":7,"title":"Data","index":0,"sheetType":"GRID","gridProperties":{"rowCount":20_000,"columnCount":30}}}]});
+        let rows_per_chunk = (40_000 / 30) as u32;
+        let mut replies = VecDeque::new();
+        replies.push_back(HttpReply {
+            status: 200,
+            body: serde_json::to_vec(&meta).unwrap(),
+            retry_after: None,
+        });
+        let mut start = 0;
+        let mut chunk_count = 0;
+        while start < 20_000 {
+            let end = (start + rows_per_chunk).min(20_000);
+            let data = if start == 0 {
+                json!([{"startRow":0,"startColumn":0,"rowData":[{"values":[{"effectiveValue":{"stringValue":"ID"}},{"effectiveValue":{"stringValue":"Amount"}},{"effectiveValue":{"stringValue":"Total"}}]},{"values":[{"effectiveValue":{"stringValue":"row-1"}},{"effectiveValue":{"numberValue":10}},{"effectiveValue":{"numberValue":20}}]}]}])
+            } else if end == 20_000 {
+                json!([{"startRow":19_999,"startColumn":0,"rowData":[{"values":[{"effectiveValue":{"stringValue":"row-last"}},{"effectiveValue":{"numberValue":99}},{"effectiveValue":{"numberValue":198}}]}]}])
+            } else {
+                json!([])
+            };
+            let body = json!({"spreadsheetId":"fixture_sheet","sheets":[{"properties":{"sheetId":7,"title":"Data","index":0,"sheetType":"GRID","gridProperties":{"rowCount":20_000,"columnCount":30}},"data":data}]});
+            replies.push_back(HttpReply {
+                status: 200,
+                body: serde_json::to_vec(&body).unwrap(),
+                retry_after: None,
+            });
+            start = end;
+            chunk_count += 1;
+        }
+        assert!(chunk_count >= 15);
+        let api =
+            GoogleApi::with_transport("synthetic".into(), Mock(RefCell::new(replies))).unwrap();
+        let snap = capture_with(&api, "fixture_subject", "fixture_sheet", scope).unwrap();
+        assert!(snap.coverage.complete);
+        assert!(snap.sheets[0].regions[0].complete);
+        assert_eq!(snap.sheets[0].regions[0].headers[0].header, "ID");
+        assert_eq!(snap.sheets[0].regions[0].rows.len(), 2);
+        assert_eq!(snap.sheets[0].regions[0].rows[0].row, 1);
+        assert_eq!(snap.sheets[0].regions[0].rows[1].row, 19_999);
     }
 }

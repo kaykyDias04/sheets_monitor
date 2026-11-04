@@ -237,7 +237,7 @@ impl Database {
         {
             return Err(error(
                 "invalid_tabs",
-                "Selecione abas de grade disponíveis, respeitando o limite de 1024 abas e 20.000 células por escopo.",
+                "Selecione abas de grade disponíveis, respeitando o limite de 1024 abas e 30.000.000 de células por escopo.",
             ));
         }
         let aid = account(&tx, subject)?;

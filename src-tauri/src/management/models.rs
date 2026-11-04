@@ -39,6 +39,24 @@ mutation_input!(ApprovalInput {
     expected_version: u32,
     confirmed: bool
 });
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ProposeRulesInput {
+    pub spreadsheet_id: String,
+    pub expected_generation: u64,
+    pub expected_revision: u64,
+    #[serde(default)]
+    pub header_row: Option<u32>,
+}
+impl ProposeRulesInput {
+    pub fn mutation(&self) -> Mutation {
+        Mutation {
+            spreadsheet_id: self.spreadsheet_id.clone(),
+            expected_generation: self.expected_generation,
+            expected_revision: self.expected_revision,
+        }
+    }
+}
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SpreadsheetQuery {

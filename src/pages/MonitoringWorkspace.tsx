@@ -387,7 +387,7 @@ export function MonitoringWorkspace({
                   onOpenSheet(id);
                 }}
               >
-                Abrir detalhes da planilha
+                Ver em Planilhas
               </Button>
             </>
           )}

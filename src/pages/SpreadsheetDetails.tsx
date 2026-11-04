@@ -82,7 +82,7 @@ interface Props {
   onComparisonClear: () => void;
   onSaveTabs: (ids: number[]) => Promise<boolean>;
   onSaveRules: (scope: MonitorScope) => Promise<boolean>;
-  onSuggestRules: () => Promise<MonitorScope | null>;
+  onSuggestRules: (headerRow: number) => Promise<MonitorScope | null>;
   onPause: () => void;
   onCheck: () => void;
   onRefresh: () => void;
@@ -132,6 +132,9 @@ export function SpreadsheetDetails({
   const [selected, setSelected] = useState(row.selected_sheet_ids);
   const [scope, setScope] = useState(() =>
     scopeForTabs(row.scope, row.selected_sheet_ids, defaultHistoryDays),
+  );
+  const [anchorRowInput, setAnchorRowInput] = useState(() =>
+    String((row.scope?.sheets[0]?.regions[0]?.header_row ?? 0) + 1),
   );
   const [tabProblems, setTabProblems] = useState<string[]>([]);
   const [ruleProblems, setRuleProblems] = useState<string[]>([]);
@@ -449,28 +452,56 @@ export function SpreadsheetDetails({
               <div>
                 <strong>Jeito mais fácil: buscar os cabeçalhos reais da planilha</strong>
                 <p>
-                  Lê a primeira linha das abas selecionadas no Google Sheets (até 8 colunas e 50
-                  linhas iniciais por aba, para até 30 abas) e monta o rascunho automaticamente.
+                  Lê a linha âncora escolhida nas abas selecionadas no Google Sheets (até 50 colunas
+                  e 20.000 linhas por aba, para até 30 abas) e monta o rascunho automaticamente.
                   Depois basta conferir e clicar em &ldquo;Salvar regras de proteção&rdquo;.
                 </p>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={disabled || tabsDirty || selected.length === 0 || selected.length > 30}
-                onClick={() => {
-                  void onSuggestRules().then((proposal) => {
-                    if (proposal) {
-                      setScope(proposal);
-                      setRuleProblems([]);
-                      onInvalidate();
+              <div className="op-suggest-controls">
+                <label className="op-anchor-field">
+                  <span>Linha âncora dos cabeçalhos</span>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={1000000}
+                    step={1}
+                    inputMode="numeric"
+                    disabled={
+                      disabled || tabsDirty || selected.length === 0 || selected.length > 30
                     }
-                  });
-                }}
-              >
-                <Sparkles size={16} />
-                Sugerir regras para abas selecionadas
-              </Button>
+                    value={anchorRowInput}
+                    onChange={(e) => {
+                      setAnchorRowInput(e.target.value);
+                      setRuleProblems([]);
+                    }}
+                  />
+                </label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={disabled || tabsDirty || selected.length === 0 || selected.length > 30}
+                  onClick={() => {
+                    const parsed = Number(anchorRowInput);
+                    if (!Number.isInteger(parsed) || parsed < 1 || parsed > 1_000_000) {
+                      onClearFeedback?.();
+                      setRuleProblems([
+                        "Informe uma linha âncora válida (número inteiro entre 1 e 1.000.000) para ler os cabeçalhos das abas selecionadas.",
+                      ]);
+                      return;
+                    }
+                    void onSuggestRules(parsed).then((proposal) => {
+                      if (proposal) {
+                        setScope(proposal);
+                        setRuleProblems([]);
+                        onInvalidate();
+                      }
+                    });
+                  }}
+                >
+                  <Sparkles size={16} />
+                  Sugerir regras para abas selecionadas
+                </Button>
+              </div>
             </div>
 
             <form

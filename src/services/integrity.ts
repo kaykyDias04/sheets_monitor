@@ -39,7 +39,7 @@ export const pruneHistory = (input: ScopeQuery) =>
 
 const messages: Record<string, string> = {
   integrity_invalid_scope:
-    "As regras de proteção possuem campos inválidos ou incompletos. Revise cabeçalhos, linhas, colunas e o limite de 20.000 células e tente novamente.",
+    "As regras de proteção possuem campos inválidos ou incompletos. Revise cabeçalhos, linhas, colunas e o limite de 30.000.000 de células e tente novamente.",
   integrity_invalid_snapshot:
     "A captura atual não cobre todas as regras configuradas. Confira se as abas e colunas existem na planilha e capture a estrutura novamente.",
   integrity_missing_baseline:
@@ -49,7 +49,7 @@ const messages: Record<string, string> = {
   integrity_approval_required:
     "Marque a confirmação de revisão do escopo antes de aprovar a nova referência estrutural.",
   integrity_limit:
-    "O escopo configurado excedeu o limite permitido de captura ou análise (até 20.000 células). Reduza o intervalo de linhas ou colunas nas regras de proteção.",
+    "O escopo configurado excedeu o limite permitido de captura ou análise (até 30.000.000 de células). Reduza o intervalo de linhas ou colunas nas regras de proteção.",
   integrity_forbidden:
     "Este recurso pertence a outra conta Google. Conecte a conta correspondente em Configurações para acessá-lo.",
   integrity_not_found:

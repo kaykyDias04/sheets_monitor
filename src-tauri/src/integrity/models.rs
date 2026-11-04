@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 pub const SNAPSHOT_VERSION: u32 = 1;
-pub const MAX_CELLS: u64 = 20_000;
+pub const MAX_CELLS: u64 = 30_000_000;
 /// Workbook tab count is independent from the 30 registered-file capacity.
 pub const MAX_MONITORED_TABS: usize = 1024;
 pub type EngineResult<T> = Result<T, EngineError>;
@@ -270,7 +270,7 @@ impl StructuralSnapshot {
         if serde_json::to_vec(self)
             .map_err(|_| EngineError::InvalidSnapshot)?
             .len()
-            > 8 * 1024 * 1024
+            > 256 * 1024 * 1024
         {
             return Err(EngineError::Limit);
         }
