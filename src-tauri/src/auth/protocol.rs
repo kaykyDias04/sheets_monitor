@@ -208,14 +208,28 @@ fn callback(request: &str, redirect_uri: &str, state: &str) -> AuthResult<String
     Ok(codes[0].to_owned())
 }
 fn respond(stream: &mut TcpStream, success: bool) {
-    let body = if success {
-        "Autorizacao recebida. Volte ao Sheets Monitor para concluir."
+    let (status, title, detail) = if success {
+        (
+            "200 OK",
+            "Autenticação concluída",
+            "Autorização recebida com sucesso. Você já pode fechar esta aba e voltar ao Sheets Monitor.",
+        )
     } else {
-        "Resposta recusada. Volte ao Sheets Monitor."
+        (
+            "400 Bad Request",
+            "Autorização não concluída",
+            "Não foi possível concluir o login no navegador. Volte ao Sheets Monitor para conferir os detalhes.",
+        )
     };
-    let status = if success { "200 OK" } else { "400 Bad Request" };
+    let body = format!(
+        "<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Sheets Monitor — {title}</title><style>body{{font-family:'Segoe UI',system-ui,sans-serif;background:#f4efe4;color:#24231f;display:grid;place-items:center;min-height:100vh;margin:0;padding:24px}}main{{max-width:440px;background:#fbf8f2;border:1px solid #dfd7c7;border-radius:12px;padding:28px;box-shadow:0 4px 16px rgba(36,35,31,.06)}}h1{{font-size:19px;margin:0 0 10px;color:#1f563b}}p{{font-size:14px;line-height:1.6;margin:0;color:#625c51}}</style></head><body><main><h1>{title}</h1><p>{detail}</p></main></body></html>"
+    );
     let _ = stream.set_write_timeout(Some(Duration::from_secs(1)));
-    let _=write!(stream,"HTTP/1.1 {status}\r\nContent-Type: text/plain; charset=utf-8\r\nContent-Length: {}\r\nCache-Control: no-store\r\nReferrer-Policy: no-referrer\r\nConnection: close\r\n\r\n{body}",body.len());
+    let _ = write!(
+        stream,
+        "HTTP/1.1 {status}\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: {}\r\nContent-Security-Policy: default-src 'none'; style-src 'unsafe-inline'\r\nCache-Control: no-store\r\nReferrer-Policy: no-referrer\r\nConnection: close\r\n\r\n{body}",
+        body.len()
+    );
 }
 
 #[cfg(test)]

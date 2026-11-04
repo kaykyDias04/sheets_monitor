@@ -135,9 +135,9 @@ const errorCategories: Record<string, ErrorDiagnostic["category"]> = {
 const safeMessages: Record<string, string> = {
   // Autenticação e sessão
   invalid_configuration:
-    "A configuração OAuth informada é inválida. Verifique o Client ID Desktop e tente novamente.",
+    "A configuração do cliente OAuth Desktop foi recusada pelo Google ou está incompleta nesta instalação. Solicite um instalador atualizado ao responsável.",
   configuration_invalid:
-    "A configuração OAuth informada é inválida. Verifique o Client ID Desktop e tente novamente.",
+    "A configuração do cliente OAuth Desktop foi recusada pelo Google ou está incompleta nesta instalação. Solicite um instalador atualizado ao responsável.",
   invalid_desktop_client_id:
     "O Client ID informado não corresponde a um cliente OAuth Desktop válido. Revise a configuração e tente novamente.",
   unconfigured:
@@ -161,15 +161,15 @@ const safeMessages: Record<string, string> = {
   cancelled:
     "O login com Google foi cancelado antes da conclusão. Clique em Entrar com Google quando desejar tentar novamente.",
   consent_denied:
-    "O consentimento foi negado no navegador. Conclua a autorização Google para conectar a conta.",
+    "O consentimento foi negado no navegador ou a conta não está liberada na tela OAuth do Google Cloud. Conclua a autorização com uma conta permitida.",
   oauth_denied:
-    "O consentimento foi negado no navegador. Conclua a autorização Google para conectar a conta.",
+    "O consentimento foi negado no navegador ou a conta não está liberada na tela OAuth do Google Cloud. Conclua a autorização com uma conta permitida.",
   access_denied:
-    "O consentimento foi negado no navegador. Conclua a autorização Google para conectar a conta.",
+    "O consentimento foi negado no navegador ou a conta não está liberada na tela OAuth do Google Cloud. Conclua a autorização com uma conta permitida.",
   callback_invalid:
     "A resposta de login recebida do navegador não pôde ser validada com segurança. Feche abas antigas de login e tente novamente.",
   authorization_failed:
-    "O Google recusou a autorização desta conta. Verifique se ela pertence à organização autorizada e tente conectar novamente.",
+    "O Google recusou a autorização desta conta. Verifique se a conta está liberada no projeto Google Cloud (organização Workspace ou lista de usuários de teste) e tente novamente.",
   revocation_confirmation_required:
     "Confirme explicitamente a revogação antes de encerrar o acesso concedido no Google.",
   identity_mismatch:

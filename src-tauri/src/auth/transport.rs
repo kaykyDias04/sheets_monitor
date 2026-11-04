@@ -149,17 +149,16 @@ impl OAuthTransport for HttpsOAuthTransport {
         observe_retry_after(status, response.headers());
         let bytes = bounded(response)?;
         if status != 200 {
-            let invalid_grant = serde_json::from_slice::<serde_json::Value>(&bytes)
+            let error_code = serde_json::from_slice::<serde_json::Value>(&bytes)
                 .ok()
-                .and_then(|v| v.get("error").and_then(|s| s.as_str()).map(str::to_owned))
-                .as_deref()
-                == Some("invalid_grant");
-            return Err(AuthError::new(if invalid_grant {
-                AuthCode::InvalidGrant
-            } else if matches!(status, 429 | 500..=599) {
-                AuthCode::Network
-            } else {
-                AuthCode::AuthorizationFailed
+                .and_then(|v| v.get("error").and_then(|s| s.as_str()).map(str::to_owned));
+            return Err(AuthError::new(match error_code.as_deref() {
+                Some("invalid_grant") => AuthCode::InvalidGrant,
+                Some("invalid_client") | Some("unauthorized_client") => {
+                    AuthCode::InvalidConfiguration
+                }
+                _ if matches!(status, 429 | 500..=599) => AuthCode::Network,
+                _ => AuthCode::AuthorizationFailed,
             }));
         }
         serde_json::from_slice(&bytes).map_err(|_| AuthError::new(AuthCode::InvalidResponse))

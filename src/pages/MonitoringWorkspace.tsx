@@ -191,157 +191,168 @@ export function MonitoringWorkspace({
   const blocked = disabled || working;
   const generation = session?.generation;
   const visibleError = error && error !== suppressedError ? error : "";
+  const hasVisibleBlocks = Boolean(
+    visibleError || notice || route === "settings" || session?.auth.account,
+  );
   return (
-    <div className="op-stack op-monitoring-workspace">
-      {visibleError && (
-        <p className="feedback error" role="alert">
-          {visibleError}
-        </p>
-      )}
-      {notice && (
-        <p className="feedback success" role="status">
-          {notice}
-        </p>
-      )}
-      {session?.auth.account && (route === "overview" || route === "settings") && (
-        <MonitoringPanel
-          status={status}
-          rows={rows}
-          disabled={blocked}
-          onToggle={(enabled) => {
-            if (generation !== undefined)
-              void action(
-                () => api.setMonitoringEnabled(enabled, generation),
-                enabled
-                  ? "Monitoramento iniciado."
-                  : "Monitoramento pausado; verificações automáticas canceladas.",
-                enabled ? "iniciar o monitoramento" : "pausar o monitoramento",
-              );
-          }}
-          onCheck={() => {
-            if (generation !== undefined)
-              void action(
-                () => api.checkNow(generation),
-                "Verificações elegíveis adicionadas à fila.",
-                "agendar a verificação das planilhas elegíveis",
-              );
-          }}
-        />
-      )}
-      {session?.auth.account && route !== "overview" && route !== "settings" && (
-        <p className="op-hint" role="status">
-          Monitoramento {status?.control.enabled ? "ativo" : "pausado"} ·{" "}
-          {status?.eligible_count ?? 0} planilhas prontas
-        </p>
-      )}
-      {route === "settings" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Windows e segundo plano</CardTitle>
-            <CardDescription>
-              Configuração deste usuário Windows, independente da conta Google.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="op-stack">
-            <p>
-              {native?.tray_available
-                ? "Bandeja disponível. Fechar a janela mantém o aplicativo em execução."
-                : "Bandeja indisponível. A janela permanecerá acessível ao tentar fechar."}
+    <>
+      {hasVisibleBlocks && (
+        <div className="op-stack op-monitoring-workspace">
+          {visibleError && (
+            <p className="feedback error" role="alert">
+              {visibleError}
             </p>
-            <label className="op-check">
-              <input
-                type="checkbox"
-                checked={native?.startup.registered ?? false}
-                disabled={
-                  blocked || !native || (!!native.startup.error_code && !native.startup.managed)
-                }
-                onChange={(event) => {
-                  const enabled = event.target.checked;
+          )}
+          {notice && (
+            <p className="feedback success" role="status">
+              {notice}
+            </p>
+          )}
+          {session?.auth.account && (route === "overview" || route === "settings") && (
+            <MonitoringPanel
+              status={status}
+              rows={rows}
+              disabled={blocked}
+              onToggle={(enabled) => {
+                if (generation !== undefined)
                   void action(
-                    () => api.setStartup(enabled),
+                    () => api.setMonitoringEnabled(enabled, generation),
                     enabled
-                      ? "Registro de inicialização ativado para este usuário Windows."
-                      : "Registro de inicialização desativado.",
-                    "alterar a inicialização com o Windows",
+                      ? "Monitoramento iniciado."
+                      : "Monitoramento pausado; verificações automáticas canceladas.",
+                    enabled ? "iniciar o monitoramento" : "pausar o monitoramento",
                   );
-                }}
-              />
-              Registrar início com Windows
-            </label>
-            <p className="op-hint">
-              Registro {native?.startup.registered ? "ativo" : "desativado"}. A execução no login
-              também depende das configurações de inicialização do Windows.
+              }}
+              onCheck={() => {
+                if (generation !== undefined)
+                  void action(
+                    () => api.checkNow(generation),
+                    "Verificações elegíveis adicionadas à fila.",
+                    "agendar a verificação das planilhas elegíveis",
+                  );
+              }}
+            />
+          )}
+          {session?.auth.account && route !== "overview" && route !== "settings" && (
+            <p className="op-hint" role="status">
+              Monitoramento {status?.control.enabled ? "ativo" : "pausado"} ·{" "}
+              {status?.eligible_count ?? 0} planilhas prontas
             </p>
-            {native?.startup.error_code && (
-              <p className="op-hint">
-                Não foi possível confirmar ou alterar o registro de inicialização com segurança.
-                Nenhuma entrada conflitante foi sobrescrita.
-              </p>
-            )}
-            <p className="op-hint">
-              O Windows pode silenciar alertas nas configurações de notificações ou em Não
-              incomodar. O retorno da API nativa não confirma que um alerta foi exibido.
-            </p>
-            {readiness?.identity_mode === "development_powershell" && (
-              <p className="op-hint">
-                Neste build de desenvolvimento, os alertas usam o remetente Windows PowerShell. A
-                identidade instalada será validada na distribuição.
-              </p>
-            )}
-            {readiness && readiness.setting !== "enabled" && (
-              <p className="feedback error" role="status">
-                {readiness.setting === "disabled_for_user"
-                  ? "As notificações estão desativadas no Windows para este usuário."
-                  : readiness.setting === "disabled_for_application"
-                    ? "As notificações deste remetente estão desativadas no Windows."
-                    : readiness.setting === "disabled_by_group_policy"
-                      ? "Uma política do Windows bloqueia as notificações."
-                      : readiness.setting === "disabled_by_manifest"
-                        ? "A identidade de notificações ainda não está habilitada neste build."
-                        : "Não foi possível confirmar a disponibilidade das notificações no Windows."}{" "}
-                O monitoramento continua; revise as configurações do Windows quando desejar.
-              </p>
-            )}
-            <div className="op-actions">
-              <Button
-                variant="outline"
-                disabled={
-                  blocked ||
-                  !session?.auth.account ||
-                  !readiness ||
-                  readiness.setting.startsWith("disabled")
-                }
-                onClick={() => {
-                  if (generation !== undefined)
-                    void action(
-                      () => api.retryBlockedNotifications(generation),
-                      "Reenvio solicitado para alertas bloqueados ainda elegíveis. Itens suprimidos ou expirados permanecem encerrados.",
-                      "reenviar os alertas bloqueados",
-                    );
-                }}
-              >
-                Reenviar alertas bloqueados
-              </Button>
-              <Button
-                variant="outline"
-                disabled={blocked || !native}
-                onClick={() =>
-                  void action(api.exitDesktop, "Encerrando aplicativo…", "encerrar o aplicativo")
-                }
-              >
-                Sair do aplicativo
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      {session?.auth.account && (route === "activities" || route === "settings") && (
-        <NotificationHistory
-          page={history}
-          disabled={blocked}
-          onPage={setOffset}
-          onOpen={setSelected}
-        />
+          )}
+          {route === "settings" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Windows e segundo plano</CardTitle>
+                <CardDescription>
+                  Configuração deste usuário Windows, independente da conta Google.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="op-stack">
+                <p>
+                  {native?.tray_available
+                    ? "Bandeja disponível. Fechar a janela mantém o aplicativo em execução."
+                    : "Bandeja indisponível. A janela permanecerá acessível ao tentar fechar."}
+                </p>
+                <label className="op-check">
+                  <input
+                    type="checkbox"
+                    checked={native?.startup.registered ?? false}
+                    disabled={
+                      blocked || !native || (!!native.startup.error_code && !native.startup.managed)
+                    }
+                    onChange={(event) => {
+                      const enabled = event.target.checked;
+                      void action(
+                        () => api.setStartup(enabled),
+                        enabled
+                          ? "Registro de inicialização ativado para este usuário Windows."
+                          : "Registro de inicialização desativado.",
+                        "alterar a inicialização com o Windows",
+                      );
+                    }}
+                  />
+                  Registrar início com Windows
+                </label>
+                <p className="op-hint">
+                  Registro {native?.startup.registered ? "ativo" : "desativado"}. A execução no
+                  login também depende das configurações de inicialização do Windows.
+                </p>
+                {native?.startup.error_code && (
+                  <p className="op-hint">
+                    Não foi possível confirmar ou alterar o registro de inicialização com segurança.
+                    Nenhuma entrada conflitante foi sobrescrita.
+                  </p>
+                )}
+                <p className="op-hint">
+                  O Windows pode silenciar alertas nas configurações de notificações ou em Não
+                  incomodar. O retorno da API nativa não confirma que um alerta foi exibido.
+                </p>
+                {readiness?.identity_mode === "development_powershell" && (
+                  <p className="op-hint">
+                    Neste build de desenvolvimento, os alertas usam o remetente Windows PowerShell.
+                    A identidade instalada será validada na distribuição.
+                  </p>
+                )}
+                {readiness && readiness.setting !== "enabled" && (
+                  <p className="feedback error" role="status">
+                    {readiness.setting === "disabled_for_user"
+                      ? "As notificações estão desativadas no Windows para este usuário."
+                      : readiness.setting === "disabled_for_application"
+                        ? "As notificações deste remetente estão desativadas no Windows."
+                        : readiness.setting === "disabled_by_group_policy"
+                          ? "Uma política do Windows bloqueia as notificações."
+                          : readiness.setting === "disabled_by_manifest"
+                            ? "A identidade de notificações ainda não está habilitada neste build."
+                            : "Não foi possível confirmar a disponibilidade das notificações no Windows."}{" "}
+                    O monitoramento continua; revise as configurações do Windows quando desejar.
+                  </p>
+                )}
+                <div className="op-actions">
+                  <Button
+                    variant="outline"
+                    disabled={
+                      blocked ||
+                      !session?.auth.account ||
+                      !readiness ||
+                      readiness.setting.startsWith("disabled")
+                    }
+                    onClick={() => {
+                      if (generation !== undefined)
+                        void action(
+                          () => api.retryBlockedNotifications(generation),
+                          "Reenvio solicitado para alertas bloqueados ainda elegíveis. Itens suprimidos ou expirados permanecem encerrados.",
+                          "reenviar os alertas bloqueados",
+                        );
+                    }}
+                  >
+                    Reenviar alertas bloqueados
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled={blocked || !native}
+                    onClick={() =>
+                      void action(
+                        api.exitDesktop,
+                        "Encerrando aplicativo…",
+                        "encerrar o aplicativo",
+                      )
+                    }
+                  >
+                    Sair do aplicativo
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {session?.auth.account && (route === "activities" || route === "settings") && (
+            <NotificationHistory
+              page={history}
+              disabled={blocked}
+              onPage={setOffset}
+              onOpen={setSelected}
+            />
+          )}
+        </div>
       )}
       <Dialog
         open={selected !== null}
@@ -382,6 +393,6 @@ export function MonitoringWorkspace({
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

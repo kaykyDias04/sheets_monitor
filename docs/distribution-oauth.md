@@ -31,3 +31,23 @@ O usuário identificou o projeto interno autorizado e forneceu o JSON Desktop po
 ## Publicação OAuth interna
 
 A configuração já foi incorporada e o usuário confirmou login e leitura no novo instalador. Pré-release1.0.0 publicada,com limites de audiência interna e homologação integral explicitados. Não é necessária verificação pública para esse público; contas externas à organização permanecem fora da audiência. O JSON privado não é asset de distribuição; configuração de cliente Desktop é incorporada ao binário conforme o protocolo instalado. Evidências sanitizadas em docs/evidence/release-oauth.
+
+
+## Distribuição portátil entre máquinas Windows 11 (v1.0.3+)
+
+Para garantir que o instalador compilado autentique em qualquer computador Windows 11 sem configuração manual por máquina (`.env`, variáveis de ambiente ou credenciais prévias no cofre do desenvolvedor):
+
+1. **Configuração pública versionada (`src-tauri/oauth-client.json`)**: armazena o `client_id` público do cliente OAuth do tipo **Desktop App** (`installed`), acompanhando automaticamente o código-fonte e o build Tauri sem depender de caminhos absolutos da máquina principal.
+2. **Resolução e validação em tempo de compilação (`src-tauri/build.rs`)**:
+   - Aceita variáveis de processo (`SHEETS_MONITOR_OAUTH_CLIENT_ID` / `SHEETS_MONITOR_OAUTH_DESKTOP_SECRET`), caminho explícito (`SHEETS_MONITOR_OAUTH_CLIENT_JSON`), arquivo local ignorado pelo Git (`.secrets/oauth-desktop.json` ou `.secrets/client_secret.json`) e o `src-tauri/oauth-client.json`.
+   - Rejeita automaticamente JSONs do tipo `web` (aplicações confidenciais) e exige sufixo `.apps.googleusercontent.com`.
+   - Quando `SHEETS_MONITOR_REQUIRE_OAUTH=1` está ativo (`scripts/build-release.ps1`), bloqueia o build caso o cliente OAuth Desktop não esteja provisionado, impedindo publicação acidental de instalador desconfigurado.
+3. **Sessão individual por usuário do Windows (`WindowsVault`)**:
+   - O cliente OAuth Desktop distribuído é compartilhado entre instalações como cliente público com **Authorization Code + PKCE (`S256`)**, navegador externo do sistema e callback loopback em porta dinâmica (`http://127.0.0.1:<porta>/oauth/callback`).
+   - Cada usuário autentica sua própria conta Google e tem seu `refresh_token` armazenado individualmente no Gerenciador de Credenciais do Windows (`SheetsMonitor.OAuth.v2`), com renovação automática de `access_token`, logout local (`Desconectar conta`) e revogação explícita (`Revogar acesso no Google`).
+4. **Requisitos externos no Google Cloud Console**:
+   - **APIs habilitadas no projeto**: Google Sheets API, Google Drive API e Google Apps Script API.
+   - **Audiência / Tela de consentimento OAuth**:
+     - **Interno (Internal)**: permite login apenas para contas pertencentes à mesma organização Google Workspace do projeto Cloud; contas `@gmail.com` externas recebem bloqueio `org_internal` pelo Google.
+     - **Externo — Em teste (Testing)**: permite login apenas para os e-mails cadastrados explicitamente em *Test users* no Google Auth Platform (até 100 usuários).
+     - **Externo — Em produção (In production)**: permite login com qualquer conta Google; como o aplicativo utiliza escopos restritos/sensíveis (`spreadsheets.readonly`, `script.projects.readonly` e opcionalmente `drive.metadata.readonly`), o uso por contas externas fora da lista de teste requer verificação OAuth do Google para evitar tela de bloqueio/aviso de app não verificado.

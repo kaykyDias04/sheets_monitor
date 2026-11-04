@@ -93,6 +93,7 @@ struct Access {
 }
 struct Memory {
     stored: StoredState,
+    default_config: Option<StoredConfig>,
     access: Option<Access>,
     generation: u64,
     reconnect_required: bool,
@@ -197,6 +198,7 @@ impl AuthManager {
             transport,
             memory: Mutex::new(Memory {
                 stored,
+                default_config: None,
                 access: None,
                 generation: 0,
                 reconnect_required: false,
@@ -301,16 +303,57 @@ impl AuthManager {
     /// protected configuration or grants Drive access without an explicit choice.
     pub fn configure_application(
         &self,
-        input: Option<AuthConfigInput>,
+        mut input: Option<AuthConfigInput>,
     ) -> AuthResult<IntegrationState> {
-        let current = self.state()?;
-        if current.configured {
-            return Ok(current);
+        let Some(mut input) = input.take() else {
+            return self.state();
+        };
+        let candidate = StoredConfig {
+            client_id: input.client_id.trim().to_owned(),
+            client_secret: input.client_secret.take().filter(|s| !s.is_empty()),
+            drive_metadata_opt_in: input.drive_metadata_opt_in,
+        };
+        validate_config(&candidate)?;
+        let _gate = self
+            .auth_gate
+            .try_lock()
+            .map_err(|_| AuthError::new(AuthCode::AuthBusy))?;
+        let mut memory = self.memory()?;
+        memory.default_config = Some(candidate.clone());
+        if let Some(error) = &memory.load_error {
+            return Err(error.clone());
         }
-        match input {
-            Some(input) => self.configure(input),
-            None => Ok(current),
+        if let Some(existing) = &memory.stored.config {
+            if existing.client_id == candidate.client_id
+                && existing.client_secret.is_none()
+                && candidate.client_secret.is_some()
+            {
+                let mut updated = memory.stored.clone();
+                if let Some(cfg) = &mut updated.config {
+                    cfg.client_secret = candidate.client_secret.clone();
+                }
+                if self.save(&updated).is_ok() {
+                    memory.stored = updated;
+                } else if let Some(cfg) = &mut memory.stored.config {
+                    cfg.client_secret = candidate.client_secret.clone();
+                }
+            }
+            return Ok(Self::status(&memory));
         }
+        let stored = StoredState {
+            config: Some(candidate),
+            session: None,
+        };
+        // Persist default public OAuth configuration when Windows Credential Manager is
+        // available; if unavailable at startup, keep the public client configuration in
+        // memory so the application never falsely reports missing build provisioning, while
+        // still strictly requiring protected vault storage before persisting any user token.
+        let _ = self.save(&stored);
+        memory.generation = memory.generation.wrapping_add(1);
+        memory.stored = stored;
+        memory.access = None;
+        memory.reconnect_required = false;
+        Ok(Self::status(&memory))
     }
     /// Changing the requested Drive scope does not manufacture a Google grant.
     /// Enabling it without an existing grant requires full desktop reconsent.
@@ -407,8 +450,17 @@ impl AuthManager {
         memory.access = None;
         memory.stored.session = None;
         memory.reconnect_required = false;
+        if memory.stored.config.is_none() {
+            if let Some(default_config) = memory.default_config.clone() {
+                memory.stored.config = Some(default_config);
+            }
+        }
         let result = if memory.load_error.is_some() {
-            self.vault.clear()
+            self.vault.clear().map(|()| {
+                if memory.stored.config.is_some() {
+                    let _ = self.save(&memory.stored);
+                }
+            })
         } else {
             self.save(&memory.stored)
         };

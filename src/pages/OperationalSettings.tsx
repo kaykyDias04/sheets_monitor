@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { LogIn, LogOut, ShieldCheck, RefreshCw, Save } from "lucide-react";
+import { LogIn, LogOut, ShieldCheck, ShieldOff, RefreshCw, Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Preferences } from "@/types/management";
 import type { IntegrationState } from "@/types/google";
+
 export function AccountCard({
   session,
   disabled,
   onConnect,
   onDisconnect,
+  onRevoke,
   onDrive,
   onRefresh,
 }: {
@@ -17,10 +19,14 @@ export function AccountCard({
   disabled: boolean;
   onConnect: () => void;
   onDisconnect: () => void;
+  onRevoke?: () => void;
   onDrive: (enabled: boolean) => void;
   onRefresh: () => void;
 }) {
+  const [confirmRevoke, setConfirmRevoke] = useState(false);
   const connected = session?.auth.status === "connected";
+  const hasAccount = Boolean(session?.auth.account);
+
   return (
     <Card>
       <CardHeader>
@@ -33,7 +39,7 @@ export function AccountCard({
       <CardContent>
         <div className="op-account">
           <span className="op-account-icon">
-            <ShieldCheck size={25} />
+            <ShieldCheck size={24} />
           </span>
           <div>
             <strong>
@@ -43,8 +49,8 @@ export function AccountCard({
             <p>
               {session?.auth.account?.email ??
                 (session?.auth.status === "reconnect_required"
-                  ? "Uma nova autorização é necessária."
-                  : "Suas credenciais ficam no armazenamento seguro do Windows.")}
+                  ? "Uma nova autorização é necessária para renovar a sessão."
+                  : "Suas credenciais ficam protegidas individualmente no cofre do Windows.")}
             </p>
           </div>
         </div>
@@ -64,8 +70,11 @@ export function AccountCard({
           </Button>
           <Button
             variant="outline"
-            disabled={disabled || !session?.auth.account}
-            onClick={onDisconnect}
+            disabled={disabled || !hasAccount}
+            onClick={() => {
+              setConfirmRevoke(false);
+              onDisconnect();
+            }}
           >
             <LogOut />
             Desconectar conta
@@ -86,12 +95,13 @@ export function AccountCard({
             Permitir descoberta de planilhas pelo Drive
           </label>
           <p className="op-hint">
-            A descoberta usa leitura de metadados dos arquivos acessíveis. Ativar pode exigir novo
-            consentimento; nenhuma permissão de escrita é solicitada.
+            A descoberta usa leitura de metadados dos arquivos acessíveis. Ativar antes ou depois do
+            login exige consentimento dessa permissão no navegador; nenhuma permissão de escrita é
+            solicitada.
           </p>
         </div>
         <details className="op-advanced">
-          <summary>Permissões e estado das APIs</summary>
+          <summary>Permissões e controle de acesso</summary>
           <ul className="op-api-status">
             {[
               ["Sheets", "https://www.googleapis.com/auth/spreadsheets.readonly"],
@@ -108,15 +118,41 @@ export function AccountCard({
               </li>
             ))}
           </ul>
+          {hasAccount && onRevoke && (
+            <div className="op-revoke-box">
+              <label className="op-check">
+                <input
+                  type="checkbox"
+                  checked={confirmRevoke}
+                  disabled={disabled}
+                  onChange={(e) => setConfirmRevoke(e.target.checked)}
+                />
+                Confirmo que desejo revogar no Google o acesso concedido a este aplicativo.
+              </label>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={disabled || !confirmRevoke}
+                onClick={() => {
+                  setConfirmRevoke(false);
+                  onRevoke();
+                }}
+              >
+                <ShieldOff />
+                Revogar acesso no Google
+              </Button>
+            </div>
+          )}
         </details>
         <p className="op-hint">
-          Desconectar encerra a sessão local; não revoga a concessão no Google. A conexão com
-          usuários de teste não comprova publicação para contas externas.
+          Desconectar encerra apenas a sessão local neste computador; revogar encerra também a
+          concessão da conta no Google.
         </p>
       </CardContent>
     </Card>
   );
 }
+
 export function PreferenceForm({
   value,
   disabled,
@@ -222,7 +258,7 @@ export function PreferenceForm({
           </Button>
         </form>
         <p className="op-hint">
-          Sheets Monitor 1.0.2 · Windows 11 · Dados e referências locais. As operações Google exigem
+          Sheets Monitor 1.0.3 · Windows 11 · Dados e referências locais. As operações Google exigem
           internet.
         </p>
       </CardContent>

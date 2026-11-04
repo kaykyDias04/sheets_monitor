@@ -179,6 +179,7 @@ export function DiscoveryPanel({
   registered,
   disabled,
   canDiscover,
+  onEnableDiscovery,
 }: {
   query: DiscoveryQuery;
   onQuery: (query: DiscoveryQuery) => void;
@@ -190,6 +191,7 @@ export function DiscoveryPanel({
   registered: string[];
   disabled: boolean;
   canDiscover: boolean;
+  onEnableDiscovery?: () => void;
 }) {
   return (
     <Card id="discovery-panel">
@@ -241,10 +243,23 @@ export function DiscoveryPanel({
           </Button>
         </form>
         {!canDiscover && (
-          <p className="op-notice">
-            A descoberta precisa da permissão de leitura de metadados do Drive. Ative a descoberta
-            em Configurações e conclua o consentimento Google, se solicitado.
-          </p>
+          <div className="op-notice op-discovery-enable">
+            <p>
+              A descoberta precisa da permissão de leitura de metadados do Drive. Ative a descoberta
+              em Configurações ou autorize abaixo para listar as planilhas da conta.
+            </p>
+            {onEnableDiscovery && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={disabled}
+                onClick={onEnableDiscovery}
+              >
+                Habilitar descoberta no Drive
+              </Button>
+            )}
+          </div>
         )}
         <details className="op-advanced">
           <summary>Unidade compartilhada específica</summary>
@@ -395,6 +410,7 @@ export function AddSpreadsheetsDialog({
   registered,
   disabled,
   canDiscover,
+  onEnableDiscovery,
   busy = null,
   error = "",
   notice = "",
@@ -414,6 +430,7 @@ export function AddSpreadsheetsDialog({
   registered: string[];
   disabled: boolean;
   canDiscover: boolean;
+  onEnableDiscovery?: () => void;
   busy?: string | null;
   error?: string;
   notice?: string;
@@ -465,6 +482,7 @@ export function AddSpreadsheetsDialog({
             registered={registered}
             disabled={disabled}
             canDiscover={canDiscover}
+            onEnableDiscovery={onEnableDiscovery}
           />
           <Card>
             <CardHeader>

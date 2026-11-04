@@ -17,6 +17,7 @@ import {
   getIntegrationState,
   connectIntegration,
   disconnectIntegration,
+  revokeIntegration,
   testScriptAccess,
 } from "@/services/google";
 import * as api from "@/services/management";
@@ -709,6 +710,12 @@ export function OperationalApp() {
         "Conta desconectada deste dispositivo.",
         "desconectar a conta Google",
       ),
+    onRevoke: () =>
+      void sessionAction(
+        revokeIntegration,
+        "Acesso revogado no Google e sessão encerrada neste dispositivo.",
+        "revogar o acesso da conta no Google",
+      ),
     onDrive: (enabled: boolean) =>
       void sessionAction(
         () => api.setDriveOptIn(enabled),
@@ -719,6 +726,31 @@ export function OperationalApp() {
       ),
     onRefresh: () => void refresh(),
   };
+
+  async function enableDiscoveryFromDialog() {
+    if (locked.current || !desktop) return;
+    let readyToList = false;
+    await sessionAction(
+      async () => {
+        const optedIn = await api.setDriveOptIn(true);
+        const hasDriveGrant = optedIn.auth.granted_scopes.includes(
+          "https://www.googleapis.com/auth/drive.metadata.readonly",
+        );
+        const finalState = hasDriveGrant ? optedIn : await connectIntegration();
+        readyToList =
+          finalState.drive_metadata_opt_in &&
+          finalState.auth.granted_scopes.includes(
+            "https://www.googleapis.com/auth/drive.metadata.readonly",
+          );
+        return finalState;
+      },
+      "Descoberta pelo Google Drive habilitada.",
+      "habilitar a descoberta de planilhas no Google Drive",
+    );
+    if (readyToList && mounted.current) {
+      await discover({ ...query, page_token: null });
+    }
+  }
 
   return (
     <div className="app-shell op-app">
@@ -760,38 +792,55 @@ export function OperationalApp() {
         </nav>
         <div className="sidebar-foot">
           <div className="version">
-            <span>v1.0.2</span>
+            <span>v1.0.3</span>
             <span>WINDOWS 11</span>
           </div>
         </div>
       </aside>
       <div className="main-shell">
         <header className="topbar">
-          <div className="breadcrumbs">
-            <span>Workspace</span>
-            <ChevronRight size={13} />
-            <strong>{pageTitle}</strong>
-          </div>
-          <div className="topbar-tools">
-            <span className={`op-connection ${accountAvailable ? "connected" : ""}`}>
-              <span />
-              {session?.auth.status === "connected"
-                ? "Google conectado"
-                : session?.auth.status === "reconnect_required"
-                  ? "Reautorizar conta"
-                  : "Google desconectado"}
-            </span>
-            <button
-              className="op-avatar"
-              title="Configurações da conta"
-              aria-label="Abrir configurações da conta"
-              disabled={busy !== null}
-              onClick={() => navigate("settings")}
-            >
-              {session?.auth.account?.name?.[0]?.toUpperCase() ??
-                session?.auth.account?.email?.[0]?.toUpperCase() ??
-                "G"}
-            </button>
+          <div className="topbar-inner">
+            <div className="breadcrumbs">
+              <span>Workspace</span>
+              <ChevronRight size={14} aria-hidden="true" />
+              <strong>{pageTitle}</strong>
+            </div>
+            <div className="topbar-tools">
+              <span
+                className={`op-connection ${
+                  session?.auth.status === "connected"
+                    ? "connected"
+                    : session?.auth.status === "reconnect_required"
+                      ? "reconnect"
+                      : ""
+                }`}
+              >
+                <span className="op-connection-dot" aria-hidden="true" />
+                <span>
+                  {session?.auth.status === "connected"
+                    ? "Google conectado"
+                    : session?.auth.status === "reconnect_required"
+                      ? "Reautorizar conta"
+                      : "Google desconectado"}
+                </span>
+              </span>
+              <button
+                type="button"
+                className="op-avatar"
+                title={
+                  session?.auth.account?.email
+                    ? `Conta conectada: ${session.auth.account.email}`
+                    : "Configurações da conta"
+                }
+                aria-label="Abrir configurações da conta"
+                disabled={busy !== null}
+                onClick={() => navigate("settings")}
+              >
+                {session?.auth.account?.name?.[0]?.toUpperCase() ??
+                  session?.auth.account?.email?.[0]?.toUpperCase() ??
+                  "G"}
+              </button>
+            </div>
           </div>
         </header>
         <main id="operational-content" className="content">
@@ -1028,6 +1077,7 @@ export function OperationalApp() {
                     registered={rows.map((row) => row.spreadsheet_id)}
                     disabled={disabled}
                     canDiscover={canDiscover}
+                    onEnableDiscovery={() => void enableDiscoveryFromDialog()}
                     busy={busy}
                     error={error}
                     notice={notice}

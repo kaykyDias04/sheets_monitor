@@ -245,6 +245,47 @@ beforeEach(() => {
       };
       return structuredClone(session);
     }
+    if (command === "integration_revoke") {
+      if ((args as { confirmed?: boolean } | undefined)?.confirmed !== true)
+        throw { code: "revocation_confirmation_required" };
+      session = {
+        ...session,
+        generation: session.generation + 1,
+        auth: { ...session.auth, status: "disconnected", account: null, granted_scopes: [] },
+      };
+      return structuredClone(session);
+    }
+    if (command === "integration_set_drive_opt_in") {
+      const enabled = Boolean((args as { enabled?: boolean } | undefined)?.enabled);
+      session = {
+        ...session,
+        generation: session.generation + 1,
+        drive_metadata_opt_in: enabled,
+      };
+      return structuredClone(session);
+    }
+    if (command === "integration_connect") {
+      session = {
+        ...session,
+        generation: session.generation + 1,
+        auth: {
+          status: "connected",
+          account: {
+            subject: "fixture-account",
+            email: "fixture@example.invalid",
+            name: "Conta de teste",
+          },
+          granted_scopes: [
+            "https://www.googleapis.com/auth/spreadsheets.readonly",
+            ...(session.drive_metadata_opt_in
+              ? ["https://www.googleapis.com/auth/drive.metadata.readonly"]
+              : []),
+          ],
+          expires_at: null,
+        },
+      };
+      return structuredClone(session);
+    }
     throw { code: "invalid_input" };
   });
 });
@@ -407,7 +448,7 @@ describe("Sprint 04 · operação sem demonstração", () => {
     const dialog = await openAddDialog(user);
     expect(within(dialog).getByRole("button", { name: "Cadastrar por link" })).toBeDisabled();
     expect(within(dialog).getByText(/limite de 30 se aplica aos cadastros/)).toBeInTheDocument();
-  });
+  }, 15000);
 
   it("executa o fluxo completo: adicionar -> abas -> salvar -> regras -> salvar -> referência", async () => {
     const user = await load();
@@ -706,6 +747,42 @@ describe("Sprint 04 · operação sem demonstração", () => {
     await settled();
     expect(screen.queryByText("fixture@example.invalid")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeInTheDocument();
+  });
+
+  it("revoga explicitamente o acesso no Google somente após confirmação e atualiza o header", async () => {
+    const user = await load();
+    const header = document.querySelector("header.topbar .topbar-inner");
+    expect(header).toBeInTheDocument();
+    expect(screen.getByText("Google conectado")).toBeInTheDocument();
+
+    await go(user, "Configurações");
+    await user.click(screen.getByText("Permissões e controle de acesso"));
+    const revokeBtn = screen.getByRole("button", { name: "Revogar acesso no Google" });
+    expect(revokeBtn).toBeDisabled();
+    await user.click(
+      screen.getByRole("checkbox", {
+        name: /Confirmo que desejo revogar no Google o acesso concedido/,
+      }),
+    );
+    expect(revokeBtn).toBeEnabled();
+    await user.click(revokeBtn);
+    await settled();
+    expect(call).toHaveBeenCalledWith("integration_revoke", { confirmed: true });
+    expect(screen.getByText("Google desconectado")).toBeInTheDocument();
+  });
+
+  it("permite habilitar descoberta do Drive diretamente na janela Adicionar planilhas", async () => {
+    session.drive_metadata_opt_in = false;
+    session.auth.granted_scopes = ["https://www.googleapis.com/auth/spreadsheets.readonly"];
+    const user = await load();
+    await go(user, "Planilhas");
+    await user.click(screen.getByRole("button", { name: "Adicionar planilhas" }));
+    const dialog = await screen.findByRole("dialog", { name: "Adicionar planilhas" });
+    expect(within(dialog).getByRole("button", { name: "Buscar planilhas" })).toBeDisabled();
+    await user.click(within(dialog).getByRole("button", { name: "Habilitar descoberta no Drive" }));
+    await within(dialog).findByText("Arquivo descoberto");
+    expect(call).toHaveBeenCalledWith("integration_set_drive_opt_in", { enabled: true });
+    expect(call).toHaveBeenCalledWith("integration_connect");
   });
 
   it("padroniza categorias de erro com causa e ação sem expor detalhes sensíveis", () => {

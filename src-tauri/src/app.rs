@@ -916,10 +916,12 @@ pub fn run() {
             ));
             // The maintainer provisions a Desktop client at build time. A local
             // development configuration is preserved and no consent is inferred.
-            let provisioned =
-                option_env!("SHEETS_MONITOR_OAUTH_CLIENT_ID").map(|id| AuthConfigInput {
+            let provisioned = option_env!("SHEETS_MONITOR_EMBEDDED_CLIENT_ID")
+                .or(option_env!("SHEETS_MONITOR_OAUTH_CLIENT_ID"))
+                .map(|id| AuthConfigInput {
                     client_id: id.into(),
-                    client_secret: option_env!("SHEETS_MONITOR_OAUTH_DESKTOP_SECRET")
+                    client_secret: option_env!("SHEETS_MONITOR_EMBEDDED_DESKTOP_SECRET")
+                        .or(option_env!("SHEETS_MONITOR_OAUTH_DESKTOP_SECRET"))
                         .map(str::to_owned),
                     drive_metadata_opt_in: false,
                 });

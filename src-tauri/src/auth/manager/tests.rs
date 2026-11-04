@@ -367,3 +367,56 @@ fn invalid_application_provisioning_keeps_shell_state_unconfigured() {
         .is_err());
     assert!(!manager.state().unwrap().configured);
 }
+
+#[test]
+fn clean_machine_provisioning_backfills_missing_secret_and_keeps_public_config_on_startup_vault_error(
+) {
+    let vault = Arc::new(Vault::default());
+    vault.fail.store(true, Ordering::SeqCst);
+    let mock = Arc::new(Mock::new());
+    let manager = AuthManager::new(vault.clone(), mock.clone());
+    let startup = manager
+        .configure_application(Some(AuthConfigInput {
+            client_id: "fixture.apps.googleusercontent.com".into(),
+            client_secret: Some("synthetic-secret".into()),
+            drive_metadata_opt_in: false,
+        }))
+        .unwrap();
+    assert!(startup.configured);
+    assert_eq!(startup.auth.status, "disconnected");
+    // Session persistence still strictly requires protected vault storage.
+    assert_eq!(
+        manager.connect().unwrap_err().code,
+        AuthCode::VaultUnavailable
+    );
+
+    // Once vault is available, login succeeds and persists isolated user state.
+    vault.fail.store(false, Ordering::SeqCst);
+    assert_eq!(manager.connect().unwrap().auth.status, "connected");
+
+    // If an installation previously saved only the public client_id, startup
+    // provisioning backfills the Desktop client_secret for the same client_id
+    // without overwriting drive_metadata_opt_in.
+    let vault2 = Arc::new(Vault::default());
+    let manager2 = AuthManager::new(vault2.clone(), mock.clone());
+    manager2
+        .configure(AuthConfigInput {
+            client_id: "fixture.apps.googleusercontent.com".into(),
+            client_secret: None,
+            drive_metadata_opt_in: true,
+        })
+        .unwrap();
+    let backfilled = manager2
+        .configure_application(Some(AuthConfigInput {
+            client_id: "fixture.apps.googleusercontent.com".into(),
+            client_secret: Some("synthetic-secret".into()),
+            drive_metadata_opt_in: false,
+        }))
+        .unwrap();
+    assert!(backfilled.configured);
+    assert!(backfilled.drive_metadata_opt_in);
+    assert!(
+        String::from_utf8_lossy(vault2.bytes.lock().unwrap().as_ref().unwrap())
+            .contains("synthetic-secret")
+    );
+}
