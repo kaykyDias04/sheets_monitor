@@ -1,0 +1,4 @@
+INCOMPLETE — THIRD-PARTY NOTICE GENERATION IN PROGRESS
+This temporary marker is not a distribution-ready notice artifact.
+The reviewed build-distribution script must reject unresolved notice coverage.
+See docs/evidence/sprint06/distribution-licenses.json for missing packages.

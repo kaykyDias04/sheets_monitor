@@ -591,3 +591,7 @@ fn operational_code(code: &str) -> Option<&str> {
 #[cfg(test)]
 #[path = "service_tests.rs"]
 mod tests;
+
+#[cfg(test)]
+#[path = "homologation_tests.rs"]
+mod homologation_tests;

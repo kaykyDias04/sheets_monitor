@@ -84,3 +84,13 @@ Logs em docs/evidence/sprint04, sem sobrescrever sprints anteriores. Suíte fina
 A homologação real tem logs próprios de descoberta, gerenciamento, script, remoção e reinício; não é inferida por mocks. A referência real tem apenas duas células. Estado atual28 abas selecionadas ainda depende de novas regras/baseline. Novo fluxo de aprovação visual é automatizado somente com fixtures, sem aprovar produção. Histórico real vazio não substitui fixtures de eventos/falhas.
 
 Relatórios nativos registram seis rotas com Axe sem violações no tema automático escuro, viewports medidos e captura com rótulos omitidos. Falhas intermediárias de expectativa, timeout de testes, contraste e bloqueio Windows do executável foram preservadas e corrigidas. Consulte native-tooling-notes.md para diferenças entre medição do renderer, ferramentas e funcionamento do aplicativo.
+
+## Sprint 06 — evidência atual
+
+Autorização: [Prompt 06](sprint06.original.md). Rodadas novas ficam em `docs/evidence/sprint06/`; os helpers Rust e repository verifier agora usam essa sprint por padrão, sem regravar resultados históricos. O verificador aceita `--evidence-directory docs/evidence/sprint06/<rodada>` e rejeita destino nas Sprints 01–05.
+
+O baseline React paralelo teve um timeout, preservado. Para limitar contenção local, usar `npm test -- --maxWorkers=1`; nenhuma asserção ou prazo do teste foi alterado. A suíte serial reproduziu 50 aprovações. Testes Rust padrão continuam com o teste de cofre ignorado; não afirmar nova prova real do cofre.
+
+Campanha integrada local deve cruzar serviço/fila, avaliação, SQLite em disco e outbox com sink simulado, em 5/15/30. As métricas separam relógio lógico e tempo de parede. Dados Google e notificações visíveis não são exercitados por essa campanha. Reexecuções nunca sobrescrevem uma falha: usar diretório/rodada novos.
+
+A homologação instalada em Windows limpo, OAuth do candidato e carga real continuam checkpoints separados; ambiente indisponível foi confirmado pelo usuário. Não iniciar o produto no perfil real apenas para conseguir evidência nem aprovar referências pelo agente.

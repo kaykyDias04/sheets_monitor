@@ -1,0 +1,18 @@
+   Compiling tokio-rustls v0.26.6
+   Compiling sheets-monitor v1.0.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+   Compiling tauri-plugin-single-instance v2.5.5
+   Compiling hyper-rustls v0.27.10
+   Compiling reqwest v0.12.28
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 40.36s
+     Running unittests src\lib.rs (src-tauri\target\x86_64-pc-windows-msvc\debug\deps\sheets_monitor_lib-e7c3534e9f6b4c5b.exe)
+
+running 3 tests
+test monitoring::service::homologation_tests::sprint06_critical_mutations_recover_and_repeat_without_spam ... ok
+test monitoring::service::homologation_tests::sprint06_network_quota_restart_and_capacity_warning ... ok
+test monitoring::service::homologation_tests::sprint06_progressive_5_15_30_integrated_load ... SPRINT06_METRIC {"autostart_modified":false,"changed_cycle_wall_ms":3352,"events":5,"files":5,"google_requests":0,"history_days":90,"initial_cycle_wall_ms":2566,"logical_interval_seconds":60,"maximum_active":3,"mock_submissions":5,"mutation_to_last_mock_submission_wall_ms":3407,"native_toasts":0,"records_per_file":1000,"restart_cycle_wall_ms":2442,"setup_wall_ms":2266,"sqlite_after_bytes_including_sidecars":15179776,"sqlite_before_bytes_including_sidecars":5308416,"synthetic":true,"unchanged_cycle_wall_ms":2435}
+SPRINT06_METRIC {"autostart_modified":false,"changed_cycle_wall_ms":5072,"events":15,"files":15,"google_requests":0,"history_days":90,"initial_cycle_wall_ms":4243,"logical_interval_seconds":60,"maximum_active":3,"mock_submissions":15,"mutation_to_last_mock_submission_wall_ms":5145,"native_toasts":0,"records_per_file":1000,"restart_cycle_wall_ms":4869,"setup_wall_ms":4508,"sqlite_after_bytes_including_sidecars":44777472,"sqlite_before_bytes_including_sidecars":15142912,"synthetic":true,"unchanged_cycle_wall_ms":5549}
+SPRINT06_METRIC {"autostart_modified":false,"changed_cycle_wall_ms":10085,"events":30,"files":30,"google_requests":0,"history_days":90,"initial_cycle_wall_ms":9591,"logical_interval_seconds":60,"maximum_active":3,"mock_submissions":30,"mutation_to_last_mock_submission_wall_ms":10001,"native_toasts":0,"records_per_file":1000,"restart_cycle_wall_ms":8463,"setup_wall_ms":9877,"sqlite_after_bytes_including_sidecars":89227264,"sqlite_before_bytes_including_sidecars":29949952,"synthetic":true,"unchanged_cycle_wall_ms":9986}
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 258 filtered out; finished in 95.72s
+

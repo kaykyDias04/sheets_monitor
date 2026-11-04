@@ -1,4 +1,4 @@
-name: Sprint 05 - Windows continuous monitoring
+name: Sprint 06 - Windows validation
 on:
   push:
   pull_request:
@@ -21,7 +21,7 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
-      - run: npm test
+      - run: npm test -- --maxWorkers=1
       - run: npm run build
       - run: node scripts/verify-repository.mjs
       - run: ./scripts/check-rust.ps1 -Task format-check

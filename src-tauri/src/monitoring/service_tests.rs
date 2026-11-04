@@ -212,6 +212,89 @@ fn until(mut predicate: impl FnMut() -> bool) {
         thread::yield_now();
     }
 }
+/// Production scheduler and SQLite, synthetic clock/transport/account only.
+/// This is deliberately not evidence of Google API throughput or a soak test.
+#[test]
+fn thirty_workbooks_queue_quota_recovery_and_persistence() {
+    let started_at = Instant::now();
+    let (_dir, service, clock, executor) = fixture(30, 0);
+    for index in 0..30 {
+        service.request_check(format!("file_{index}")).unwrap();
+    }
+    service.tick().unwrap();
+    until(|| executor.started.load(Ordering::SeqCst) == 3);
+    assert_eq!(service.status().active, 3);
+    assert_eq!(executor.max.load(Ordering::SeqCst), 3);
+    executor.mode.store(2, Ordering::SeqCst);
+
+    let drain = |expected| {
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            service.tick().unwrap();
+            if executor.started.load(Ordering::SeqCst) == expected && service.status().active == 0 {
+                break;
+            }
+            assert!(Instant::now() < deadline, "30-file queue must drain");
+            thread::sleep(Duration::from_millis(5));
+        }
+    };
+    drain(30);
+    let mut db = Database::open(&service.runtime.database_path).unwrap();
+    let rows = db.monitoring_schedules("fixture_account").unwrap();
+    assert_eq!(rows.len(), 30);
+    assert!(rows.iter().all(|r| r.failure_count == 0
+        && r.operational_code.is_none()
+        && r.next_run_ms == clock.now_ms() + 60_000));
+
+    let mut prefs = db.management_preferences("fixture_account").unwrap();
+    prefs.interval_seconds = 300;
+    db.save_management_preferences("fixture_account", &prefs)
+        .unwrap();
+    executor.mode.store(3, Ordering::SeqCst);
+    for index in 0..30 {
+        service.request_check(format!("file_{index}")).unwrap();
+    }
+    drain(60);
+    let rows = db.monitoring_schedules("fixture_account").unwrap();
+    assert!(rows.iter().all(|r| r.failure_count == 1
+        && r.operational_code.as_deref() == Some("rate_limited")
+        && r.next_run_ms == clock.now_ms() + 3_600_000));
+    let embargo = rows[0].next_run_ms;
+    drop(db);
+    // Reopen persistence, then simulate coordinator restart and manual pressure.
+    let db = Database::open(&service.runtime.database_path).unwrap();
+    assert_eq!(
+        db.monitoring_schedules("fixture_account").unwrap().len(),
+        30
+    );
+    service.state.lock().unwrap().last_tick = 0;
+    clock.0.fetch_add(1_000, Ordering::SeqCst);
+    for index in 0..30 {
+        service.request_check(format!("file_{index}")).unwrap();
+    }
+    service.tick().unwrap();
+    assert_eq!(executor.started.load(Ordering::SeqCst), 60);
+    executor.mode.store(2, Ordering::SeqCst);
+    // Keep normal cadence during the simulated embargo. A single large jump
+    // intentionally triggers resume staggering, covered by the separate gap test.
+    while clock.now_ms() < embargo {
+        clock
+            .0
+            .store((clock.now_ms() + 60_000).min(embargo), Ordering::SeqCst);
+        service.tick().unwrap();
+        if clock.now_ms() < embargo {
+            assert_eq!(executor.started.load(Ordering::SeqCst), 60);
+        }
+    }
+    drain(90);
+    let rows = db.monitoring_schedules("fixture_account").unwrap();
+    assert!(rows.iter().all(|r| r.failure_count == 0
+        && r.operational_code.is_none()
+        && r.next_run_ms == clock.now_ms() + 300_000));
+    assert_eq!(executor.max.load(Ordering::SeqCst), 3);
+    assert!(service.shutdown(Duration::from_secs(5)));
+    eprintln!("synthetic_load files=30 checks=90 max_parallel=3 intervals=60,300 quota_failures=30 recovery=30 elapsed_ms={}", started_at.elapsed().as_millis());
+}
 #[test]
 fn backend_workers_have_no_webview_and_share_global_three_file_dedup() {
     let (_dir, service, _, executor) = fixture(4, 0);

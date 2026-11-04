@@ -2,7 +2,7 @@
 
 Aplicativo Windows 11 x64 em Tauri 2, React/TypeScript/Vite, Tailwind CSS, componentes shadcn/Radix, Rust e SQLite.
 
-A **Sprint 05 está concluída tecnicamente**: monitoramento contínuo Rust, notificações, bandeja e recuperação de falhas. O alerta corrigido foi exibido e confirmado pelo usuário. [Relatório da etapa](docs/sprint-05-report.md). Sprints 01–04 e suas evidências foram preservadas. A Sprint 06, com homologação final em escala e instalador, exige nova autorização.
+A **Sprint 05 está concluída tecnicamente**: monitoramento contínuo Rust, notificações, bandeja e recuperação de falhas. O alerta corrigido foi exibido e confirmado pelo usuário. [Relatório da etapa](docs/sprint-05-report.md). Sprints 01–04 e suas evidências foram preservadas. A Sprint 06, com homologação final em escala e instalador, exige autorização no Prompt 06.
 
 O fluxo diário usa a conta Google conectada e dados do backend. O cadastro admite até 30 arquivos, incluindo pausados; a descoberta não limita a lista a 30. Cada proteção exige abas, regras e uma baseline correspondente aprovada pelo usuário. Nenhuma operação altera arquivos Google ou executa Apps Script.
 
@@ -87,7 +87,7 @@ O protótipo anterior está preservado em `archive/prototype/` e no commit `ffca
 
 Código próprio sob [MIT](LICENSE); dependências mantêm suas licenças. Remoto GitHub autorizado em 03/11/2026: `https://github.com/kaykyDias04/sheets_monitor.git`, com `main` e branches `codex/` publicadas sem force-push; regras em [CONTRIBUTING.md](CONTRIBUTING.md). Nada foi enviado ao Google.
 
-Ao encerrar a Sprint 04, aguardar o Prompt 05. Não avançar automaticamente.
+Registro histórico: após encerrar a Sprint 04, o próximo passo era aguardar o Prompt 05. A Sprint 05 foi concluída desde então; o próximo passo atual é aguardar o Prompt 06.
 
 Documentação da integração: [APIs](docs/google-apis.md), [contratos IPC](docs/api-contracts.md), [segurança](docs/security.md) e [testes](docs/testing.md).
 
@@ -100,4 +100,4 @@ Motor: [integridade](docs/integrity-engine.md), [baselines](docs/baselines.md), 
 - [Regras](docs/integrity-rules-ui.md) e [baselines](docs/baseline-ui.md).
 - [Apps Script](docs/apps-script-ui.md) e [OAuth](docs/oauth-setup.md).
 
-A referencia real aprovada cobre uma aba e duas celulas. A selecao atual de28 abas permanece em Configuracao pendente ate revisao das regras e aprovacao humana correspondente. Nenhum arquivo Google foi alterado pelo agente. Scheduler e notificacoes Windows continuam para a Sprint 05.
+A referência real aprovada cobre uma aba e duas células. Na inspeção mais recente, quatro cadastros estavam em configuração pendente e nenhum escopo era elegível; ver `docs/evidence/sprint05/native-qa.json`. Nenhuma baseline foi aprovada pelo agente nem arquivo Google alterado. Scheduler e notificações Windows foram implementados e validados no escopo da Sprint 05; consulte o relatório para limites da homologação.

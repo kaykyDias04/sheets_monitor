@@ -21,3 +21,7 @@ Propostas futuras não autorizam sua implementação antes do prompt/sprint corr
 - [0010 — Monitoramento contínuo e limites de entrega](0010-continuous-monitoring-delivery.md): coordenação Rust, outbox transacional, retenção, consentimento de alertas e estado real do Windows.
 
 - [0011 — Entrega Windows com erros observáveis](0011-windows-notification-errors.md): correção após evidência visual negativa, identidade explícita e eventos WinRT de falha.
+
+- [0013 — Evidência de homologação e candidato local V1.0](0013-homologation-evidence-and-local-candidate.md): campanha sintética isolada, instalador local e critérios reais preservados.
+
+- [0012 — Homologação incremental e distribuição](0012-sprint06-incremental-homologation.md): reaproveitamento de provas, carga sintética separada de Google real e instalador por usuário.

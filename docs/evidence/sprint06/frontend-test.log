@@ -1,0 +1,13 @@
+
+> sheets-monitor@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/kawan/Desktop/repos_kayky/sheets_monitor
+
+
+ Test Files  10 passed (10)
+      Tests  50 passed (50)
+   Start at  18:06:09
+   Duration  41.30s (transform 4.43s, setup 8.61s, import 21.24s, tests 53.49s, environment 55.19s)
+

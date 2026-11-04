@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-03",
+  "source": "https://api.osv.dev/v1/querybatch",
+  "transmitted": "Only public Cargo.lock crate names/versions, crates.io ecosystem",
+  "lock_sha256": "2AF462B35FEEC03B865093C212B348E946BCD5BDBEBA61AFB6B94BA4DF12E13F",
+  "package_count": 512,
+  "successful_queries": 512,
+  "findings": [
+    {
+      "name": "glib",
+      "version": "0.18.5",
+      "advisories": [
+        "GHSA-wrw7-89jp-8q8g",
+        "RUSTSEC-2024-0429"
+      ]
+    },
+    {
+      "name": "proc-macro-error",
+      "version": "1.0.4",
+      "advisories": [
+        "RUSTSEC-2024-0370"
+      ]
+    },
+    {
+      "name": "zbus_names",
+      "version": "4.3.5",
+      "advisories": [
+        "RUSTSEC-2026-0371"
+      ]
+    },
+    {
+      "name": "zvariant",
+      "version": "5.15.1",
+      "advisories": [
+        "RUSTSEC-2026-0370"
+      ]
+    },
+    {
+      "name": "zvariant_derive",
+      "version": "5.15.1",
+      "advisories": [
+        "RUSTSEC-2026-0372"
+      ]
+    }
+  ],
+  "errors": [],
+  "limitation": "OSV index only; source/reachability and target relevance require triage. No cargo-audit tool installed."
+}

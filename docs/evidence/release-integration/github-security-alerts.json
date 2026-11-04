@@ -1,0 +1,18 @@
+[
+  {
+    "items": [],
+    "available": true,
+    "open_count": 0,
+    "type": "secret-scanning"
+  },
+  {
+    "available": false,
+    "reason": "API unavailable or insufficient permissions; no clean claim",
+    "type": "dependabot"
+  },
+  {
+    "available": false,
+    "reason": "API unavailable or insufficient permissions; no clean claim",
+    "type": "code-scanning"
+  }
+]

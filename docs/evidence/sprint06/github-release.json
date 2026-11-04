@@ -1,0 +1,20 @@
+{
+  "url": "https://github.com/kaykyDias04/sheets_monitor/releases/tag/v0.1.0-sprint06-preview",
+  "tag": "v0.1.0-sprint06-preview",
+  "commit": "f19f1adf75181c4cf1ba6657a945c77846783a02",
+  "prerelease": true,
+  "assets": [
+    {
+      "name": "Sheets.Monitor_0.1.0_x64-setup.exe",
+      "url": "https://github.com/kaykyDias04/sheets_monitor/releases/download/v0.1.0-sprint06-preview/Sheets.Monitor_0.1.0_x64-setup.exe",
+      "bytes": 4946164,
+      "digest": "sha256:afe8f45a09276a7948a0c41f4102a5091bcc71324967a6e0a2e09c7c157d8527"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "url": "https://github.com/kaykyDias04/sheets_monitor/releases/download/v0.1.0-sprint06-preview/SHA256SUMS.txt",
+      "bytes": 102,
+      "digest": "sha256:f584cd44d7db150c6685929cf752cf4f297657377c53e25158a1b293b676da47"
+    }
+  ]
+}

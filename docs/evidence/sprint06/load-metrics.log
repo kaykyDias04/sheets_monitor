@@ -1,0 +1,1 @@
+synthetic_load files=30 checks=90 max_parallel=3 intervals=60,300 quota_failures=30 recovery=30 elapsed_ms=4560

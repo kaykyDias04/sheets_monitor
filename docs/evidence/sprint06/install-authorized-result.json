@@ -1,0 +1,12 @@
+{
+  "status": "installed",
+  "running_after_5_seconds": true,
+  "process_id": 27256,
+  "third_party_notices_present": true,
+  "rust_library_notices_present": true,
+  "manual_present": true,
+  "developer_tools_removed_from_launch_path": true,
+  "google_live_tested": false,
+  "restart_persistence_tested": false,
+  "uninstall_tested": false
+}

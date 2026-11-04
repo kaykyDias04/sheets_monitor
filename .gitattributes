@@ -16,3 +16,20 @@ docs/sprint03.original.md -text -whitespace
 docs/evidence/sprint04/**/*.log -text -whitespace
 docs/evidence/sprint04/*.log -text -whitespace
 docs/sprint04.original.md -text -whitespace
+
+# Source formatting must survive Windows core.autocrlf checkouts.
+src/** text eol=lf
+src-tauri/src/** text eol=lf
+/*.json text eol=lf
+/*.ts text eol=lf
+/*.js text eol=lf
+index.html text eol=lf
+# Preserve original annexes/prototype and raw evidence above.
+archive/** -text -whitespace
+docs/evidence/sprint06/*.log -text -whitespace
+docs/sprint06.1.original.md -text -whitespace
+# Verbatim third-party license/copyright texts must retain original whitespace.
+distribution/** -text -whitespace
+docs/evidence/context-transfer/** -text -whitespace
+docs/evidence/release-integration/*.log -text -whitespace
+docs/evidence/release-integration/rust/*.log -text -whitespace

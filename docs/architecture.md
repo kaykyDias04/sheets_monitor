@@ -1,6 +1,6 @@
 # Arquitetura do Sheets Monitor
 
-A autorização vigente é a Sprint 05, SM-022 a SM-025. As camadas das Sprints 01–04 foram preservadas. O serviço Rust contínuo reutiliza o motor determinístico e a gestão por conta; a interface consulta estado e solicita operações. O instalador e a campanha final em escala pertencem à Sprint 06.
+Fotografia de handoff em 03/11/2026; detalhes dos contratos e históricos continuam referenciados abaixo. O estado atual está na Sprint 05 concluída (SM-022–SM-025). A implementação de Sprint 06 depende do Prompt 06; SM-026–SM-028 seguem planejados.
 
 ```mermaid
 flowchart LR
@@ -31,6 +31,8 @@ flowchart LR
 `integrity/runtime.rs` expõe operações autenticadas; o frontend define escopo, mostra prévia e recebe classificação, sem reproduzir lógica de integridade. O IPC não aceita SQL, caminhos, endpoints arbitrários, snapshot fabricado ou origem sintética de aprovação. Não existe comando Google de escrita ou execução de script. O início e a pausa do monitoramento alteram somente controle local persistido.
 
 A migração 0003 preserva 0001/0002 e adiciona sete tabelas, totalizando 22 entidades de produto. As quatro fixtures da fundação não se tornam monitores reais nem consomem o limite de 30 arquivos do motor. As tabelas antigas e suas evidências permanecem históricas. Bancos, tokens e conteúdo privado não entram no Git.
+
+O esquema atual é a versão 5, com 29 tabelas de produto. Migrações `0001_foundation.sql` a `0005_continuous_monitoring.sql` são incrementais; versões aplicadas não devem ser editadas. Veja `docs/database.md` para o inventário e regras de persistência.
 
 O app usa assets incorporados com custom-protocol e não depende de servidor hospedado. `archive/prototype/` permanece fora de imports, formatação e build. Capacidade e frequência de polling futuros não são inferidas da medição local de 30 datasets. Veja [motor](integrity-engine.md), [contratos](api-contracts.md), [banco](database.md), [riscos](risks.md) e [ADRs](adr/README.md).
 

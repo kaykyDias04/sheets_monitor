@@ -1,0 +1,4 @@
+
+> sheets-monitor@1.0.0 typecheck
+> tsc --noEmit
+

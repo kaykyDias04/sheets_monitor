@@ -2,9 +2,9 @@
 
 Fonte: [anexo original](specification-v1.0.original.md), preservado sem edição. SHA-256 `994A2FAA0E1D9C48450C5FE2B7B88AB9E237C17054EFE3A70E1EC291671F765E`. A interpretação anterior está em [requirements.prototype.md](requirements.prototype.md) e no arquivo do protótipo.
 
-Sprints 01-03 encerradas tecnicamente, com limites reais documentados. A autorizacao vigente e [Sprint 04](sprint04.original.md): SM-018 a SM-021, adicoes SM-021A (conta) e SM-021B (baselines), descoberta Drive, gerenciamento, regras e interface operacional. Nao antecipar etapas05-06.
+Sprints 01–05 encerradas tecnicamente, com limites reais documentados. A autorização vigente é o [Prompt 06](sprint06.original.md): SM-026–SM-028, homologação integrada, carga progressiva, segurança, candidato de produção e instalador local. A autorização não inclui publicação pública, release definitiva nem distribuição a terceiros.
 
-Nao atualizar baseline real automaticamente nem modificar Google. Agendador, notificacoes nativas, bandeja, autostart e instalador continuam fora de escopo. Mocks/fixtures nao comprovam APIs reais. Descoberta usa metadados autorizados e deve mostrar resultados incompletos; cadastro por URL permanece alternativo. O limite30 aplica-se aos cadastros presentes, incluindo pausados.
+Não atualizar baseline real automaticamente nem modificar Google. Agendador, notificações e bandeja são implementações históricas da Sprint 05; novos toasts e autostart continuam exigindo autorização explícita. Mocks/fixtures não comprovam APIs reais. Descoberta usa metadados autorizados e deve mostrar resultados incompletos; cadastro por URL permanece alternativo. O limite30 aplica-se aos cadastros presentes, incluindo pausados. O usuário informou que ainda não dispõe de ambiente Windows separado nem de 30 recursos com referências aprovadas; esses critérios não podem ser declarados comprovados pela campanha sintética.
 
 ## Produto V1 aprovado
 
