@@ -673,7 +673,7 @@ export function OperationalApp() {
             </div>
           </div>
           <div className="version">
-            <span>v0.1.0 · SPRINT 05</span>
+            <span>v1.0.1</span>
             <span>WINDOWS 11</span>
           </div>
         </div>
