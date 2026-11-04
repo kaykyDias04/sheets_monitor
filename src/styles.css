@@ -2129,6 +2129,11 @@ tbody tr:last-child td {
   max-height: 88vh;
   overflow-y: auto;
 }
+.op-add-dialog {
+  max-width: 920px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
 .op-diagnostic dl {
   margin: 20px 0;
   display: grid;
@@ -2376,17 +2381,12 @@ button.op-file-link:hover strong {
   align-items: end;
   gap: 12px;
 }
-.op-footer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  color: var(--muted-foreground);
-  padding: 28px 0 8px;
-  line-height: 1.8;
+.op-app .sidebar-foot {
+  border-top: 1px solid #284839;
 }
-.op-footer > span {
-  margin-left: auto;
+.op-footer {
+  min-height: 24px;
+  padding: 20px 0 8px;
 }
 .op-welcome {
   background: linear-gradient(125deg, #efe7d6, #fbf8f2);
@@ -2891,56 +2891,7 @@ button.op-file-link:hover strong {
   }
 }
 
-/* Guided 3-step spreadsheet setup and didactic protection rules */
-.op-setup-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
-}
-.op-setup-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--background);
-  color: var(--foreground);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease;
-}
-.op-setup-step:hover {
-  border-color: var(--primary);
-}
-.op-setup-step.current {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 1px var(--primary);
-}
-.op-setup-step.done svg {
-  color: var(--primary);
-}
-.op-setup-step svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-  color: var(--muted-foreground);
-}
-.op-setup-step div {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-.op-setup-step strong {
-  font-size: 12px;
-  font-weight: 650;
-}
-.op-setup-step small {
-  font-size: 11px;
-  color: var(--muted-foreground);
-}
+/* Didactic protection rules and inline feedback */
 .op-inline-feedback {
   display: grid;
   gap: 10px;
@@ -3091,7 +3042,6 @@ button.op-file-link:hover strong {
   margin-top: 14px;
 }
 @media (max-width: 900px) {
-  .op-setup-steps,
   .op-preset-grid {
     grid-template-columns: 1fr;
   }

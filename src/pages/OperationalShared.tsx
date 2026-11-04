@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { managementError } from "@/services/management";
 import type { Activity, DashboardSummary, RegisteredSpreadsheet } from "@/types/management";
 
 export const statusNames: Record<RegisteredSpreadsheet["status"] | "checking", string> = {
@@ -20,6 +21,7 @@ export const statusNames: Record<RegisteredSpreadsheet["status"] | "checking", s
   paused: "Pausada",
   checking: "Verificando",
 };
+
 export function dateLabel(value: string | null | undefined) {
   if (!value) return "Ainda não verificada";
   const date = new Date(value);
@@ -27,6 +29,7 @@ export function dateLabel(value: string | null | undefined) {
     ? "Data indisponível"
     : new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
 }
+
 export function StatusBadge({ status }: { status: RegisteredSpreadsheet["status"] | "checking" }) {
   return (
     <Badge variant="outline" className={`op-status op-status-${status}`}>
@@ -35,16 +38,19 @@ export function StatusBadge({ status }: { status: RegisteredSpreadsheet["status"
     </Badge>
   );
 }
+
 export function EmptyState({
   title,
   description,
   action,
   onAction,
+  disabled = false,
 }: {
   title: string;
   description: string;
   action?: string;
   onAction?: () => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="op-empty-state">
@@ -53,10 +59,15 @@ export function EmptyState({
       </div>
       <h2>{title}</h2>
       <p>{description}</p>
-      {action && onAction && <Button onClick={onAction}>{action}</Button>}
+      {action && onAction && (
+        <Button onClick={onAction} disabled={disabled}>
+          {action}
+        </Button>
+      )}
     </div>
   );
 }
+
 export function SummaryCards({ data }: { data: DashboardSummary }) {
   const metrics = [
     {
@@ -101,6 +112,7 @@ export function SummaryCards({ data }: { data: DashboardSummary }) {
     </div>
   );
 }
+
 const categories: Record<string, string> = {
   integrity: "Integridade",
   content: "Conteúdo",
@@ -108,37 +120,73 @@ const categories: Record<string, string> = {
   script: "Apps Script",
   operational: "Operacional",
 };
+
+const eventKinds: Record<string, string> = {
+  violation: "Violação estrutural",
+  inconclusive: "Análise inconclusiva",
+  analysis_inconclusive: "Análise inconclusiva",
+  recovered: "Recuperação",
+  analysis_concluded: "Análise concluída",
+  value_changed: "Valor alterado",
+  record_added: "Registro adicionado",
+  record_removed: "Registro removido",
+  record_order_changed: "Ordem de registros alterada",
+  header_changed: "Cabeçalho alterado",
+  region_changed: "Conteúdo da região alterado",
+  script_code_changed: "Código de script alterado",
+  script_file_added: "Arquivo de script adicionado",
+  script_file_removed: "Arquivo de script removido",
+  script_file_changed: "Arquivo de script alterado",
+  sheet_title_changed: "Nome da aba alterado",
+  sheet_position_changed: "Posição da aba alterada",
+};
+
+const connectivityNames: Record<string, string> = {
+  available: "Disponível na captura",
+  online: "Disponível na captura",
+  reachable: "Disponível na captura",
+  degraded: "Parcialmente disponível",
+  unavailable: "Indisponível na captura",
+  offline: "Sem conexão na captura",
+};
+
 const diagnoses: Record<string, string> = {
-  metadata_not_observed: "Os metadados não puderam ser consultados.",
-  capture_incomplete: "A captura não cobriu todas as regras necessárias.",
-  monitored_sheet_missing: "Uma aba obrigatória não foi encontrada.",
-  sheet_not_observed: "Não foi possível consultar a aba protegida.",
+  metadata_not_observed: "Os metadados da planilha não puderam ser consultados no momento.",
+  capture_incomplete: "A captura não conseguiu ler todas as regiões ou abas exigidas pelas regras.",
+  monitored_sheet_missing: "Uma aba protegida não foi encontrada na planilha.",
+  sheet_not_observed: "Não foi possível consultar os dados da aba protegida.",
   protected_sheet_renamed: "O nome de uma aba protegida foi alterado.",
   protected_sheet_reordered: "A posição de uma aba protegida foi alterada.",
-  protected_column_missing: "Uma coluna obrigatória não foi encontrada.",
+  protected_column_missing: "Uma coluna obrigatória não foi encontrada na região protegida.",
   protected_header_changed_or_column_missing:
-    "Um cabeçalho protegido mudou ou sua coluna foi removida.",
-  protected_column_reordered: "A ordem de uma coluna protegida mudou.",
-  column_identity_ambiguous: "Há cabeçalhos duplicados; a identidade da coluna é incerta.",
-  region_not_observed: "Não foi possível consultar a região protegida.",
-  protected_region_displaced: "Uma região protegida foi deslocada.",
+    "Um cabeçalho protegido foi alterado ou sua coluna foi removida.",
+  protected_column_reordered: "A posição de uma coluna protegida mudou.",
+  column_identity_ambiguous:
+    "Há cabeçalhos duplicados; a coluna não pôde ser identificada com segurança.",
+  region_not_observed: "Não foi possível consultar os dados da região protegida.",
+  protected_region_displaced: "Uma região protegida foi deslocada na aba.",
   named_range_changed: "Um intervalo nomeado protegido foi alterado.",
   named_range_missing: "Um intervalo nomeado protegido não foi encontrado.",
-  named_range_not_observed: "Não foi possível verificar o intervalo nomeado.",
-  script_not_observed: "Não foi possível consultar o projeto Apps Script.",
+  named_range_not_observed: "Não foi possível verificar o intervalo nomeado protegido.",
+  script_not_observed: "Não foi possível consultar o projeto Apps Script associado.",
   script_analysis_incomplete:
-    "Há dependências de script que não podem ser verificadas estaticamente.",
+    "Há dependências dinâmicas no Apps Script que não podem ser verificadas estaticamente.",
   protected_formula_changed: "Uma fórmula protegida foi alterada.",
-  protected_formula_removed_or_replaced: "Uma fórmula protegida foi removida ou substituída.",
-  formula_equivalence_unproven: "Não foi possível comprovar que a fórmula preserva sua estrutura.",
+  protected_formula_removed_or_replaced:
+    "Uma fórmula protegida foi removida ou substituída por valor fixo.",
+  formula_equivalence_unproven:
+    "Não foi possível comprovar que a fórmula manteve sua estrutura esperada.",
   formula_sheet_reference_missing: "A fórmula referencia uma aba que não foi encontrada.",
-  formula_effective_error: "Uma fórmula protegida retornou um erro efetivo.",
-  formula_loading: "O Google ainda está calculando uma fórmula protegida.",
+  formula_effective_error: "Uma fórmula protegida retornou erro de cálculo na planilha.",
+  formula_loading:
+    "O Google Sheets ainda estava calculando uma fórmula protegida durante a leitura.",
   formula_anchor_ambiguous: "O registro da fórmula não pôde ser identificado com segurança.",
-  formula_column_or_key_not_resolved: "A coluna ou chave da fórmula não pôde ser identificada.",
-  fixed_formula_anchor_changed: "A posição fixa de uma fórmula protegida mudou.",
-  formula_cell_not_observed: "A célula da fórmula não foi consultada.",
-  baseline_formula_not_observed: "A referência não contém a fórmula necessária para comparar.",
+  formula_column_or_key_not_resolved:
+    "A coluna ou chave associada à fórmula não pôde ser identificada.",
+  fixed_formula_anchor_changed: "A linha ou coluna fixa de uma fórmula protegida mudou.",
+  formula_cell_not_observed: "A célula da fórmula protegida não pôde ser consultada.",
+  baseline_formula_not_observed:
+    "A referência atual não contém a fórmula necessária para comparação.",
   header_changed: "Um cabeçalho foi alterado.",
   region_changed: "O conteúdo de uma região foi alterado.",
   record_added: "Um registro foi adicionado.",
@@ -154,22 +202,48 @@ const diagnoses: Record<string, string> = {
   script_code_changed: "O código do projeto Apps Script mudou.",
   sheet_title_changed: "O nome de uma aba foi alterado.",
   sheet_position_changed: "A posição de uma aba mudou.",
-  critical_rule_recovered: "A regra voltou a atender à referência aprovada.",
-  analysis_concluded: "A análise anteriormente inconclusiva foi concluída.",
+  critical_rule_recovered: "A regra crítica voltou a atender à referência aprovada.",
+  analysis_concluded: "A análise anteriormente inconclusiva foi concluída com sucesso.",
+  network: "Falha de conexão ao consultar os serviços do Google.",
+  timeout: "A consulta excedeu o tempo limite de resposta.",
+  rate_limited: "Limite temporário de consultas da API Google atingido.",
+  forbidden: "Sem permissão de leitura no arquivo ou projeto Google.",
+  not_found: "O recurso não foi encontrado ou deixou de estar compartilhado com a conta.",
+  insufficient_scope: "Permissão de leitura pendente na conta Google conectada.",
+  reconnect_required: "A sessão Google expirou e requer nova autorização.",
+  server: "Serviço Google temporariamente indisponível durante a leitura.",
 };
+
 export function diagnosticText(code: string) {
   return (
     diagnoses[code] ??
     (code.includes(" ")
       ? code
-      : "Uma alteração foi identificada. Consulte os detalhes da regra e da verificação.")
+      : "Uma alteração ou restrição foi identificada. Consulte os detalhes da regra e da verificação.")
   );
 }
+
+export function eventKindText(kind: string) {
+  return eventKinds[kind] ?? "Alteração registrada";
+}
+
+export function connectivityText(connectivity: string) {
+  return connectivityNames[connectivity] ?? "Estado de conexão não confirmado";
+}
+
+export function accessErrorText(code: string | null | undefined) {
+  if (!code) {
+    return "Não foi possível confirmar o acesso na última tentativa. Verifique o compartilhamento do arquivo e tente atualizar os dados.";
+  }
+  return managementError({ code }, "acessar a planilha");
+}
+
 const severities: Record<string, string> = {
   critical: "Crítica",
   warning: "Aviso",
   info: "Informação",
 };
+
 export function EventList({
   events,
   onOpen,
@@ -197,6 +271,7 @@ export function EventList({
     </div>
   );
 }
+
 export function EventDiagnostic({
   event,
   onClose,
@@ -241,7 +316,7 @@ export function EventDiagnostic({
               <div>
                 <dt>Categoria e tipo</dt>
                 <dd>
-                  {categories[event.category] ?? event.category} · {event.kind}
+                  {categories[event.category] ?? "Registro"} · {eventKindText(event.kind)}
                 </dd>
               </div>
               <div>
@@ -290,12 +365,6 @@ export function EventDiagnostic({
                 </dd>
               </div>
             </dl>
-            <details className="op-advanced">
-              <summary>Identificadores técnicos do diagnóstico</summary>
-              <p>
-                {event.diagnosis} · {event.kind} · {event.rule_id ?? "sem regra"}
-              </p>
-            </details>
             <p className="op-hint">
               A detecção registra quando o aplicativo observou a diferença. A autoria da alteração
               não é determinada.

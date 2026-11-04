@@ -222,7 +222,7 @@ export function PreferenceForm({
           </Button>
         </form>
         <p className="op-hint">
-          Sheets Monitor 1.0.1 · Windows 11 · Dados e referências locais. As operações Google exigem
+          Sheets Monitor 1.0.2 · Windows 11 · Dados e referências locais. As operações Google exigem
           internet.
         </p>
       </CardContent>

@@ -4,8 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { invoke } from "@tauri-apps/api/core";
 import App from "./App";
 import { scopeForTabs } from "./pages/ScopeEditor";
+import { extractErrorDiagnostic } from "./services/google";
+import { managementError } from "./services/management";
 import type { IntegrationState } from "./types/google";
 import type { RegisteredSpreadsheet, Preferences } from "./types/management";
+
 vi.mock("@tauri-apps/api/core", () => ({ isTauri: () => true, invoke: vi.fn() }));
 const signals = vi.hoisted(() => ({ changed: null as (() => void) | null }));
 vi.mock("@tauri-apps/api/event", () => ({
@@ -16,14 +19,17 @@ vi.mock("@tauri-apps/api/event", () => ({
     };
   }),
 }));
+
 const call = vi.mocked(invoke);
 let session: IntegrationState;
 let rows: RegisteredSpreadsheet[];
 let preferences: Preferences;
 let readHook: ((command: string) => void) | null;
+
 const tabs = [
   { sheet_id: 17, title: "Receitas", index: 0, hidden: false, row_count: 500, column_count: 8 },
 ];
+
 function fixtureRow(): RegisteredSpreadsheet {
   return {
     spreadsheet_id: "fixture-file",
@@ -45,6 +51,7 @@ function fixtureRow(): RegisteredSpreadsheet {
     tabs_refreshed_at: null,
   };
 }
+
 function envelope<T>(data: T) {
   return {
     generation: session.generation,
@@ -52,6 +59,7 @@ function envelope<T>(data: T) {
     data: structuredClone(data),
   };
 }
+
 beforeEach(() => {
   session = {
     generation: 1,
@@ -240,17 +248,21 @@ beforeEach(() => {
     throw { code: "invalid_input" };
   });
 });
+
 afterEach(cleanup);
+
 async function settled() {
   await waitFor(() =>
     expect(screen.getByRole("button", { name: "Atualizar dados" })).toBeEnabled(),
   );
 }
+
 async function load() {
   render(<App />);
   await settled();
   return userEvent.setup();
 }
+
 async function go(user: ReturnType<typeof userEvent.setup>, label: string) {
   await user.click(
     within(screen.getByRole("navigation", { name: "Navegação principal" })).getByRole("button", {
@@ -259,21 +271,48 @@ async function go(user: ReturnType<typeof userEvent.setup>, label: string) {
   );
   await settled();
 }
+
+async function openAddDialog(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "Adicionar planilhas" }));
+  const dialog = await screen.findByRole("dialog", { name: "Adicionar planilhas" });
+  await waitFor(() =>
+    expect(within(dialog).getByRole("button", { name: "Buscar planilhas" })).toBeEnabled(),
+  );
+  return dialog;
+}
+
 async function openFirst(user: ReturnType<typeof userEvent.setup>) {
   await go(user, "Planilhas");
   await user.click(screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" }));
   await screen.findByRole("heading", { name: "Receitas de teste" });
   await settled();
 }
+
 describe("Sprint 04 · operação sem demonstração", () => {
-  it("carrega cinco destinos na barra lateral sem item separado de regras e baselines", async () => {
-    await load();
+  it("simplifica sidebar, footer e configurações sem ferramentas avançadas do mantenedor", async () => {
+    const user = await load();
     const nav = within(screen.getByRole("navigation", { name: "Navegação principal" }));
     expect(nav.getAllByRole("button")).toHaveLength(5);
     expect(nav.queryByRole("button", { name: /Regras e baselines/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Seu controle, sua referência/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Workspace local/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Google somente leitura/i)).not.toBeInTheDocument();
+    const footer = document.querySelector("footer.op-footer");
+    expect(footer).toBeInTheDocument();
+    expect(footer?.textContent?.trim()).toBe("");
     expect(screen.getByText("Encontre suas primeiras planilhas")).toBeInTheDocument();
     expect(call.mock.calls.some(([name]) => name.startsWith("foundation_"))).toBe(false);
+
+    await go(user, "Configurações");
+    expect(screen.queryByText(/Ferramentas avançadas/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Configuração OAuth do mantenedor/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Diagnóstico técnico do motor/i }),
+    ).not.toBeInTheDocument();
   });
+
   it("mostra login sem pedir credenciais Cloud ao usuário comum", async () => {
     session.auth.account = null;
     session.auth.status = "disconnected";
@@ -282,30 +321,48 @@ describe("Sprint 04 · operação sem demonstração", () => {
     expect(screen.queryByLabelText(/Client ID/)).not.toBeInTheDocument();
     expect(call.mock.calls.some(([name]) => name === "get_dashboard_summary")).toBe(false);
   });
-  it("descobre e pagina arquivos compartilhados sem cadastro automático", async () => {
+
+  it("exibe a listagem do Google Drive exclusivamente dentro de + Adicionar planilhas", async () => {
+    rows.push(fixtureRow());
     const user = await load();
     await go(user, "Planilhas");
-    await user.click(screen.getByRole("button", { name: "Buscar planilhas" }));
-    await screen.findByText("Arquivo descoberto");
-    await settled();
-    expect(screen.getByText("Compartilhada")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Encontrar no Google Drive")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Link da planilha")).not.toBeInTheDocument();
+    expect(call.mock.calls.some(([name]) => name === "discover_spreadsheets")).toBe(false);
+
+    const dialog = await openAddDialog(user);
+    expect(within(dialog).getByText("Encontrar no Google Drive")).toBeInTheDocument();
+    expect(within(dialog).getByText("Arquivo descoberto")).toBeInTheDocument();
+    expect(within(dialog).getByText("Compartilhada")).toBeInTheDocument();
     expect(call.mock.calls.some(([name]) => name === "register_spreadsheet")).toBe(false);
-    await user.click(screen.getByRole("button", { name: "Próxima página" }));
-    await screen.findByText("Segunda planilha");
+
+    await user.click(within(dialog).getByRole("button", { name: "Próxima página" }));
+    await within(dialog).findByText("Segunda planilha");
     expect(call).toHaveBeenCalledWith("discover_spreadsheets", {
       input: expect.objectContaining({ page_token: "opaque-next" }),
     });
   });
-  it("cadastra link válido como configuração pendente", async () => {
+
+  it("cadastra link válido pelo fluxo de adição e abre configuração sem cards Passo 1/2/3", async () => {
     const user = await load();
     await go(user, "Planilhas");
-    await user.click(screen.getByLabelText("Link da planilha"));
+    const dialog = await openAddDialog(user);
+    await user.click(within(dialog).getByLabelText("Link da planilha"));
     await user.paste("https://docs.google.com/spreadsheets/d/fixture-file/edit");
-    await user.click(screen.getByRole("button", { name: "Cadastrar por link" }));
+    await user.click(within(dialog).getByRole("button", { name: "Cadastrar por link" }));
     await screen.findByRole("heading", { name: "Receitas de teste" });
     await settled();
+    expect(screen.queryByRole("dialog", { name: "Adicionar planilhas" })).not.toBeInTheDocument();
     expect(screen.getByText("Configuração pendente")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Verificar agora" })).toBeDisabled();
+    expect(screen.queryByText(/^Passo [123]:/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Continuar para regras de proteção" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Abas" })).toHaveAttribute("aria-current", "page");
     expect(call).toHaveBeenCalledWith("register_spreadsheet", {
       input: {
         url: "https://docs.google.com/spreadsheets/d/fixture-file/edit",
@@ -313,24 +370,33 @@ describe("Sprint 04 · operação sem demonstração", () => {
       },
     });
   });
-  it("trata URL inválida e cadastro duplicado", async () => {
+
+  it("trata URL inválida e cadastro duplicado sem duplicar alertas nem perder o preenchimento", async () => {
     rows.push(fixtureRow());
     const user = await load();
     await go(user, "Planilhas");
-    const input = screen.getByLabelText("Link da planilha");
+    const dialog = await openAddDialog(user);
+    const input = within(dialog).getByLabelText("Link da planilha");
     await user.click(input);
     await user.paste("https://example.invalid/file");
-    await user.click(screen.getByRole("button", { name: "Cadastrar por link" }));
-    await screen.findByRole("alert");
-    await settled();
+    await user.click(within(dialog).getByRole("button", { name: "Cadastrar por link" }));
+    const alerts = await screen.findAllByRole("alert");
+    expect(alerts).toHaveLength(1);
+    await waitFor(() =>
+      expect(within(dialog).getByRole("button", { name: "Cadastrar por link" })).toBeEnabled(),
+    );
     expect(rows).toHaveLength(1);
+    expect(input).toHaveValue("https://example.invalid/file");
+
     await user.clear(input);
     await user.click(input);
     await user.paste("https://docs.google.com/spreadsheets/d/fixture-file/edit");
-    await user.click(screen.getByRole("button", { name: "Cadastrar por link" }));
-    await screen.findByText("Esta planilha já está cadastrada nesta conta.");
+    await user.click(within(dialog).getByRole("button", { name: "Cadastrar por link" }));
+    await within(dialog).findByText(/Esta planilha já está cadastrada nesta conta\./);
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
   });
-  it("desabilita cadastro ao atingir 30 sem limitar descoberta", async () => {
+
+  it("desabilita cadastro ao atingir 30 sem limitar descoberta dentro do fluxo de adição", async () => {
     rows = Array.from({ length: 30 }, (_, i) => ({
       ...fixtureRow(),
       spreadsheet_id: `fixture${i}`,
@@ -338,28 +404,49 @@ describe("Sprint 04 · operação sem demonstração", () => {
     }));
     const user = await load();
     await go(user, "Planilhas");
-    expect(screen.getByRole("button", { name: "Cadastrar por link" })).toBeDisabled();
-    expect(screen.getByText(/limite de 30 se aplica aos cadastros/)).toBeInTheDocument();
+    const dialog = await openAddDialog(user);
+    expect(within(dialog).getByRole("button", { name: "Cadastrar por link" })).toBeDisabled();
+    expect(within(dialog).getByText(/limite de 30 se aplica aos cadastros/)).toBeInTheDocument();
   });
-  it("salva abas, sugere rascunho e aprova apenas a captura revisada", async () => {
-    rows.push(fixtureRow());
+
+  it("executa o fluxo completo: adicionar -> abas -> salvar -> regras -> salvar -> referência", async () => {
     const user = await load();
-    await openFirst(user);
+    await go(user, "Planilhas");
+    const dialog = await openAddDialog(user);
+    await user.click(within(dialog).getByRole("button", { name: "Monitorar" }));
+    await screen.findByRole("heading", { name: "Receitas de teste" });
+    await settled();
+
+    // Etapa 1: selecionar abas e avançar automaticamente para Regras de proteção
     await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
     await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
     await settled();
     expect(rows[0].selected_sheet_ids).toEqual([17]);
-    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
+    expect(screen.getByRole("button", { name: "Regras de proteção" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.queryByRole("button", { name: "Revisar referência" })).not.toBeInTheDocument();
+
+    // Etapa 2: sugerir regras, salvar e avançar automaticamente para Referência
     await user.click(screen.getByRole("button", { name: "Sugerir regras para abas selecionadas" }));
     await settled();
     expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
     expect(rows[0].scope).toBeNull();
     await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
     await settled();
-    await user.click(screen.getByRole("button", { name: "Referências" }));
+    expect(screen.getByRole("button", { name: "Referência" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+
+    // Etapa 3: capturar estrutura, verificar ausência de JSON e aprovar referência
     await user.click(screen.getByRole("button", { name: "Capturar estrutura para revisão" }));
     await screen.findByText("Revise antes de aprovar");
     await settled();
+    expect(screen.queryByText(/Estrutura capturada e regras propostas/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/"pinned-snapshot"/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/"schema_version"/)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Aprovar referência versão 1" })).toBeDisabled();
     await user.click(screen.getByRole("checkbox", { name: /Revisei o escopo/ }));
     await user.click(screen.getByRole("button", { name: "Aprovar referência versão 1" }));
@@ -376,44 +463,74 @@ describe("Sprint 04 · operação sem demonstração", () => {
       },
     });
   }, 15000);
-  it("explica no próprio formulário por que regras incompletas não foram salvas", async () => {
+
+  it("valida seleção vazia ou falha ao salvar abas permanecendo na etapa atual com dados preservados", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+
+    // Validação local: nenhuma aba selecionada não avança nem invoca o backend
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    expect(
+      await screen.findByText(/Selecione ao menos uma aba de grade antes de salvar/),
+    ).toBeInTheDocument();
+    expect(call.mock.calls.some(([name]) => name === "update_monitored_tabs")).toBe(false);
+    expect(screen.getByRole("button", { name: "Abas" })).toHaveAttribute("aria-current", "page");
+
+    // Falha de rede ao salvar: permanece em Abas, preserva checkbox marcado e não exibe sucesso
+    const base = call.getMockImplementation()!;
+    const checkbox = screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ });
+    await user.click(checkbox);
+    call.mockImplementation(async (command, args) => {
+      if (command === "update_monitored_tabs") throw { code: "network" };
+      return base(command, args);
+    });
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    await settled();
+    expect(screen.getByRole("button", { name: "Abas" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ })).toBeChecked();
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    expect(screen.getByRole("alert")).toHaveTextContent(/Sem conexão com os serviços do Google/i);
+    expect(screen.queryByText(/Seleção de abas salva/)).not.toBeInTheDocument();
+    call.mockImplementation(base);
+  }, 15000);
+
+  it("explica no próprio formulário por que regras incompletas não foram salvas e permanece na etapa", async () => {
     rows.push(fixtureRow());
     const user = await load();
     await openFirst(user);
     await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
     await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
     await settled();
-    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
-    // A regra inicial tem cabeçalho vazio: o usuário vê o botão ativo, mas sem texto digitado.
+
+    // Já avançou automaticamente para Regras de proteção; cabeçalho vazio bloqueia avanço.
+    expect(screen.getByRole("button", { name: "Regras de proteção" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
     const save = screen.getByRole("button", { name: "Salvar regras de proteção" });
     await user.click(save);
     const problem = await screen.findByText(/informe o cabeçalho protegido/);
     expect(problem).toBeInTheDocument();
     expect(call.mock.calls.some(([name]) => name === "update_integrity_rules")).toBe(false);
     expect(save.closest("form")).toContainElement(problem);
-    // Corrigido o campo, o salvamento é enviado ao backend e o aviso desaparece.
+    expect(screen.getByRole("button", { name: "Regras de proteção" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+
+    // Corrigido o campo, salva e avança automaticamente para Referência.
     await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
     await user.click(save);
     await settled();
     expect(call.mock.calls.some(([name]) => name === "update_integrity_rules")).toBe(true);
     expect(rows[0].scope?.sheets[0].regions[0].columns[0].header).toBe("Código");
-    expect(screen.queryByText(/informe o cabeçalho protegido/)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Referência" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   }, 15000);
-  it("mantém a seção de regras aberta e mostra a confirmação após salvar", async () => {
-    rows.push(fixtureRow());
-    const user = await load();
-    await openFirst(user);
-    await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
-    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
-    await settled();
-    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
-    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
-    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
-    await settled();
-    expect(await screen.findByText(/Regras salvas\./)).toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
-    expect(screen.getByRole("button", { name: "Salvar regras de proteção" })).toBeDisabled();
-  }, 15000);
+
   it("recarrega a planilha após salvar mesmo quando o monitoramento atualiza em segundo plano", async () => {
     rows.push(fixtureRow());
     const user = await load();
@@ -421,7 +538,6 @@ describe("Sprint 04 · operação sem demonstração", () => {
     await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
     await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
     await settled();
-    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
     await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
     // O serviço Rust avisa uma mudança enquanto a gravação ainda está em andamento.
     readHook = (command) => {
@@ -432,30 +548,35 @@ describe("Sprint 04 · operação sem demonstração", () => {
     await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
     await settled();
     expect(await screen.findByText(/Regras salvas\./)).toBeInTheDocument();
-    // A tela precisa refletir a revisão gravada: nada de formulário "sujo" nem botão repetível.
+    expect(screen.getByRole("button", { name: "Referência" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+
+    // Voltando para Regras de proteção, o formulário reflete a revisão gravada e aceita nova edição.
+    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Salvar regras de proteção" })).toBeDisabled(),
     );
-    // Uma nova edição usa a revisão atual e é aceita, sem sair e voltar para a planilha.
     await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), " 2");
     await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
     await settled();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(rows[0].scope?.sheets[0].regions[0].columns[0].header).toBe("Código 2");
-    // Capturar usa a mesma revisão fresca e também não é rejeitado em silêncio.
-    await user.click(screen.getByRole("button", { name: "Referências" }));
+
+    // Já avançou para Referência com a revisão fresca e captura sem conflito.
     await user.click(screen.getByRole("button", { name: "Capturar estrutura para revisão" }));
     await screen.findByText("Revise antes de aprovar");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   }, 20000);
-  it("recupera a tela sozinha quando a revisão local ficou desatualizada", async () => {
+
+  it("recupera a tela preservando os dados preenchidos quando a revisão local ficou desatualizada", async () => {
     rows.push(fixtureRow());
     const user = await load();
     await openFirst(user);
     await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
     await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
     await settled();
-    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
     await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
     rows[0].revision++; // outra operação alterou o cadastro depois que a tela foi carregada
     await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
@@ -465,12 +586,13 @@ describe("Sprint 04 · operação sem demonstração", () => {
       "aria-current",
       "page",
     );
-    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
+    expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
     await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
     await settled();
     expect(await screen.findByText(/Regras salvas\./)).toBeInTheDocument();
     expect(rows[0].scope?.sheets[0].regions[0].columns[0].header).toBe("Código");
   }, 20000);
+
   it("exige confirmação de remoção e escolha de histórico", async () => {
     rows.push(fixtureRow());
     const user = await load();
@@ -492,11 +614,12 @@ describe("Sprint 04 · operação sem demonstração", () => {
         spreadsheet_id: "fixture-file",
         expected_generation: 1,
         expected_revision: 1,
-        confirmed: true,
         history: "delete_activity",
+        confirmed: true,
       },
     });
   });
+
   it("envia a verificação individual para a fila sem declarar coleta concluída", async () => {
     rows.push({
       ...fixtureRow(),
@@ -517,6 +640,7 @@ describe("Sprint 04 · operação sem demonstração", () => {
     });
     expect(call).not.toHaveBeenCalledWith("run_spreadsheet_check", expect.anything());
   });
+
   it("envia filtros do histórico ao backend com paginação", async () => {
     const user = await load();
     await go(user, "Atividades");
@@ -533,6 +657,7 @@ describe("Sprint 04 · operação sem demonstração", () => {
       }),
     });
   });
+
   it("persiste preferências por conta sem alterar o registro Windows implicitamente", async () => {
     const user = await load();
     await go(user, "Configurações");
@@ -556,6 +681,7 @@ describe("Sprint 04 · operação sem demonstração", () => {
     await go(user, "Configurações");
     expect(screen.getByLabelText(/Intervalo de verifica/)).toHaveValue(180);
   });
+
   it("descarta resultado se a conta muda mesmo com envelope posterior válido", async () => {
     const user = await load();
     await go(user, "Planilhas");
@@ -567,10 +693,11 @@ describe("Sprint 04 · operação sem demonstração", () => {
           auth: { ...session.auth, account: { subject: "other-account", email: null, name: null } },
         };
     };
-    await user.click(screen.getByRole("button", { name: "Buscar planilhas" }));
+    await user.click(screen.getByRole("button", { name: "Adicionar planilhas" }));
     await screen.findByRole("alert");
     expect(screen.queryByText("Arquivo descoberto")).not.toBeInTheDocument();
   });
+
   it("desconecta e limpa a identidade da interface", async () => {
     rows.push(fixtureRow());
     const user = await load();
@@ -580,55 +707,71 @@ describe("Sprint 04 · operação sem demonstração", () => {
     expect(screen.queryByText("fixture@example.invalid")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeInTheDocument();
   });
-  it("propaga desconexão pelas ferramentas avançadas sem aguardar seu fechamento manual", async () => {
-    rows.push(fixtureRow());
-    const user = await load();
-    await go(user, "Configurações");
-    await user.click(screen.getByRole("button", { name: "Configuração OAuth do mantenedor" }));
-    const disconnect = await screen.findByRole("button", { name: "Desconectar" });
-    await user.click(disconnect);
-    await waitFor(() =>
-      expect(screen.queryByText("fixture@example.invalid")).not.toBeInTheDocument(),
+
+  it("padroniza categorias de erro com causa e ação sem expor detalhes sensíveis", () => {
+    expect(extractErrorDiagnostic({ code: "token_expired", message: "raw-token-secret" })).toEqual({
+      code: "token_expired",
+      category: "auth",
+      retryable: false,
+    });
+    expect(extractErrorDiagnostic({ code: "forbidden", retryable: false })).toEqual({
+      code: "forbidden",
+      category: "permission",
+      retryable: false,
+    });
+    expect(extractErrorDiagnostic({ code: "network", retryable: true })).toEqual({
+      code: "network",
+      category: "connectivity",
+      retryable: true,
+    });
+    expect(extractErrorDiagnostic({ code: "invalid_input" })).toEqual({
+      code: "invalid_input",
+      category: "validation",
+      retryable: false,
+    });
+    expect(extractErrorDiagnostic({ code: "vault_failed" })).toEqual({
+      code: "vault_failed",
+      category: "internal",
+      retryable: false,
+    });
+
+    const unknownMsg = managementError(
+      { code: "unexpected_internal_code", message: "Bearer secret-value" },
+      "salvar as regras de proteção",
     );
-    expect(screen.queryByRole("heading", { name: "Integração Google" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Entrar com Google" })).toBeInTheDocument();
+    expect(unknownMsg).toContain("salvar as regras de proteção");
+    expect(unknownMsg).not.toContain("secret-value");
+    expect(unknownMsg).not.toContain("unexpected_internal_code");
   });
+
   it("bloqueia navegação de linha e marca durante consulta pendente sem invalidar seu resultado", async () => {
     rows.push(fixtureRow());
     const user = await load();
+    await go(user, "Planilhas");
     const base = call.getMockImplementation()!;
     let finish: (() => void) | undefined;
     call.mockImplementation((command, args) => {
-      if (command === "discover_spreadsheets")
+      if (command === "get_dashboard_summary" && !finish)
         return new Promise((resolve) => {
           finish = () =>
             resolve(
               envelope({
-                files: [
-                  {
-                    id: "fixture-late",
-                    name: "Resultado pendente",
-                    mime_type: "application/vnd.google-apps.spreadsheet",
-                    modified_time: null,
-                    shared: false,
-                    drive_id: null,
-                    resource_key: null,
-                  },
-                ],
-                next_page_token: null,
-                incomplete_search: false,
-                complete: true,
-                corpus: "allDrives",
+                registered: rows.length,
+                online: 0,
+                offline: 0,
+                indeterminate: 0,
+                paused: 0,
+                pending: rows.length,
+                not_checked: 0,
+                spreadsheets: rows,
+                recent_events: [],
+                recent_failures: [],
               }),
             );
         });
       return base(command, args);
     });
-    await user.click(
-      within(screen.getByRole("navigation", { name: "Navegação principal" })).getByRole("button", {
-        name: "Planilhas",
-      }),
-    );
+    await user.click(screen.getByRole("button", { name: "Atualizar dados" }));
     await waitFor(() => expect(finish).toBeDefined());
     const rowButton = screen.getByRole("button", { name: "Abrir detalhes de Receitas de teste" });
     expect(rowButton).toBeDisabled();
@@ -641,7 +784,6 @@ describe("Sprint 04 · operação sem demonstração", () => {
     rows[0].name = "Nome atualizado pelo serviço";
     act(() => signals.changed?.());
     await act(async () => finish?.());
-    await screen.findByText("Resultado pendente");
     await screen.findByRole("button", { name: "Abrir detalhes de Nome atualizado pelo serviço" });
     expect(
       call.mock.calls.filter(([name]) => name === "get_dashboard_summary").length,

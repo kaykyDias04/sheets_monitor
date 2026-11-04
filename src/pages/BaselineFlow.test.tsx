@@ -4,7 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { BaselineFlow } from "./BaselineFlow";
 import { scopeForTabs } from "./ScopeEditor";
 import type { OperationalPreview, RegisteredSpreadsheet } from "@/types/management";
+
 afterEach(cleanup);
+
 const scope = scopeForTabs(null, [17]);
 const row: RegisteredSpreadsheet = {
   spreadsheet_id: "fixture-file",
@@ -25,6 +27,7 @@ const row: RegisteredSpreadsheet = {
   selected_sheet_ids: [17],
   tabs_refreshed_at: null,
 };
+
 const preview: OperationalPreview = {
   revision: 1,
   preview: {
@@ -52,6 +55,7 @@ const preview: OperationalPreview = {
     },
   },
 };
+
 function view(p = preview, dirty = false) {
   const approve = vi.fn();
   const props = {
@@ -70,28 +74,41 @@ function view(p = preview, dirty = false) {
   };
   return { ...render(<BaselineFlow {...props} />), approve, props };
 }
+
 describe("Aprovação visual", () => {
-  it("exige confirmação explícita e encaminha exatamente a prévia revisada", async () => {
+  it("exige confirmação explícita, oculta JSON bruto e encaminha exatamente a prévia revisada", async () => {
     const user = userEvent.setup();
     const { approve } = view();
     const button = screen.getByRole("button", { name: "Aprovar referência versão 1" });
     expect(button).toBeDisabled();
     expect(screen.getByText(/não representa toda a planilha/)).toBeInTheDocument();
+    expect(screen.queryByText(/Estrutura capturada e regras propostas/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/"schema_version"/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/"capture-one"/)).not.toBeInTheDocument();
     await user.click(screen.getByRole("checkbox", { name: /Revisei o escopo/ }));
     await user.click(button);
     expect(approve).toHaveBeenCalledWith(preview);
   });
-  it("recusa aprovação de captura incompleta ou configuração editada", () => {
+
+  it("recusa aprovação de captura incompleta ou configuração editada e traduz códigos internos", () => {
     const partial = structuredClone(preview);
     partial.preview.snapshot.coverage.complete = false;
+    partial.preview.snapshot.coverage.issues = [
+      { sheet_id: 17, rule_id: null, critical: true, code: "forbidden" },
+    ];
     const { unmount } = view(partial);
     expect(screen.getByRole("checkbox", { name: /Revisei o escopo/ })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Aprovar referência versão 1" })).toBeDisabled();
+    expect(
+      screen.getByText(/Sem permissão de leitura no arquivo ou projeto Google\./),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/^forbidden$/)).not.toBeInTheDocument();
     unmount();
     view(preview, true);
     expect(screen.getByRole("button", { name: "Capturar estrutura para revisão" })).toBeDisabled();
     expect(screen.getByText(/Há regras ou abas não salvas/)).toBeInTheDocument();
   });
+
   it("descarta confirmação quando uma nova captura substitui a prévia", async () => {
     const user = userEvent.setup();
     const { rerender, props } = view();

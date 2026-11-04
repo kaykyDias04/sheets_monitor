@@ -10,7 +10,7 @@ import type {
   RegisteredSpreadsheet,
 } from "@/types/management";
 import { columnLetter } from "./ScopeEditor";
-import { dateLabel } from "./OperationalShared";
+import { dateLabel, diagnosticText } from "./OperationalShared";
 
 function versionLabel(version: BaselineSummary) {
   return `Versão ${version.version} · regras ${version.scope_hash?.slice(0, 8) ?? "históricas"} · ${dateLabel(version.approved_at)}`;
@@ -162,17 +162,13 @@ function ApprovalReview({
           <ul>
             {snapshot.coverage.issues.map((issue, i) => (
               <li key={i}>
-                {issue.code}
-                {issue.critical ? " · crítico" : " · opcional"}
+                {diagnosticText(issue.code)}
+                {issue.critical ? " (regra crítica)" : " (regra opcional)"}
               </li>
             ))}
           </ul>
         </div>
       )}
-      <details className="op-advanced">
-        <summary>Estrutura capturada e regras propostas</summary>
-        <pre>{JSON.stringify(snapshot, null, 2)}</pre>
-      </details>
       <p className="op-hint">
         Para ajustar a proteção, edite e salve as regras. Uma alteração nas regras exige nova
         captura. Referências anteriores permanecem versionadas.

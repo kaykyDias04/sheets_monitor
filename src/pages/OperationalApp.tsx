@@ -4,17 +4,14 @@ import {
   LayoutDashboard,
   FileSpreadsheet,
   Settings2,
-  ShieldCheck,
   ChevronRight,
   RefreshCw,
   LoaderCircle,
-  Link2,
   ArrowRight,
   Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { desktop } from "@/services/platform";
 import {
   getIntegrationState,
@@ -46,12 +43,10 @@ import {
   dateLabel,
   StatusBadge,
 } from "./OperationalShared";
-import { RegisteredTable, DiscoveryPanel } from "./SpreadsheetTables";
+import { AddSpreadsheetsDialog, RegisteredTable } from "./SpreadsheetTables";
 import { SpreadsheetDetails } from "./SpreadsheetDetails";
 import { ActivitiesPanel } from "./ActivitiesPanel";
 import { AccountCard, PreferenceForm } from "./OperationalSettings";
-import { GooglePage } from "./GooglePage";
-import { IntegrityPage } from "./IntegrityPage";
 import { MonitoringWorkspace } from "./MonitoringWorkspace";
 
 type Route = "overview" | "sheets" | "details" | "activities" | "settings";
@@ -91,10 +86,13 @@ export function OperationalApp() {
   const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<Diagnostics | null>(null);
+  const [detailResetKey, setDetailResetKey] = useState(0);
+  const [initialDetailTab, setInitialDetailTab] = useState<string>("tabs");
   const [preview, setPreview] = useState<OperationalPreview | null>(null);
   const [versions, setVersions] = useState<BaselineSummary[]>([]);
   const [versionOffset, setVersionOffset] = useState(0);
   const [comparison, setComparison] = useState<BaselineComparison | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
   const [query, setQuery] = useState(initialDiscovery);
   const [discovery, setDiscovery] = useState<DiscoveryPage | null>(null);
   const [eventFilter, setEventFilter] = useState(initialEvents);
@@ -104,11 +102,9 @@ export function OperationalApp() {
   const [busy, setBusy] = useState<string | null>(desktop ? "Carregando aplicativo" : null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [advanced, setAdvanced] = useState<"google" | "engine" | null>(null);
 
   const current = useRef<IntegrationState | null>(null);
   const selectedIdRef = useRef<string | null>(null);
-  selectedIdRef.current = selectedId;
   const mounted = useRef(true);
   const locked = useRef(false);
   const bgRefresh = useRef<Promise<void> | null>(null);
@@ -120,26 +116,32 @@ export function OperationalApp() {
   const noticeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    selectedIdRef.current = selectedId;
+  }, [selectedId]);
+
+  useEffect(() => {
     (feedbackRef.current ?? noticeRef.current)?.scrollIntoView?.({ block: "nearest" });
   }, [error, notice]);
 
   const clearPrivate = useCallback(() => {
     setSummary(null);
     setPreferences(null);
+    selectedIdRef.current = null;
     setSelectedId(null);
     setDetail(null);
     setPreview(null);
     setVersions([]);
     setComparison(null);
     setVersionOffset(0);
+    setAddOpen(false);
     setDiscovery(null);
     setQuery(initialDiscovery);
     setEventPage(null);
     setEvent(null);
     setEventFilter(initialEvents);
     setUrl("");
-    setAdvanced(null);
     detailTab.current = null;
+    setInitialDetailTab("tabs");
   }, []);
 
   const acceptSession = useCallback(
@@ -204,7 +206,7 @@ export function OperationalApp() {
   );
 
   const handleFailureUnderLock = useCallback(
-    async (failure: unknown, targetSpreadsheetId: string | null) => {
+    async (failure: unknown, targetSpreadsheetId: string | null, context?: string) => {
       if (!mounted.current) return;
       if (isConflictCode(failure)) {
         try {
@@ -218,7 +220,7 @@ export function OperationalApp() {
             pendingRefresh.current = false;
             if (mounted.current) {
               setError(
-                "Os dados da planilha foram atualizados porque mudaram em outra operação. Revise os campos e tente novamente.",
+                "Os dados da planilha foram atualizados porque mudaram em outra operação. Revise os campos preservados na tela e tente novamente.",
               );
             }
             return;
@@ -227,7 +229,7 @@ export function OperationalApp() {
           /* Fall back to standard error handling below. */
         }
       }
-      setError(api.managementError(failure));
+      setError(api.managementError(failure, context));
       try {
         acceptSession(await getIntegrationState());
       } catch {
@@ -310,6 +312,7 @@ export function OperationalApp() {
       label: string,
       work: () => Promise<EngineEnvelope<T>>,
       apply: (data: T) => void = () => undefined,
+      context?: string,
     ) => {
       if (locked.current || !desktop) return false;
       locked.current = true;
@@ -346,7 +349,7 @@ export function OperationalApp() {
         apply(result.data);
         return true;
       } catch (e) {
-        await handleFailureUnderLock(e, targetId);
+        await handleFailureUnderLock(e, targetId, context ?? label.toLocaleLowerCase("pt-BR"));
         return false;
       } finally {
         locked.current = false;
@@ -360,44 +363,78 @@ export function OperationalApp() {
     [acceptSession, clearPrivate, handleFailureUnderLock],
   );
 
-  const refresh = useCallback(async () => {
-    if (!desktop) return;
-    if (locked.current) {
-      pendingRefresh.current = true;
-      return;
-    }
-    try {
-      const state = await getIntegrationState();
-      if (!mounted.current) return;
-      acceptSession(state);
-      if (!state.auth.account) {
-        clearPrivate();
-        setBusy(null);
+  const refresh = useCallback(
+    async (resetDetailForms = false) => {
+      if (!desktop) return;
+      if (locked.current) {
+        pendingRefresh.current = true;
         return;
       }
-      await run(
-        "Atualizando os dados locais",
-        async () => {
-          const [dashboard, prefs] = await Promise.all([api.getDashboard(), api.getPreferences()]);
-          if (
-            dashboard.generation !== prefs.generation ||
-            dashboard.account_subject !== prefs.account_subject
-          )
-            throw { code: "stale_session" };
-          return { ...dashboard, data: { dashboard: dashboard.data, prefs: prefs.data } };
-        },
-        ({ dashboard, prefs }) => {
-          setSummary(dashboard);
-          setPreferences(prefs);
-        },
-      );
-    } catch (e) {
-      if (mounted.current) {
-        setError(api.managementError(e));
-        setBusy(null);
+      try {
+        const state = await getIntegrationState();
+        if (!mounted.current) return;
+        acceptSession(state);
+        if (!state.auth.account) {
+          clearPrivate();
+          setBusy(null);
+          return;
+        }
+        const targetId = selectedIdRef.current;
+        await run(
+          "Atualizando os dados locais",
+          async () => {
+            const [dashboard, prefs] = await Promise.all([
+              api.getDashboard(),
+              api.getPreferences(),
+            ]);
+            let detailPair: {
+              diagnosis: EngineEnvelope<Diagnostics>;
+              history: EngineEnvelope<Page<BaselineSummary>>;
+            } | null = null;
+            if (resetDetailForms && targetId) {
+              const [diagnosis, history] = await Promise.all([
+                api.diagnostics(targetId),
+                api.listBaselines(targetId, 0),
+              ]);
+              detailPair = { diagnosis, history };
+            }
+            if (
+              dashboard.generation !== prefs.generation ||
+              dashboard.account_subject !== prefs.account_subject ||
+              (detailPair &&
+                (detailPair.diagnosis.generation !== dashboard.generation ||
+                  detailPair.history.generation !== dashboard.generation ||
+                  detailPair.diagnosis.account_subject !== dashboard.account_subject ||
+                  detailPair.history.account_subject !== dashboard.account_subject))
+            )
+              throw { code: "stale_session" };
+            return {
+              ...dashboard,
+              data: { dashboard: dashboard.data, prefs: prefs.data, detailPair },
+            };
+          },
+          ({ dashboard, prefs, detailPair }) => {
+            setSummary(dashboard);
+            setPreferences(prefs);
+            if (detailPair && selectedIdRef.current === targetId) {
+              setDetail(detailPair.diagnosis.data);
+              setVersions(detailPair.history.data.items);
+              setVersionOffset(0);
+              setInitialDetailTab(detailTab.current ?? "tabs");
+              setDetailResetKey((n) => n + 1);
+            }
+          },
+          "atualizar os dados locais",
+        );
+      } catch (e) {
+        if (mounted.current) {
+          setError(api.managementError(e, "atualizar os dados locais"));
+          setBusy(null);
+        }
       }
-    }
-  }, [acceptSession, clearPrivate, run]);
+    },
+    [acceptSession, clearPrivate, run],
+  );
 
   useEffect(() => {
     mounted.current = true;
@@ -426,54 +463,66 @@ export function OperationalApp() {
     if (locked.current) return;
     epoch.current++;
     setRoute(next);
+    setAddOpen(false);
     setError("");
     setNotice("");
     if (next !== "settings") {
-      setAdvanced(null);
-      if (next === "sheets" && canDiscover && !discovery) {
-        void (async () => {
-          await refresh();
-          await discover({ ...query, page_token: null });
-        })();
-      } else if (next === "activities") {
+      if (next === "activities") {
         void (async () => {
           await refresh();
           await loadEvents({ ...eventFilter, offset: 0 });
         })();
-      } else void refresh();
+      } else {
+        void refresh();
+      }
     }
   }
 
-  async function sessionAction(work: () => Promise<IntegrationState>, success: string) {
+  async function sessionAction(
+    work: () => Promise<IntegrationState>,
+    success: string,
+    context: string,
+  ) {
     if (locked.current || !desktop) return;
     locked.current = true;
     epoch.current++;
-    clearPrivate();
     setBusy("Processando autorização Google");
     setError("");
     setNotice("");
     try {
       if (bgRefresh.current) await bgRefresh.current;
-      acceptSession(await work());
-      setNotice(success);
+      const next = await work();
+      acceptSession(next);
+      if (next.auth.account) {
+        await reloadUnderLock(next, null);
+      } else {
+        clearPrivate();
+      }
+      if (mounted.current) setNotice(success);
     } catch (e) {
-      setError(api.managementError(e));
+      setError(api.managementError(e, context));
       try {
-        acceptSession(await getIntegrationState());
+        const latest = await getIntegrationState();
+        acceptSession(latest);
+        if (!latest.auth.account) clearPrivate();
       } catch {
         /* no unsafe fallback */
       }
     } finally {
       locked.current = false;
-      setBusy(null);
+      if (mounted.current) setBusy(null);
     }
-    await refresh();
   }
 
-  async function loadDetail(id: string) {
-    if (locked.current) return;
+  async function loadDetail(id: string): Promise<boolean> {
+    if (locked.current) return false;
     epoch.current++;
-    if (id !== selectedIdRef.current) detailTab.current = null;
+    if (id !== selectedIdRef.current) {
+      detailTab.current = null;
+      setInitialDetailTab("tabs");
+    } else {
+      setInitialDetailTab(detailTab.current ?? "tabs");
+    }
     selectedIdRef.current = id;
     setSelectedId(id);
     setDetail(null);
@@ -482,7 +531,7 @@ export function OperationalApp() {
     setVersions([]);
     setVersionOffset(0);
     setRoute("details");
-    await run(
+    return run(
       "Carregando detalhes da planilha",
       async () => {
         const [diagnosis, history] = await Promise.all([
@@ -499,7 +548,9 @@ export function OperationalApp() {
       ({ diagnosis, history }) => {
         setDetail(diagnosis);
         setVersions(history.items);
+        setDetailResetKey((n) => n + 1);
       },
+      "carregar os detalhes da planilha",
     );
   }
 
@@ -514,8 +565,13 @@ export function OperationalApp() {
     };
   }
 
-  async function mutate<T>(label: string, work: () => Promise<EngineEnvelope<T>>, message: string) {
-    if (locked.current || !desktop) return;
+  async function mutate<T>(
+    label: string,
+    work: () => Promise<EngineEnvelope<T>>,
+    message: string,
+    options?: { resetDetailForms?: boolean; context?: string },
+  ): Promise<boolean> {
+    if (locked.current || !desktop) return false;
     locked.current = true;
     const id = selectedIdRef.current;
     setBusy(label);
@@ -524,7 +580,7 @@ export function OperationalApp() {
     try {
       if (bgRefresh.current) await bgRefresh.current;
       const before = await getIntegrationState();
-      if (!mounted.current) return;
+      if (!mounted.current) return false;
       if (current.current && !sameSession(current.current, before)) {
         acceptSession(before);
         throw { code: "stale_session" };
@@ -533,7 +589,7 @@ export function OperationalApp() {
       if (!before.auth.account) throw { code: "auth_required" };
       const result = await work();
       const after = await getIntegrationState();
-      if (!mounted.current) return;
+      if (!mounted.current) return false;
       if (
         !sameSession(before, after) ||
         result.generation !== after.generation ||
@@ -547,10 +603,16 @@ export function OperationalApp() {
       acceptSession(after);
       invalidatePreview();
       await reloadUnderLock(after, id);
+      if (options?.resetDetailForms && mounted.current) {
+        setInitialDetailTab(detailTab.current ?? "tabs");
+        setDetailResetKey((n) => n + 1);
+      }
       pendingRefresh.current = false;
       if (mounted.current) setNotice(message);
+      return true;
     } catch (e) {
-      await handleFailureUnderLock(e, id);
+      await handleFailureUnderLock(e, id, options?.context ?? label.toLocaleLowerCase("pt-BR"));
+      return false;
     } finally {
       locked.current = false;
       if (mounted.current) setBusy(null);
@@ -564,10 +626,30 @@ export function OperationalApp() {
   async function discover(next = query) {
     if (locked.current) return;
     setQuery(next);
-    await run("Consultando arquivos no Google Drive", () => api.discover(next), setDiscovery);
+    await run(
+      "Consultando arquivos no Google Drive",
+      () => api.discover(next),
+      setDiscovery,
+      "listar as planilhas do Google Drive",
+    );
+  }
+
+  function openAddFlow() {
+    if (locked.current) return;
+    setError("");
+    setNotice("");
+    setAddOpen(true);
+    if (canDiscover && !discovery) {
+      void discover({ ...query, page_token: null });
+    }
   }
 
   async function register(urlValue: string) {
+    if (!urlValue) {
+      setNotice("");
+      setError("Informe o link completo da planilha no Google Sheets antes de cadastrar.");
+      return;
+    }
     const generation = current.current?.generation;
     if (generation === undefined) return;
     let registered: RegisteredSpreadsheet | null = null;
@@ -578,21 +660,32 @@ export function OperationalApp() {
         (row) => {
           registered = row;
         },
+        "cadastrar a planilha selecionada",
       )
     ) {
       setUrl("");
+      setAddOpen(false);
       await refresh();
-      if (registered) await loadDetail((registered as RegisteredSpreadsheet).spreadsheet_id);
-      setNotice(
-        "Planilha cadastrada. Selecione abas e configure a proteção antes de aprovar a referência.",
-      );
+      if (registered) {
+        const loaded = await loadDetail((registered as RegisteredSpreadsheet).spreadsheet_id);
+        if (loaded) {
+          setNotice(
+            "Planilha cadastrada. Selecione as abas monitoradas e salve para avançar às regras de proteção.",
+          );
+        }
+      }
     }
   }
 
   async function loadEvents(next: EventFilter) {
     if (locked.current) return;
     setEventFilter(next);
-    await run("Consultando atividades no banco local", () => api.events(next), setEventPage);
+    await run(
+      "Consultando atividades no banco local",
+      () => api.events(next),
+      setEventPage,
+      "consultar o histórico de atividades",
+    );
   }
 
   const disabled = !desktop || busy !== null;
@@ -602,19 +695,27 @@ export function OperationalApp() {
     session.auth.granted_scopes.includes("https://www.googleapis.com/auth/drive.metadata.readonly");
   const pageTitle = routes.find((item) => item.id === route)?.label ?? "Sheets Monitor";
   const feedbackInsideDetails = route === "details" && detail !== null;
+  const feedbackInsideAddDialog = route === "sheets" && addOpen;
+  const feedbackDelegated = feedbackInsideDetails || feedbackInsideAddDialog;
 
   const accountActions = {
     session,
     disabled,
-    onConnect: () => void sessionAction(connectIntegration, "Autorização concluída."),
+    onConnect: () =>
+      void sessionAction(connectIntegration, "Autorização concluída.", "conectar a conta Google"),
     onDisconnect: () =>
-      void sessionAction(disconnectIntegration, "Conta desconectada deste dispositivo."),
+      void sessionAction(
+        disconnectIntegration,
+        "Conta desconectada deste dispositivo.",
+        "desconectar a conta Google",
+      ),
     onDrive: (enabled: boolean) =>
       void sessionAction(
         () => api.setDriveOptIn(enabled),
         enabled
           ? "Descoberta habilitada. Reautorize as permissões se necessário."
           : "Descoberta desativada.",
+        "alterar a permissão de descoberta no Drive",
       ),
     onRefresh: () => void refresh(),
   };
@@ -641,14 +742,6 @@ export function OperationalApp() {
             <small>INTEGRIDADE DAS SUAS PLANILHAS</small>
           </span>
         </a>
-        <div className="workspace">
-          <span className="workspace-symbol">
-            <ShieldCheck size={19} />
-          </span>
-          <div>
-            Workspace local<small>Google somente leitura</small>
-          </div>
-        </div>
         <p className="nav-label">ACOMPANHAMENTO</p>
         <nav aria-label="Navegação principal">
           {routes.map(({ id, label, icon: Icon }) => (
@@ -666,14 +759,8 @@ export function OperationalApp() {
           ))}
         </nav>
         <div className="sidebar-foot">
-          <div className="local-promise">
-            <ShieldCheck size={20} />
-            <div>
-              Seu controle, sua referência<small>Aprovação sempre explícita</small>
-            </div>
-          </div>
           <div className="version">
-            <span>v1.0.1</span>
+            <span>v1.0.2</span>
             <span>WINDOWS 11</span>
           </div>
         </div>
@@ -715,15 +802,20 @@ export function OperationalApp() {
                 {route === "overview"
                   ? "Acompanhe a integridade e as verificações recentes das suas planilhas."
                   : route === "sheets"
-                    ? "Descubra arquivos autorizados e acompanhe até 30 planilhas."
+                    ? "Gerencie e acompanhe até 30 planilhas cadastradas."
                     : route === "activities"
                       ? "Histórico local de alterações, falhas e recuperações."
                       : route === "settings"
                         ? "Gerencie a conta e as preferências deste dispositivo."
-                        : "Escolha abas, defina regras de proteção e aprove referências da planilha."}
+                        : "Escolha abas, defina regras de proteção e aprove a referência da planilha."}
               </p>
             </div>
-            <Button variant="outline" size="sm" disabled={disabled} onClick={() => void refresh()}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              onClick={() => void refresh(true)}
+            >
               <RefreshCw />
               Atualizar dados
             </Button>
@@ -734,17 +826,17 @@ export function OperationalApp() {
               planilhas reais.
             </p>
           )}
-          {!feedbackInsideDetails && error && (
+          {!feedbackDelegated && error && (
             <div className="feedback error" role="alert" ref={feedbackRef}>
               {error}
             </div>
           )}
-          {!feedbackInsideDetails && notice && (
+          {!feedbackDelegated && notice && (
             <div className="feedback success" role="status" ref={noticeRef}>
               {notice}
             </div>
           )}
-          {!feedbackInsideDetails && busy && (
+          {!feedbackDelegated && busy && (
             <div className="op-progress" role="status">
               <LoaderCircle className="animate-spin motion-reduce:animate-none" size={16} />
               {busy}…
@@ -756,6 +848,7 @@ export function OperationalApp() {
             rows={rows}
             route={route}
             disabled={disabled}
+            suppressedError={feedbackDelegated ? "" : error}
             onChanged={() => void silentRefresh()}
             onNavigate={navigate}
             onOpenSheet={(id) => void loadDetail(id)}
@@ -798,7 +891,7 @@ export function OperationalApp() {
                     <Card>
                       <EmptyState
                         title="Encontre suas primeiras planilhas"
-                        description="Descubra arquivos da sua conta e selecione até 30 para acompanhar. Nenhuma planilha é considerada Online antes de uma verificação."
+                        description="Adicione arquivos da sua conta e selecione até 30 para acompanhar. Nenhuma planilha é considerada Online antes de uma verificação."
                         action="Escolher planilhas"
                         onAction={() => navigate("sheets")}
                       />
@@ -902,13 +995,17 @@ export function OperationalApp() {
                     disabled={disabled}
                     rows={rows}
                     onOpen={(row) => void loadDetail(row.spreadsheet_id)}
-                    onDiscover={() =>
-                      document
-                        .getElementById("discovery-panel")
-                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
-                    }
+                    onDiscover={openAddFlow}
                   />
-                  <DiscoveryPanel
+                  <AddSpreadsheetsDialog
+                    open={addOpen}
+                    onOpenChange={(nextOpen) => {
+                      setAddOpen(nextOpen);
+                      if (!nextOpen) {
+                        setError("");
+                        setNotice("");
+                      }
+                    }}
                     query={query}
                     onQuery={(next) => {
                       epoch.current++;
@@ -922,51 +1019,19 @@ export function OperationalApp() {
                         void discover({ ...query, page_token: discovery.next_page_token });
                     }}
                     onFirst={() => void discover({ ...query, page_token: null })}
-                    onRegister={(file) =>
+                    onRegisterFile={(file) =>
                       void register(`https://docs.google.com/spreadsheets/d/${file.id}/edit`)
                     }
+                    url={url}
+                    onUrlChange={setUrl}
+                    onRegisterUrl={(value) => void register(value)}
                     registered={rows.map((row) => row.spreadsheet_id)}
                     disabled={disabled}
                     canDiscover={canDiscover}
+                    busy={busy}
+                    error={error}
+                    notice={notice}
                   />
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Adicionar por link</CardTitle>
-                      <CardDescription>
-                        Use um link Google Sheets quando preferir selecionar um arquivo diretamente.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <form
-                        className="op-url-form"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          void register(url.trim());
-                        }}
-                      >
-                        <label className="op-field">
-                          Link da planilha
-                          <Input
-                            type="url"
-                            value={url}
-                            required
-                            placeholder="https://docs.google.com/spreadsheets/d/…/edit"
-                            maxLength={2048}
-                            disabled={disabled}
-                            onChange={(e) => setUrl(e.target.value)}
-                          />
-                        </label>
-                        <Button type="submit" disabled={disabled || rows.length >= 30}>
-                          <Link2 />
-                          Cadastrar por link
-                        </Button>
-                      </form>
-                      <p className="op-hint">
-                        Duplicidades são verificadas por conta. Cadastros pausados também ocupam uma
-                        das 30 vagas.
-                      </p>
-                    </CardContent>
-                  </Card>
                 </div>
               )}
               {route === "details" && (
@@ -990,9 +1055,9 @@ export function OperationalApp() {
                   </label>
                   {detail ? (
                     <SpreadsheetDetails
-                      key={`${detail.spreadsheet.spreadsheet_id}:${detail.spreadsheet.revision}`}
+                      key={`${detail.spreadsheet.spreadsheet_id}:${detailResetKey}`}
                       data={detail}
-                      initialTab={detailTab.current ?? "tabs"}
+                      initialTab={initialDetailTab}
                       onTabChange={(tab) => {
                         detailTab.current = tab;
                       }}
@@ -1020,6 +1085,7 @@ export function OperationalApp() {
                               "Estrutura capturada. Revise o resumo abaixo e marque a confirmação para aprovar.",
                             );
                           },
+                          "capturar a estrutura da planilha",
                         )
                       }
                       onApprove={(captured) =>
@@ -1036,6 +1102,7 @@ export function OperationalApp() {
                               confirmed: true,
                             }),
                           "Referência aprovada explicitamente e salva como nova versão.",
+                          { context: "aprovar a referência estrutural" },
                         )
                       }
                       onVersionPage={(offset) => {
@@ -1046,6 +1113,7 @@ export function OperationalApp() {
                             setVersions(page.items);
                             setVersionOffset(page.offset);
                           },
+                          "consultar as versões aprovadas",
                         );
                       }}
                       onCompare={(before, after) =>
@@ -1054,23 +1122,30 @@ export function OperationalApp() {
                           () =>
                             api.compareBaselines(detail.spreadsheet.spreadsheet_id, before, after),
                           setComparison,
+                          "comparar as versões de referência",
                         )
                       }
                       onComparisonClear={() => setComparison(null)}
-                      onSaveTabs={(ids) =>
-                        void mutate(
+                      onSaveTabs={async (ids) => {
+                        const saved = await mutate(
                           "Salvando seleção de abas",
                           () => api.saveTabs({ ...mutation(), sheet_ids: ids }),
-                          "Seleção de abas salva. Continue em Regras de proteção.",
-                        )
-                      }
-                      onSaveRules={(scope) =>
-                        void mutate(
+                          "Seleção de abas salva. Defina as regras de proteção abaixo.",
+                          { context: "salvar a seleção de abas" },
+                        );
+                        if (saved) detailTab.current = "rules";
+                        return saved;
+                      }}
+                      onSaveRules={async (scope) => {
+                        const saved = await mutate(
                           "Salvando regras de proteção",
                           () => api.saveRules({ ...mutation(), scope }),
-                          "Regras salvas. Abra Referências para capturar e aprovar esta proteção.",
-                        )
-                      }
+                          "Regras salvas. Capture a estrutura abaixo para revisar e aprovar a referência.",
+                          { context: "salvar as regras de proteção" },
+                        );
+                        if (saved) detailTab.current = "baselines";
+                        return saved;
+                      }}
                       onSuggestRules={async () => {
                         let proposal: import("@/types/integrity").MonitorScope | null = null;
                         await run(
@@ -1082,6 +1157,7 @@ export function OperationalApp() {
                               "Cabeçalhos lidos da planilha. Confira as colunas abaixo e clique em Salvar regras de proteção.",
                             );
                           },
+                          "ler os cabeçalhos da planilha",
                         );
                         return proposal;
                       }}
@@ -1095,6 +1171,11 @@ export function OperationalApp() {
                           detail.spreadsheet.paused
                             ? "Cadastro retomado. O serviço verificará a proteção quando o monitoramento estiver ativo."
                             : "Cadastro pausado.",
+                          {
+                            context: detail.spreadsheet.paused
+                              ? "retomar o cadastro"
+                              : "pausar o cadastro",
+                          },
                         )
                       }
                       onCheck={() =>
@@ -1102,6 +1183,7 @@ export function OperationalApp() {
                           "Adicionando verificação à fila",
                           () => api.check(mutation()),
                           "Verificação adicionada à fila. O resultado será atualizado pelo serviço.",
+                          { context: "agendar a verificação da planilha" },
                         )
                       }
                       onRefresh={() =>
@@ -1109,11 +1191,18 @@ export function OperationalApp() {
                           "Atualizando nome e abas no Google",
                           () => api.refreshTabs(detail.spreadsheet.spreadsheet_id),
                           "Metadados atualizados. Confira abas removidas, renomeadas e regras pendentes.",
+                          {
+                            resetDetailForms: true,
+                            context: "atualizar o nome e as abas no Google",
+                          },
                         )
                       }
                       onOpen={() =>
-                        void run("Abrindo arquivo no navegador", () =>
-                          api.openSpreadsheet(detail.spreadsheet.spreadsheet_id),
+                        void run(
+                          "Abrindo arquivo no navegador",
+                          () => api.openSpreadsheet(detail.spreadsheet.spreadsheet_id),
+                          undefined,
+                          "abrir a planilha no navegador",
                         )
                       }
                       onHistory={() => {
@@ -1126,10 +1215,14 @@ export function OperationalApp() {
                       onRemove={(history) => {
                         void (async () => {
                           if (
-                            await run("Removendo cadastro local", () =>
-                              api.remove({ ...mutation(), confirmed: true, history }),
+                            await run(
+                              "Removendo cadastro local",
+                              () => api.remove({ ...mutation(), confirmed: true, history }),
+                              undefined,
+                              "remover o cadastro da planilha",
                             )
                           ) {
+                            selectedIdRef.current = null;
                             setSelectedId(null);
                             setDetail(null);
                             setPreview(null);
@@ -1158,6 +1251,7 @@ export function OperationalApp() {
                             };
                           },
                           "Projeto consultado e associado. Inclua-o nas regras para analisar suas dependências.",
+                          { context: "associar o projeto Apps Script" },
                         )
                       }
                     />
@@ -1166,7 +1260,7 @@ export function OperationalApp() {
                       <Card>
                         <EmptyState
                           title="Escolha uma planilha para continuar"
-                          description="Abra um cadastro para selecionar abas, configurar proteção, revisar referências e consultar diagnósticos."
+                          description="Abra um cadastro para selecionar abas, configurar proteção, revisar a referência e consultar diagnósticos."
                           action="Ver planilhas"
                           onAction={() => navigate("sheets")}
                         />
@@ -1209,64 +1303,16 @@ export function OperationalApp() {
                               setPreferences(saved);
                               setNotice("Preferências salvas nesta conta.");
                             },
+                            "salvar as preferências",
                           );
                       }}
                     />
                   )}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Ferramentas avançadas</CardTitle>
-                      <CardDescription>
-                        Diagnóstico técnico e configuração de desenvolvimento, fora do fluxo de uso
-                        diário.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="op-actions">
-                        <Button
-                          variant="outline"
-                          disabled={disabled}
-                          onClick={() => setAdvanced(advanced === "google" ? null : "google")}
-                        >
-                          Configuração OAuth do mantenedor
-                        </Button>
-                        <Button
-                          variant="outline"
-                          disabled={disabled}
-                          onClick={() => setAdvanced(advanced === "engine" ? null : "engine")}
-                        >
-                          Diagnóstico técnico do motor
-                        </Button>
-                      </div>
-                      {advanced && (
-                        <div className="op-advanced-content">
-                          {advanced === "google" ? (
-                            <GooglePage onSessionChange={acceptSession} />
-                          ) : (
-                            <IntegrityPage />
-                          )}
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setAdvanced(null);
-                              void refresh();
-                            }}
-                          >
-                            Fechar ferramentas e atualizar conexão
-                          </Button>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
                 </div>
               )}
             </>
           )}
-          <footer className="op-footer">
-            <ShieldCheck size={14} />
-            Referências locais · Google somente leitura
-            <span>Verificações no aplicativo · Alertas conforme sua preferência</span>
-          </footer>
+          <footer className="op-footer" aria-hidden="true" />
         </main>
       </div>
       <EventDiagnostic event={event} onClose={() => setEvent(null)} />

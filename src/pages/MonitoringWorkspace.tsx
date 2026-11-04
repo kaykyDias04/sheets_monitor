@@ -28,6 +28,7 @@ export function MonitoringWorkspace({
   rows,
   route,
   disabled,
+  suppressedError = "",
   onChanged,
   onNavigate,
   onOpenSheet,
@@ -36,6 +37,7 @@ export function MonitoringWorkspace({
   rows: RegisteredSpreadsheet[];
   route: string;
   disabled: boolean;
+  suppressedError?: string;
   onChanged: () => void;
   onNavigate: (route: "settings" | "overview") => void;
   onOpenSheet: (id: string) => void;
@@ -104,7 +106,8 @@ export function MonitoringWorkspace({
         setError("");
       } while (pending.current && mounted.current);
     } catch (failure) {
-      if (mounted.current) setError(managementError(failure));
+      if (mounted.current)
+        setError(managementError(failure, "consultar o serviço de monitoramento"));
     } finally {
       loading.current = false;
     }
@@ -152,8 +155,9 @@ export function MonitoringWorkspace({
                   setNotice("O evento não está disponível nesta conta ou já expirou.");
               }
             })
-            .catch(() => {
-              if (mounted.current) setError("Não foi possível abrir o evento nesta sessão.");
+            .catch((failure) => {
+              if (mounted.current)
+                setError(managementError(failure, "abrir o evento da notificação"));
             });
         })
         .then(retain)
@@ -168,29 +172,30 @@ export function MonitoringWorkspace({
   useEffect(() => {
     void Promise.resolve().then(load);
   }, [route, offset, load]);
-  async function action(work: () => Promise<unknown>, message: string) {
+  async function action(work: () => Promise<unknown>, message: string, context: string) {
     if (working || disabled) return;
     setWorking(true);
     setError("");
     setNotice("");
     try {
       await work();
-      setNotice(message);
       await load();
+      setNotice(message);
       live.current.onChanged();
     } catch (failure) {
-      setError(managementError(failure));
+      setError(managementError(failure, context));
     } finally {
       if (mounted.current) setWorking(false);
     }
   }
   const blocked = disabled || working;
   const generation = session?.generation;
+  const visibleError = error && error !== suppressedError ? error : "";
   return (
     <div className="op-stack op-monitoring-workspace">
-      {error && (
+      {visibleError && (
         <p className="feedback error" role="alert">
-          {error}
+          {visibleError}
         </p>
       )}
       {notice && (
@@ -210,6 +215,7 @@ export function MonitoringWorkspace({
                 enabled
                   ? "Monitoramento iniciado."
                   : "Monitoramento pausado; verificações automáticas canceladas.",
+                enabled ? "iniciar o monitoramento" : "pausar o monitoramento",
               );
           }}
           onCheck={() => {
@@ -217,6 +223,7 @@ export function MonitoringWorkspace({
               void action(
                 () => api.checkNow(generation),
                 "Verificações elegíveis adicionadas à fila.",
+                "agendar a verificação das planilhas elegíveis",
               );
           }}
         />
@@ -255,6 +262,7 @@ export function MonitoringWorkspace({
                     enabled
                       ? "Registro de inicialização ativado para este usuário Windows."
                       : "Registro de inicialização desativado.",
+                    "alterar a inicialização com o Windows",
                   );
                 }}
               />
@@ -308,6 +316,7 @@ export function MonitoringWorkspace({
                     void action(
                       () => api.retryBlockedNotifications(generation),
                       "Reenvio solicitado para alertas bloqueados ainda elegíveis. Itens suprimidos ou expirados permanecem encerrados.",
+                      "reenviar os alertas bloqueados",
                     );
                 }}
               >
@@ -316,7 +325,9 @@ export function MonitoringWorkspace({
               <Button
                 variant="outline"
                 disabled={blocked || !native}
-                onClick={() => void action(api.exitDesktop, "Encerrando aplicativo…")}
+                onClick={() =>
+                  void action(api.exitDesktop, "Encerrando aplicativo…", "encerrar o aplicativo")
+                }
               >
                 Sair do aplicativo
               </Button>

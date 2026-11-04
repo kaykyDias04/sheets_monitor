@@ -63,93 +63,203 @@ export async function testScriptAccess(input: {
   return invoke("integration_test_script", { input });
 }
 
-const safeMessages: Record<string, string> = {
-  invalid_configuration: "Revise o Client ID Desktop e a configuração informada.",
+export interface ErrorDiagnostic {
+  code: string;
+  category: "auth" | "permission" | "connectivity" | "validation" | "internal";
+  retryable: boolean;
+  context?: string;
+}
 
-  auth_busy: "Outra operação de autenticação está em andamento.",
+const errorCategories: Record<string, ErrorDiagnostic["category"]> = {
+  auth_required: "auth",
+  unauthorized: "auth",
+  reconnect_required: "auth",
+  token_expired: "auth",
+  invalid_grant: "auth",
+  identity_mismatch: "auth",
+  stale_session: "auth",
+  operation_superseded: "auth",
+  auth_busy: "auth",
+  cancelled: "auth",
+  consent_denied: "auth",
+  oauth_denied: "auth",
+  access_denied: "auth",
+  callback_invalid: "auth",
+  authorization_failed: "auth",
+  revocation_confirmation_required: "auth",
+  unconfigured: "auth",
+  oauth_not_configured: "auth",
+  not_configured: "auth",
+  invalid_configuration: "auth",
+  configuration_invalid: "auth",
+  invalid_desktop_client_id: "auth",
+  vault_corrupt: "auth",
+  vault_unavailable: "auth",
+  credential_store_unavailable: "auth",
+  browser_unavailable: "auth",
+  browser_open_failed: "auth",
 
-  invalid_grant: "A autorização expirou ou foi revogada. Reconecte a conta.",
+  forbidden: "permission",
+  insufficient_scope: "permission",
+  integrity_forbidden: "permission",
+  script_not_authorized: "permission",
+  native_permission_blocked: "permission",
 
-  vault_corrupt:
-    "A credencial protegida não pôde ser recuperada. Desconecte e configure novamente.",
+  network: "connectivity",
+  timeout: "connectivity",
+  rate_limited: "connectivity",
+  server: "connectivity",
+  invalid_response: "connectivity",
 
-  operation_superseded: "A sessão mudou. O resultado anterior foi descartado.",
-
-  insufficient_scope: "A permissão necessária não foi concedida. Autorize novamente.",
-
-  browser_unavailable: "Não foi possível abrir o navegador do sistema.",
-
-  local_storage: "Não foi possível salvar os metadados locais.",
-
-  identity_mismatch: "A identidade retornada diverge da conta. Reconecte a conta.",
-
-  desktop_required: "Abra o aplicativo Windows para configurar a conta e consultar as APIs Google.",
-
-  unconfigured: "Configure um cliente OAuth Desktop antes de conectar.",
-
-  oauth_not_configured: "Configure um cliente OAuth Desktop antes de conectar.",
-
-  not_configured: "Configure um cliente OAuth Desktop antes de conectar.",
-
-  auth_required: "Conecte sua conta Google para realizar esta consulta.",
-
-  unauthorized: "A sessão não autoriza esta leitura. Reconecte a conta Google.",
-
-  reconnect_required: "A sessão precisa de uma nova autorização no navegador.",
-
-  consent_denied: "O consentimento foi negado. Nenhuma conexão foi concluída.",
-
-  oauth_denied: "O consentimento foi negado. Nenhuma conexão foi concluída.",
-
-  access_denied: "O consentimento foi negado. Nenhuma conexão foi concluída.",
-
-  forbidden:
-    "Acesso negado. Confirme os escopos, o compartilhamento e a habilitação da API no Google Cloud. Para Apps Script, verifique também a autorização do painel do serviço.",
-
-  not_found: "O recurso não foi encontrado ou não está disponível para esta conta.",
-
-  bad_request: "O Google recusou a consulta. Revise o link, os IDs e os intervalos A1.",
-
-  invalid_input: "Revise o link, os IDs e os intervalos informados.",
-
-  rate_limited: "A cota de consultas foi atingida. Aguarde e tente novamente.",
-
-  network: "Não foi possível acessar o Google. Verifique a conexão com a internet.",
-
-  timeout: "A operação excedeu o tempo limite. Tente novamente.",
-
-  server: "O serviço Google está temporariamente indisponível. Tente novamente.",
-
-  invalid_response: "O serviço retornou uma resposta que não pôde ser validada.",
-
-  response_too_large: "A resposta excedeu o limite de leitura. Reduza os intervalos consultados.",
-
-  credential_store_unavailable:
-    "O armazenamento seguro do Windows está indisponível. A sessão não foi salva.",
-
-  vault_unavailable: "O armazenamento seguro do Windows está indisponível. A sessão não foi salva.",
-
-  browser_open_failed: "Não foi possível abrir o navegador do sistema. Tente novamente.",
-
-  operation_in_progress: "Outra operação está em andamento. Aguarde sua conclusão.",
-
-  stale_session:
-    "A conta mudou durante a consulta. O resultado anterior foi descartado; tente novamente.",
-
-  configuration_invalid: "Revise o Client ID do tipo Desktop e a configuração informada.",
+  bad_request: "validation",
+  invalid_input: "validation",
+  invalid_json: "validation",
+  duplicate: "validation",
+  capacity: "validation",
+  invalid_tabs: "validation",
+  tabs_scope_mismatch: "validation",
+  integrity_invalid_scope: "validation",
+  integrity_invalid_snapshot: "validation",
+  integrity_limit: "validation",
+  response_too_large: "validation",
+  confirmation_required: "validation",
+  integrity_approval_required: "validation",
+  invalid_history_choice: "validation",
+  invalid_preferences: "validation",
+  invalid_filter: "validation",
+  invalid_page: "validation",
+  configuration_pending: "validation",
+  integrity_missing_baseline: "validation",
 };
 
-export function integrationErrorMessage(error: unknown): string {
-  let code: unknown;
+const safeMessages: Record<string, string> = {
+  // Autenticação e sessão
+  invalid_configuration:
+    "A configuração OAuth informada é inválida. Verifique o Client ID Desktop e tente novamente.",
+  configuration_invalid:
+    "A configuração OAuth informada é inválida. Verifique o Client ID Desktop e tente novamente.",
+  invalid_desktop_client_id:
+    "O Client ID informado não corresponde a um cliente OAuth Desktop válido. Revise a configuração e tente novamente.",
+  unconfigured:
+    "Esta instalação ainda não possui configuração OAuth Desktop. Solicite o pacote configurado ao responsável antes de conectar.",
+  oauth_not_configured:
+    "Esta instalação ainda não possui configuração OAuth Desktop. Solicite o pacote configurado ao responsável antes de conectar.",
+  not_configured:
+    "Esta instalação ainda não possui configuração OAuth Desktop. Solicite o pacote configurado ao responsável antes de conectar.",
+  auth_required:
+    "Sua conta Google não está conectada. Acesse Configurações e clique em Entrar com Google para continuar.",
+  unauthorized:
+    "Sua autorização Google não está mais ativa para esta leitura. Acesse Configurações e clique em Reautorizar permissões.",
+  reconnect_required:
+    "Sua sessão Google precisa ser renovada. Acesse Configurações e clique em Reautorizar permissões no navegador.",
+  token_expired:
+    "A sessão de acesso Google expirou. Acesse Configurações e clique em Reautorizar permissões no navegador.",
+  invalid_grant:
+    "A autorização da conta expirou ou foi revogada no Google. Acesse Configurações e conecte a conta novamente.",
+  auth_busy:
+    "Já existe uma autenticação Google em andamento. Conclua ou feche a autorização aberta no navegador antes de tentar novamente.",
+  cancelled:
+    "O login com Google foi cancelado antes da conclusão. Clique em Entrar com Google quando desejar tentar novamente.",
+  consent_denied:
+    "O consentimento foi negado no navegador. Conclua a autorização Google para conectar a conta.",
+  oauth_denied:
+    "O consentimento foi negado no navegador. Conclua a autorização Google para conectar a conta.",
+  access_denied:
+    "O consentimento foi negado no navegador. Conclua a autorização Google para conectar a conta.",
+  callback_invalid:
+    "A resposta de login recebida do navegador não pôde ser validada com segurança. Feche abas antigas de login e tente novamente.",
+  authorization_failed:
+    "O Google recusou a autorização desta conta. Verifique se ela pertence à organização autorizada e tente conectar novamente.",
+  revocation_confirmation_required:
+    "Confirme explicitamente a revogação antes de encerrar o acesso concedido no Google.",
+  identity_mismatch:
+    "A conta autenticada no navegador diverge da sessão atual. Desconecte a conta em Configurações e entre novamente.",
+  operation_superseded:
+    "A sessão da conta mudou enquanto a operação estava em andamento. Confira os dados atualizados e tente novamente.",
+  stale_session:
+    "A conta mudou durante a consulta e o resultado anterior foi descartado por segurança. Confira a conta ativa e tente novamente.",
+  vault_corrupt:
+    "As credenciais protegidas no Windows não puderam ser recuperadas. Desconecte a conta em Configurações e entre novamente.",
+  credential_store_unavailable:
+    "O Gerenciador de Credenciais do Windows está indisponível e a sessão não pôde ser salva. Verifique as permissões do usuário no Windows e tente novamente.",
+  vault_unavailable:
+    "O Gerenciador de Credenciais do Windows está indisponível e a sessão não pôde ser salva. Verifique as permissões do usuário no Windows e tente novamente.",
+  browser_unavailable:
+    "Não foi possível abrir o navegador padrão do Windows. Defina um navegador padrão no sistema e tente novamente.",
+  browser_open_failed:
+    "Não foi possível abrir o navegador do sistema para concluir a ação. Verifique o navegador padrão do Windows e tente novamente.",
 
-  if (typeof error === "string") code = error;
-  else if (error && typeof error === "object") {
+  // Permissões
+  insufficient_scope:
+    "Falta permissão de leitura na conta Google para concluir esta consulta. Acesse Configurações, clique em Reautorizar permissões e aprove os escopos solicitados.",
+  forbidden:
+    "Acesso negado pelo Google. Verifique se a planilha ou o projeto está compartilhado com sua conta e se as permissões de leitura foram concedidas em Configurações.",
+
+  // Conectividade e disponibilidade externa
+  network: "Sem conexão com os serviços do Google. Verifique sua internet e tente novamente.",
+  timeout:
+    "A comunicação com o Google excedeu o tempo limite. Verifique sua conexão e tente novamente em instantes.",
+  rate_limited:
+    "O limite temporário de consultas da API Google foi atingido. Aguarde alguns instantes e tente novamente.",
+  server:
+    "Os serviços do Google estão temporariamente indisponíveis. Aguarde alguns instantes e tente novamente.",
+  invalid_response:
+    "O Google retornou uma resposta incompleta ou inesperada. Aguarde alguns instantes e tente atualizar os dados.",
+
+  // Validação e limites de leitura
+  bad_request:
+    "O Google recusou os parâmetros informados. Confira se o link da planilha, o ID do projeto e os intervalos A1 estão corretos.",
+  invalid_input:
+    "Os dados informados são inválidos. Confira o link completo do Google Sheets ou os identificadores preenchidos e tente novamente.",
+  response_too_large:
+    "Os dados consultados excederam o limite de leitura permitido. Reduza o intervalo de linhas ou colunas monitoradas e tente novamente.",
+
+  // Operações internas e recursos
+  not_found:
+    "O arquivo ou projeto não foi encontrado ou não está compartilhado com esta conta Google. Confira o link e as permissões de acesso.",
+  local_storage:
+    "Não foi possível salvar ou consultar os dados locais neste dispositivo. Verifique o espaço em disco e tente novamente.",
+  desktop_required:
+    "Esta ação exige o aplicativo desktop no Windows. Abra o Sheets Monitor instalado para acessar sua conta e seus dados.",
+  operation_in_progress:
+    "Outra operação já está em andamento. Aguarde sua conclusão antes de tentar novamente.",
+};
+
+export function extractErrorCode(error: unknown): string | undefined {
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object") {
     const record = error as Record<string, unknown>;
-
-    code = record.code ?? record.kind;
+    const raw = record.code ?? record.kind;
+    if (typeof raw === "string" && raw.trim() !== "") return raw;
   }
+  return undefined;
+}
 
-  return typeof code === "string" && Object.hasOwn(safeMessages, code)
-    ? safeMessages[code]
-    : "Não foi possível concluir a operação. Revise a configuração, as permissões e a conexão; tente novamente.";
+export function extractErrorDiagnostic(error: unknown, context?: string): ErrorDiagnostic {
+  const code = extractErrorCode(error) ?? "unknown_error";
+  const retryable =
+    Boolean(
+      error && typeof error === "object" && (error as Record<string, unknown>).retryable === true,
+    ) || ["network", "timeout", "rate_limited", "server", "auth_busy"].includes(code);
+  const category = errorCategories[code] ?? "internal";
+  return context ? { code, category, retryable, context } : { code, category, retryable };
+}
+
+export function logErrorDiagnostic(error: unknown, context?: string): ErrorDiagnostic {
+  const diagnostic = extractErrorDiagnostic(error, context);
+  const mode = (import.meta as { env?: { MODE?: string } }).env?.MODE;
+  if (mode !== "test") {
+    console.warn("[SheetsMonitor]", diagnostic);
+  }
+  return diagnostic;
+}
+
+export function integrationErrorMessage(error: unknown, context?: string): string {
+  const code = extractErrorCode(error);
+  if (code && Object.hasOwn(safeMessages, code)) {
+    return safeMessages[code];
+  }
+  return context
+    ? `Não foi possível ${context}. Verifique sua conexão com a internet e as permissões da conta Google e tente novamente.`
+    : "Não foi possível concluir a operação. Verifique sua conexão com a internet e as permissões da conta Google e tente novamente.";
 }

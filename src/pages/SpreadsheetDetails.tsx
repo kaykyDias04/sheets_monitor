@@ -9,8 +9,6 @@ import {
   History,
   Save,
   Sparkles,
-  CheckCircle2,
-  CircleDot,
   LoaderCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,12 +21,44 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import type { SpreadsheetMetadata } from "@/types/google";
 import type { MonitorScope, BaselineSummary } from "@/types/integrity";
 import type { BaselineComparison, Diagnostics, OperationalPreview } from "@/types/management";
 import { ScopeEditor, scopeForTabs, scopeFormProblems } from "./ScopeEditor";
 import { BaselineFlow } from "./BaselineFlow";
 import { ScriptCoverage } from "./ScriptCoverage";
-import { dateLabel, diagnosticText, StatusBadge } from "./OperationalShared";
+import {
+  accessErrorText,
+  connectivityText,
+  dateLabel,
+  diagnosticText,
+  StatusBadge,
+} from "./OperationalShared";
+
+const MAX_MONITORED_TABS = 1024;
+
+export function tabSelectionProblems(
+  selectedIds: number[],
+  tabs: SpreadsheetMetadata["sheets"],
+): string[] {
+  const problems: string[] = [];
+  if (selectedIds.length === 0) {
+    problems.push(
+      "Selecione ao menos uma aba de grade antes de salvar e avançar para as regras de proteção.",
+    );
+  }
+  if (selectedIds.length > MAX_MONITORED_TABS) {
+    problems.push(`Selecione no máximo ${MAX_MONITORED_TABS.toLocaleString("pt-BR")} abas.`);
+  }
+  const invalidSelected = selectedIds.filter((id) => {
+    const found = tabs.find((item) => item.sheet_id === id);
+    return !found || (!!found.sheet_type && found.sheet_type !== "GRID");
+  });
+  if (invalidSelected.length > 0) {
+    problems.push("Desmarque abas removidas ou de tipo não suportado antes de salvar a seleção.");
+  }
+  return problems;
+}
 
 interface Props {
   data: Diagnostics;
@@ -50,8 +80,8 @@ interface Props {
   onVersionPage: (offset: number) => void;
   onCompare: (before: string, after: string) => void;
   onComparisonClear: () => void;
-  onSaveTabs: (ids: number[]) => void;
-  onSaveRules: (scope: MonitorScope) => void;
+  onSaveTabs: (ids: number[]) => Promise<boolean>;
+  onSaveRules: (scope: MonitorScope) => Promise<boolean>;
   onSuggestRules: () => Promise<MonitorScope | null>;
   onPause: () => void;
   onCheck: () => void;
@@ -103,13 +133,21 @@ export function SpreadsheetDetails({
   const [scope, setScope] = useState(() =>
     scopeForTabs(row.scope, row.selected_sheet_ids, defaultHistoryDays),
   );
+  const [tabProblems, setTabProblems] = useState<string[]>([]);
   const [ruleProblems, setRuleProblems] = useState<string[]>([]);
+  const tabProblemsRef = useRef<HTMLDivElement>(null);
   const problemsRef = useRef<HTMLDivElement>(null);
   const inlineFeedbackRef = useRef<HTMLDivElement>(null);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [removeConfirmed, setRemoveConfirmed] = useState(false);
   const [historyChoice, setHistoryChoice] = useState<"preserve" | "delete_activity">("preserve");
   const [scriptId, setScriptId] = useState("");
+
+  useEffect(() => {
+    if (tabProblems.length === 0) return;
+    tabProblemsRef.current?.scrollIntoView?.({ block: "nearest" });
+    tabProblemsRef.current?.focus();
+  }, [tabProblems]);
 
   useEffect(() => {
     if (ruleProblems.length === 0) return;
@@ -127,14 +165,10 @@ export function SpreadsheetDetails({
     JSON.stringify([...row.selected_sheet_ids].sort((a, b) => a - b));
   const rulesDirty = JSON.stringify(scope) !== JSON.stringify(row.scope);
 
-  const tabsReady = row.selected_sheet_ids.length > 0 && !tabsDirty;
-  const rulesReady = tabsReady && row.scope !== null && !rulesDirty;
-  const baselineReady = rulesReady && row.baseline_version !== null;
-
   const tabNames = [
     ["tabs", "Abas"],
     ["rules", "Regras de proteção"],
-    ["baselines", "Referências"],
+    ["baselines", "Referência"],
     ["diagnostics", "Diagnósticos"],
     ["scripts", "Apps Script"],
   ];
@@ -142,8 +176,39 @@ export function SpreadsheetDetails({
   function select(ids: number[]) {
     setSelected(ids);
     setScope(scopeForTabs(scope, ids, defaultHistoryDays));
+    setTabProblems([]);
     setRuleProblems([]);
     onInvalidate();
+  }
+
+  async function handleSaveTabs() {
+    const found = tabSelectionProblems(selected, row.tabs);
+    setTabProblems(found);
+    if (found.length > 0) {
+      onClearFeedback?.();
+      return;
+    }
+    const ok = await onSaveTabs(selected);
+    if (ok) {
+      setScope((currentScope) => scopeForTabs(currentScope, selected, defaultHistoryDays));
+      setTabProblems([]);
+      setRuleProblems([]);
+      setTab("rules");
+    }
+  }
+
+  async function handleSaveRules() {
+    const found = scopeFormProblems(scope, row.tabs);
+    setRuleProblems(found);
+    if (found.length > 0) {
+      onClearFeedback?.();
+      return;
+    }
+    const ok = await onSaveRules(scope);
+    if (ok) {
+      setRuleProblems([]);
+      setTab("baselines");
+    }
   }
 
   const inlineFeedback =
@@ -238,9 +303,7 @@ export function SpreadsheetDetails({
               Não foi possível acessar o arquivo na última consulta. Revise as permissões Google e o
               compartilhamento.
               <br />
-              <span className="op-hint">
-                Diagnóstico: {row.access_error ?? "acesso indisponível"}
-              </span>
+              <span className="op-hint">{accessErrorText(row.access_error)}</span>
             </p>
           )}
           {(tabsDirty || rulesDirty) && (
@@ -248,58 +311,6 @@ export function SpreadsheetDetails({
               Há ajustes locais não salvos. Atualizar os dados descarta esses ajustes.
             </p>
           )}
-
-          <div className="op-setup-steps" aria-label="Etapas para ativar o monitoramento">
-            <button
-              type="button"
-              className={`op-setup-step ${tab === "tabs" ? "current" : ""} ${tabsReady ? "done" : ""}`}
-              onClick={() => setTab("tabs")}
-            >
-              {tabsReady ? <CheckCircle2 size={16} /> : <CircleDot size={16} />}
-              <div>
-                <strong>Passo 1 · Escolher abas</strong>
-                <small>
-                  {tabsDirty
-                    ? "Salve a seleção de abas"
-                    : tabsReady
-                      ? `${row.selected_sheet_ids.length} aba(s) salva(s)`
-                      : "Marque as abas que deseja proteger"}
-                </small>
-              </div>
-            </button>
-            <button
-              type="button"
-              className={`op-setup-step ${tab === "rules" ? "current" : ""} ${rulesReady ? "done" : ""}`}
-              onClick={() => setTab("rules")}
-            >
-              {rulesReady ? <CheckCircle2 size={16} /> : <CircleDot size={16} />}
-              <div>
-                <strong>Passo 2 · Definir proteção</strong>
-                <small>
-                  {rulesDirty && row.selected_sheet_ids.length > 0
-                    ? "Clique em Salvar regras de proteção"
-                    : rulesReady
-                      ? "Regras salvas"
-                      : "Informe os cabeçalhos importantes"}
-                </small>
-              </div>
-            </button>
-            <button
-              type="button"
-              className={`op-setup-step ${tab === "baselines" ? "current" : ""} ${baselineReady ? "done" : ""}`}
-              onClick={() => setTab("baselines")}
-            >
-              {baselineReady ? <CheckCircle2 size={16} /> : <CircleDot size={16} />}
-              <div>
-                <strong>Passo 3 · Aprovar referência</strong>
-                <small>
-                  {baselineReady
-                    ? `Pronta para monitorar (v${row.baseline_version})`
-                    : "Capture e aprove a estrutura"}
-                </small>
-              </div>
-            </button>
-          </div>
         </CardContent>
       </Card>
 
@@ -321,7 +332,7 @@ export function SpreadsheetDetails({
             <CardTitle>Abas monitoradas</CardTitle>
             <CardDescription>
               Marque apenas as abas que precisam de proteção e clique em &ldquo;Salvar seleção de
-              abas&rdquo;.
+              abas&rdquo; para avançar às regras de proteção.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -348,11 +359,26 @@ export function SpreadsheetDetails({
                 />
                 Selecionar todas as abas de grade
               </label>
-              <Button disabled={disabled || !tabsDirty} onClick={() => onSaveTabs(selected)}>
+              <Button
+                disabled={disabled || (!tabsDirty && row.selected_sheet_ids.length > 0)}
+                onClick={() => void handleSaveTabs()}
+              >
                 <Save />
                 Salvar seleção de abas
               </Button>
             </div>
+            {tabProblems.length > 0 && (
+              <div className="feedback error" role="alert" ref={tabProblemsRef} tabIndex={-1}>
+                <div>
+                  <strong>A seleção de abas ainda não foi salva:</strong>
+                  <ul>
+                    {tabProblems.map((problem) => (
+                      <li key={problem}>{problem}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
             {inlineFeedback}
             <div className="op-tab-grid">
               {row.tabs.map((item) => (
@@ -404,11 +430,6 @@ export function SpreadsheetDetails({
               verificação completa de fórmulas ou scripts que dependem dela. Salvar a seleção não
               aprova a integridade.
             </p>
-            <div className="op-actions">
-              <Button variant="outline" onClick={() => setTab("rules")}>
-                Continuar para regras de proteção
-              </Button>
-            </div>
           </CardContent>
         </Card>
       )}
@@ -423,6 +444,7 @@ export function SpreadsheetDetails({
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {inlineFeedback}
             <div className="op-suggest-banner">
               <div>
                 <strong>Jeito mais fácil: buscar os cabeçalhos reais da planilha</strong>
@@ -455,13 +477,7 @@ export function SpreadsheetDetails({
               noValidate
               onSubmit={(e) => {
                 e.preventDefault();
-                const found = scopeFormProblems(scope, row.tabs);
-                setRuleProblems(found);
-                if (found.length > 0) {
-                  onClearFeedback?.();
-                  return;
-                }
-                onSaveRules(scope);
+                void handleSaveRules();
               }}
             >
               <ScopeEditor
@@ -482,24 +498,22 @@ export function SpreadsheetDetails({
                   <Save />
                   Salvar regras de proteção
                 </Button>
-                <Button variant="outline" type="button" onClick={() => setTab("baselines")}>
-                  Revisar referência
-                </Button>
               </div>
               {ruleProblems.length > 0 && (
                 <div className="feedback error" role="alert" ref={problemsRef} tabIndex={-1}>
-                  <strong>As regras ainda não foram salvas. Ajuste os itens abaixo:</strong>
-                  <ul>
-                    {ruleProblems.slice(0, 10).map((problem) => (
-                      <li key={problem}>{problem}</li>
-                    ))}
-                  </ul>
-                  {ruleProblems.length > 10 && (
-                    <p>Há mais {ruleProblems.length - 10} pendências semelhantes.</p>
-                  )}
+                  <div>
+                    <strong>As regras ainda não foram salvas. Ajuste os itens abaixo:</strong>
+                    <ul>
+                      {ruleProblems.slice(0, 10).map((problem) => (
+                        <li key={problem}>{problem}</li>
+                      ))}
+                    </ul>
+                    {ruleProblems.length > 10 && (
+                      <p>Há mais {ruleProblems.length - 10} pendências semelhantes.</p>
+                    )}
+                  </div>
                 </div>
               )}
-              {inlineFeedback}
               {tabsDirty && (
                 <p className="op-notice op-warning">
                   Você alterou as abas selecionadas, mas ainda não salvou. Volte em
@@ -510,7 +524,7 @@ export function SpreadsheetDetails({
               {!tabsDirty && scope.sheets.length > 0 && !rulesDirty && row.scope !== null && (
                 <p className="op-hint">
                   As regras exibidas já estão salvas. Edite qualquer campo para habilitar um novo
-                  salvamento ou avance para &ldquo;Referências&rdquo; para capturar e aprovar.
+                  salvamento ou acesse &ldquo;Referência&rdquo; para capturar e aprovar.
                 </p>
               )}
             </form>
@@ -554,12 +568,9 @@ export function SpreadsheetDetails({
                   <span className="op-hint">Detecção em {dateLabel(data.report.detected_at)}</span>
                 </div>
                 <p className="op-notice">
-                  Conectividade:{" "}
-                  {data.report.connectivity === "available" || data.report.connectivity === "online"
-                    ? "Disponível na captura"
-                    : data.report.connectivity}
-                  . Cobertura: {data.report.coverage.complete ? "completa no escopo" : "parcial"}. A
-                  integridade depende das regras configuradas e das fontes disponíveis.
+                  Conectividade: {connectivityText(data.report.connectivity)}. Cobertura:{" "}
+                  {data.report.coverage.complete ? "completa no escopo" : "parcial"}. A integridade
+                  depende das regras configuradas e das fontes disponíveis.
                 </p>
                 {data.report.findings.length === 0 ? (
                   <p className="op-empty">
@@ -610,16 +621,13 @@ export function SpreadsheetDetails({
                     <ul>
                       {data.report.coverage.issues.map((issue, i) => (
                         <li key={i}>
-                          {issue.code} · {issue.critical ? "crítica" : "opcional"}
+                          {diagnosticText(issue.code)} (
+                          {issue.critical ? "regra crítica" : "regra opcional"})
                         </li>
                       ))}
                     </ul>
                   </details>
                 )}
-                <details className="op-advanced">
-                  <summary>Relatório avançado da verificação</summary>
-                  <pre>{JSON.stringify(data.report, null, 2)}</pre>
-                </details>
               </>
             ) : (
               <p className="op-empty">

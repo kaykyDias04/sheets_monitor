@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { desktop } from "./platform";
+import { extractErrorCode, logErrorDiagnostic } from "./google";
 import { engineError } from "./integrity";
 import type {
   EngineEnvelope,
@@ -31,6 +32,7 @@ function command<T>(name: string, input?: unknown): Promise<EngineEnvelope<T>> {
   if (!desktop) return Promise.reject({ code: "desktop_required" });
   return invoke(name, input === undefined ? {} : { input });
 }
+
 export const getDashboard = () => command<DashboardSummary>("get_dashboard_summary");
 export const listRegistered = () =>
   command<RegisteredSpreadsheet[]>("list_registered_spreadsheets");
@@ -74,31 +76,66 @@ export const setDriveOptIn = (enabled: boolean): Promise<IntegrationState> => {
   if (!desktop) return Promise.reject({ code: "desktop_required" });
   return invoke("integration_set_drive_opt_in", { enabled });
 };
+
 const messages: Record<string, string> = {
-  duplicate: "Esta planilha j\u00e1 est\u00e1 cadastrada nesta conta.",
+  duplicate:
+    "Esta planilha já está cadastrada nesta conta. Feche a janela de adição para acessá-la na lista principal.",
   capacity:
-    "O limite de 30 planilhas cadastradas foi atingido. Remova um cadastro para selecionar outro arquivo.",
-  configuration_conflict: "A configura\u00e7\u00e3o mudou. Atualize os dados e revise novamente.",
-  not_registered: "O cadastro n\u00e3o est\u00e1 dispon\u00edvel nesta conta.",
+    "O limite de 30 planilhas cadastradas foi atingido nesta conta. Remova um cadastro existente antes de adicionar outro arquivo.",
+  configuration_conflict:
+    "Os dados da planilha foram atualizados por outra operação. Revise as informações em tela e tente salvar novamente.",
+  monitoring_conflict:
+    "O estado do monitoramento mudou enquanto a ação era processada. Atualize a tela e tente novamente.",
+  not_registered:
+    "Esta planilha não está mais cadastrada nesta conta. Volte para Planilhas e atualize os dados.",
   invalid_tabs:
-    "Selecione abas de grade dispon\u00edveis. O limite \u00e9 de 1.024 abas e 20 mil c\u00e9lulas por escopo; a capacidade de 30 se aplica aos arquivos cadastrados.",
+    "Selecione ao menos uma aba de grade disponível (até 1.024 abas) e desmarque abas removidas antes de salvar.",
   tabs_scope_mismatch:
-    "Salve regras para todas as abas selecionadas, usando suas identidades atuais.",
+    "As regras de proteção não correspondem às abas selecionadas. Salve a seleção atual na etapa Abas antes de salvar as regras.",
   script_not_authorized:
-    "Consulte e associe o projeto Apps Script nesta conta antes de inclu\u00ed-lo nas regras.",
+    "O projeto Apps Script informado ainda não foi autorizado nesta conta. Acesse a seção Apps Script da planilha, consulte o projeto e tente salvar novamente.",
   confirmation_required:
-    "Confirme a remo\u00e7\u00e3o do cadastro e escolha o tratamento do hist\u00f3rico.",
-  invalid_history_choice: "Escolha se deseja preservar ou excluir as atividades.",
+    "Marque a confirmação de remoção e escolha como tratar o histórico de atividades antes de continuar.",
+  invalid_history_choice:
+    "Selecione se deseja preservar ou excluir o histórico local de atividades antes de confirmar a remoção.",
   invalid_preferences:
-    "Revise intervalo, retenção e aparência. A inicialização com Windows é configurada separadamente neste dispositivo.",
-  invalid_filter: "Revise os filtros, datas e pagina\u00e7\u00e3o.",
-  invalid_page: "A p\u00e1gina solicitada n\u00e3o est\u00e1 dispon\u00edvel.",
-  baseline_not_found: "A refer\u00eancia solicitada n\u00e3o pertence a esta planilha.",
+    "Os valores de preferências são inválidos. Informe um intervalo entre 60 e 300 segundos e retenção entre 1 e 3.650 dias.",
+  invalid_filter:
+    "Os filtros informados são inválidos. Verifique o período de datas selecionado e tente aplicar os filtros novamente.",
+  invalid_page:
+    "A página solicitada não está mais disponível para esta consulta. Volte para a primeira página e tente novamente.",
+  baseline_not_found:
+    "A versão de referência selecionada não foi encontrada para esta planilha. Atualize os dados e escolha outra versão.",
   configuration_pending:
-    "Conclua a sele\u00e7\u00e3o de abas, salve regras v\u00e1lidas e aprove uma refer\u00eancia antes de verificar.",
+    "O cadastro desta planilha ainda está pendente. Selecione abas, salve regras de proteção e aprove uma referência antes de verificar.",
+  check_failed:
+    "Não foi possível agendar a verificação desta planilha no momento. Atualize os dados e tente novamente.",
+  native_permission_blocked:
+    "As notificações deste aplicativo estão bloqueadas no Windows. Ative as notificações nas configurações do sistema antes de reenviar.",
+  native_prepare_failed:
+    "Não foi possível preparar o canal de notificações do Windows neste momento. Tente novamente mais tarde.",
+  native_setting_unknown:
+    "Não foi possível consultar o estado das notificações no Windows. Verifique as configurações de notificações do sistema.",
+  unsupported: "Este recurso nativo não é suportado no ambiente atual do Windows.",
+  startup_entry_conflict:
+    "Já existe um registro diferente de inicialização no Windows. Remova a entrada conflitante nas configurações do sistema antes de ativar.",
+  startup_path_too_long:
+    "O caminho de instalação atual excede o limite aceito pelo Windows para inicialização automática.",
+  startup_path_unsupported:
+    "O local atual do executável não permite registro seguro de inicialização automática no Windows.",
+  startup_read_failed:
+    "Não foi possível consultar o registro de inicialização automática do Windows. Verifique as permissões do usuário.",
+  startup_write_failed:
+    "Não foi possível gravar a preferência de inicialização automática no Windows. Verifique as permissões do usuário.",
+  startup_verification_failed:
+    "O Windows não confirmou a gravação da inicialização automática com segurança. Tente novamente.",
 };
-export function managementError(error: unknown) {
-  const code =
-    error && typeof error === "object" ? (error as Record<string, unknown>).code : undefined;
-  return typeof code === "string" && messages[code] ? messages[code] : engineError(error);
+
+export function managementError(error: unknown, context?: string) {
+  const code = extractErrorCode(error);
+  if (code && Object.hasOwn(messages, code)) {
+    logErrorDiagnostic(error, context);
+    return messages[code];
+  }
+  return engineError(error, context);
 }

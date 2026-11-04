@@ -12,6 +12,34 @@ function record(value: unknown): Record<string, unknown> {
 function text(value: unknown, fallback = "Não disponível") {
   return typeof value === "string" || typeof value === "number" ? String(value) : fallback;
 }
+
+const dependencyKinds: Record<string, string> = {
+  sheet_by_name: "Acesso à aba por nome",
+  sheet_by_id: "Acesso à aba por ID",
+  named_range: "Intervalo nomeado",
+  range_a1: "Intervalo A1",
+  open_by_id: "Abertura de planilha por ID",
+  open_by_url: "Abertura de planilha por URL",
+  dynamic: "Referência dinâmica",
+};
+
+const dependencyDetails: Record<string, string> = {
+  dynamic_argument: "Argumento dinâmico em execução; não verificável estaticamente",
+  computed_expression: "Expressão calculada em execução; não verificável estaticamente",
+  external_spreadsheet: "Referência externa ao escopo monitorado",
+  resolved: "Referência estática identificada",
+};
+
+function kindLabel(value: unknown) {
+  if (typeof value !== "string") return "Referência de código";
+  return dependencyKinds[value] ?? (value.includes(" ") ? value : "Referência de código");
+}
+
+function detailLabel(value: unknown) {
+  if (typeof value !== "string" || !value.trim()) return "Sem detalhe adicional";
+  return dependencyDetails[value] ?? (value.includes(" ") ? value : "Requer revisão no código");
+}
+
 function DependencyRows({ values }: { values: unknown[] }) {
   const [offset, setOffset] = useState(0);
   return (
@@ -38,7 +66,7 @@ function DependencyRows({ values }: { values: unknown[] }) {
                   </td>
                   <td>
                     {text(dep.sheet_name, "Sem aba determinada")}
-                    <small>{text(dep.kind)}</small>
+                    <small>{kindLabel(dep.kind)}</small>
                   </td>
                   <td>
                     {dep.coverage === "static"
@@ -47,7 +75,7 @@ function DependencyRows({ values }: { values: unknown[] }) {
                         ? "Parcial"
                         : "Não verificável"}
                   </td>
-                  <td>{text(dep.detail_code, "Sem detalhe adicional")}</td>
+                  <td>{detailLabel(dep.detail_code)}</td>
                 </tr>
               );
             })}
@@ -137,7 +165,7 @@ export function ScriptCoverage({
               {script.authorization === "success" || script.authorization === "available"
                 ? "Acesso disponível na última consulta"
                 : script.authorization === "error"
-                  ? "Consulta recusada; revise a autorização"
+                  ? "Consulta recusada; verifique o compartilhamento e as permissões da conta"
                   : "Ainda não confirmada"}
             </p>
           </CardHeader>
