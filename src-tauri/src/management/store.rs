@@ -3,12 +3,17 @@ use crate::{
     google::{validate_google_id, SpreadsheetMetadata},
     integration::CommandError,
     integrity::runtime::BaselineSummary,
-    integrity::{fingerprint, BaselineVersion, IntegrityEvent, MonitorScope},
+    integrity::{fingerprint, BaselineVersion, IntegrityEvent, MonitorScope, Severity},
     management::*,
 };
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{de::DeserializeOwned, Serialize};
-use std::collections::BTreeSet;
+use std::{
+    collections::BTreeSet,
+    fs::{self, File},
+    io::{BufWriter, Write},
+    path::Path,
+};
 type Result<T> = std::result::Result<T, CommandError>;
 fn error(code: &str, message: &str) -> CommandError {
     CommandError {
@@ -394,37 +399,273 @@ impl Database {
         Ok(p.clone())
     }
 }
-impl Database {
-    pub fn operational_events(&self, subject: &str, f: &EventFilter) -> Result<Page<Activity>> {
-        if f.limit == 0
-            || f.limit > 100
-            || f.offset > 1_000_000
-            || f.query.len() > 256
-            || f.from
-                .as_ref()
-                .is_some_and(|d| chrono::DateTime::parse_from_rfc3339(d).is_err())
-            || f.to
-                .as_ref()
-                .is_some_and(|d| chrono::DateTime::parse_from_rfc3339(d).is_err())
-        {
-            return Err(error(
-                "invalid_filter",
-                "Revise os filtros, datas e paginação.",
-            ));
-        }
-        if let Some(id) = &f.spreadsheet_id {
-            validate_google_id(id)?;
-        }
-        for value in [&f.kind, &f.severity, &f.status, &f.category]
-            .into_iter()
-            .flatten()
-        {
-            if value.len() > 128 {
-                return Err(error("invalid_filter", "Filtro de atividade inválido."));
+const UNIFIED_EVENTS_CTE: &str = "WITH unified AS (
+SELECT e.event_id AS event_id,'integrity' AS source,s.spreadsheet_id AS spreadsheet_id,r.name AS spreadsheet_name,e.sheet_id AS sheet_id,
+COALESCE(
+  (SELECT json_extract(j.value,'$.title') FROM structural_snapshots ss,json_each(ss.snapshot_json,'$.sheets') j WHERE ss.id=p.snapshot_id AND json_extract(j.value,'$.sheet_id')=e.sheet_id LIMIT 1),
+  (SELECT json_extract(j.value,'$.title') FROM baseline_versions b JOIN structural_snapshots ss ON ss.id=b.snapshot_id,json_each(ss.snapshot_json,'$.sheets') j WHERE b.id=s.active_baseline_id AND json_extract(j.value,'$.sheet_id')=e.sheet_id LIMIT 1),
+  (SELECT json_extract(j.value,'$.title') FROM json_each(r.tabs_json) j WHERE json_extract(j.value,'$.sheet_id')=e.sheet_id LIMIT 1)
+) AS sheet_title,
+e.detected_at AS detected_at,julianday(e.detected_at) AS detected_jd,
+COALESCE(json_extract(e.event_json,'$.kind'),'') AS kind,
+COALESCE(json_extract(e.event_json,'$.category'),'integrity') AS category,
+e.severity AS severity,
+COALESCE(json_extract(e.event_json,'$.diagnosis'),'') AS diagnosis,
+json_extract(e.event_json,'$.rule_id') AS rule_id,
+p.status AS status,r.removed AS removed,
+CASE
+  WHEN json_extract(e.event_json,'$.kind') IN ('recovered','analysis_concluded') THEN 'resolution'
+  WHEN json_extract(e.event_json,'$.kind') IN ('violation','analysis_inconclusive') OR e.severity IN ('critical','warning') THEN 'failure'
+  ELSE 'modification'
+END AS event_type,
+CASE
+  WHEN json_extract(e.event_json,'$.kind') IN ('recovered','analysis_concluded') THEN 'resolved'
+  WHEN json_extract(e.event_json,'$.kind') IN ('violation','analysis_inconclusive') OR e.severity IN ('critical','warning') THEN (
+    CASE
+      WHEN EXISTS(SELECT 1 FROM integrity_events er WHERE er.scope_id=e.scope_id AND er.account_id=e.account_id AND json_extract(er.event_json,'$.kind') IN ('recovered','analysis_concluded') AND COALESCE(json_extract(er.event_json,'$.rule_id'),'')=COALESCE(json_extract(e.event_json,'$.rule_id'),'') AND COALESCE(er.sheet_id,-1)=COALESCE(e.sheet_id,-1) AND julianday(er.detected_at)>julianday(e.detected_at)) THEN 'resolved'
+      WHEN EXISTS(SELECT 1 FROM integrity_incidents ii WHERE ii.scope_id=e.scope_id AND ii.account_id=e.account_id AND ii.active=1 AND json_extract(ii.finding_json,'$.rule_id')=json_extract(e.event_json,'$.rule_id') AND COALESCE(json_extract(ii.finding_json,'$.sheet_id'),-1)=COALESCE(e.sheet_id,-1)) THEN 'active'
+      ELSE 'resolved'
+    END
+  )
+  ELSE NULL
+END AS issue_status,
+e.event_json AS event_json
+FROM integrity_events e
+JOIN integrity_reports p ON p.check_id=e.check_id AND p.account_id=e.account_id
+JOIN integrity_scopes s ON s.id=e.scope_id AND s.account_id=e.account_id
+JOIN registered_spreadsheets r ON r.account_id=e.account_id AND r.spreadsheet_id=s.spreadsheet_id
+WHERE e.account_id=?1
+UNION ALL
+SELECT m.id AS event_id,'operational' AS source,m.spreadsheet_id AS spreadsheet_id,r.name AS spreadsheet_name,NULL AS sheet_id,NULL AS sheet_title,
+strftime('%Y-%m-%dT%H:%M:%fZ', m.detected_ms / 1000.0, 'unixepoch') AS detected_at,
+julianday(strftime('%Y-%m-%dT%H:%M:%fZ', m.detected_ms / 1000.0, 'unixepoch')) AS detected_jd,
+m.kind AS kind,'operational' AS category,
+CASE WHEN m.kind='recovered' THEN 'info' ELSE 'warning' END AS severity,
+m.code AS diagnosis,NULL AS rule_id,
+CASE WHEN m.kind='recovered' THEN 'online' ELSE 'indeterminate' END AS status,
+r.removed AS removed,
+CASE WHEN m.kind='recovered' THEN 'resolution' ELSE 'failure' END AS event_type,
+CASE
+  WHEN m.kind='recovered' THEN 'resolved'
+  WHEN EXISTS(SELECT 1 FROM monitoring_operational_events m2 WHERE m2.account_id=m.account_id AND m2.spreadsheet_id=m.spreadsheet_id AND m2.kind='recovered' AND m2.detected_ms>m.detected_ms) THEN 'resolved'
+  WHEN COALESCE((SELECT ms.operational_code FROM monitoring_schedules ms WHERE ms.account_id=m.account_id AND ms.spreadsheet_id=m.spreadsheet_id),'') != '' THEN 'active'
+  ELSE 'resolved'
+END AS issue_status,
+NULL AS event_json
+FROM monitoring_operational_events m
+JOIN registered_spreadsheets r ON r.account_id=m.account_id AND r.spreadsheet_id=m.spreadsheet_id
+WHERE m.account_id=?1
+)";
+
+const UNIFIED_EVENTS_WHERE: &str = " FROM unified u WHERE (?2 IS NULL OR u.spreadsheet_id=?2) AND (?3 IS NULL OR u.sheet_id=?3) AND (?4 IS NULL OR u.detected_jd>=julianday(?4)) AND (?5 IS NULL OR u.detected_jd<=julianday(?5)) AND (?6 IS NULL OR u.kind=?6) AND (?7 IS NULL OR u.severity=?7) AND (?8 IS NULL OR u.status=?8) AND (?9 IS NULL OR u.category=?9) AND (NOT ?10 OR u.category='script' OR u.kind LIKE '%script%' OR COALESCE(u.rule_id,'') LIKE 'script%') AND (?11='' OR instr(lower(u.spreadsheet_name||' '||COALESCE(u.sheet_title,'')||' '||u.diagnosis||' '||COALESCE(u.rule_id,'')),lower(?11))>0) AND (?12 IS NULL OR u.event_type=?12) AND (?13 IS NULL OR u.issue_status=?13)";
+
+fn validate_event_filter(f: &EventFilter, check_pagination: bool) -> Result<()> {
+    if check_pagination && (f.limit == 0 || f.limit > 100 || f.offset > 1_000_000) {
+        return Err(error(
+            "invalid_filter",
+            "Revise os filtros, datas e paginação.",
+        ));
+    }
+    if f.query.len() > 256
+        || f.from
+            .as_ref()
+            .is_some_and(|d| chrono::DateTime::parse_from_rfc3339(d).is_err())
+        || f.to
+            .as_ref()
+            .is_some_and(|d| chrono::DateTime::parse_from_rfc3339(d).is_err())
+    {
+        return Err(error(
+            "invalid_filter",
+            "Revise os filtros, datas e paginação.",
+        ));
+    }
+    if let (Some(from), Some(to)) = (&f.from, &f.to) {
+        if let (Ok(a), Ok(b)) = (
+            chrono::DateTime::parse_from_rfc3339(from),
+            chrono::DateTime::parse_from_rfc3339(to),
+        ) {
+            if a > b {
+                return Err(error(
+                    "invalid_filter",
+                    "A data inicial não pode ser posterior à data final.",
+                ));
             }
         }
+    }
+    if let Some(id) = &f.spreadsheet_id {
+        validate_google_id(id)?;
+    }
+    if let Some(et) = &f.event_type {
+        if !matches!(et.as_str(), "failure" | "modification" | "resolution") {
+            return Err(error("invalid_filter", "Tipo de evento inválido."));
+        }
+    }
+    if let Some(st) = &f.issue_status {
+        if !matches!(st.as_str(), "active" | "resolved") {
+            return Err(error("invalid_filter", "Status de ocorrência inválido."));
+        }
+    }
+    for value in [&f.kind, &f.severity, &f.status, &f.category]
+        .into_iter()
+        .flatten()
+    {
+        if value.len() > 128 {
+            return Err(error("invalid_filter", "Filtro de atividade inválido."));
+        }
+    }
+    Ok(())
+}
+
+type UnifiedRow = (
+    String,
+    String,
+    String,
+    String,
+    Option<String>,
+    String,
+    String,
+    String,
+    String,
+    String,
+    bool,
+    String,
+    Option<String>,
+    Option<String>,
+);
+
+fn map_unified_row(r: &rusqlite::Row<'_>) -> rusqlite::Result<UnifiedRow> {
+    Ok((
+        r.get(0)?,
+        r.get(1)?,
+        r.get(2)?,
+        r.get(3)?,
+        r.get(4)?,
+        r.get(5)?,
+        r.get(6)?,
+        r.get(7)?,
+        r.get(8)?,
+        r.get(9)?,
+        r.get(10)?,
+        r.get(11)?,
+        r.get(12)?,
+        r.get(13)?,
+    ))
+}
+
+fn build_activity(row: UnifiedRow) -> Result<Activity> {
+    let (
+        event_id,
+        source,
+        spreadsheet_id,
+        spreadsheet_name,
+        sheet_title,
+        detected_at,
+        kind,
+        severity,
+        diagnosis,
+        status,
+        removed,
+        event_type,
+        issue_status,
+        event_json,
+    ) = row;
+    let event = match event_json {
+        Some(raw) => decode::<IntegrityEvent>(&raw)?,
+        None => IntegrityEvent {
+            event_id: event_id.clone(),
+            check_id: format!("operational:{event_id}"),
+            spreadsheet_id,
+            sheet_id: None,
+            kind: kind.clone(),
+            category: "operational".into(),
+            severity: if severity == "info" {
+                Severity::Info
+            } else {
+                Severity::Warning
+            },
+            rule_id: None,
+            before: None,
+            after: None,
+            location: None,
+            detected_at: detected_at.clone(),
+            fingerprint: event_id,
+            diagnosis: diagnosis.clone(),
+        },
+    };
+    let (_, tone) = events::classify_event(&source, Some(&kind), &severity, &diagnosis);
+    let description = events::diagnosis_pt_br(&event.diagnosis, Some(&event.kind));
+    let formatted_detected_at = events::format_local_datetime(&event.detected_at);
+    Ok(Activity {
+        event,
+        spreadsheet_name,
+        sheet_title,
+        status,
+        removed,
+        event_type,
+        tone: tone.into(),
+        issue_status,
+        description,
+        formatted_detected_at,
+    })
+}
+
+fn format_location_pt_br(location: Option<&str>) -> String {
+    let Some(loc) = location.map(str::trim).filter(|l| !l.is_empty()) else {
+        return String::new();
+    };
+    if let Some(col_raw) = loc.strip_prefix("column:") {
+        if let Ok(col) = col_raw.parse::<u32>() {
+            return format!("Coluna {}", col + 1);
+        }
+    }
+    if let Some(rest) = loc.strip_prefix("row:") {
+        if let Some((row_raw, col_name)) = rest.split_once(":column:") {
+            if let Ok(row) = row_raw.parse::<u32>() {
+                return format!("Linha {} · Campo {col_name}", row + 1);
+            }
+        }
+        if let Ok(row) = rest.parse::<u32>() {
+            return format!("Linha {}", row + 1);
+        }
+    }
+    loc.chars().filter(|c| !c.is_control()).collect()
+}
+
+fn severity_pt_br(severity: &Severity) -> &'static str {
+    match severity {
+        Severity::Critical => "Crítico",
+        Severity::Warning => "Aviso",
+        Severity::Info => "Informativo",
+    }
+}
+
+fn category_pt_br(category: &str) -> &'static str {
+    match category {
+        "integrity" => "Integridade",
+        "content" => "Conteúdo",
+        "structure" => "Estrutura",
+        "script" => "Apps Script",
+        "operational" => "Operacional",
+        _ => "Monitoramento",
+    }
+}
+
+fn spreadsheet_status_pt_br(status: &str) -> &str {
+    match status {
+        "online" => "Online",
+        "offline" => "Offline",
+        "indeterminate" => "Indeterminada",
+        "paused" => "Pausada",
+        "configuration_pending" => "Configuração pendente",
+        "not_checked" => "Não verificada",
+        _ => status,
+    }
+}
+
+impl Database {
+    pub fn operational_events(&self, subject: &str, f: &EventFilter) -> Result<Page<Activity>> {
+        validate_event_filter(f, true)?;
         let aid = account(&self.connection, subject)?;
-        let predicate=" FROM integrity_events e JOIN integrity_reports p ON p.check_id=e.check_id AND p.account_id=e.account_id JOIN integrity_scopes s ON s.id=e.scope_id AND s.account_id=e.account_id JOIN registered_spreadsheets r ON r.account_id=e.account_id AND r.spreadsheet_id=s.spreadsheet_id WHERE e.account_id=?1 AND (?2 IS NULL OR s.spreadsheet_id=?2) AND (?3 IS NULL OR e.sheet_id=?3) AND (?4 IS NULL OR julianday(e.detected_at)>=julianday(?4)) AND (?5 IS NULL OR julianday(e.detected_at)<=julianday(?5)) AND (?6 IS NULL OR json_extract(e.event_json,'$.kind')=?6) AND (?7 IS NULL OR e.severity=?7) AND (?8 IS NULL OR p.status=?8) AND (?9 IS NULL OR json_extract(e.event_json,'$.category')=?9) AND (NOT ?10 OR json_extract(e.event_json,'$.category')='script' OR json_extract(e.event_json,'$.kind') LIKE '%script%' OR json_extract(e.event_json,'$.rule_id') LIKE 'script%') AND (?11='' OR instr(lower(r.name||' '||COALESCE(json_extract(e.event_json,'$.diagnosis'),'')||' '||COALESCE(json_extract(e.event_json,'$.rule_id'),'')),lower(?11))>0)";
         let values = params![
             aid,
             f.spreadsheet_id,
@@ -436,16 +677,25 @@ impl Database {
             f.status,
             f.category,
             f.script_only,
-            f.query
+            f.query,
+            f.event_type,
+            f.issue_status
         ];
         let total = self
             .connection
-            .query_row(&format!("SELECT count(*){predicate}"), values, |r| {
-                r.get::<_, u64>(0)
-            })
+            .query_row(
+                &format!("{UNIFIED_EVENTS_CTE} SELECT count(*){UNIFIED_EVENTS_WHERE}"),
+                values,
+                |r| r.get::<_, u64>(0),
+            )
             .map_err(sql)?;
-        let select="SELECT e.event_json,r.name,COALESCE((SELECT json_extract(j.value,'$.title') FROM structural_snapshots ss,json_each(ss.snapshot_json,'$.sheets') j WHERE ss.id=p.snapshot_id AND json_extract(j.value,'$.sheet_id')=e.sheet_id LIMIT 1),(SELECT json_extract(j.value,'$.title') FROM json_each(r.tabs_json) j WHERE json_extract(j.value,'$.sheet_id')=e.sheet_id LIMIT 1)),p.status,r.removed";
-        let mut stmt=self.connection.prepare(&format!("{select}{predicate} ORDER BY e.detected_at DESC,e.event_id DESC LIMIT ?12 OFFSET ?13")).map_err(sql)?;
+        let select = "SELECT u.event_id,u.source,u.spreadsheet_id,u.spreadsheet_name,u.sheet_title,u.detected_at,u.kind,u.severity,u.diagnosis,u.status,u.removed,u.event_type,u.issue_status,u.event_json";
+        let mut stmt = self
+            .connection
+            .prepare(&format!(
+                "{UNIFIED_EVENTS_CTE} {select}{UNIFIED_EVENTS_WHERE} ORDER BY u.detected_jd DESC,u.event_id DESC LIMIT ?14 OFFSET ?15"
+            ))
+            .map_err(sql)?;
         let rows = stmt
             .query_map(
                 params![
@@ -460,39 +710,223 @@ impl Database {
                     f.category,
                     f.script_only,
                     f.query,
+                    f.event_type,
+                    f.issue_status,
                     f.limit,
                     f.offset
                 ],
-                |r| {
-                    Ok((
-                        r.get::<_, String>(0)?,
-                        r.get::<_, String>(1)?,
-                        r.get::<_, Option<String>>(2)?,
-                        r.get::<_, String>(3)?,
-                        r.get::<_, bool>(4)?,
-                    ))
-                },
+                map_unified_row,
             )
             .map_err(sql)?
             .collect::<rusqlite::Result<Vec<_>>>()
             .map_err(sql)?;
         let items = rows
             .into_iter()
-            .map(|(raw, spreadsheet_name, sheet_title, status, removed)| {
-                Ok(Activity {
-                    event: decode::<IntegrityEvent>(&raw)?,
-                    spreadsheet_name,
-                    sheet_title,
-                    status,
-                    removed,
-                })
-            })
+            .map(build_activity)
             .collect::<Result<Vec<_>>>()?;
         Ok(Page {
             items,
             total,
             limit: f.limit,
             offset: f.offset,
+        })
+    }
+
+    pub fn export_operational_events(
+        &self,
+        subject: &str,
+        f: &EventFilter,
+        format: &str,
+        destination_dir: &Path,
+    ) -> Result<ExportEventsResult> {
+        let normalized_format = format.trim().to_ascii_lowercase();
+        if !matches!(normalized_format.as_str(), "csv" | "json") {
+            return Err(error(
+                "invalid_format",
+                "Formato de exportação inválido. Escolha CSV ou JSON.",
+            ));
+        }
+        validate_event_filter(f, false)?;
+        let aid = account(&self.connection, subject)?;
+        let values = params![
+            aid,
+            f.spreadsheet_id,
+            f.sheet_id,
+            f.from,
+            f.to,
+            f.kind,
+            f.severity,
+            f.status,
+            f.category,
+            f.script_only,
+            f.query,
+            f.event_type,
+            f.issue_status
+        ];
+        let total = self
+            .connection
+            .query_row(
+                &format!("{UNIFIED_EVENTS_CTE} SELECT count(*){UNIFIED_EVENTS_WHERE}"),
+                values,
+                |r| r.get::<_, u64>(0),
+            )
+            .map_err(sql)?;
+        if total == 0 {
+            return Ok(ExportEventsResult {
+                exported_count: 0,
+                file_path: None,
+                format: normalized_format,
+            });
+        }
+        fs::create_dir_all(destination_dir).map_err(|_| {
+            error(
+                "export_io_error",
+                "Não foi possível preparar a pasta de destino para exportar os logs.",
+            )
+        })?;
+        let now_local = chrono::Local::now();
+        let stamp = now_local.format("%Y%m%d-%H%M%S-%3f");
+        let file_name = format!("sheets-monitor-logs-{stamp}.{normalized_format}");
+        let final_path = destination_dir.join(&file_name);
+        let temp_path = destination_dir.join(format!("{file_name}.part"));
+        let select = "SELECT u.event_id,u.source,u.spreadsheet_id,u.spreadsheet_name,u.sheet_title,u.detected_at,u.kind,u.severity,u.diagnosis,u.status,u.removed,u.event_type,u.issue_status,u.event_json";
+        let mut stmt = self
+            .connection
+            .prepare(&format!(
+                "{UNIFIED_EVENTS_CTE} {select}{UNIFIED_EVENTS_WHERE} ORDER BY u.detected_jd ASC,u.event_id ASC"
+            ))
+            .map_err(sql)?;
+        let mut exported_count = 0u64;
+        let write_result = (|| -> Result<()> {
+            let file = File::create(&temp_path).map_err(|_| {
+                error(
+                    "export_io_error",
+                    "Não foi possível criar o arquivo de exportação.",
+                )
+            })?;
+            let mut writer = BufWriter::new(file);
+            if normalized_format == "csv" {
+                writer
+                    .write_all("\u{FEFF}".as_bytes())
+                    .map_err(|_| CommandError::local())?;
+                events::write_csv_row(
+                    &mut writer,
+                    &[
+                        "Data/Hora",
+                        "Planilha",
+                        "Aba",
+                        "Tipo",
+                        "Status",
+                        "Severidade",
+                        "Categoria",
+                        "Descrição",
+                        "Localização",
+                        "Estado da Planilha",
+                    ],
+                )
+                .map_err(|_| CommandError::local())?;
+            } else {
+                let header = serde_json::json!({
+                    "schema_version": 1,
+                    "exported_at": now_local.format("%d/%m/%Y %H:%M:%S").to_string(),
+                    "total": total,
+                });
+                let header_text =
+                    serde_json::to_string(&header).map_err(|_| CommandError::local())?;
+                let prefix = header_text.trim_end_matches('}');
+                write!(writer, "{prefix},\"items\":[").map_err(|_| CommandError::local())?;
+            }
+            let iter = stmt
+                .query_map(
+                    params![
+                        aid,
+                        f.spreadsheet_id,
+                        f.sheet_id,
+                        f.from,
+                        f.to,
+                        f.kind,
+                        f.severity,
+                        f.status,
+                        f.category,
+                        f.script_only,
+                        f.query,
+                        f.event_type,
+                        f.issue_status
+                    ],
+                    map_unified_row,
+                )
+                .map_err(sql)?;
+            for raw_row in iter {
+                let activity = build_activity(raw_row.map_err(sql)?)?;
+                let tab = activity.sheet_title.as_deref().unwrap_or("Geral");
+                let kind_label = events::event_type_pt_br(&activity.event_type);
+                let status_label = events::issue_status_pt_br(activity.issue_status.as_deref());
+                let sev_label = severity_pt_br(&activity.event.severity);
+                let cat_label = category_pt_br(&activity.event.category);
+                let loc_label = format_location_pt_br(activity.event.location.as_deref());
+                let sheet_status = spreadsheet_status_pt_br(&activity.status);
+                if normalized_format == "csv" {
+                    events::write_csv_row(
+                        &mut writer,
+                        &[
+                            &activity.formatted_detected_at,
+                            &activity.spreadsheet_name,
+                            tab,
+                            kind_label,
+                            status_label,
+                            sev_label,
+                            cat_label,
+                            &activity.description,
+                            &loc_label,
+                            sheet_status,
+                        ],
+                    )
+                    .map_err(|_| CommandError::local())?;
+                } else {
+                    if exported_count > 0 {
+                        writer.write_all(b",").map_err(|_| CommandError::local())?;
+                    }
+                    let record = serde_json::json!({
+                        "detected_at_local": activity.formatted_detected_at,
+                        "detected_at_utc": activity.event.detected_at,
+                        "spreadsheet_name": activity.spreadsheet_name,
+                        "sheet_title": activity.sheet_title,
+                        "event_type": kind_label,
+                        "status": status_label,
+                        "severity": sev_label,
+                        "category": cat_label,
+                        "description": activity.description,
+                        "location": if loc_label.is_empty() { None } else { Some(loc_label) },
+                        "spreadsheet_status": sheet_status,
+                    });
+                    serde_json::to_writer(&mut writer, &record)
+                        .map_err(|_| CommandError::local())?;
+                }
+                exported_count += 1;
+            }
+            if normalized_format == "json" {
+                writer
+                    .write_all(b"]}\n")
+                    .map_err(|_| CommandError::local())?;
+            }
+            writer.flush().map_err(|_| CommandError::local())?;
+            Ok(())
+        })();
+        if let Err(err) = write_result {
+            let _ = fs::remove_file(&temp_path);
+            return Err(err);
+        }
+        fs::rename(&temp_path, &final_path).map_err(|_| {
+            let _ = fs::remove_file(&temp_path);
+            error(
+                "export_io_error",
+                "Não foi possível finalizar o arquivo de exportação.",
+            )
+        })?;
+        Ok(ExportEventsResult {
+            exported_count,
+            file_path: Some(final_path.to_string_lossy().into_owned()),
+            format: normalized_format,
         })
     }
     pub fn operational_baselines(

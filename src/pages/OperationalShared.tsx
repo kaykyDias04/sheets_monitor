@@ -22,12 +22,17 @@ export const statusNames: Record<RegisteredSpreadsheet["status"] | "checking", s
   checking: "Verificando",
 };
 
+export function formatLocalDateTime(value: string | number | null | undefined) {
+  if (value === null || value === undefined || value === "") return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 export function dateLabel(value: string | null | undefined) {
   if (!value) return "Ainda não verificada";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "Data indisponível"
-    : new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+  return formatLocalDateTime(value) || "Data indisponível";
 }
 
 export function StatusBadge({ status }: { status: RegisteredSpreadsheet["status"] | "checking" }) {
@@ -125,6 +130,7 @@ const eventKinds: Record<string, string> = {
   violation: "Violação estrutural",
   inconclusive: "Análise inconclusiva",
   analysis_inconclusive: "Análise inconclusiva",
+  failed: "Falha operacional",
   recovered: "Recuperação",
   analysis_concluded: "Análise concluída",
   value_changed: "Valor alterado",
@@ -204,6 +210,7 @@ const diagnoses: Record<string, string> = {
   sheet_position_changed: "A posição de uma aba mudou.",
   critical_rule_recovered: "A regra crítica voltou a atender à referência aprovada.",
   analysis_concluded: "A análise anteriormente inconclusiva foi concluída com sucesso.",
+  operational_recovered: "A comunicação com o Google foi restabelecida.",
   network: "Falha de conexão ao consultar os serviços do Google.",
   timeout: "A consulta excedeu o tempo limite de resposta.",
   rate_limited: "Limite temporário de consultas da API Google atingido.",
@@ -211,16 +218,58 @@ const diagnoses: Record<string, string> = {
   not_found: "O recurso não foi encontrado ou deixou de estar compartilhado com a conta.",
   insufficient_scope: "Permissão de leitura pendente na conta Google conectada.",
   reconnect_required: "A sessão Google expirou e requer nova autorização.",
+  authentication_required: "Autenticação Google pendente para executar a verificação.",
+  local_storage: "Falha ao acessar o armazenamento local durante a verificação.",
   server: "Serviço Google temporariamente indisponível durante a leitura.",
 };
 
+const pluralDiagnoses: Record<string, (count: number) => string> = {
+  value_changed: (n) => `${n} valores foram alterados nesta verificação.`,
+  record_added: (n) => `${n} registros foram adicionados nesta verificação.`,
+  record_removed: (n) => `${n} registros foram removidos nesta verificação.`,
+  record_order_changed: (n) => `A ordem de ${n} conjuntos de registros mudou nesta verificação.`,
+  header_changed: (n) => `${n} cabeçalhos foram alterados nesta verificação.`,
+  region_changed: (n) => `O conteúdo de ${n} regiões foi alterado nesta verificação.`,
+  script_file_added: (n) => `${n} arquivos foram adicionados ao projeto Apps Script.`,
+  script_file_removed: (n) => `${n} arquivos foram removidos do projeto Apps Script.`,
+  script_file_changed: (n) => `${n} arquivos do projeto Apps Script foram alterados.`,
+  script_code_changed: (n) => `${n} trechos do projeto Apps Script mudaram.`,
+};
+
 export function diagnosticText(code: string) {
+  const countMatch = /^([a-z0-9_]+):count=(\d+)$/.exec(code);
+  if (countMatch) {
+    const [, base, rawCount] = countMatch;
+    const count = Number(rawCount);
+    if (count > 1 && pluralDiagnoses[base]) return pluralDiagnoses[base](count);
+    if (diagnoses[base]) return diagnoses[base];
+  }
   return (
     diagnoses[code] ??
     (code.includes(" ")
       ? code
       : "Uma alteração ou restrição foi identificada. Consulte os detalhes da regra e da verificação.")
   );
+}
+
+export function activityTone(event: Activity): "failure" | "resolved" | "neutral" {
+  if (event.tone === "failure" || event.tone === "resolved" || event.tone === "neutral") {
+    return event.tone;
+  }
+  if (event.kind === "recovered" || event.kind === "analysis_concluded") {
+    return "resolved";
+  }
+  if (
+    event.kind === "violation" ||
+    event.kind === "inconclusive" ||
+    event.kind === "analysis_inconclusive" ||
+    event.kind === "failed" ||
+    event.severity === "critical" ||
+    event.severity === "warning"
+  ) {
+    return "failure";
+  }
+  return "neutral";
 }
 
 export function eventKindText(kind: string) {
@@ -244,6 +293,11 @@ const severities: Record<string, string> = {
   info: "Informação",
 };
 
+const issueStatuses: Record<string, string> = {
+  active: "Ativo",
+  resolved: "Resolvido",
+};
+
 export function EventList({
   events,
   onOpen,
@@ -253,21 +307,35 @@ export function EventList({
 }) {
   return (
     <div className="op-event-list">
-      {events.map((event) => (
-        <button className="op-event" key={event.event_id} onClick={() => onOpen(event)}>
-          <span className={`op-event-dot op-severity-${event.severity}`} aria-hidden="true" />
-          <span>
-            <strong>{event.spreadsheet_name}</strong>
-            <span>{diagnosticText(event.diagnosis)}</span>
-            <small>
-              {event.sheet_title ?? "Arquivo"} · {categories[event.category] ?? event.category} ·{" "}
-              {severities[event.severity] ?? event.severity}
-              {event.removed ? " · Cadastro removido" : ""}
-            </small>
-          </span>
-          <time dateTime={event.detected_at}>{dateLabel(event.detected_at)}</time>
-        </button>
-      ))}
+      {events.map((event) => {
+        const tone = activityTone(event);
+        const text = event.description || diagnosticText(event.diagnosis);
+        const timestamp = event.formatted_detected_at || dateLabel(event.detected_at);
+        const statusText = event.issue_status ? issueStatuses[event.issue_status] : undefined;
+        return (
+          <button
+            type="button"
+            className="op-event"
+            key={event.event_id}
+            onClick={() => onOpen(event)}
+          >
+            <span className="op-event-indicator" aria-hidden="true">
+              <span className={`op-event-dot op-tone-${tone}`} />
+            </span>
+            <span className="op-event-body">
+              <strong>{event.spreadsheet_name}</strong>
+              <span>{text}</span>
+              <small>
+                {event.sheet_title ?? "Arquivo"} · {categories[event.category] ?? event.category} ·{" "}
+                {severities[event.severity] ?? event.severity}
+                {statusText ? ` · ${statusText}` : ""}
+                {event.removed ? " · Cadastro removido" : ""}
+              </small>
+            </span>
+            <time dateTime={event.detected_at}>{timestamp}</time>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -283,6 +351,8 @@ export function EventDiagnostic({
     event?.kind.includes("inconclusive") ||
     event?.status === "indeterminate" ||
     event?.category === "operational";
+  const description = event ? event.description || diagnosticText(event.diagnosis) : "";
+  const timestamp = event ? event.formatted_detected_at || dateLabel(event.detected_at) : "";
   return (
     <Dialog
       open={event !== null}
@@ -294,16 +364,14 @@ export function EventDiagnostic({
         <DialogHeader>
           <DialogTitle>Diagnóstico da alteração</DialogTitle>
           <DialogDescription>
-            {event?.spreadsheet_name} · {dateLabel(event?.detected_at)}
+            {event?.spreadsheet_name} · {timestamp}
           </DialogDescription>
         </DialogHeader>
         {event && (
           <div className="op-diagnostic">
             <div className="op-notice">
-              <strong>
-                {uncertain ? "Não foi possível determinar" : diagnosticText(event.diagnosis)}
-              </strong>
-              {uncertain && <p>{diagnosticText(event.diagnosis)}</p>}
+              <strong>{uncertain ? "Não foi possível determinar" : description}</strong>
+              {uncertain && <p>{description}</p>}
             </div>
             <dl>
               <div>

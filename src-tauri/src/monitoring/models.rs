@@ -64,8 +64,14 @@ pub struct NotificationRecord {
     pub sheet_id: Option<u32>,
     pub sheet_title: Option<String>,
     pub severity: String,
+    #[serde(default)]
+    pub event_kind: Option<String>,
+    #[serde(default)]
+    pub event_type_label: String,
     pub diagnosis: String,
     pub detected_at: String,
+    #[serde(default)]
+    pub formatted_detected_at: String,
     pub state: String,
     pub attempt_count: u32,
     pub last_attempt_ms: Option<i64>,

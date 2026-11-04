@@ -82,4 +82,12 @@ describe("Regras estruturadas", () => {
     }));
     expect(scopeFormProblems(scope, tabs)).toEqual([]);
   });
+  it("não exibe visualização de JSON técnico das regras, preservando o escopo interno", () => {
+    render(<Harness />);
+    expect(screen.queryByText(/JSON técnico das regras/i)).not.toBeInTheDocument();
+    expect(document.querySelector(".op-advanced pre")).toBeNull();
+    expect(
+      screen.getByText(/Opções avançadas \(Apps Script, intervalos nomeados e retenção/),
+    ).toBeInTheDocument();
+  });
 });

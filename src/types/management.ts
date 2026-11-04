@@ -75,16 +75,33 @@ export interface EventFilter {
   severity?: string | null;
   status?: string | null;
   category?: string | null;
+  event_type?: "failure" | "modification" | "resolution" | null;
+  issue_status?: "active" | "resolved" | null;
   script_only?: boolean;
   query?: string;
   offset?: number;
   limit?: number;
+}
+export type ExportFormat = "csv" | "json";
+export interface ExportEventsInput {
+  filter: EventFilter;
+  format: ExportFormat;
+}
+export interface ExportEventsResult {
+  exported_count: number;
+  file_path: string | null;
+  format: string;
 }
 export interface Activity extends IntegrityEvent {
   spreadsheet_name: string;
   sheet_title: string | null;
   status: string;
   removed: boolean;
+  event_type?: "failure" | "modification" | "resolution" | string;
+  tone?: "failure" | "resolved" | "neutral" | string;
+  issue_status?: "active" | "resolved" | string | null;
+  description?: string;
+  formatted_detected_at?: string;
 }
 export interface ScriptSummary {
   script_id: string;

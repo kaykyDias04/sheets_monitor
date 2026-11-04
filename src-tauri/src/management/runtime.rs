@@ -312,6 +312,15 @@ impl IntegrationRuntime {
     ) -> Result<EngineEnvelope<Page<Activity>>, CommandError> {
         self.management_local(None, |db, s| db.operational_events(s, &input))
     }
+    pub fn export_change_events(
+        &self,
+        input: ExportEventsInput,
+        destination_dir: &std::path::Path,
+    ) -> Result<EngineEnvelope<ExportEventsResult>, CommandError> {
+        self.management_local(None, |db, s| {
+            db.export_operational_events(s, &input.filter, &input.format, destination_dir)
+        })
+    }
     pub fn list_associated_scripts(
         &self,
         input: SpreadsheetQuery,

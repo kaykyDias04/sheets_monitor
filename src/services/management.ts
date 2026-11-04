@@ -15,6 +15,8 @@ import type {
   DashboardSummary,
   Diagnostics,
   EventFilter,
+  ExportEventsInput,
+  ExportEventsResult,
   Mutation,
   OperationalPreview,
   Page,
@@ -65,6 +67,8 @@ export const compareBaselines = (spreadsheet_id: string, before_id: string, afte
 export const diagnostics = (spreadsheet_id: string) =>
   command<Diagnostics>("get_spreadsheet_diagnostics", { spreadsheet_id });
 export const events = (input: EventFilter) => command<Page<Activity>>("list_change_events", input);
+export const exportEvents = (input: ExportEventsInput) =>
+  command<ExportEventsResult>("export_change_events", input);
 export const scripts = (spreadsheet_id: string) =>
   command<ScriptSummary[]>("list_associated_scripts", { spreadsheet_id });
 export const check = (input: Mutation) => command<number>("monitoring_check_file", input);
@@ -134,6 +138,20 @@ const messages: Record<string, string> = {
     "Não foi possível gravar a preferência de inicialização automática no Windows. Verifique as permissões do usuário.",
   startup_verification_failed:
     "O Windows não confirmou a gravação da inicialização automática com segurança. Tente novamente.",
+  invalid_format:
+    "Formato de exportação inválido. Selecione CSV (Excel) ou JSON antes de exportar.",
+  export_io_error:
+    "Não foi possível gravar o arquivo de exportação na pasta local. Verifique o espaço disponível e as permissões do usuário.",
+  manual_update_required:
+    "Esta execução utiliza um binário portátil ou instalação administrativa. Baixe o instalador oficial na página da release para atualizar.",
+  update_not_staged:
+    "Nenhum pacote de atualização verificado está pronto para instalação. Clique em Verificar atualizações.",
+  already_up_to_date: "A versão instalada já está atualizada.",
+  checks_in_progress:
+    "Há verificações de planilhas em andamento. Aguarde a conclusão da análise atual e tente reiniciar novamente.",
+  integrity_mismatch:
+    "A verificação de integridade (SHA-256) do instalador falhou. Execute uma nova verificação de atualizações.",
+  invalid_version: "A versão informada para adiamento é inválida.",
 };
 
 export function managementError(error: unknown, context?: string) {

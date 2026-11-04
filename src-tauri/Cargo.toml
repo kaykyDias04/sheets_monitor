@@ -1,6 +1,6 @@
 [package]
 name = "sheets-monitor"
-version = "1.0.4"
+version = "1.0.5"
 description = "Sheets Monitor — integrações Google de leitura"
 edition = "2021"
 rust-version = "1.90"

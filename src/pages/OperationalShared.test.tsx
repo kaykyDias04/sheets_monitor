@@ -1,6 +1,14 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { EventDiagnostic, StatusBadge, dateLabel } from "./OperationalShared";
+import {
+  EventDiagnostic,
+  EventList,
+  StatusBadge,
+  activityTone,
+  dateLabel,
+  diagnosticText,
+  formatLocalDateTime,
+} from "./OperationalShared";
 import { ScriptCoverage } from "./ScriptCoverage";
 import type { Activity } from "@/types/management";
 afterEach(cleanup);
@@ -140,5 +148,54 @@ describe("Diagnóstico operacional", () => {
     expect(
       screen.getByText(/Ainda não há análise para este projeto no escopo atual/),
     ).toBeInTheDocument();
+  });
+  it("diferencia indicadores vermelhos, verdes e neutros, consolida contagens e formata datas locais", () => {
+    const formatted = formatLocalDateTime("2026-11-04T15:09:07Z");
+    expect(formatted).toMatch(/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/);
+    expect(diagnosticText("value_changed:count=4")).toBe(
+      "4 valores foram alterados nesta verificação.",
+    );
+    const items: Activity[] = [
+      {
+        ...event,
+        event_id: "ev-fail",
+        kind: "violation",
+        category: "structure",
+        severity: "critical",
+        status: "offline",
+        issue_status: "active",
+        diagnosis: "protected_header_changed_or_column_missing",
+      },
+      {
+        ...event,
+        event_id: "ev-res",
+        kind: "recovered",
+        category: "integrity",
+        severity: "info",
+        status: "online",
+        issue_status: "resolved",
+        diagnosis: "critical_rule_recovered",
+      },
+      {
+        ...event,
+        event_id: "ev-mod",
+        kind: "value_changed",
+        category: "content",
+        severity: "info",
+        status: "online",
+        issue_status: null,
+        diagnosis: "value_changed:count=3",
+      },
+    ];
+    expect(items.map(activityTone)).toEqual(["failure", "resolved", "neutral"]);
+    const { container } = render(<EventList events={items} onOpen={() => undefined} />);
+    const dots = container.querySelectorAll(".op-event-indicator > .op-event-dot");
+    expect(dots).toHaveLength(3);
+    expect(dots[0]).toHaveClass("op-tone-failure");
+    expect(dots[1]).toHaveClass("op-tone-resolved");
+    expect(dots[2]).toHaveClass("op-tone-neutral");
+    expect(screen.getByText(/Ativo/)).toBeInTheDocument();
+    expect(screen.getByText(/Resolvido/)).toBeInTheDocument();
+    expect(screen.getByText("3 valores foram alterados nesta verificação.")).toBeInTheDocument();
   });
 });

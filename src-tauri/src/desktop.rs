@@ -48,6 +48,7 @@ struct Inner {
     exiting: AtomicBool,
     exit_ready: AtomicBool,
     state_item: Mutex<Option<MenuItem<tauri::Wry>>>,
+    pending_installer: Mutex<Option<std::path::PathBuf>>,
 }
 #[derive(Clone)]
 pub struct DesktopShell(Arc<Inner>);
@@ -70,6 +71,7 @@ pub fn install(app: &AppHandle, callbacks: DesktopCallbacks) -> DesktopShell {
         exiting: AtomicBool::new(false),
         exit_ready: AtomicBool::new(false),
         state_item: Mutex::new(None),
+        pending_installer: Mutex::new(None),
     }));
     shell
         .0
@@ -230,6 +232,19 @@ impl DesktopShell {
             self.request_exit();
         }
     }
+    pub fn request_exit_for_update(
+        &self,
+        installer_path: std::path::PathBuf,
+    ) -> Result<(), String> {
+        if !installer_path.is_file() {
+            return Err("staged_installer_missing".into());
+        }
+        if let Ok(mut guard) = self.0.pending_installer.lock() {
+            *guard = Some(installer_path);
+        }
+        self.request_exit();
+        Ok(())
+    }
     pub fn request_exit(&self) {
         if self.0.exiting.swap(true, Ordering::SeqCst) {
             return;
@@ -244,6 +259,13 @@ impl DesktopShell {
                 }));
                 shell.0.app.remove_tray_by_id("sheets-monitor-tray");
                 shell.0.tray_available.store(false, Ordering::SeqCst);
+                if let Ok(mut pending) = shell.0.pending_installer.lock() {
+                    if let Some(installer) = pending.take() {
+                        let _ = std::process::Command::new(&installer)
+                            .args(["/P", "/UPDATE", "/R"])
+                            .spawn();
+                    }
+                }
                 shell.0.exit_ready.store(true, Ordering::SeqCst);
                 shell.0.app.exit(0);
             });

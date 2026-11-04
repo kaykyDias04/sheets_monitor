@@ -105,6 +105,20 @@ beforeEach(() => {
         startup: { registered: false, managed: false, os_execution: "unknown", error_code: null },
         exiting: false,
       };
+    if (command === "updater_get_status")
+      return {
+        state: "up_to_date",
+        current_version: "1.0.5",
+        available_version: null,
+        release_url: null,
+        release_notes: null,
+        published_at: null,
+        install_mode: "per_user_nsis",
+        can_auto_update: true,
+        dismissed: false,
+        last_checked_at: "2026-11-04T12:00:00Z",
+        last_error_message: null,
+      };
     if (command === "monitoring_get_status")
       return envelope({
         control: { enabled: false, generation: 0 },
@@ -242,6 +256,16 @@ beforeEach(() => {
     }
     if (command === "list_change_events")
       return envelope({ items: [], total: 0, offset: Number(input.offset ?? 0), limit: 25 });
+    if (command === "export_change_events") {
+      const fmt = String(input.format ?? "csv");
+      const filterObj = (input.filter as Record<string, unknown> | undefined) ?? {};
+      const empty = filterObj.event_type === "resolution";
+      return envelope({
+        exported_count: empty ? 0 : 4,
+        file_path: empty ? null : `C:\\Exports\\sheets-monitor-logs.${fmt}`,
+        format: fmt,
+      });
+    }
     if (command === "integration_disconnect") {
       session = {
         ...session,
@@ -719,6 +743,58 @@ describe("Sprint 04 · operação sem demonstração", () => {
         limit: 25,
       }),
     });
+  });
+
+  it("exporta logs filtrados em CSV e JSON e informa quando não há registros", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await go(user, "Atividades");
+    await user.selectOptions(screen.getByLabelText("Planilha"), "fixture-file");
+    await user.selectOptions(screen.getByLabelText("Aba"), "17");
+    await user.selectOptions(screen.getByLabelText("Tipo"), "failure");
+    await user.selectOptions(screen.getByLabelText("Status"), "active");
+    await user.click(screen.getByRole("button", { name: "Exportar logs" }));
+    await settled();
+    expect(call).toHaveBeenCalledWith("export_change_events", {
+      input: {
+        format: "csv",
+        filter: expect.objectContaining({
+          spreadsheet_id: "fixture-file",
+          sheet_id: 17,
+          event_type: "failure",
+          issue_status: "active",
+          offset: 0,
+        }),
+      },
+    });
+    expect(await screen.findByText(/4 registro\(s\) exportado\(s\) em CSV/)).toBeInTheDocument();
+
+    // Modificação desabilita Status quando não aplicável e exporta JSON
+    await user.selectOptions(screen.getByLabelText("Tipo"), "modification");
+    expect(screen.getByLabelText("Status")).toBeDisabled();
+    await user.selectOptions(screen.getByLabelText("Formato de exportação"), "json");
+    await user.click(screen.getByRole("button", { name: "Exportar logs" }));
+    await settled();
+    expect(call).toHaveBeenCalledWith("export_change_events", {
+      input: {
+        format: "json",
+        filter: expect.objectContaining({
+          event_type: "modification",
+          issue_status: null,
+        }),
+      },
+    });
+    expect(await screen.findByText(/4 registro\(s\) exportado\(s\) em JSON/)).toBeInTheDocument();
+
+    // Mensagem amigável quando nenhum registro corresponde aos filtros
+    await user.selectOptions(screen.getByLabelText("Tipo"), "resolution");
+    await user.click(screen.getByRole("button", { name: "Exportar logs" }));
+    await settled();
+    expect(
+      await screen.findByText(
+        "Nenhum registro corresponde aos filtros selecionados para exportação.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("persiste preferências por conta sem alterar o registro Windows implicitamente", async () => {

@@ -995,11 +995,6 @@ export function ScopeEditor({
               />
             </div>
           </section>
-
-          <details className="op-advanced">
-            <summary>JSON técnico das regras (somente leitura)</summary>
-            <pre>{JSON.stringify(value, null, 2)}</pre>
-          </details>
         </div>
       </details>
     </fieldset>

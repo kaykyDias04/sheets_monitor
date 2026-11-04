@@ -374,6 +374,7 @@ fn exercise(
             },
         )
         .map_err(|_| "probe_toast_optin")?;
+        let detected_at = chrono::Utc::now().to_rfc3339();
         let record = NotificationRecord {
             id: "synthetic-probe-test-toast".into(),
             event_id: "synthetic-test".into(),
@@ -383,10 +384,13 @@ fn exercise(
             sheet_id: None,
             sheet_title: None,
             severity: "info".into(),
+            event_kind: Some("recovered".into()),
+            event_type_label: "Monitoramento restabelecido".into(),
             diagnosis:
                 "TESTE autorizado de notificação nativa. Nenhuma alteração Google foi realizada."
                     .into(),
-            detected_at: chrono::Utc::now().to_rfc3339(),
+            formatted_detected_at: crate::management::events::format_local_datetime(&detected_at),
+            detected_at,
             state: "pending".into(),
             attempt_count: 1,
             last_attempt_ms: None,

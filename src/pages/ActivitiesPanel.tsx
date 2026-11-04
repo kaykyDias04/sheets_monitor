@@ -1,9 +1,16 @@
-import { Search } from "lucide-react";
+import { useState } from "react";
+import { Download, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EventList } from "./OperationalShared";
-import type { Activity, EventFilter, Page, RegisteredSpreadsheet } from "@/types/management";
+import type {
+  Activity,
+  EventFilter,
+  ExportFormat,
+  Page,
+  RegisteredSpreadsheet,
+} from "@/types/management";
 
 function dateValue(value: string | null | undefined) {
   if (!value) return "";
@@ -20,7 +27,9 @@ export function ActivitiesPanel({
   page,
   rows,
   disabled,
+  exportFeedback,
   onSearch,
+  onExport,
   onPage,
   onOpen,
 }: {
@@ -29,24 +38,63 @@ export function ActivitiesPanel({
   page: Page<Activity> | null;
   rows: RegisteredSpreadsheet[];
   disabled: boolean;
+  exportFeedback?: { empty: boolean; message: string } | null;
   onSearch: () => void;
+  onExport?: (format: ExportFormat) => void;
   onPage: (offset: number) => void;
   onOpen: (event: Activity) => void;
 }) {
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("csv");
   const tabs = rows.find((row) => row.spreadsheet_id === filter.spreadsheet_id)?.tabs ?? [];
+  const statusApplicable = filter.event_type !== "modification";
   function change(patch: Partial<EventFilter>) {
     onFilter({ ...filter, ...patch, offset: 0 });
   }
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Linha do tempo</CardTitle>
-        <CardDescription>
-          Eventos persistidos e paginados no banco local. A data indica a detecção; a autoria não é
-          inferida.
-        </CardDescription>
+        <div className="op-section-heading">
+          <div>
+            <CardTitle>Linha do tempo</CardTitle>
+            <CardDescription>
+              Eventos persistidos e paginados no banco local. A data indica a detecção; a autoria
+              não é inferida.
+            </CardDescription>
+          </div>
+          {onExport && (
+            <div className="op-export-bar" role="group" aria-label="Exportação de logs">
+              <select
+                aria-label="Formato de exportação"
+                value={exportFormat}
+                disabled={disabled}
+                onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
+              >
+                <option value="csv">CSV (UTF-8 / Excel)</option>
+                <option value="json">JSON estruturado</option>
+              </select>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={disabled}
+                onClick={() => onExport(exportFormat)}
+              >
+                <Download size={15} />
+                Exportar logs
+              </Button>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
+        {exportFeedback && (
+          <p
+            className={`feedback ${exportFeedback.empty ? "" : "success"} op-export-feedback`}
+            role="status"
+          >
+            {exportFeedback.message}
+          </p>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -109,6 +157,40 @@ export function ActivitiesPanel({
               value={dateValue(filter.to)}
               onChange={(e) => change({ to: boundary(e.target.value, true) })}
             />
+          </label>
+          <label className="op-field">
+            Tipo
+            <select
+              value={filter.event_type ?? ""}
+              onChange={(e) => {
+                const nextType = (e.target.value || null) as EventFilter["event_type"];
+                change({
+                  event_type: nextType,
+                  issue_status: nextType === "modification" ? null : filter.issue_status,
+                });
+              }}
+            >
+              <option value="">Todos os eventos</option>
+              <option value="failure">Falha</option>
+              <option value="modification">Modificação</option>
+              <option value="resolution">Resolução</option>
+            </select>
+          </label>
+          <label className="op-field">
+            Status
+            <select
+              value={statusApplicable ? (filter.issue_status ?? "") : ""}
+              disabled={!statusApplicable}
+              onChange={(e) =>
+                change({
+                  issue_status: (e.target.value || null) as EventFilter["issue_status"],
+                })
+              }
+            >
+              <option value="">{statusApplicable ? "Todos" : "Não aplicável"}</option>
+              <option value="active">Ativo</option>
+              <option value="resolved">Resolvido</option>
+            </select>
           </label>
           <label className="op-field">
             Severidade

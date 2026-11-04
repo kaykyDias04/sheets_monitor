@@ -97,6 +97,10 @@ export function OperationalApp() {
   const [eventFilter, setEventFilter] = useState(initialEvents);
   const [eventPage, setEventPage] = useState<Page<Activity> | null>(null);
   const [event, setEvent] = useState<Activity | null>(null);
+  const [exportFeedback, setExportFeedback] = useState<{
+    empty: boolean;
+    message: string;
+  } | null>(null);
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState<string | null>(desktop ? "Carregando aplicativo" : null);
   const [error, setError] = useState("");
@@ -133,6 +137,7 @@ export function OperationalApp() {
     setEventPage(null);
     setEvent(null);
     setEventFilter(initialEvents);
+    setExportFeedback(null);
     setUrl("");
     detailTab.current = null;
     setInitialDetailTab("tabs");
@@ -788,7 +793,7 @@ export function OperationalApp() {
         </nav>
         <div className="sidebar-foot">
           <div className="version">
-            <span>v1.0.4</span>
+            <span>v1.0.5</span>
             <span>WINDOWS 11</span>
           </div>
         </div>
@@ -1318,11 +1323,39 @@ export function OperationalApp() {
                     epoch.current++;
                     setEventFilter(next);
                     setEventPage(null);
+                    setExportFeedback(null);
                   }}
                   page={eventPage}
                   rows={rows}
                   disabled={disabled}
+                  exportFeedback={exportFeedback}
                   onSearch={() => void loadEvents({ ...eventFilter, offset: 0 })}
+                  onExport={(format) => {
+                    setExportFeedback(null);
+                    void run(
+                      "Exportando logs com os filtros selecionados",
+                      () =>
+                        api.exportEvents({
+                          filter: { ...eventFilter, offset: 0 },
+                          format,
+                        }),
+                      (result) => {
+                        if (result.exported_count === 0) {
+                          setExportFeedback({
+                            empty: true,
+                            message:
+                              "Nenhum registro corresponde aos filtros selecionados para exportação.",
+                          });
+                        } else {
+                          setExportFeedback({
+                            empty: false,
+                            message: `${result.exported_count} registro(s) exportado(s) em ${result.format.toUpperCase()}: ${result.file_path ?? "pasta local"}`,
+                          });
+                        }
+                      },
+                      "exportar o histórico de logs",
+                    );
+                  }}
                   onPage={(offset) => void loadEvents({ ...eventFilter, offset })}
                   onOpen={setEvent}
                 />

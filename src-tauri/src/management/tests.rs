@@ -857,3 +857,157 @@ fn thirty_file_capacity_does_not_limit_selecting_all_thirty_one_tabs() {
         1
     );
 }
+#[test]
+fn exports_filtered_logs_as_csv_and_json_without_secrets_and_handles_empty_results() {
+    let mut d = db();
+    let (_, baseline) = approved(&mut d);
+    let save_at = |d: &mut Database,
+                   snapshot: &StructuralSnapshot,
+                   check: &str,
+                   detected_at: &str| {
+        d.save_structural_snapshot(snapshot).unwrap();
+        let obs = d
+            .content_observation("fixture_account", "fixture_sheet", &snapshot.scope_hash)
+            .unwrap();
+        let mut report = evaluate(&baseline, obs.snapshot.as_ref(), snapshot, check).unwrap();
+        report.previous_snapshot_id = d
+            .previous_structural_snapshot("fixture_account", "fixture_sheet", &snapshot.scope_hash)
+            .unwrap()
+            .map(|s| s.id);
+        report.observation_revision = obs.revision;
+        report.detected_at = detected_at.into();
+        d.persist_integrity_report(snapshot, &report).unwrap();
+    };
+
+    // Check 1: structural failure (rename protected header)
+    let mut broken = fixtures::snapshot();
+    broken.id = "export_broken".into();
+    broken.captured_at = "2026-11-01T15:00:00Z".into();
+    broken.sheets[0].regions[0].headers[1].header = "AlteredHeader".into();
+    save_at(&mut d, &broken, "export_check_1", "2026-11-01T15:00:00Z");
+
+    // Check 2: resolution (restore protected header) + content modification
+    let mut restored = fixtures::snapshot();
+    restored.id = "export_restored".into();
+    restored.captured_at = "2026-11-02T15:00:00Z".into();
+    restored.sheets[0].regions[0].rows[0] = fixtures::row(1, "record_a", 777);
+    save_at(&mut d, &restored, "export_check_2", "2026-11-02T15:00:00Z");
+
+    // Verify classification & active/resolved status in operational_events
+    let failures = d
+        .operational_events(
+            "fixture_account",
+            &EventFilter {
+                limit: 10,
+                event_type: Some("failure".into()),
+                issue_status: Some("resolved".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    assert_eq!(failures.total, 1);
+    assert_eq!(failures.items[0].tone, "failure");
+    assert_eq!(failures.items[0].issue_status.as_deref(), Some("resolved"));
+
+    let active_failures = d
+        .operational_events(
+            "fixture_account",
+            &EventFilter {
+                limit: 10,
+                event_type: Some("failure".into()),
+                issue_status: Some("active".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    assert_eq!(active_failures.total, 0);
+
+    let resolutions = d
+        .operational_events(
+            "fixture_account",
+            &EventFilter {
+                limit: 10,
+                event_type: Some("resolution".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    assert_eq!(resolutions.total, 1);
+    assert_eq!(resolutions.items[0].tone, "resolved");
+
+    let modifications = d
+        .operational_events(
+            "fixture_account",
+            &EventFilter {
+                limit: 10,
+                event_type: Some("modification".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    assert_eq!(modifications.total, 1);
+    assert_eq!(modifications.items[0].tone, "neutral");
+
+    let dir = tempfile::tempdir().unwrap();
+    // Empty filter produces 0 rows and creates no file
+    let empty = d
+        .export_operational_events(
+            "fixture_account",
+            &EventFilter {
+                from: Some("2027-01-01T00:00:00Z".into()),
+                ..Default::default()
+            },
+            "csv",
+            dir.path(),
+        )
+        .unwrap();
+    assert_eq!(empty.exported_count, 0);
+    assert!(empty.file_path.is_none());
+
+    // CSV export with date + sheet + spreadsheet filters
+    let csv_res = d
+        .export_operational_events(
+            "fixture_account",
+            &EventFilter {
+                spreadsheet_id: Some("fixture_sheet".into()),
+                sheet_id: Some(7),
+                from: Some("2026-11-01T00:00:00Z".into()),
+                to: Some("2026-11-03T00:00:00Z".into()),
+                ..Default::default()
+            },
+            "csv",
+            dir.path(),
+        )
+        .unwrap();
+    assert_eq!(csv_res.exported_count, 3);
+    let csv_text = std::fs::read_to_string(csv_res.file_path.unwrap()).unwrap();
+    assert!(csv_text.starts_with('\u{FEFF}'));
+    assert!(csv_text.contains("Data/Hora;Planilha;Aba;Tipo;Status"));
+    assert!(csv_text.contains(";Fixture fixture_sheet;Data;"));
+    assert!(!csv_text.contains("fixture_account"));
+    assert!(!csv_text.contains(";fixture_sheet;"));
+    assert!(!csv_text.contains("access_token"));
+    // Chronological order: 01/11/2026 comes before 02/11/2026
+    let pos_first = csv_text.find("01/11/2026").unwrap();
+    let pos_second = csv_text.find("02/11/2026").unwrap();
+    assert!(pos_first < pos_second);
+
+    // JSON export filtered by event_type = resolution
+    let json_res = d
+        .export_operational_events(
+            "fixture_account",
+            &EventFilter {
+                event_type: Some("resolution".into()),
+                ..Default::default()
+            },
+            "json",
+            dir.path(),
+        )
+        .unwrap();
+    assert_eq!(json_res.exported_count, 1);
+    let json_val: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(json_res.file_path.unwrap()).unwrap())
+            .unwrap();
+    assert_eq!(json_val["total"], 1);
+    assert_eq!(json_val["items"][0]["event_type"], "Resolução");
+}

@@ -7,6 +7,7 @@ pub mod integrity;
 pub mod management;
 pub mod monitoring;
 pub mod notifications;
+pub mod updater;
 
 #[cfg(feature = "desktop")]
 pub mod desktop;

@@ -8,24 +8,35 @@ import type { NotificationRecord } from "@/types/monitoring";
 const mocks = vi.hoisted(() => ({
   state: vi.fn(),
   status: vi.fn(),
+  checkNow: vi.fn(),
   history: vi.fn(),
   native: vi.fn(),
   readiness: vi.fn(),
   retry: vi.fn(),
   byId: vi.fn(),
+  updaterStatus: vi.fn(),
+  updaterCheck: vi.fn(),
+  updaterDismiss: vi.fn(),
+  updaterApply: vi.fn(),
   changed: null as (() => void) | null,
   open: null as ((id: string) => void) | null,
+  updaterChanged: null as ((s: unknown) => void) | null,
   off: vi.fn(),
 }));
 vi.mock("@/services/platform", () => ({ desktop: true }));
 vi.mock("@/services/google", () => ({ getIntegrationState: mocks.state }));
 vi.mock("@/services/monitoring", () => ({
   getMonitoringStatus: mocks.status,
+  checkNow: mocks.checkNow,
   notificationHistory: mocks.history,
   getDesktopStatus: mocks.native,
   getNotificationReadiness: mocks.readiness,
   retryBlockedNotifications: mocks.retry,
   notificationById: mocks.byId,
+  getUpdaterStatus: mocks.updaterStatus,
+  checkForUpdates: mocks.updaterCheck,
+  dismissUpdate: mocks.updaterDismiss,
+  applyUpdateAndRestart: mocks.updaterApply,
   onMonitoringChanged: vi.fn(async (callback: () => void) => {
     mocks.changed = callback;
     return mocks.off;
@@ -33,6 +44,10 @@ vi.mock("@/services/monitoring", () => ({
   onDesktopNavigate: vi.fn(async () => mocks.off),
   onNotificationOpen: vi.fn(async (callback: (id: string) => void) => {
     mocks.open = callback;
+    return mocks.off;
+  }),
+  onUpdaterStateChanged: vi.fn(async (callback: (s: unknown) => void) => {
+    mocks.updaterChanged = callback;
     return mocks.off;
   }),
 }));
@@ -87,6 +102,34 @@ beforeEach(() => {
   vi.clearAllMocks();
   session = original;
   mocks.retry.mockImplementation(async () => envelope(1));
+  mocks.checkNow.mockImplementation(async () => envelope(2));
+  mocks.updaterStatus.mockResolvedValue({
+    state: "up_to_date",
+    current_version: "1.0.5",
+    available_version: null,
+    release_url: null,
+    release_notes: null,
+    published_at: null,
+    install_mode: "per_user_nsis",
+    can_auto_update: true,
+    dismissed: false,
+    last_checked_at: "2026-11-04T12:00:00Z",
+    last_error_message: null,
+  });
+  mocks.updaterDismiss.mockImplementation(async (version: string) => ({
+    state: "idle",
+    current_version: "1.0.5",
+    available_version: version,
+    release_url: "https://github.com/kaykyDias04/sheets_monitor/releases/tag/v1.0.6",
+    release_notes: null,
+    published_at: null,
+    install_mode: "per_user_nsis",
+    can_auto_update: true,
+    dismissed: true,
+    last_checked_at: "2026-11-04T12:00:00Z",
+    last_error_message: null,
+  }));
+  mocks.updaterApply.mockResolvedValue(undefined);
   mocks.readiness.mockResolvedValue({
     identity_mode: "development_powershell",
     setting: "enabled",
@@ -189,5 +232,69 @@ it("discards an old account's pending notification after the session changes", a
   });
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(screen.queryByText(notification.spreadsheet_name)).not.toBeInTheDocument();
-  expect(mocks.off).toHaveBeenCalledTimes(3);
+  expect(mocks.off).toHaveBeenCalledTimes(4);
+});
+it("enfileira verificações elegíveis silenciosamente sem exibir banner solto", async () => {
+  mocks.status.mockImplementation(async () =>
+    envelope({
+      control: { enabled: true, generation: 1 },
+      schedules: [],
+      eligible_count: 2,
+      interval_seconds: 60,
+      service: { running: true, active: 0, queued: 0, warning: null },
+    }),
+  );
+  render(
+    <MonitoringWorkspace
+      session={session}
+      rows={[]}
+      route="overview"
+      disabled={false}
+      onChanged={vi.fn()}
+      onNavigate={vi.fn()}
+      onOpenSheet={vi.fn()}
+    />,
+  );
+  const btn = await screen.findByRole("button", { name: "Verificar elegíveis agora" });
+  await waitFor(() => expect(btn).toBeEnabled());
+  await userEvent.click(btn);
+  await waitFor(() => expect(mocks.checkNow).toHaveBeenCalledWith(1));
+  expect(screen.queryByText(/Verificações elegíveis adicionadas à fila/i)).not.toBeInTheDocument();
+});
+it("solicita autorização explícita para reiniciar e atualizar e permite adiar o aviso", async () => {
+  mocks.updaterStatus.mockResolvedValue({
+    state: "ready_to_install",
+    current_version: "1.0.5",
+    available_version: "1.0.6",
+    release_url: "https://github.com/kaykyDias04/sheets_monitor/releases/tag/v1.0.6",
+    release_notes: "Correções de estabilidade",
+    published_at: "2026-11-04T12:00:00Z",
+    install_mode: "per_user_nsis",
+    can_auto_update: true,
+    dismissed: false,
+    last_checked_at: "2026-11-04T12:00:00Z",
+    last_error_message: null,
+  });
+  render(
+    <MonitoringWorkspace
+      session={session}
+      rows={[]}
+      route="overview"
+      disabled={false}
+      onChanged={vi.fn()}
+      onNavigate={vi.fn()}
+      onOpenSheet={vi.fn()}
+    />,
+  );
+  expect(
+    await screen.findByText(/Nova versão estável disponível \(v1\.0\.6\)/),
+  ).toBeInTheDocument();
+  expect(mocks.updaterApply).not.toHaveBeenCalled();
+  await userEvent.click(screen.getByRole("button", { name: "Agora não" }));
+  await waitFor(() => expect(mocks.updaterDismiss).toHaveBeenCalledWith("1.0.6"));
+  await waitFor(() =>
+    expect(
+      screen.queryByText(/Nova versão estável disponível \(v1\.0\.6\)/),
+    ).not.toBeInTheDocument(),
+  );
 });

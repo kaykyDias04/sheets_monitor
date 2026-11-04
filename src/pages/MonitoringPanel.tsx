@@ -1,6 +1,7 @@
 import { Activity, Pause, Play, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { diagnosticText, formatLocalDateTime } from "./OperationalShared";
 import type { MonitoringStatus, NotificationRecord } from "@/types/monitoring";
 import type { Page, RegisteredSpreadsheet } from "@/types/management";
 
@@ -19,7 +20,8 @@ export function operationLabel(code: string | null) {
   return labels[code] ?? "Consulta temporariamente indisponível";
 }
 export function monitoringDate(value: number | null) {
-  return value === null ? "Ainda não verificado" : new Date(value).toLocaleString("pt-BR");
+  if (value === null) return "Ainda não verificado";
+  return formatLocalDateTime(value) || "Data indisponível";
 }
 export function MonitoringPanel({
   status,
@@ -185,10 +187,14 @@ export function NotificationHistory({
             {page.items.map((item) => (
               <li key={item.id}>
                 <div>
-                  <strong>{item.spreadsheet_name}</strong>
-                  <p>{item.diagnosis}</p>
+                  <strong>
+                    {item.spreadsheet_name}
+                    {item.sheet_title ? ` · ${item.sheet_title}` : ""}
+                  </strong>
+                  <p>{diagnosticText(item.diagnosis)}</p>
                   <small>
-                    {new Date(item.detected_at).toLocaleString("pt-BR")} ·{" "}
+                    {item.event_type_label ? `${item.event_type_label} · ` : ""}
+                    {item.formatted_detected_at || formatLocalDateTime(item.detected_at)} ·{" "}
                     {notificationStates[item.state] ?? "Estado de envio indisponível"} ·{" "}
                     {item.attempt_count} tentativas
                   </small>

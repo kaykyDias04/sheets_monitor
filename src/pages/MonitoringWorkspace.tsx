@@ -19,8 +19,10 @@ import type {
   MonitoringStatus,
   NotificationRecord,
   NativeReadiness,
+  UpdaterStatus,
 } from "@/types/monitoring";
 import { MonitoringPanel, NotificationHistory } from "./MonitoringPanel";
+import { diagnosticText, formatLocalDateTime } from "./OperationalShared";
 
 /** Event-driven view of the Rust service; no frontend scheduling timer. */
 export function MonitoringWorkspace({
@@ -45,12 +47,13 @@ export function MonitoringWorkspace({
   const [status, setStatus] = useState<MonitoringStatus | null>(null);
   const [native, setNative] = useState<DesktopStatus | null>(null);
   const [readiness, setReadiness] = useState<NativeReadiness | null>(null);
+  const [updater, setUpdater] = useState<UpdaterStatus | null>(null);
   const [history, setHistory] = useState<Page<NotificationRecord> | null>(null);
   const [selected, setSelected] = useState<NotificationRecord | null>(null);
   const [offset, setOffset] = useState(0);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<{ route: string; text: string } | null>(null);
   const live = useRef({ session, route, offset, onChanged, onNavigate });
   useLayoutEffect(() => {
     live.current = { session, route, offset, onChanged, onNavigate };
@@ -72,13 +75,15 @@ export function MonitoringWorkspace({
       do {
         pending.current = false;
         const before = live.current.session;
-        const [nativeStatus, notificationReadiness] = await Promise.all([
+        const [nativeStatus, notificationReadiness, updaterStatus] = await Promise.all([
           api.getDesktopStatus(),
           api.getNotificationReadiness(),
+          api.getUpdaterStatus ? api.getUpdaterStatus().catch(() => null) : Promise.resolve(null),
         ]);
         if (mounted.current) {
           setNative(nativeStatus);
           setReadiness(notificationReadiness);
+          if (updaterStatus) setUpdater(updaterStatus);
         }
         if (!before?.auth.account) continue;
         const [monitor, notifications] = await Promise.all([
@@ -152,7 +157,10 @@ export function MonitoringWorkspace({
               ) {
                 setSelected(envelope.data);
                 if (!envelope.data)
-                  setNotice("O evento não está disponível nesta conta ou já expirou.");
+                  setNotice({
+                    route: live.current.route,
+                    text: "O evento não está disponível nesta conta ou já expirou.",
+                  });
               }
             })
             .catch((failure) => {
@@ -162,6 +170,14 @@ export function MonitoringWorkspace({
         })
         .then(retain)
         .catch(() => undefined);
+      if (api.onUpdaterStateChanged) {
+        void api
+          .onUpdaterStateChanged((nextUpdater) => {
+            if (mounted.current) setUpdater(nextUpdater);
+          })
+          .then(retain)
+          .catch(() => undefined);
+      }
     }
     return () => {
       mounted.current = false;
@@ -172,15 +188,19 @@ export function MonitoringWorkspace({
   useEffect(() => {
     void Promise.resolve().then(load);
   }, [route, offset, load]);
-  async function action(work: () => Promise<unknown>, message: string, context: string) {
+  async function action(
+    work: () => Promise<unknown>,
+    message: string | undefined,
+    context: string,
+  ) {
     if (working || disabled) return;
     setWorking(true);
     setError("");
-    setNotice("");
+    setNotice(null);
     try {
       await work();
       await load();
-      setNotice(message);
+      setNotice(message ? { route: live.current.route, text: message } : null);
       live.current.onChanged();
     } catch (failure) {
       setError(managementError(failure, context));
@@ -188,11 +208,35 @@ export function MonitoringWorkspace({
       if (mounted.current) setWorking(false);
     }
   }
+  async function updaterAction(work: () => Promise<UpdaterStatus>, context: string) {
+    if (working || disabled) return;
+    setWorking(true);
+    setError("");
+    try {
+      const next = await work();
+      if (mounted.current) setUpdater(next);
+    } catch (failure) {
+      if (mounted.current) setError(managementError(failure, context));
+    } finally {
+      if (mounted.current) setWorking(false);
+    }
+  }
   const blocked = disabled || working;
   const generation = session?.generation;
   const visibleError = error && error !== suppressedError ? error : "";
+  const visibleNotice = notice?.route === route ? notice.text : "";
+  const updatePromptVisible = Boolean(
+    updater &&
+    !updater.dismissed &&
+    (updater.state === "ready_to_install" || updater.state === "manual_required") &&
+    (route === "overview" || route === "settings"),
+  );
   const hasVisibleBlocks = Boolean(
-    visibleError || notice || route === "settings" || session?.auth.account,
+    visibleError ||
+    visibleNotice ||
+    updatePromptVisible ||
+    route === "settings" ||
+    session?.auth.account,
   );
   return (
     <>
@@ -203,10 +247,66 @@ export function MonitoringWorkspace({
               {visibleError}
             </p>
           )}
-          {notice && (
+          {visibleNotice && (
             <p className="feedback success" role="status">
-              {notice}
+              {visibleNotice}
             </p>
+          )}
+          {updatePromptVisible && updater && (
+            <Card className="op-update-banner">
+              <CardHeader>
+                <CardTitle>Nova versão estável disponível (v{updater.available_version})</CardTitle>
+                <CardDescription>
+                  {updater.state === "ready_to_install"
+                    ? "O pacote compatível com Windows foi baixado do GitHub Releases e validado com SHA-256. Suas configurações, credenciais e planilhas cadastradas serão preservadas."
+                    : updater.install_mode === "per_machine_nsis"
+                      ? "Esta instalação administrativa exige atualização manual pelo instalador oficial para não solicitar elevação automática."
+                      : "Esta execução isolada ou de desenvolvimento não sobrescreve o executável automaticamente. Utilize o instalador oficial da release."}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="op-actions">
+                {updater.state === "ready_to_install" && updater.can_auto_update && (
+                  <Button
+                    disabled={blocked}
+                    onClick={() =>
+                      void action(
+                        () => api.applyUpdateAndRestart(),
+                        "Reiniciando para concluir a atualização…",
+                        "aplicar a atualização e reiniciar o aplicativo",
+                      )
+                    }
+                  >
+                    Reiniciar e atualizar
+                  </Button>
+                )}
+                {updater.release_url && updater.state === "manual_required" && (
+                  <a
+                    className="op-release-link"
+                    href={updater.release_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Ver página da versão v{updater.available_version}
+                  </a>
+                )}
+                {updater.available_version && (
+                  <Button
+                    variant="outline"
+                    disabled={blocked}
+                    onClick={() => {
+                      const targetVersion = updater.available_version;
+                      if (targetVersion)
+                        void updaterAction(
+                          () => api.dismissUpdate(targetVersion),
+                          "adiar o aviso de atualização",
+                        );
+                    }}
+                  >
+                    Agora não
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
           )}
           {session?.auth.account && (route === "overview" || route === "settings") && (
             <MonitoringPanel
@@ -227,7 +327,7 @@ export function MonitoringWorkspace({
                 if (generation !== undefined)
                   void action(
                     () => api.checkNow(generation),
-                    "Verificações elegíveis adicionadas à fila.",
+                    undefined,
                     "agendar a verificação das planilhas elegíveis",
                   );
               }}
@@ -344,6 +444,78 @@ export function MonitoringWorkspace({
               </CardContent>
             </Card>
           )}
+          {route === "settings" && updater && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Atualizações do aplicativo</CardTitle>
+                <CardDescription>
+                  Verificação discreta via GitHub Releases estáveis com validação de origem e
+                  integridade SHA-256.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="op-stack">
+                <p>
+                  Versão instalada: <strong>v{updater.current_version}</strong> ·{" "}
+                  {updater.install_mode === "per_user_nsis"
+                    ? "Instalação por usuário (atualização automática compatível)"
+                    : updater.install_mode === "per_machine_nsis"
+                      ? "Instalação por máquina (requer instalador manual)"
+                      : "Execução isolada ou de desenvolvimento (atualização manual)"}
+                </p>
+                <p className="op-hint">
+                  Última verificação:{" "}
+                  {updater.last_checked_at
+                    ? formatLocalDateTime(updater.last_checked_at)
+                    : "Ainda não realizada nesta sessão"}
+                  {updater.state === "up_to_date"
+                    ? " · Nenhuma versão estável mais recente encontrada."
+                    : updater.state === "checking"
+                      ? " · Consultando GitHub Releases…"
+                      : updater.state === "downloading"
+                        ? " · Baixando e validando instalador…"
+                        : ""}
+                </p>
+                {updater.last_error_message && (
+                  <p className="op-hint" role="status">
+                    Última tentativa de atualização: {updater.last_error_message}
+                  </p>
+                )}
+                <div className="op-actions">
+                  <Button
+                    variant="outline"
+                    disabled={
+                      blocked ||
+                      updater.state === "checking" ||
+                      updater.state === "downloading" ||
+                      updater.state === "installing"
+                    }
+                    onClick={() =>
+                      void updaterAction(
+                        () => api.checkForUpdates(),
+                        "verificar atualizações do aplicativo",
+                      )
+                    }
+                  >
+                    Verificar atualizações
+                  </Button>
+                  {updater.state === "ready_to_install" && updater.can_auto_update && (
+                    <Button
+                      disabled={blocked}
+                      onClick={() =>
+                        void action(
+                          () => api.applyUpdateAndRestart(),
+                          "Reiniciando para concluir a atualização…",
+                          "aplicar a atualização e reiniciar o aplicativo",
+                        )
+                      }
+                    >
+                      Reiniciar e atualizar (v{updater.available_version})
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {session?.auth.account && (route === "activities" || route === "settings") && (
             <NotificationHistory
               page={history}
@@ -362,15 +534,18 @@ export function MonitoringWorkspace({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Evento da notificação</DialogTitle>
+            <DialogTitle>{selected?.event_type_label ?? "Evento da notificação"}</DialogTitle>
             <DialogDescription>
-              {selected?.spreadsheet_name} ·{" "}
-              {selected ? new Date(selected.detected_at).toLocaleString("pt-BR") : ""}
+              {selected?.spreadsheet_name}
+              {selected?.sheet_title ? ` · ${selected.sheet_title}` : ""} ·{" "}
+              {selected
+                ? selected.formatted_detected_at || formatLocalDateTime(selected.detected_at)
+                : ""}
             </DialogDescription>
           </DialogHeader>
           {selected && (
             <>
-              <p>{selected.diagnosis}</p>
+              <p>{diagnosticText(selected.diagnosis)}</p>
               <p className="op-hint">
                 Origem: {selected.source === "integrity" ? "Integridade" : "Operação"} ·{" "}
                 {selected.sheet_title ??

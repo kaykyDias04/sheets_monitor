@@ -34,6 +34,32 @@ export interface NotificationRecord {
   last_attempt_ms: number | null;
   submitted_ms: number | null;
   group_id: string;
+  event_kind?: string | null;
+  event_type_label?: string;
+  formatted_detected_at?: string;
+}
+export type InstallMode = "per_user_nsis" | "per_machine_nsis" | "portable_or_development";
+export interface UpdaterStatus {
+  state:
+    | "idle"
+    | "checking"
+    | "up_to_date"
+    | "downloading"
+    | "ready_to_install"
+    | "manual_required"
+    | "installing"
+    | "error"
+    | string;
+  current_version: string;
+  available_version: string | null;
+  release_url: string | null;
+  release_notes: string | null;
+  published_at: string | null;
+  install_mode: InstallMode;
+  can_auto_update: boolean;
+  dismissed: boolean;
+  last_checked_at: string | null;
+  last_error_message: string | null;
 }
 export interface NativeReadiness {
   identity_mode: string;

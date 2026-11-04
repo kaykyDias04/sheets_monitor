@@ -2,13 +2,14 @@
 //! credentials are excluded by the engine contracts.
 use super::Database;
 use crate::integrity::{
-    fingerprint, BaselineVersion, Connectivity, ContentObservation, EngineError, EngineResult,
-    Finding, FindingOutcome, IntegrityEvent, IntegrityReport, IntegrityStatus, NamedRangeSnapshot,
-    RegionSnapshot, ScriptSnapshot, Severity, SheetSnapshot, StructuralSnapshot,
+    fingerprint, BaselineVersion, Connectivity, ContentDifference, ContentObservation, EngineError,
+    EngineResult, Finding, FindingOutcome, IntegrityEvent, IntegrityReport, IntegrityStatus,
+    NamedRangeSnapshot, RegionSnapshot, ScriptSnapshot, Severity, SheetSnapshot,
+    StructuralSnapshot,
 };
 use rusqlite::{params, Connection, OptionalExtension, TransactionBehavior};
 use serde::{de::DeserializeOwned, Serialize};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 fn guard_registered_snapshot(
     c: &Connection,
@@ -180,6 +181,64 @@ fn event_for(
         } else {
             finding.code.clone()
         },
+    }
+}
+fn difference_redundant_with_structural(
+    difference: &ContentDifference,
+    active_findings: &[Finding],
+    resolved_findings: &[Finding],
+) -> bool {
+    let mut structural = active_findings.iter().chain(resolved_findings.iter());
+    match difference.kind.as_str() {
+        "header_changed" => structural.any(|f| {
+            f.sheet_id == difference.sheet_id
+                && matches!(
+                    f.code.as_str(),
+                    "protected_header_changed_or_column_missing"
+                        | "header_changed"
+                        | "protected_column_missing"
+                        | "protected_column_reordered"
+                        | "column_identity_ambiguous"
+                        | "monitored_sheet_missing"
+                        | "protected_region_displaced"
+                        | "script_logical_column_changed"
+                        | "script_column_identity_ambiguous"
+                )
+        }),
+        "sheet_title_changed" => structural.any(|f| {
+            (f.sheet_id == difference.sheet_id || f.sheet_id.is_none())
+                && matches!(
+                    f.code.as_str(),
+                    "protected_sheet_renamed"
+                        | "monitored_sheet_missing"
+                        | "script_sheet_missing"
+                        | "script_sheet_unproven"
+                )
+        }),
+        "sheet_position_changed" => structural.any(|f| {
+            f.sheet_id == difference.sheet_id
+                && matches!(
+                    f.code.as_str(),
+                    "protected_sheet_reordered" | "monitored_sheet_missing"
+                )
+        }),
+        "region_changed" => structural.any(|f| {
+            f.sheet_id == difference.sheet_id
+                && matches!(
+                    f.code.as_str(),
+                    "protected_region_displaced"
+                        | "region_not_observed"
+                        | "monitored_sheet_missing"
+                )
+        }),
+        "named_range_changed" => structural.any(|f| {
+            matches!(
+                f.code.as_str(),
+                "named_range_changed" | "named_range_missing" | "named_range_not_observed"
+            ) && (f.sheet_id == difference.sheet_id
+                || format!("named:{}", f.rule_id) == difference.key)
+        }),
+        _ => false,
     }
 }
 fn insert_event(
@@ -663,6 +722,7 @@ impl Database {
             }
             transaction.execute("INSERT INTO integrity_incidents(scope_id,account_id,finding_key,outcome,fingerprint,finding_json,active,occurrence,last_seen_at,resolved_at) VALUES(?1,?2,?3,?4,?5,?6,1,?7,?8,NULL) ON CONFLICT(scope_id,finding_key,outcome) DO UPDATE SET fingerprint=excluded.fingerprint,finding_json=excluded.finding_json,active=1,occurrence=excluded.occurrence,last_seen_at=excluded.last_seen_at,resolved_at=NULL",params![scope_id,account_id,finding.key,outcome,hash,encode(finding)?,occurrence,report.detected_at]).map_err(storage)?;
         }
+        let mut resolved_findings = Vec::new();
         if capture_complete(snapshot) {
             let pending = {
                 let mut statement=transaction.prepare("SELECT finding_key,outcome,finding_json,occurrence FROM integrity_incidents WHERE scope_id=?1 AND active=1").map_err(storage)?;
@@ -708,6 +768,7 @@ impl Database {
                 );
                 insert_event(&transaction, &scope_id, &account_id, &event)?;
                 events.push(event);
+                resolved_findings.push(finding);
                 transaction.execute("UPDATE integrity_incidents SET active=0,resolved_at=?1 WHERE scope_id=?2 AND finding_key=?3 AND outcome=?4",params![report.detected_at,scope_id,key,outcome]).map_err(storage)?;
             }
             transaction.execute("UPDATE integrity_scopes SET previous_snapshot_id=?1,latest_report_id=?2 WHERE id=?3 AND account_id=?4",params![snapshot.id,report.check_id,scope_id,account_id]).map_err(storage)?;
@@ -719,26 +780,74 @@ impl Database {
                 )
                 .map_err(storage)?;
         }
+        let mut grouped_differences: BTreeMap<
+            (Option<u32>, String, String),
+            Vec<&ContentDifference>,
+        > = BTreeMap::new();
         for difference in &report.differences {
-            let event = IntegrityEvent {
-                location: difference.location.clone(),
-                event_id: uuid::Uuid::new_v4().to_string(),
-                check_id: report.check_id.clone(),
-                spreadsheet_id: report.spreadsheet_id.clone(),
-                sheet_id: difference.sheet_id,
-                kind: difference.kind.clone(),
-                category: difference.category.clone(),
-                severity: Severity::Info,
-                rule_id: None,
-                before: difference.before.clone(),
-                after: difference.after.clone(),
-                detected_at: report.detected_at.clone(),
-                fingerprint: fingerprint(difference),
-                diagnosis: if difference.ambiguous {
-                    "content_changed_operation_ambiguous".into()
+            if difference_redundant_with_structural(
+                difference,
+                &report.findings,
+                &resolved_findings,
+            ) {
+                continue;
+            }
+            grouped_differences
+                .entry((
+                    difference.sheet_id,
+                    difference.kind.clone(),
+                    difference.category.clone(),
+                ))
+                .or_default()
+                .push(difference);
+        }
+        for ((sheet_id, kind, category), group) in grouped_differences {
+            let event = if group.len() == 1 {
+                let difference = group[0];
+                IntegrityEvent {
+                    location: difference.location.clone(),
+                    event_id: uuid::Uuid::new_v4().to_string(),
+                    check_id: report.check_id.clone(),
+                    spreadsheet_id: report.spreadsheet_id.clone(),
+                    sheet_id,
+                    kind: kind.clone(),
+                    category,
+                    severity: Severity::Info,
+                    rule_id: None,
+                    before: difference.before.clone(),
+                    after: difference.after.clone(),
+                    detected_at: report.detected_at.clone(),
+                    fingerprint: fingerprint(difference),
+                    diagnosis: if difference.ambiguous {
+                        "content_changed_operation_ambiguous".into()
+                    } else {
+                        kind
+                    },
+                }
+            } else {
+                let first = group[0];
+                let last = group[group.len() - 1];
+                let base = if group.iter().any(|d| d.ambiguous) {
+                    "content_changed_operation_ambiguous"
                 } else {
-                    difference.kind.clone()
-                },
+                    kind.as_str()
+                };
+                IntegrityEvent {
+                    location: first.location.clone(),
+                    event_id: uuid::Uuid::new_v4().to_string(),
+                    check_id: report.check_id.clone(),
+                    spreadsheet_id: report.spreadsheet_id.clone(),
+                    sheet_id,
+                    kind: kind.clone(),
+                    category,
+                    severity: Severity::Info,
+                    rule_id: None,
+                    before: first.before.clone(),
+                    after: last.after.clone(),
+                    detected_at: report.detected_at.clone(),
+                    fingerprint: fingerprint(&group),
+                    diagnosis: format!("{base}:count={}", group.len()),
+                }
             };
             insert_event(&transaction, &scope_id, &account_id, &event)?;
             events.push(event);

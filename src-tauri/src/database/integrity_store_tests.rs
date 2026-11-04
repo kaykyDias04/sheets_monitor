@@ -816,3 +816,114 @@ fn baseline_history_is_bounded_and_pageable() {
         2
     );
 }
+#[test]
+fn suppresses_redundant_header_diff_and_consolidates_multi_cell_changes() {
+    let mut db = database();
+    let base = snapshot("dedup-base");
+    let baseline = approve(&mut db, &base, 0);
+
+    // 1. Protected header change: evaluate produces both violation and header_changed diff;
+    // persistence must emit only the violation while keeping raw report differences intact.
+    let mut broken = base.clone();
+    broken.id = "dedup-broken".into();
+    broken.sheets[0].regions[0].headers[1].header = "RenamedAmount".into();
+    db.save_structural_snapshot(&broken).unwrap();
+    let ctx = db
+        .content_observation("fixture_subject", "fixture_sheet", &base.scope_hash)
+        .unwrap();
+    let mut evaluated =
+        crate::integrity::evaluate(&baseline, ctx.snapshot.as_ref(), &broken, "dedup-check-1")
+            .unwrap();
+    assert!(evaluated
+        .differences
+        .iter()
+        .any(|d| d.kind == "header_changed"));
+    evaluated.previous_snapshot_id = Some(base.id.clone());
+    evaluated.observation_revision = ctx.revision;
+    let events = db.persist_integrity_report(&broken, &evaluated).unwrap();
+    assert_eq!(events.len(), 1);
+    assert_eq!(events[0].kind, "violation");
+    assert!(!events.iter().any(|e| e.kind == "header_changed"));
+    assert!(db
+        .latest_integrity_report("fixture_subject", "fixture_sheet", &base.scope_hash)
+        .unwrap()
+        .unwrap()
+        .differences
+        .iter()
+        .any(|d| d.kind == "header_changed"));
+
+    // 2. Restoring the protected header: must emit only recovered, not header_changed.
+    let mut restored = base.clone();
+    restored.id = "dedup-restored".into();
+    db.save_structural_snapshot(&restored).unwrap();
+    let ctx = db
+        .content_observation("fixture_subject", "fixture_sheet", &base.scope_hash)
+        .unwrap();
+    let prev = db
+        .previous_structural_snapshot("fixture_subject", "fixture_sheet", &base.scope_hash)
+        .unwrap();
+    let mut evaluated_recovery =
+        crate::integrity::evaluate(&baseline, ctx.snapshot.as_ref(), &restored, "dedup-check-2")
+            .unwrap();
+    evaluated_recovery.previous_snapshot_id = prev.map(|s| s.id);
+    evaluated_recovery.observation_revision = ctx.revision;
+    let recovered_events = db
+        .persist_integrity_report(&restored, &evaluated_recovery)
+        .unwrap();
+    assert_eq!(recovered_events.len(), 1);
+    assert_eq!(recovered_events[0].kind, "recovered");
+
+    // 3. Multiple value_changed differences in one check consolidate into 1 log entry.
+    let mut multi = restored.clone();
+    multi.id = "dedup-multi".into();
+    let second_cells: BTreeMap<String, String> = [
+        ("key".into(), fingerprint(&"second-key")),
+        ("amount".into(), fingerprint(&99)),
+    ]
+    .into();
+    multi.sheets[0].regions[0].rows[0]
+        .cell_hashes
+        .insert("amount".into(), fingerprint(&42));
+    multi.sheets[0].regions[0].rows[0].fingerprint =
+        fingerprint(&multi.sheets[0].regions[0].rows[0].cell_hashes);
+    multi.sheets[0].regions[0].rows.push(RowDigest {
+        row: 2,
+        key_hash: Some(fingerprint(&"second-key")),
+        fingerprint: fingerprint(&second_cells),
+        cell_hashes: second_cells.clone(),
+    });
+    db.save_structural_snapshot(&multi).unwrap();
+    let mut r = report(
+        &db,
+        &multi,
+        &baseline,
+        "dedup-check-3",
+        Vec::new(),
+        vec![
+            ContentDifference {
+                key: "sheet:0:region:data:record:a:column:amount".into(),
+                sheet_id: Some(0),
+                kind: "value_changed".into(),
+                category: "content".into(),
+                location: Some("row:1:column:amount".into()),
+                before: Some(fingerprint(&12)),
+                after: Some(fingerprint(&42)),
+                ambiguous: false,
+            },
+            ContentDifference {
+                key: "sheet:0:region:data:record:b:column:amount".into(),
+                sheet_id: Some(0),
+                kind: "value_changed".into(),
+                category: "content".into(),
+                location: Some("row:2:column:amount".into()),
+                before: Some(fingerprint(&10)),
+                after: Some(fingerprint(&99)),
+                ambiguous: false,
+            },
+        ],
+    );
+    let _ = &mut r;
+    let consolidated = db.persist_integrity_report(&multi, &r).unwrap();
+    assert_eq!(consolidated.len(), 1);
+    assert_eq!(consolidated[0].diagnosis, "value_changed:count=2");
+}

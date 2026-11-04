@@ -299,28 +299,52 @@ fn insert_operational(
 ) -> Result<()> {
     let eid = uuid::Uuid::new_v4().to_string();
     c.execute("INSERT INTO monitoring_operational_events(id,account_id,spreadsheet_id,kind,code,detected_ms) VALUES(?1,?2,?3,?4,?5,?6)",params![eid,aid,id,kind,code,now_ms]).map_err(sql)?;
-    let diagnosis = if kind == "recovered" {
-        "Monitoramento restabelecido; alterações intermediárias podem não ter sido observadas."
-    } else {
-        "Não foi possível concluir a verificação. Uma nova tentativa será realizada automaticamente."
-    };
+    let diagnosis = crate::management::events::normalize_notification_diagnosis(
+        "operational",
+        Some(kind),
+        Some(code),
+        "",
+    );
     c.execute("INSERT INTO notification_outbox(id,account_id,spreadsheet_id,operational_event_id,source,spreadsheet_name,severity,diagnosis,detected_at,created_ms,expires_ms,state,next_attempt_ms,group_id) SELECT 'operational:'||?1,?2,?3,?1,'operational',r.name,?4,?5,?6,?7,?7+CAST(COALESCE(json_extract(r.scope_json,'$.history_retention_days'),90) AS INTEGER)*86400000,CASE WHEN COALESCE((SELECT json_extract(preferences_json,'$.notifications_enabled') FROM management_preferences WHERE account_id=?2),0)=1 THEN 'pending' ELSE 'suppressed_by_preference' END,?7,'operational:'||?1 FROM registered_spreadsheets r WHERE r.account_id=?2 AND r.spreadsheet_id=?3",params![eid,aid,id,if kind=="recovered"{"info"}else{"warning"},diagnosis,chrono::DateTime::from_timestamp_millis(now_ms).ok_or_else(invalid)?.to_rfc3339(),now_ms]).map_err(sql)?;
     Ok(())
 }
 
-const NOTICE_SELECT:&str="SELECT id,COALESCE(integrity_event_id,operational_event_id),source,spreadsheet_id,spreadsheet_name,sheet_id,severity,diagnosis,detected_at,state,attempt_count,last_attempt_ms,submitted_ms,group_id,(SELECT json_extract(j.value,'$.title') FROM registered_spreadsheets r,json_each(r.tabs_json) j WHERE r.account_id=notification_outbox.account_id AND r.spreadsheet_id=notification_outbox.spreadsheet_id AND json_extract(j.value,'$.sheet_id')=notification_outbox.sheet_id LIMIT 1) FROM notification_outbox";
+const NOTICE_SELECT: &str = "SELECT id,COALESCE(integrity_event_id,operational_event_id),source,spreadsheet_id,spreadsheet_name,sheet_id,severity,diagnosis,detected_at,state,attempt_count,last_attempt_ms,submitted_ms,group_id,COALESCE((SELECT json_extract(j.value,'$.title') FROM registered_spreadsheets r,json_each(r.tabs_json) j WHERE r.account_id=notification_outbox.account_id AND r.spreadsheet_id=notification_outbox.spreadsheet_id AND json_extract(j.value,'$.sheet_id')=notification_outbox.sheet_id LIMIT 1),(SELECT json_extract(j.value,'$.title') FROM integrity_events e JOIN integrity_scopes s ON s.id=e.scope_id AND s.account_id=e.account_id JOIN baseline_versions b ON b.id=s.active_baseline_id AND b.account_id=e.account_id JOIN structural_snapshots ss ON ss.id=b.snapshot_id AND ss.account_id=e.account_id,json_each(ss.snapshot_json,'$.sheets') j WHERE e.account_id=notification_outbox.account_id AND e.event_id=notification_outbox.integrity_event_id AND json_extract(j.value,'$.sheet_id')=notification_outbox.sheet_id LIMIT 1)),COALESCE((SELECT json_extract(e.event_json,'$.kind') FROM integrity_events e WHERE e.account_id=notification_outbox.account_id AND e.event_id=notification_outbox.integrity_event_id LIMIT 1),(SELECT m.kind FROM monitoring_operational_events m WHERE m.account_id=notification_outbox.account_id AND m.id=notification_outbox.operational_event_id LIMIT 1)),(SELECT m.code FROM monitoring_operational_events m WHERE m.account_id=notification_outbox.account_id AND m.id=notification_outbox.operational_event_id LIMIT 1) FROM notification_outbox";
 fn notice(r: &rusqlite::Row<'_>) -> rusqlite::Result<NotificationRecord> {
+    let source: String = r.get(2)?;
+    let severity: String = r.get(6)?;
+    let raw_diagnosis: String = r.get(7)?;
+    let detected_at: String = r.get(8)?;
+    let event_kind: Option<String> = r.get(15)?;
+    let operational_code: Option<String> = r.get(16)?;
+    let event_type_label = crate::management::events::notification_event_label(
+        &source,
+        event_kind.as_deref(),
+        &severity,
+        &raw_diagnosis,
+    )
+    .to_owned();
+    let diagnosis = crate::management::events::normalize_notification_diagnosis(
+        &source,
+        event_kind.as_deref(),
+        operational_code.as_deref(),
+        &raw_diagnosis,
+    );
+    let formatted_detected_at = crate::management::events::format_local_datetime(&detected_at);
     Ok(NotificationRecord {
         id: r.get(0)?,
         event_id: r.get(1)?,
-        source: r.get(2)?,
+        source,
         spreadsheet_id: r.get(3)?,
         spreadsheet_name: r.get(4)?,
         sheet_id: r.get(5)?,
         sheet_title: r.get(14)?,
-        severity: r.get(6)?,
-        diagnosis: r.get(7)?,
-        detected_at: r.get(8)?,
+        severity,
+        event_kind,
+        event_type_label,
+        diagnosis,
+        detected_at,
+        formatted_detected_at,
         state: r.get(9)?,
         attempt_count: r.get(10)?,
         last_attempt_ms: r.get(11)?,

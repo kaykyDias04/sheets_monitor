@@ -8,6 +8,7 @@ import type {
   MonitoringStatus,
   NotificationRecord,
   NativeReadiness,
+  UpdaterStatus,
 } from "@/types/monitoring";
 
 function command<T>(name: string, args: Record<string, unknown> = {}): Promise<T> {
@@ -40,8 +41,15 @@ export const getNotificationReadiness = () =>
 export const setStartup = (enabled: boolean) =>
   command<DesktopStatus>("desktop_set_startup", { enabled });
 export const exitDesktop = () => command<void>("desktop_exit");
+export const getUpdaterStatus = () => command<UpdaterStatus>("updater_get_status");
+export const checkForUpdates = () => command<UpdaterStatus>("updater_check");
+export const dismissUpdate = (version: string) =>
+  command<UpdaterStatus>("updater_dismiss", { version });
+export const applyUpdateAndRestart = () => command<void>("updater_apply_and_restart");
 export const onMonitoringChanged = (callback: () => void) => listen("monitoring:changed", callback);
 export const onDesktopNavigate = (callback: (target: string) => void) =>
   listen<string>("desktop:navigate", (event) => callback(event.payload));
 export const onNotificationOpen = (callback: (id: string) => void) =>
   listen<string>("notification:open", (event) => callback(event.payload));
+export const onUpdaterStateChanged = (callback: (status: UpdaterStatus) => void) =>
+  listen<UpdaterStatus>("updater-state-changed", (event) => callback(event.payload));

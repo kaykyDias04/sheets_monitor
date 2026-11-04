@@ -183,7 +183,7 @@ check('Sprint 05 scope and modular structure', () => {
     assert(fs.statSync(path.join(root,directory)).isDirectory(), `Missing module ${directory}`);
   }
   const app = read('src-tauri/src/app.rs');
-  assert((app.match(/#\[tauri::command\]/g) || []).length === 54 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
+  assert((app.match(/#\[tauri::command\]/g) || []).length === 59 && app.includes('foundation_get_dashboard') && app.includes('foundation_save_settings'), 'Unexpected native command surface');
   const cargo = read('src-tauri/Cargo.toml');
   assert(/^windows\s*=.*UI_Notifications/m.test(cargo), 'Authorized Windows notification adapter is missing');
   assert(/^native-probe\s*=\s*\[\]/m.test(cargo) && !/^default\s*=.*native-probe/m.test(cargo), 'Synthetic native probe must remain opt-in');

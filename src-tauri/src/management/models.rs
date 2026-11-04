@@ -125,6 +125,10 @@ pub struct EventFilter {
     pub status: Option<String>,
     pub category: Option<String>,
     #[serde(default)]
+    pub event_type: Option<String>,
+    #[serde(default)]
+    pub issue_status: Option<String>,
+    #[serde(default)]
     pub script_only: bool,
     #[serde(default)]
     pub query: String,
@@ -132,6 +136,18 @@ pub struct EventFilter {
     pub offset: u32,
     #[serde(default = "page_size")]
     pub limit: u32,
+}
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ExportEventsInput {
+    pub filter: EventFilter,
+    pub format: String,
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct ExportEventsResult {
+    pub exported_count: u64,
+    pub file_path: Option<String>,
+    pub format: String,
 }
 #[derive(Serialize)]
 pub struct Activity {
@@ -141,6 +157,11 @@ pub struct Activity {
     pub sheet_title: Option<String>,
     pub status: String,
     pub removed: bool,
+    pub event_type: String,
+    pub tone: String,
+    pub issue_status: Option<String>,
+    pub description: String,
+    pub formatted_detected_at: String,
 }
 #[derive(Serialize)]
 pub struct ScriptSummary {

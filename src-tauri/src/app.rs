@@ -18,6 +18,9 @@ use crate::monitoring::{
 };
 use crate::notifications::native::NativeNotifier;
 use crate::notifications::NotificationService;
+use crate::updater::{
+    detect_current_install_mode, HttpsReleaseTransport, UpdaterService, UpdaterStatus,
+};
 use serde::Serialize;
 use serde_json::{json, Value};
 use std::sync::Arc;
@@ -29,6 +32,7 @@ struct FoundationState {
     integration: Option<IntegrationRuntime>,
     monitoring: Option<Arc<MonitoringService>>,
     notifications: Option<Arc<NotificationService>>,
+    updater: Option<Arc<UpdaterService>>,
 }
 
 impl FoundationState {
@@ -838,6 +842,60 @@ async fn list_change_events(
 }
 
 #[tauri::command]
+async fn export_change_events(
+    app: tauri::AppHandle,
+    state: State<'_, FoundationState>,
+    input: crate::management::ExportEventsInput,
+) -> Result<EngineEnvelope<crate::management::ExportEventsResult>, CommandError> {
+    let rt = runtime(&state)?;
+    let destination = app
+        .path()
+        .download_dir()
+        .or_else(|_| app.path().document_dir())
+        .or_else(|_| app.path().app_data_dir().map(|d| d.join("exports")))
+        .map_err(|_| CommandError::local())?;
+    blocking(move || rt.export_change_events(input, &destination)).await
+}
+
+#[tauri::command]
+fn updater_get_status(state: State<'_, FoundationState>) -> Result<UpdaterStatus, CommandError> {
+    let updater = state.updater.as_ref().ok_or_else(CommandError::local)?;
+    Ok(updater.status())
+}
+
+#[tauri::command]
+async fn updater_check(state: State<'_, FoundationState>) -> Result<UpdaterStatus, CommandError> {
+    let updater = state.updater.clone().ok_or_else(CommandError::local)?;
+    blocking(move || Ok(updater.check_for_updates(true))).await
+}
+
+#[tauri::command]
+fn updater_dismiss(
+    state: State<'_, FoundationState>,
+    version: String,
+) -> Result<UpdaterStatus, CommandError> {
+    let updater = state.updater.as_ref().ok_or_else(CommandError::local)?;
+    updater.dismiss_version(&version)
+}
+
+#[tauri::command]
+async fn updater_apply_and_restart(
+    state: State<'_, FoundationState>,
+    shell: State<'_, DesktopShell>,
+) -> Result<(), CommandError> {
+    let updater = state.updater.clone().ok_or_else(CommandError::local)?;
+    let db_path = state.database_path.clone();
+    let shell = shell.inner().clone();
+    blocking(move || {
+        let installer_path = updater.prepare_install(&db_path)?;
+        shell
+            .request_exit_for_update(installer_path)
+            .map_err(|_| CommandError::local())
+    })
+    .await
+}
+
+#[tauri::command]
 async fn list_associated_scripts(
     state: State<'_, FoundationState>,
     input: crate::management::SpreadsheetQuery,
@@ -950,11 +1008,30 @@ pub fn run() {
             ));
             let notifications = NotificationService::start(rt.clone(), sink, changed.clone());
             let monitoring = MonitoringService::start(rt.clone(), changed);
+            let current_version = app.package_info().version.to_string();
+            let updater = HttpsReleaseTransport::new(&current_version)
+                .ok()
+                .map(|transport| {
+                    let updater_app = app.handle().clone();
+                    UpdaterService::new(
+                        directory.clone(),
+                        current_version,
+                        detect_current_install_mode(),
+                        Arc::new(transport),
+                        Arc::new(move |status| {
+                            let _ = updater_app.emit("updater-state-changed", status);
+                        }),
+                    )
+                });
+            if let Some(svc) = &updater {
+                svc.spawn_startup_check(Duration::from_secs(4));
+            }
             app.manage(FoundationState {
                 database_path: rt.database_path.clone(),
                 integration: Some(rt.clone()),
                 monitoring: Some(monitoring.clone()),
                 notifications: Some(notifications.clone()),
+                updater,
             });
             let action_app = app.handle().clone();
             let shell = crate::desktop::install(
@@ -1028,6 +1105,11 @@ pub fn run() {
             run_spreadsheet_check,
             get_spreadsheet_diagnostics,
             list_change_events,
+            export_change_events,
+            updater_get_status,
+            updater_check,
+            updater_dismiss,
+            updater_apply_and_restart,
             list_associated_scripts,
             list_baseline_versions,
             compare_baseline_versions,
@@ -1068,6 +1150,7 @@ mod tests {
             integration: None,
             monitoring: None,
             notifications: None,
+            updater: None,
         };
         state.database().unwrap().seed_demo().unwrap();
         let dashboard = state.dashboard().unwrap();
