@@ -8,6 +8,10 @@ import {
   SearchCheck,
   History,
   Save,
+  Sparkles,
+  CheckCircle2,
+  CircleDot,
+  LoaderCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -33,9 +37,13 @@ interface Props {
   comparison: BaselineComparison | null;
   versionOffset: number;
   disabled: boolean;
+  busy?: string | null;
+  error?: string;
+  notice?: string;
   defaultHistoryDays?: number;
   initialTab?: string;
   onTabChange?: (tab: string) => void;
+  onClearFeedback?: () => void;
   onPreview: () => void;
   onInvalidate: () => void;
   onApprove: (preview: OperationalPreview) => void;
@@ -53,6 +61,7 @@ interface Props {
   onRemove: (history: "preserve" | "delete_activity") => void;
   onAssociateScript: (scriptId: string) => void;
 }
+
 export function SpreadsheetDetails({
   data,
   preview,
@@ -60,9 +69,13 @@ export function SpreadsheetDetails({
   comparison,
   versionOffset,
   disabled,
+  busy = null,
+  error = "",
+  notice = "",
   defaultHistoryDays = 90,
   initialTab = "tabs",
   onTabChange,
+  onClearFeedback,
   onPreview,
   onInvalidate,
   onApprove,
@@ -86,25 +99,38 @@ export function SpreadsheetDetails({
     setTabState(next);
     onTabChange?.(next);
   };
-  const [ruleProblems, setRuleProblems] = useState<string[]>([]);
-  const problemsRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (ruleProblems.length === 0) return;
-    problemsRef.current?.scrollIntoView?.({ block: "center" });
-    problemsRef.current?.focus();
-  }, [ruleProblems]);
   const [selected, setSelected] = useState(row.selected_sheet_ids);
   const [scope, setScope] = useState(() =>
     scopeForTabs(row.scope, row.selected_sheet_ids, defaultHistoryDays),
   );
+  const [ruleProblems, setRuleProblems] = useState<string[]>([]);
+  const problemsRef = useRef<HTMLDivElement>(null);
+  const inlineFeedbackRef = useRef<HTMLDivElement>(null);
   const [removeOpen, setRemoveOpen] = useState(false);
   const [removeConfirmed, setRemoveConfirmed] = useState(false);
   const [historyChoice, setHistoryChoice] = useState<"preserve" | "delete_activity">("preserve");
   const [scriptId, setScriptId] = useState("");
+
+  useEffect(() => {
+    if (ruleProblems.length === 0) return;
+    problemsRef.current?.scrollIntoView?.({ block: "nearest" });
+    problemsRef.current?.focus();
+  }, [ruleProblems]);
+
+  useEffect(() => {
+    if (!error && !notice) return;
+    inlineFeedbackRef.current?.scrollIntoView?.({ block: "nearest" });
+  }, [error, notice]);
+
   const tabsDirty =
     JSON.stringify([...selected].sort((a, b) => a - b)) !==
     JSON.stringify([...row.selected_sheet_ids].sort((a, b) => a - b));
   const rulesDirty = JSON.stringify(scope) !== JSON.stringify(row.scope);
+
+  const tabsReady = row.selected_sheet_ids.length > 0 && !tabsDirty;
+  const rulesReady = tabsReady && row.scope !== null && !rulesDirty;
+  const baselineReady = rulesReady && row.baseline_version !== null;
+
   const tabNames = [
     ["tabs", "Abas"],
     ["rules", "Regras de proteção"],
@@ -112,12 +138,36 @@ export function SpreadsheetDetails({
     ["diagnostics", "Diagnósticos"],
     ["scripts", "Apps Script"],
   ];
+
   function select(ids: number[]) {
     setSelected(ids);
     setScope(scopeForTabs(scope, ids, defaultHistoryDays));
     setRuleProblems([]);
     onInvalidate();
   }
+
+  const inlineFeedback =
+    busy || error || notice ? (
+      <div className="op-inline-feedback" ref={inlineFeedbackRef}>
+        {error && (
+          <div className="feedback error" role="alert">
+            {error}
+          </div>
+        )}
+        {notice && (
+          <div className="feedback success" role="status">
+            {notice}
+          </div>
+        )}
+        {busy && (
+          <div className="op-progress" role="status">
+            <LoaderCircle className="animate-spin motion-reduce:animate-none" size={16} />
+            {busy}…
+          </div>
+        )}
+      </div>
+    ) : null;
+
   return (
     <div className="op-stack">
       <Card className="op-detail-heading">
@@ -198,8 +248,61 @@ export function SpreadsheetDetails({
               Há ajustes locais não salvos. Atualizar os dados descarta esses ajustes.
             </p>
           )}
+
+          <div className="op-setup-steps" aria-label="Etapas para ativar o monitoramento">
+            <button
+              type="button"
+              className={`op-setup-step ${tab === "tabs" ? "current" : ""} ${tabsReady ? "done" : ""}`}
+              onClick={() => setTab("tabs")}
+            >
+              {tabsReady ? <CheckCircle2 size={16} /> : <CircleDot size={16} />}
+              <div>
+                <strong>Passo 1 · Escolher abas</strong>
+                <small>
+                  {tabsDirty
+                    ? "Salve a seleção de abas"
+                    : tabsReady
+                      ? `${row.selected_sheet_ids.length} aba(s) salva(s)`
+                      : "Marque as abas que deseja proteger"}
+                </small>
+              </div>
+            </button>
+            <button
+              type="button"
+              className={`op-setup-step ${tab === "rules" ? "current" : ""} ${rulesReady ? "done" : ""}`}
+              onClick={() => setTab("rules")}
+            >
+              {rulesReady ? <CheckCircle2 size={16} /> : <CircleDot size={16} />}
+              <div>
+                <strong>Passo 2 · Definir proteção</strong>
+                <small>
+                  {rulesDirty && row.selected_sheet_ids.length > 0
+                    ? "Clique em Salvar regras de proteção"
+                    : rulesReady
+                      ? "Regras salvas"
+                      : "Informe os cabeçalhos importantes"}
+                </small>
+              </div>
+            </button>
+            <button
+              type="button"
+              className={`op-setup-step ${tab === "baselines" ? "current" : ""} ${baselineReady ? "done" : ""}`}
+              onClick={() => setTab("baselines")}
+            >
+              {baselineReady ? <CheckCircle2 size={16} /> : <CircleDot size={16} />}
+              <div>
+                <strong>Passo 3 · Aprovar referência</strong>
+                <small>
+                  {baselineReady
+                    ? `Pronta para monitorar (v${row.baseline_version})`
+                    : "Capture e aprove a estrutura"}
+                </small>
+              </div>
+            </button>
+          </div>
         </CardContent>
       </Card>
+
       <nav className="op-detail-nav" aria-label="Seções da planilha">
         {tabNames.map(([key, label]) => (
           <button
@@ -211,13 +314,14 @@ export function SpreadsheetDetails({
           </button>
         ))}
       </nav>
+
       {tab === "tabs" && (
         <Card>
           <CardHeader>
             <CardTitle>Abas monitoradas</CardTitle>
             <CardDescription>
-              Selecione as abas que compõem a proteção. As preferências usam a identidade da aba,
-              mesmo quando seu nome muda.
+              Marque apenas as abas que precisam de proteção e clique em &ldquo;Salvar seleção de
+              abas&rdquo;.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -249,6 +353,7 @@ export function SpreadsheetDetails({
                 Salvar seleção de abas
               </Button>
             </div>
+            {inlineFeedback}
             <div className="op-tab-grid">
               {row.tabs.map((item) => (
                 <label className="op-tab-option" key={item.sheet_id}>
@@ -307,23 +412,26 @@ export function SpreadsheetDetails({
           </CardContent>
         </Card>
       )}
+
       {tab === "rules" && (
         <Card>
           <CardHeader>
             <CardTitle>Regras de proteção</CardTitle>
             <CardDescription>
-              Proteja cabeçalhos, ordem, fórmulas, registros e dependências. A referência deve ser
-              aprovada novamente após uma alteração legítima de regras.
+              Escolha de forma simples o que não pode quebrar nas suas abas: use a leitura
+              automática de cabeçalhos ou preencha apenas as colunas principais.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="op-notice">
-              <strong>Sugestão inicial a partir dos cabeçalhos reais</strong>
-              <p>
-                Leia somente a primeira linha, até oito colunas de cada aba selecionada. A sugestão
-                delimita até 50 linhas por região; revise e amplie se necessário. Fórmulas não são
-                protegidas automaticamente.
-              </p>
+            <div className="op-suggest-banner">
+              <div>
+                <strong>Jeito mais fácil: buscar os cabeçalhos reais da planilha</strong>
+                <p>
+                  Lê a primeira linha das abas selecionadas no Google Sheets (até 8 colunas e 50
+                  linhas iniciais por aba, para até 30 abas) e monta o rascunho automaticamente.
+                  Depois basta conferir e clicar em &ldquo;Salvar regras de proteção&rdquo;.
+                </p>
+              </div>
               <Button
                 type="button"
                 variant="outline"
@@ -338,22 +446,22 @@ export function SpreadsheetDetails({
                   });
                 }}
               >
+                <Sparkles size={16} />
                 Sugerir regras para abas selecionadas
               </Button>
-              <p className="op-hint">
-                Substitui o rascunho local de regiões e colunas. Nenhuma regra é salva e nenhuma
-                referência é aprovada automaticamente. Cabeçalhos vazios ou ambíguos exigem
-                configuração manual. A sugestão é limitada a 30 abas por consulta; seleções maiores
-                podem ser configuradas manualmente, respeitando o limite de células do escopo.
-              </p>
             </div>
+
             <form
               noValidate
               onSubmit={(e) => {
                 e.preventDefault();
                 const found = scopeFormProblems(scope, row.tabs);
                 setRuleProblems(found);
-                if (found.length === 0) onSaveRules(scope);
+                if (found.length > 0) {
+                  onClearFeedback?.();
+                  return;
+                }
+                onSaveRules(scope);
               }}
             >
               <ScopeEditor
@@ -380,7 +488,7 @@ export function SpreadsheetDetails({
               </div>
               {ruleProblems.length > 0 && (
                 <div className="feedback error" role="alert" ref={problemsRef} tabIndex={-1}>
-                  <strong>As regras não foram salvas. Revise os campos abaixo:</strong>
+                  <strong>As regras ainda não foram salvas. Ajuste os itens abaixo:</strong>
                   <ul>
                     {ruleProblems.slice(0, 10).map((problem) => (
                       <li key={problem}>{problem}</li>
@@ -391,16 +499,25 @@ export function SpreadsheetDetails({
                   )}
                 </div>
               )}
-              {tabsDirty && <p className="op-hint">Salve primeiro a seleção de abas.</p>}
-
-              <p className="op-hint">
-                A severidade é definida pela criticidade da região ou do script. Dependências de
-                fórmulas e scripts são derivadas pelo motor, sem comparações no frontend.
-              </p>
+              {inlineFeedback}
+              {tabsDirty && (
+                <p className="op-notice op-warning">
+                  Você alterou as abas selecionadas, mas ainda não salvou. Volte em
+                  &ldquo;Abas&rdquo; e clique em &ldquo;Salvar seleção de abas&rdquo; antes de
+                  salvar as regras.
+                </p>
+              )}
+              {!tabsDirty && scope.sheets.length > 0 && !rulesDirty && row.scope !== null && (
+                <p className="op-hint">
+                  As regras exibidas já estão salvas. Edite qualquer campo para habilitar um novo
+                  salvamento ou avance para &ldquo;Referências&rdquo; para capturar e aprovar.
+                </p>
+              )}
             </form>
           </CardContent>
         </Card>
       )}
+
       {tab === "baselines" && (
         <BaselineFlow
           row={row}
@@ -410,13 +527,16 @@ export function SpreadsheetDetails({
           offset={versionOffset}
           disabled={disabled}
           dirty={tabsDirty || rulesDirty}
+          feedback={inlineFeedback}
           onCapture={onPreview}
           onApprove={onApprove}
+          onEditRules={() => setTab("rules")}
           onPage={onVersionPage}
           onCompare={onCompare}
           onComparisonClear={onComparisonClear}
         />
       )}
+
       {tab === "diagnostics" && (
         <Card>
           <CardHeader>
@@ -426,6 +546,7 @@ export function SpreadsheetDetails({
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {inlineFeedback}
             {data.report ? (
               <>
                 <div className="op-section-heading">
@@ -509,6 +630,7 @@ export function SpreadsheetDetails({
           </CardContent>
         </Card>
       )}
+
       {tab === "scripts" && (
         <div className="op-stack">
           <Card>
@@ -520,6 +642,7 @@ export function SpreadsheetDetails({
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {inlineFeedback}
               <form
                 className="op-script-association"
                 onSubmit={(e) => {
@@ -553,6 +676,7 @@ export function SpreadsheetDetails({
           />
         </div>
       )}
+
       <Dialog open={removeOpen} onOpenChange={setRemoveOpen}>
         <DialogContent>
           <DialogHeader>

@@ -2832,3 +2832,209 @@ button.op-file-link:hover strong {
     flex-direction: column;
   }
 }
+
+/* Guided 3-step spreadsheet setup and didactic protection rules */
+.op-setup-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.op-setup-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--background);
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+.op-setup-step:hover {
+  border-color: var(--primary);
+}
+.op-setup-step.current {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.op-setup-step.done svg {
+  color: #15803d;
+}
+.op-setup-step svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--muted-foreground);
+}
+.op-setup-step div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.op-setup-step strong {
+  font-size: 12px;
+  font-weight: 650;
+}
+.op-setup-step small {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.op-inline-feedback {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+}
+.op-suggest-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--background);
+}
+.op-suggest-banner strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.op-suggest-banner p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  max-width: 68ch;
+}
+.op-scope-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+.op-scope-summary.over-budget {
+  border-color: var(--destructive);
+}
+.op-scope-summary .op-hint {
+  margin: 4px 0 0;
+}
+.op-scope-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+}
+.op-scope-metrics span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--background);
+}
+.op-scope-metrics .metric-danger {
+  border-color: var(--destructive);
+  color: var(--destructive);
+}
+.op-step-block {
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.op-step-block:first-of-type {
+  padding-top: 4px;
+  margin-top: 4px;
+  border-top: 0;
+}
+.op-step-block h4 {
+  margin: 0 0 8px;
+}
+.op-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.op-preset-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--background);
+  color: var(--foreground);
+  text-align: left;
+  cursor: pointer;
+}
+.op-preset-card:hover {
+  border-color: var(--primary);
+}
+.op-preset-card.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.op-preset-card svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--primary);
+}
+.op-preset-card div {
+  display: grid;
+  gap: 4px;
+}
+.op-preset-card strong {
+  font-size: 12px;
+  font-weight: 650;
+}
+.op-preset-card small {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+.op-paste-helper {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  background: var(--background);
+}
+.op-paste-helper summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.op-paste-body {
+  margin-top: 10px;
+}
+.op-paste-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.op-paste-row input {
+  flex: 1 1 240px;
+}
+.op-advanced-sections {
+  display: grid;
+  gap: 16px;
+  margin-top: 14px;
+}
+@media (max-width: 900px) {
+  .op-setup-steps,
+  .op-preset-grid {
+    grid-template-columns: 1fr;
+  }
+}

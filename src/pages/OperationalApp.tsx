@@ -3,7 +3,6 @@ import {
   Activity as ActivityIcon,
   LayoutDashboard,
   FileSpreadsheet,
-  ListChecks,
   Settings2,
   ShieldCheck,
   ChevronRight,
@@ -55,15 +54,15 @@ import { GooglePage } from "./GooglePage";
 import { IntegrityPage } from "./IntegrityPage";
 import { MonitoringWorkspace } from "./MonitoringWorkspace";
 
-type Route = "overview" | "sheets" | "details" | "activities" | "rules" | "settings";
+type Route = "overview" | "sheets" | "details" | "activities" | "settings";
 const routes = [
   { id: "overview", label: "Visão geral", icon: LayoutDashboard },
   { id: "sheets", label: "Planilhas", icon: FileSpreadsheet },
   { id: "details", label: "Detalhes da planilha", icon: Eye },
   { id: "activities", label: "Atividades", icon: ActivityIcon },
-  { id: "rules", label: "Regras e baselines", icon: ListChecks },
   { id: "settings", label: "Configurações", icon: Settings2 },
 ] as const;
+
 const initialDiscovery: DiscoveryQuery = {
   search: "",
   order: "name",
@@ -72,11 +71,17 @@ const initialDiscovery: DiscoveryQuery = {
   page_size: 50,
 };
 const initialEvents: EventFilter = { offset: 0, limit: 25, query: "", script_only: false };
+
 function identity(state: IntegrationState | null) {
   return state?.auth.account?.subject ?? null;
 }
 function sameSession(a: IntegrationState, b: IntegrationState) {
   return a.generation === b.generation && identity(a) === identity(b);
+}
+function isConflictCode(error: unknown) {
+  if (!error || typeof error !== "object") return false;
+  const code = (error as Record<string, unknown>).code;
+  return code === "configuration_conflict" || code === "integrity_baseline_conflict";
 }
 
 export function OperationalApp() {
@@ -100,20 +105,24 @@ export function OperationalApp() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [advanced, setAdvanced] = useState<"google" | "engine" | null>(null);
+
   const current = useRef<IntegrationState | null>(null);
+  const selectedIdRef = useRef<string | null>(null);
+  selectedIdRef.current = selectedId;
   const mounted = useRef(true);
   const locked = useRef(false);
+  const bgRefresh = useRef<Promise<void> | null>(null);
   const pendingRefresh = useRef(false);
-  const refreshRef = useRef<() => Promise<void>>(async () => undefined);
+  const silentRefreshRef = useRef<() => Promise<void>>(async () => undefined);
   const epoch = useRef(0);
   const detailTab = useRef<string | null>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const noticeRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    // O resultado de salvar aparece no topo da página; rola até ele para o usuário que está no fim de
-    // um formulário longo não concluir que o botão não fez nada.
     (feedbackRef.current ?? noticeRef.current)?.scrollIntoView?.({ block: "nearest" });
   }, [error, notice]);
+
   const clearPrivate = useCallback(() => {
     setSummary(null);
     setPreferences(null);
@@ -130,7 +139,9 @@ export function OperationalApp() {
     setEventFilter(initialEvents);
     setUrl("");
     setAdvanced(null);
+    detailTab.current = null;
   }, []);
+
   const acceptSession = useCallback(
     (next: IntegrationState) => {
       if (current.current && !sameSession(current.current, next)) {
@@ -142,6 +153,158 @@ export function OperationalApp() {
     },
     [clearPrivate],
   );
+
+  /**
+   * Recarrega painel, preferências e (quando aberta) a planilha atual dentro de uma operação que
+   * já detém `locked.current = true`, impedindo corridas com eventos `monitoring:changed`.
+   */
+  const reloadUnderLock = useCallback(
+    async (expected: IntegrationState, targetSpreadsheetId: string | null) => {
+      const [dashboard, prefs] = await Promise.all([api.getDashboard(), api.getPreferences()]);
+      let detailPair: {
+        diagnosis: EngineEnvelope<Diagnostics>;
+        history: EngineEnvelope<Page<BaselineSummary>>;
+      } | null = null;
+      if (targetSpreadsheetId) {
+        const [diagnosis, history] = await Promise.all([
+          api.diagnostics(targetSpreadsheetId),
+          api.listBaselines(targetSpreadsheetId, 0),
+        ]);
+        detailPair = { diagnosis, history };
+      }
+      const after = await getIntegrationState();
+      if (!mounted.current) return false;
+      const envelopes = [
+        dashboard,
+        prefs,
+        ...(detailPair ? [detailPair.diagnosis, detailPair.history] : []),
+      ];
+      if (
+        !sameSession(expected, after) ||
+        !after.auth.account ||
+        envelopes.some(
+          (env) => env.generation !== after.generation || env.account_subject !== identity(after),
+        )
+      ) {
+        acceptSession(after);
+        clearPrivate();
+        throw { code: "stale_session" };
+      }
+      acceptSession(after);
+      setSummary(dashboard.data);
+      setPreferences(prefs.data);
+      if (detailPair && selectedIdRef.current === targetSpreadsheetId) {
+        setDetail(detailPair.diagnosis.data);
+        setVersions(detailPair.history.data.items);
+        setVersionOffset(0);
+      }
+      return true;
+    },
+    [acceptSession, clearPrivate],
+  );
+
+  const handleFailureUnderLock = useCallback(
+    async (failure: unknown, targetSpreadsheetId: string | null) => {
+      if (!mounted.current) return;
+      if (isConflictCode(failure)) {
+        try {
+          const latest = await getIntegrationState();
+          if (!mounted.current) return;
+          acceptSession(latest);
+          if (latest.auth.account) {
+            setPreview(null);
+            setComparison(null);
+            await reloadUnderLock(latest, targetSpreadsheetId);
+            pendingRefresh.current = false;
+            if (mounted.current) {
+              setError(
+                "Os dados da planilha foram atualizados porque mudaram em outra operação. Revise os campos e tente novamente.",
+              );
+            }
+            return;
+          }
+        } catch {
+          /* Fall back to standard error handling below. */
+        }
+      }
+      setError(api.managementError(failure));
+      try {
+        acceptSession(await getIntegrationState());
+      } catch {
+        /* Keep the original safe error. */
+      }
+    },
+    [acceptSession, reloadUnderLock],
+  );
+
+  /**
+   * Atualização silenciosa disparada por `monitoring:changed`: não bloqueia cliques do usuário
+   * nem limpa mensagens de confirmação ou erro visíveis na tela.
+   */
+  const silentRefresh = useCallback(async () => {
+    if (!desktop || !mounted.current) return;
+    if (locked.current) {
+      pendingRefresh.current = true;
+      return;
+    }
+    if (bgRefresh.current) {
+      pendingRefresh.current = true;
+      return bgRefresh.current;
+    }
+    const task = (async () => {
+      try {
+        do {
+          pendingRefresh.current = false;
+          if (locked.current || !mounted.current) {
+            if (locked.current) pendingRefresh.current = true;
+            return;
+          }
+          const before = await getIntegrationState();
+          if (!mounted.current || locked.current) {
+            if (locked.current) pendingRefresh.current = true;
+            return;
+          }
+          acceptSession(before);
+          if (!before.auth.account) {
+            clearPrivate();
+            return;
+          }
+          const [dashboard, prefs] = await Promise.all([api.getDashboard(), api.getPreferences()]);
+          const after = await getIntegrationState();
+          if (!mounted.current || locked.current) {
+            if (locked.current) pendingRefresh.current = true;
+            return;
+          }
+          if (
+            !sameSession(before, after) ||
+            !after.auth.account ||
+            dashboard.generation !== after.generation ||
+            prefs.generation !== after.generation ||
+            dashboard.account_subject !== identity(after) ||
+            prefs.account_subject !== identity(after)
+          ) {
+            acceptSession(after);
+            if (!after.auth.account) clearPrivate();
+            continue;
+          }
+          acceptSession(after);
+          setSummary(dashboard.data);
+          setPreferences(prefs.data);
+        } while (pendingRefresh.current && mounted.current && !locked.current);
+      } catch {
+        /* Background refresh errors do not clobber foreground UI state. */
+      } finally {
+        bgRefresh.current = null;
+      }
+    })();
+    bgRefresh.current = task;
+    return task;
+  }, [acceptSession, clearPrivate]);
+
+  useEffect(() => {
+    silentRefreshRef.current = silentRefresh;
+  }, [silentRefresh]);
+
   const run = useCallback(
     async <T,>(
       label: string,
@@ -151,10 +314,12 @@ export function OperationalApp() {
       if (locked.current || !desktop) return false;
       locked.current = true;
       const request = epoch.current;
+      const targetId = selectedIdRef.current;
       setBusy(label);
       setError("");
       setNotice("");
       try {
+        if (bgRefresh.current) await bgRefresh.current;
         const before = await getIntegrationState();
         if (!mounted.current) return false;
         if (current.current && !sameSession(current.current, before)) {
@@ -181,26 +346,20 @@ export function OperationalApp() {
         apply(result.data);
         return true;
       } catch (e) {
-        if (mounted.current) {
-          setError(api.managementError(e));
-          try {
-            acceptSession(await getIntegrationState());
-          } catch {
-            /* Keep the original safe error. */
-          }
-        }
+        await handleFailureUnderLock(e, targetId);
         return false;
       } finally {
         locked.current = false;
         if (mounted.current) setBusy(null);
         if (pendingRefresh.current && mounted.current) {
           pendingRefresh.current = false;
-          void Promise.resolve().then(() => refreshRef.current());
+          void Promise.resolve().then(() => silentRefreshRef.current());
         }
       }
     },
-    [acceptSession, clearPrivate],
+    [acceptSession, clearPrivate, handleFailureUnderLock],
   );
+
   const refresh = useCallback(async () => {
     if (!desktop) return;
     if (locked.current) {
@@ -239,9 +398,7 @@ export function OperationalApp() {
       }
     }
   }, [acceptSession, clearPrivate, run]);
-  useEffect(() => {
-    refreshRef.current = refresh;
-  }, [refresh]);
+
   useEffect(() => {
     mounted.current = true;
     void Promise.resolve().then(() => {
@@ -251,6 +408,7 @@ export function OperationalApp() {
       mounted.current = false;
     };
   }, [refresh]);
+
   useEffect(() => {
     const theme = preferences?.theme ?? "system";
     document.documentElement.dataset.appearance = theme;
@@ -258,10 +416,12 @@ export function OperationalApp() {
       delete document.documentElement.dataset.appearance;
     };
   }, [preferences?.theme]);
+
   function invalidatePreview() {
     setPreview(null);
     setComparison(null);
   }
+
   function navigate(next: Route) {
     if (locked.current) return;
     epoch.current++;
@@ -283,6 +443,7 @@ export function OperationalApp() {
       } else void refresh();
     }
   }
+
   async function sessionAction(work: () => Promise<IntegrationState>, success: string) {
     if (locked.current || !desktop) return;
     locked.current = true;
@@ -292,6 +453,7 @@ export function OperationalApp() {
     setError("");
     setNotice("");
     try {
+      if (bgRefresh.current) await bgRefresh.current;
       acceptSession(await work());
       setNotice(success);
     } catch (e) {
@@ -307,17 +469,19 @@ export function OperationalApp() {
     }
     await refresh();
   }
-  async function loadDetail(id: string, destination: Route = "details") {
+
+  async function loadDetail(id: string) {
     if (locked.current) return;
     epoch.current++;
-    if (id !== selectedId || destination !== route) detailTab.current = null;
+    if (id !== selectedIdRef.current) detailTab.current = null;
+    selectedIdRef.current = id;
     setSelectedId(id);
     setDetail(null);
     setPreview(null);
     setComparison(null);
     setVersions([]);
     setVersionOffset(0);
-    setRoute(destination);
+    setRoute("details");
     await run(
       "Carregando detalhes da planilha",
       async () => {
@@ -338,7 +502,9 @@ export function OperationalApp() {
       },
     );
   }
+
   const rows = summary?.spreadsheets ?? [];
+
   function mutation(): Mutation {
     if (!detail || !current.current) throw { code: "configuration_pending" };
     return {
@@ -347,20 +513,60 @@ export function OperationalApp() {
       expected_revision: detail.spreadsheet.revision,
     };
   }
+
   async function mutate<T>(label: string, work: () => Promise<EngineEnvelope<T>>, message: string) {
-    const id = selectedId;
-    if (await run(label, work)) {
+    if (locked.current || !desktop) return;
+    locked.current = true;
+    const id = selectedIdRef.current;
+    setBusy(label);
+    setError("");
+    setNotice("");
+    try {
+      if (bgRefresh.current) await bgRefresh.current;
+      const before = await getIntegrationState();
+      if (!mounted.current) return;
+      if (current.current && !sameSession(current.current, before)) {
+        acceptSession(before);
+        throw { code: "stale_session" };
+      }
+      acceptSession(before);
+      if (!before.auth.account) throw { code: "auth_required" };
+      const result = await work();
+      const after = await getIntegrationState();
+      if (!mounted.current) return;
+      if (
+        !sameSession(before, after) ||
+        result.generation !== after.generation ||
+        result.account_subject !== identity(after) ||
+        !after.auth.account
+      ) {
+        acceptSession(after);
+        clearPrivate();
+        throw { code: "stale_session" };
+      }
+      acceptSession(after);
       invalidatePreview();
-      await refresh();
-      if (id) await loadDetail(id, route === "rules" ? "rules" : "details");
-      setNotice(message);
+      await reloadUnderLock(after, id);
+      pendingRefresh.current = false;
+      if (mounted.current) setNotice(message);
+    } catch (e) {
+      await handleFailureUnderLock(e, id);
+    } finally {
+      locked.current = false;
+      if (mounted.current) setBusy(null);
+      if (pendingRefresh.current && mounted.current) {
+        pendingRefresh.current = false;
+        void Promise.resolve().then(() => silentRefreshRef.current());
+      }
     }
   }
+
   async function discover(next = query) {
     if (locked.current) return;
     setQuery(next);
     await run("Consultando arquivos no Google Drive", () => api.discover(next), setDiscovery);
   }
+
   async function register(urlValue: string) {
     const generation = current.current?.generation;
     if (generation === undefined) return;
@@ -382,17 +588,21 @@ export function OperationalApp() {
       );
     }
   }
+
   async function loadEvents(next: EventFilter) {
     if (locked.current) return;
     setEventFilter(next);
     await run("Consultando atividades no banco local", () => api.events(next), setEventPage);
   }
+
   const disabled = !desktop || busy !== null;
   const accountAvailable = !!session?.auth.account;
   const canDiscover =
     session?.drive_metadata_opt_in === true &&
     session.auth.granted_scopes.includes("https://www.googleapis.com/auth/drive.metadata.readonly");
   const pageTitle = routes.find((item) => item.id === route)?.label ?? "Sheets Monitor";
+  const feedbackInsideDetails = route === "details" && detail !== null;
+
   const accountActions = {
     session,
     disabled,
@@ -408,6 +618,7 @@ export function OperationalApp() {
       ),
     onRefresh: () => void refresh(),
   };
+
   return (
     <div className="app-shell op-app">
       <a className="op-skip" href="#operational-content">
@@ -487,30 +698,29 @@ export function OperationalApp() {
               className="op-avatar"
               title="Configurações da conta"
               aria-label="Abrir configurações da conta"
-              disabled={disabled}
+              disabled={busy !== null}
               onClick={() => navigate("settings")}
             >
-              {session?.auth.account?.name?.slice(0, 1).toLocaleUpperCase("pt-BR") ?? "G"}
+              {session?.auth.account?.name?.[0]?.toUpperCase() ??
+                session?.auth.account?.email?.[0]?.toUpperCase() ??
+                "G"}
             </button>
           </div>
         </header>
-        <main className="main-content op-main" id="operational-content">
-          <div className="page-title">
+        <main id="operational-content" className="content">
+          <div className="page-head">
             <div>
-              <p className="eyebrow">SHEETS MONITOR · MONITORAMENTO CONTÍNUO</p>
               <h1>{pageTitle}</h1>
               <p>
                 {route === "overview"
-                  ? "Acompanhe a integridade e entenda cada alteração detectada."
+                  ? "Acompanhe a integridade e as verificações recentes das suas planilhas."
                   : route === "sheets"
-                    ? "Escolha os arquivos e mantenha sua proteção organizada."
+                    ? "Descubra arquivos autorizados e acompanhe até 30 planilhas."
                     : route === "activities"
-                      ? "Consulte alterações, falhas e recuperações observadas."
-                      : route === "rules"
-                        ? "Revise a proteção e aprove referências com segurança."
-                        : route === "settings"
-                          ? "Gerencie a conta e as preferências deste dispositivo."
-                          : "Proteção, referências e diagnósticos do arquivo selecionado."}
+                      ? "Histórico local de alterações, falhas e recuperações."
+                      : route === "settings"
+                        ? "Gerencie a conta e as preferências deste dispositivo."
+                        : "Escolha abas, defina regras de proteção e aprove referências da planilha."}
               </p>
             </div>
             <Button variant="outline" size="sm" disabled={disabled} onClick={() => void refresh()}>
@@ -524,17 +734,17 @@ export function OperationalApp() {
               planilhas reais.
             </p>
           )}
-          {error && (
+          {!feedbackInsideDetails && error && (
             <div className="feedback error" role="alert" ref={feedbackRef}>
               {error}
             </div>
           )}
-          {notice && (
+          {!feedbackInsideDetails && notice && (
             <div className="feedback success" role="status" ref={noticeRef}>
               {notice}
             </div>
           )}
-          {busy && (
+          {!feedbackInsideDetails && busy && (
             <div className="op-progress" role="status">
               <LoaderCircle className="animate-spin motion-reduce:animate-none" size={16} />
               {busy}…
@@ -546,7 +756,7 @@ export function OperationalApp() {
             rows={rows}
             route={route}
             disabled={disabled}
-            onChanged={() => void refresh()}
+            onChanged={() => void silentRefresh()}
             onNavigate={navigate}
             onOpenSheet={(id) => void loadDetail(id)}
           />
@@ -759,7 +969,7 @@ export function OperationalApp() {
                   </Card>
                 </div>
               )}
-              {(route === "details" || route === "rules") && (
+              {route === "details" && (
                 <div className="op-stack">
                   <label className="op-field op-file-selector">
                     Planilha selecionada
@@ -767,7 +977,7 @@ export function OperationalApp() {
                       value={selectedId ?? ""}
                       disabled={disabled}
                       onChange={(e) => {
-                        if (e.target.value) void loadDetail(e.target.value, route);
+                        if (e.target.value) void loadDetail(e.target.value);
                       }}
                     >
                       <option value="">Selecione uma planilha cadastrada</option>
@@ -780,12 +990,19 @@ export function OperationalApp() {
                   </label>
                   {detail ? (
                     <SpreadsheetDetails
-                      key={`${detail.spreadsheet.spreadsheet_id}:${detail.spreadsheet.revision}:${route}`}
+                      key={`${detail.spreadsheet.spreadsheet_id}:${detail.spreadsheet.revision}`}
                       data={detail}
-                      initialTab={detailTab.current ?? (route === "rules" ? "rules" : "tabs")}
+                      initialTab={detailTab.current ?? "tabs"}
                       onTabChange={(tab) => {
                         detailTab.current = tab;
                       }}
+                      onClearFeedback={() => {
+                        setError("");
+                        setNotice("");
+                      }}
+                      busy={busy}
+                      error={error}
+                      notice={notice}
                       preview={preview}
                       versions={versions}
                       comparison={comparison}
@@ -797,7 +1014,12 @@ export function OperationalApp() {
                         void run(
                           "Capturando a estrutura para revisão",
                           () => api.previewBaseline(mutation()),
-                          setPreview,
+                          (captured) => {
+                            setPreview(captured);
+                            setNotice(
+                              "Estrutura capturada. Revise o resumo abaixo e marque a confirmação para aprovar.",
+                            );
+                          },
                         )
                       }
                       onApprove={(captured) =>
@@ -839,14 +1061,14 @@ export function OperationalApp() {
                         void mutate(
                           "Salvando seleção de abas",
                           () => api.saveTabs({ ...mutation(), sheet_ids: ids }),
-                          "Seleção de abas salva. Revise as regras de proteção.",
+                          "Seleção de abas salva. Continue em Regras de proteção.",
                         )
                       }
                       onSaveRules={(scope) =>
                         void mutate(
                           "Salvando regras de proteção",
                           () => api.saveRules({ ...mutation(), scope }),
-                          "Regras salvas. Capture e aprove uma referência para este conjunto de regras.",
+                          "Regras salvas. Abra Referências para capturar e aprovar esta proteção.",
                         )
                       }
                       onSuggestRules={async () => {
@@ -856,6 +1078,9 @@ export function OperationalApp() {
                           () => api.proposeRules(mutation()),
                           (scope) => {
                             proposal = scope;
+                            setNotice(
+                              "Cabeçalhos lidos da planilha. Confira as colunas abaixo e clique em Salvar regras de proteção.",
+                            );
                           },
                         );
                         return proposal;

@@ -1,31 +1,60 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Camera, ShieldCheck, GitCompareArrows } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { BaselineSummary } from "@/types/integrity";
+import type { BaselineSummary, StructuralSnapshot } from "@/types/integrity";
 import type {
   BaselineComparison,
   OperationalPreview,
   RegisteredSpreadsheet,
 } from "@/types/management";
+import { columnLetter } from "./ScopeEditor";
 import { dateLabel } from "./OperationalShared";
 
 function versionLabel(version: BaselineSummary) {
   return `Versão ${version.version} · regras ${version.scope_hash?.slice(0, 8) ?? "históricas"} · ${dateLabel(version.approved_at)}`;
 }
 
+function captureDiagnostics(snapshot: StructuralSnapshot): string[] {
+  const notes: string[] = [];
+  for (const sheetRule of snapshot.scope.sheets) {
+    const capturedSheet = snapshot.sheets.find((s) => s.sheet_id === sheetRule.sheet_id);
+    if (!capturedSheet) continue;
+    for (const regionRule of sheetRule.regions) {
+      const capturedRegion = capturedSheet.regions.find((r) => r.region_id === regionRule.id);
+      if (!capturedRegion?.headers) continue;
+      for (const col of regionRule.columns) {
+        if (!col.required) continue;
+        const atPos = capturedRegion.headers.find((h) => h.column === col.position);
+        const matches = capturedRegion.headers.filter((h) => h.header === col.header).length;
+        if (!atPos || atPos.header !== col.header || matches !== 1) {
+          const colName = `Coluna ${columnLetter(col.position)} (${col.position + 1})`;
+          const found = atPos?.header ? `"${atPos.header}"` : "célula vazia";
+          notes.push(
+            `Aba "${capturedSheet.title}", ${colName}: a regra espera "${col.header}", mas a planilha trouxe ${found}.`,
+          );
+        }
+      }
+    }
+  }
+  return notes;
+}
+
 function ApprovalReview({
   preview,
   onApprove,
+  onEditRules,
   disabled,
 }: {
   preview: OperationalPreview;
   onApprove: (preview: OperationalPreview) => void;
+  onEditRules?: () => void;
   disabled: boolean;
 }) {
   const [confirmed, setConfirmed] = useState(false);
   const snapshot = preview.preview.snapshot;
+  const mismatches = captureDiagnostics(snapshot);
   const cells = snapshot.scope.sheets.reduce(
     (total, sheet) =>
       total +
@@ -92,16 +121,41 @@ function ApprovalReview({
                   {rule.regions
                     .map(
                       (region) =>
-                        `${region.id}: linhas ${region.range.start_row + 1}–${region.range.end_row}, colunas ${region.range.start_col + 1}–${region.range.end_col}`,
+                        `${region.id}: linhas ${region.range.start_row + 1}–${region.range.end_row}, colunas ${columnLetter(region.range.start_col)}–${columnLetter(Math.max(region.range.start_col, region.range.end_col - 1))}`,
                     )
                     .join("; ")}
                 </td>
-                <td>{rule.regions.flatMap((r) => r.columns.map((c) => c.header)).join(", ")}</td>
+                <td>
+                  {rule.regions
+                    .flatMap((r) =>
+                      r.columns.map((c) => `${c.header} (${columnLetter(c.position)})`),
+                    )
+                    .join(", ")}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {mismatches.length > 0 && (
+        <div className="op-notice op-warning">
+          <strong>Atenção: divergência entre as regras e a planilha atual</strong>
+          <p className="op-hint">
+            O motor exigirá que os cabeçalhos obrigatórios coincidam exatamente com a planilha antes
+            de aprovar a referência:
+          </p>
+          <ul>
+            {mismatches.map((note) => (
+              <li key={note}>{note}</li>
+            ))}
+          </ul>
+          {onEditRules && (
+            <Button type="button" variant="outline" size="sm" onClick={onEditRules}>
+              Voltar para ajustar regras
+            </Button>
+          )}
+        </div>
+      )}
       {snapshot.coverage.issues.length > 0 && (
         <div className="op-notice op-warning">
           <strong>Avisos de cobertura</strong>
@@ -142,6 +196,7 @@ function ApprovalReview({
     </section>
   );
 }
+
 export function BaselineFlow({
   row,
   preview,
@@ -150,8 +205,10 @@ export function BaselineFlow({
   offset,
   disabled,
   dirty,
+  feedback,
   onCapture,
   onApprove,
+  onEditRules,
   onPage,
   onCompare,
   onComparisonClear,
@@ -163,8 +220,10 @@ export function BaselineFlow({
   offset: number;
   disabled: boolean;
   dirty: boolean;
+  feedback?: ReactNode;
   onCapture: () => void;
   onApprove: (preview: OperationalPreview) => void;
+  onEditRules?: () => void;
   onPage: (offset: number) => void;
   onCompare: (before: string, after: string) => void;
   onComparisonClear: () => void;
@@ -182,8 +241,8 @@ export function BaselineFlow({
         <CardHeader>
           <CardTitle>Referência estrutural</CardTitle>
           <CardDescription>
-            Capture a estrutura, revise as regras e aprove explicitamente. Nenhuma referência é
-            substituída automaticamente.
+            Capture a estrutura atual da planilha, confira os cabeçalhos encontrados e aprove
+            explicitamente. Nenhuma referência é substituída automaticamente.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -203,18 +262,32 @@ export function BaselineFlow({
               Capturar estrutura para revisão
             </Button>
           </div>
+          {!row.scope && !dirty && (
+            <div className="op-notice op-warning">
+              <p>
+                Salve primeiro as regras de proteção da planilha antes de capturar uma referência.
+              </p>
+              {onEditRules && (
+                <Button type="button" variant="outline" size="sm" onClick={onEditRules}>
+                  Ir para regras de proteção
+                </Button>
+              )}
+            </div>
+          )}
           {dirty && (
             <p className="op-notice op-warning">
               Há regras ou abas não salvas. Salve a configuração antes de capturar uma nova
               referência.
             </p>
           )}
+          {feedback}
           {preview && (
             <ApprovalReview
               key={`${preview.preview.snapshot.id}:${preview.revision}`}
               preview={preview}
               disabled={disabled || dirty || preview.revision !== row.revision}
               onApprove={onApprove}
+              onEditRules={onEditRules}
             />
           )}
         </CardContent>

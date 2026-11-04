@@ -48,4 +48,23 @@ describe("Regras estruturadas", () => {
     expect(existing.sheets[0].regions[0].columns[0].header).toBe("ID");
     expect(result.sheets.map((s) => s.sheet_id)).toEqual([17, 88]);
   });
+  it("aplica perfis didáticos, expande última coluna automaticamente e preenche cabeçalhos colados", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    // Trocar para o perfil "Apenas alertar" desmarca criticidade mantendo exclusão permitida.
+    await user.click(screen.getByRole("button", { name: /Apenas alertar/ }));
+    expect(screen.getByRole("checkbox", { name: "Região crítica" })).not.toBeChecked();
+    // Colar cabeçalhos copiados de 5 colunas preenche todas e ajusta "Última coluna" para 5 (Coluna E).
+    await user.click(screen.getByText(/Atalho: colar cabeçalhos/));
+    await user.type(
+      screen.getByLabelText("Cabeçalhos copiados da planilha"),
+      "Código\tCliente\tData\tValor\tStatus",
+    );
+    await user.click(screen.getByRole("button", { name: /Preencher 5 coluna/ }));
+    expect(screen.getAllByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveLength(5);
+    expect(screen.getByLabelText(/Última coluna/)).toHaveValue(5);
+    // Adicionar uma 6ª coluna também expande automaticamente a "Última coluna" para 6 (Coluna F).
+    await user.click(screen.getByRole("button", { name: "Adicionar coluna protegida" }));
+    expect(screen.getByLabelText(/Última coluna/)).toHaveValue(6);
+  });
 });

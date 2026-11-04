@@ -1,4 +1,4 @@
-﻿import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { invoke } from "@tauri-apps/api/core";
@@ -168,6 +168,7 @@ beforeEach(() => {
       return envelope(rows[0]);
     }
     if (command === "update_integrity_rules") {
+      if (input.expected_revision !== rows[0].revision) throw { code: "configuration_conflict" };
       rows[0].scope = structuredClone(input.scope as RegisteredSpreadsheet["scope"]);
       rows[0].scope_hash = "fixture-scope";
       rows[0].revision++;
@@ -178,7 +179,8 @@ beforeEach(() => {
       scope.sheets[0].regions[0].columns[0].header = "Código";
       return envelope(scope);
     }
-    if (command === "preview_baseline")
+    if (command === "preview_baseline") {
+      if (input.expected_revision !== rows[0].revision) throw { code: "configuration_conflict" };
       return envelope({
         revision: rows[0].revision,
         preview: {
@@ -215,6 +217,7 @@ beforeEach(() => {
           },
         },
       });
+    }
     if (command === "approve_baseline") {
       rows[0].baseline_version = 1;
       rows[0].status = "not_checked";
@@ -263,13 +266,11 @@ async function openFirst(user: ReturnType<typeof userEvent.setup>) {
   await settled();
 }
 describe("Sprint 04 · operação sem demonstração", () => {
-  it("carrega seis destinos e dados do backend sem comandos foundation", async () => {
+  it("carrega cinco destinos na barra lateral sem item separado de regras e baselines", async () => {
     await load();
-    expect(
-      within(screen.getByRole("navigation", { name: "Navegação principal" })).getAllByRole(
-        "button",
-      ),
-    ).toHaveLength(6);
+    const nav = within(screen.getByRole("navigation", { name: "Navegação principal" }));
+    expect(nav.getAllByRole("button")).toHaveLength(5);
+    expect(nav.queryByRole("button", { name: /Regras e baselines/i })).not.toBeInTheDocument();
     expect(screen.getByText("Encontre suas primeiras planilhas")).toBeInTheDocument();
     expect(call.mock.calls.some(([name]) => name.startsWith("foundation_"))).toBe(false);
   });
@@ -413,6 +414,63 @@ describe("Sprint 04 · operação sem demonstração", () => {
     expect(screen.getByRole("textbox", { name: /Cabeçalho protegido/ })).toHaveValue("Código");
     expect(screen.getByRole("button", { name: "Salvar regras de proteção" })).toBeDisabled();
   }, 15000);
+  it("recarrega a planilha após salvar mesmo quando o monitoramento atualiza em segundo plano", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    await settled();
+    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
+    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
+    // O serviço Rust avisa uma mudança enquanto a gravação ainda está em andamento.
+    readHook = (command) => {
+      if (command !== "update_integrity_rules") return;
+      readHook = null;
+      act(() => signals.changed?.());
+    };
+    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
+    await settled();
+    expect(await screen.findByText(/Regras salvas\./)).toBeInTheDocument();
+    // A tela precisa refletir a revisão gravada: nada de formulário "sujo" nem botão repetível.
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Salvar regras de proteção" })).toBeDisabled(),
+    );
+    // Uma nova edição usa a revisão atual e é aceita, sem sair e voltar para a planilha.
+    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), " 2");
+    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
+    await settled();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(rows[0].scope?.sheets[0].regions[0].columns[0].header).toBe("Código 2");
+    // Capturar usa a mesma revisão fresca e também não é rejeitado em silêncio.
+    await user.click(screen.getByRole("button", { name: "Referências" }));
+    await user.click(screen.getByRole("button", { name: "Capturar estrutura para revisão" }));
+    await screen.findByText("Revise antes de aprovar");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  }, 20000);
+  it("recupera a tela sozinha quando a revisão local ficou desatualizada", async () => {
+    rows.push(fixtureRow());
+    const user = await load();
+    await openFirst(user);
+    await user.click(screen.getByRole("checkbox", { name: /Monitorar aba Receitas/ }));
+    await user.click(screen.getByRole("button", { name: "Salvar seleção de abas" }));
+    await settled();
+    await user.click(screen.getByRole("button", { name: "Regras de proteção" }));
+    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
+    rows[0].revision++; // outra operação alterou o cadastro depois que a tela foi carregada
+    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
+    await settled();
+    expect(await screen.findByText(/dados da planilha foram atualizados/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Regras de proteção" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await user.type(screen.getByRole("textbox", { name: /Cabeçalho protegido/ }), "Código");
+    await user.click(screen.getByRole("button", { name: "Salvar regras de proteção" }));
+    await settled();
+    expect(await screen.findByText(/Regras salvas\./)).toBeInTheDocument();
+    expect(rows[0].scope?.sheets[0].regions[0].columns[0].header).toBe("Código");
+  }, 20000);
   it("exige confirmação de remoção e escolha de histórico", async () => {
     rows.push(fixtureRow());
     const user = await load();

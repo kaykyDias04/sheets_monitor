@@ -59,7 +59,13 @@ export interface StructuralSnapshot {
     index: number;
     row_count: number;
     column_count: number;
-    regions: { region_id: string; complete: boolean; rows: unknown[]; formulas: unknown[] }[];
+    regions: {
+      region_id: string;
+      complete: boolean;
+      headers?: { column: number; header: string }[];
+      rows: unknown[];
+      formulas: unknown[];
+    }[];
   }[];
   coverage: Coverage;
   scripts: {
