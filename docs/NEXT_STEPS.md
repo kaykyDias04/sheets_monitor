@@ -70,3 +70,7 @@ O candidato usa versão 1.0.0 conforme o escopo original; a pré-release histór
 ### Atualização — audiência OAuth interna
 
 O usuário informou que o console Google dispensa verificação porque o projeto está configurado com tipo de usuário Interno. Nesse cenário, não exigir aprovação pública como pré-condição: o OAuth limita-se aos membros da organização Google Cloud/Workspace do projeto e às políticas administrativas correspondentes. Fonte: https://support.google.com/cloud/answer/15549945#user-type-internal . A informação é relato do usuário; o nome/ID do projeto e o JSON Desktop ainda não foram fornecidos. O bloqueio atual é obter a configuração Desktop autorizada e comprovar login do candidato com conta interna elegível, além das homologações já pendentes. Não alterar a audiência para Externo nem ampliar escopos automaticamente. A futura release deve informar que o login é restrito à organização.
+
+## Atualização vigente de continuidade
+
+Integração original concluída em main b0ef2c6 e OAuth interno incorporado em novo pacote. O projeto e o JSON foram fornecidos e validados localmente; não repetir solicitação de credenciais. Rascunho1.0.0 disponível no GitHub, ainda não publicado definitivamente. Consultar `docs/evidence/release-oauth/report.md` e o checkpoint humano pendente antes de publicar. Não exigir verificação pública para a audiência interna; respeitar organização e políticas administrativas.

@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0",
+  "source_commit": "b0ef2c67da2786afc5ef1e9fd77bdb5735db3205",
+  "status": "OAUTH_PROVISIONED_PENDING_HUMAN_HOMOLOGATION",
+  "target": "x86_64-pc-windows-msvc",
+  "installer_path": "src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/Sheets Monitor_1.0.0_x64-setup.exe",
+  "bytes": 4939638,
+  "sha256": "2B2D5E71361871AA8AC47490FF14B0258E8C218B2BC6B4DE69D0D6CCA1BEAA26",
+  "binary_sha256": "C0CA2A76D433AB536825EF75AC0798D34C2C5423A355920950AD9029FEBE3B6D",
+  "signature_status": "NotSigned",
+  "build_exit_code": 0,
+  "oauth_desktop_type": true,
+  "authorized_project_matches": true,
+  "oauth_client_embedded": true,
+  "oauth_desktop_secret_embedded": true,
+  "oauth_audience": "internal_user_reported",
+  "public_verification_required_for_internal": false,
+  "oauth_login_this_candidate_verified": false,
+  "installed_or_launched_this_execution": false,
+  "native_probe_enabled": false,
+  "published": false,
+  "public_asset_name": "Sheets.Monitor_1.0.0_x64-setup.exe"
+}
