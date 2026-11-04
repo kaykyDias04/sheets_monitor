@@ -75,7 +75,7 @@
     {
       "name": "known credential patterns",
       "ok": true,
-      "detail": "761 text files scanned; no known credential signatures (not a complete secret audit)"
+      "detail": "762 text files scanned; no known credential signatures (not a complete secret audit)"
     },
     {
       "name": "completion evidence matches sprint status",

@@ -20,3 +20,7 @@ Login/consentimento do candidato e leitura de planilha por conta da organizaçã
 
 
 Revisão independente confirmou hash do pacote e ausência de padrões conhecidos de credenciais nos logs/documentos (scan limitado, sem ler JSON privado). Corrigido nome público do instalador no SHA256SUMS.txt e nas notas: GitHub normaliza o espaço para ponto. Após upload corretivo, todos os três digests foram conferidos novamente. O endereço untagged de drafts pode mudar ao editar notas; a página de releases é o ponto de acesso estável do mantenedor.
+
+## CI da fonte concluído
+
+Workflow Windows completo aprovado no SHA fonte b0ef2c67da2786afc5ef1e9fd77bdb5735db3205: https://github.com/kaykyDias04/sheets_monitor/actions/runs/41756837978 . Snapshot sanitizado em ci-source.json. Inclui frontend, verificador, Rustfmt,testes,Clippy e build. Commits posteriores só registram docs/evidência/.gitattributes; seus pipelines foram omitidos por [skip ci], portanto não afirmar CI exato nesses heads documentais. O código/manifests/lockfiles/workflow/manual embarcado/distribution não diferem do SHA validado. Login/homologação humana do novo pacote permanecem pendentes; release segue rascunho.

@@ -1,0 +1,90 @@
+{
+  "source_commit": "b0ef2c67da2786afc5ef1e9fd77bdb5735db3205",
+  "run_id": 41756837978,
+  "url": "https://github.com/kaykyDias04/sheets_monitor/actions/runs/41756837978",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "windows",
+      "conclusion": "success",
+      "started_at": "2026-11-04T01:51:06Z",
+      "completed_at": "2026-11-04T02:01:18Z",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v4"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run dtolnay/rust-toolchain@stable"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm ci"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run lint"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run format:check"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run typecheck"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm test -- --maxWorkers=1"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run build"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run node scripts/verify-repository.mjs"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run ./scripts/check-rust.ps1 -Task format-check"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run ./scripts/check-rust.ps1 -Task test"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run ./scripts/check-rust.ps1 -Task clippy"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run ./scripts/check-rust.ps1 -Task build"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v4"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job"
+        }
+      ]
+    }
+  ],
+  "scope": "Windows full workflow on immutable product source commit; subsequent commits are documentation/evidence only and do not claim exact-head CI"
+}

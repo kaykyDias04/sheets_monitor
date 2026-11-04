@@ -12,5 +12,5 @@ PASS license metadata: MIT applies to own package; external inventory reviewed s
 PASS issue and PR templates: two issue templates and PR acceptance/evidence sections
 PASS Sprint 05 scope and modular structure: foundation + read-only Google + management + authorized continuous monitoring; synthetic native probe excluded from defaults
 PASS active source encoding: 113 source files without replacement characters
-PASS known credential patterns: 761 text files scanned; no known credential signatures (not a complete secret audit)
+PASS known credential patterns: 762 text files scanned; no known credential signatures (not a complete secret audit)
 PASS completion evidence matches sprint status: Completed items require evidence; Sprint 06 also requires real load and installed homologation
