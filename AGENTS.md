@@ -124,6 +124,34 @@ Em 03/11/2026 o usuário autorizou o Prompt 06.1, preservado em `docs/sprint06.1
 
 Em 03/11/2026 o usuário autorizou expressamente criar e publicar todo o repositório em `https://github.com/kaykyDias04/sheets_monitor.git` (`origin`), incluindo `main` e todas as branches `codex/` por push normal, sem force-push. As menções anteriores a "sem remoto autorizado" são históricas. A publicação não altera o estado da Sprint 05 nem autoriza a Sprint 06. Aguardar Prompt 06.
 
+## Transferência de contexto — fotografia verificada em 03/11/2026
+
+Esta seção prevalece sobre estados históricos anteriores quando houver divergência. No checkout inspecionado, `HEAD` é `b2c68ce0791aa8acdcc860f433dd2ed6a61849da` (`docs(SM-022,SM-023,SM-024,SM-025): record full repository publication to GitHub`), branch local `main`; `origin/main` aponta para o mesmo commit. O remoto autorizado é `https://github.com/kaykyDias04/sheets_monitor.git`. A árvore Git estava limpa antes da tarefa de transferência. O histórico das branches `codex/` foi preservado. Não inferir CI hospedado aprovado apenas por existir o remoto/workflow.
+
+Sprint 05 e SM-022–SM-025 estão concluídos tecnicamente; o próximo trabalho de produto só começa ao receber o Prompt 06. SM-026, SM-027 e SM-028 permanecem planejados. A pasta `docs/evidence/sprint05/` preserva testes e gates da sprint; esta tarefa registra novas verificações, sem sobrescrever aquela evidência histórica. O alerta WinRT de desenvolvimento foi confirmado pelo usuário; o primeiro teste negativo permanece registrado; o probe corrigido foi interrompido antes do relatório final. Não declarar coleta completa de callbacks/saída limpa para esse processo.
+
+Restrições de continuidade: não iniciar Sprint 06 sem autorização; não aprovar ou alterar baselines reais, modificar arquivos Google, executar Apps Script, habilitar autostart, enviar novos toasts, alterar credenciais ou produzir/publicar instalador sem a autorização/escopo correspondente. Preservar os dados reais existentes e não exportá-los a logs/evidências. Migrations 0001–0005 são aditivas/históricas; nunca reescrever migration já aplicada. Manter Rust como dono de agendamento, fila, concorrência, política e integridade; React é cliente IPC e não implementa regras de domínio. Google permanece read-only; não exigir serviço hospedado.
+
+Convenções: preservar IDs SM-001…SM-028 e subtarefas oficiais; mudanças de requisitos por decisão explícita/ADR; commits Conventional Commits ligados a SM, branches `codex/`; usar lockfile npm existente, sem migrar para pnpm implicitamente. Licença MIT cobre código próprio, dependências mantêm suas licenças. `archive/prototype/` é somente referência imutável. Antes de prosseguir, ler `docs/NEXT_STEPS.md`, `docs/ARCHITECTURE.md` (no checkout Windows, existente como `docs/architecture.md`), `docs/PROGRESS.md` (existente como `docs/progress.md`), `docs/sprint-05-report.md`, a especificação Sprint 06 assim que autorizada/fornecida, `docs/backlog.json`, `docs/risks.md`, `docs/adr/README.md` e `CONTRIBUTING.md`.
+
+## Autorização vigente — Sprint 06
+
+Em 03/11/2026, o usuário forneceu `docs/sprint06.original.md`, SHA-256 `34806E4FC5332E2BB89ADC54DF1A417E64E6397E1DC5CA994167F5D96F061EE0`. Executar exclusivamente SM-026–SM-028: auditoria, integração, segurança, carga5/15/30, correções, candidato1.0.0 e instalador local, documentação e homologação humana. Deepwork com lanes e gates. Não publicar release nem distribuir a terceiros.
+
+Preservar migrações0001–0005, evidências históricas e alterações locais anteriores. Google somente leitura; baseline real humana; novos toasts/autostart dependem de autorização explícita. O usuário confirmou indisponibilidade de Windows separado e30 recursos reais com referências aprovadas: executar testes locais e registrar pendências. Não equiparar campanha sintética/relógio acelerado a Google real/24h. Instalação em outra pasta não isola cofre/perfil: não iniciar candidato instalado no perfil real; instalação/desinstalação limitada exige preflight sem colisões. Ao finalizar, relatório com critérios comprovados e pendentes e aguardar homologação final, sem iniciar expansão.
+
 ## Publicação técnica autorizada após a retomada 06.1
 
 O usuário autorizou expressamente instalar o pacote e publicar a release no GitHub. Pré-release técnica v0.1.0-sprint06-preview publicada; instalação e startup verificados no limite registrado em docs/SPRINT_06_PROGRESS.md. Isso não aprova a Sprint 06, não autoriza baselines automáticas nem amplia o escopo para V1.1.
+
+
+## Atualização vigente — integração e pedido de release, 03/11/2026
+
+O usuário autorizou integrar `codex/sprint-06-homologation` e publicar um release instalável com OAuth Google verificado. Esta autorização substitui as restrições históricas de publicação acima, sem aprovar automaticamente a homologação nem comprovar verificação Google. O remoto `ba3e33d` foi mesclado preservando o histórico local `2664ed9` e o trabalho anteriormente não commitado; cópias integrais permanecem em stash local.
+
+O candidato usa versão 1.0.0 conforme o escopo original; a pré-release histórica 0.1.0 permanece intacta. Não há configuração OAuth no ambiente Process/User/Machine nesta execução, e não foi fornecida evidência da verificação do projeto Google. Build sem cliente incorporado não deve ser publicado como release funcional. Carga Google real, Windows limpo e homologação humana permanecem pendentes. Evidências novas em `docs/evidence/release-integration/`.
+
+
+### Atualização — audiência OAuth interna
+
+O usuário informou que o console Google dispensa verificação porque o projeto está configurado com tipo de usuário Interno. Nesse cenário, não exigir aprovação pública como pré-condição: o OAuth limita-se aos membros da organização Google Cloud/Workspace do projeto e às políticas administrativas correspondentes. Fonte: https://support.google.com/cloud/answer/15549945#user-type-internal . A informação é relato do usuário; o nome/ID do projeto e o JSON Desktop ainda não foram fornecidos. O bloqueio atual é obter a configuração Desktop autorizada e comprovar login do candidato com conta interna elegível, além das homologações já pendentes. Não alterar a audiência para Externo nem ampliar escopos automaticamente. A futura release deve informar que o login é restrito à organização.

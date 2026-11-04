@@ -1,0 +1,86 @@
+{
+  "success": true,
+  "scope": "Sprint 06 repository/documentation only; no product or remote tests implied",
+  "checks": [
+    {
+      "name": "required governance files",
+      "ok": true,
+      "detail": "17 files"
+    },
+    {
+      "name": "official specification preserved",
+      "ok": true,
+      "detail": "994a2faa0e1d9c48450c5fe2b7b88ab9e237c17054efe3a70e1ec291671f765e"
+    },
+    {
+      "name": "official backlog and dependency graph",
+      "ok": true,
+      "detail": "28 original IDs, 38 subtasks, acyclic dependencies"
+    },
+    {
+      "name": "Sprint 02 original and completion honesty",
+      "ok": true,
+      "detail": "source hash preserved; live success is never inferred from mocks"
+    },
+    {
+      "name": "Sprint 03 contract and evidence boundary",
+      "ok": true,
+      "detail": "original preserved; Sprint 03 operations only; real and synthetic evidence separate"
+    },
+    {
+      "name": "Sprint 04 original and authorized additions",
+      "ok": true,
+      "detail": "source preserved; 28 original IDs and two explicit additions"
+    },
+    {
+      "name": "Sprint 05 authorization and evidence boundary",
+      "ok": true,
+      "detail": "source preserved; human display confirmation remains separate from native submission and installed identity"
+    },
+    {
+      "name": "Sprint 06 authorization and completion evidence",
+      "ok": true,
+      "detail": "Prompt 06 preserved; completion requires explicit evidence and human acceptance, never mocks alone"
+    },
+    {
+      "name": "raw prototype archive",
+      "ok": true,
+      "detail": "47 original file hashes match"
+    },
+    {
+      "name": "local documentation links",
+      "ok": true,
+      "detail": "238 local links resolve (historical verbatim files excluded)"
+    },
+    {
+      "name": "license metadata",
+      "ok": true,
+      "detail": "MIT applies to own package; external inventory reviewed separately"
+    },
+    {
+      "name": "issue and PR templates",
+      "ok": true,
+      "detail": "two issue templates and PR acceptance/evidence sections"
+    },
+    {
+      "name": "Sprint 05 scope and modular structure",
+      "ok": true,
+      "detail": "foundation + read-only Google + management + authorized continuous monitoring; synthetic native probe excluded from defaults"
+    },
+    {
+      "name": "active source encoding",
+      "ok": true,
+      "detail": "113 source files without replacement characters"
+    },
+    {
+      "name": "known credential patterns",
+      "ok": true,
+      "detail": "751 text files scanned; no known credential signatures (not a complete secret audit)"
+    },
+    {
+      "name": "completion evidence matches sprint status",
+      "ok": true,
+      "detail": "Completed items require evidence; Sprint 06 also requires real load and installed homologation"
+    }
+  ]
+}

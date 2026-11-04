@@ -6,6 +6,16 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const args = process.argv.slice(2);
+if (args.length && (args.length !== 2 || args[0] !== '--evidence-directory')) {
+  throw new Error('Usage: node scripts/verify-repository.mjs [--evidence-directory <new-directory>]');
+}
+const evidenceDirectory = path.resolve(root, args[1] || 'docs/evidence/sprint06/repository');
+const historicalEvidence = path.join(root, 'docs/evidence');
+if (!evidenceDirectory.startsWith(historicalEvidence + path.sep) ||
+    /^sprint0[1-5](?:[\\/]|$)/i.test(path.relative(historicalEvidence, evidenceDirectory))) {
+  throw new Error('Use a new evidence directory within docs/evidence; historical sprint evidence is immutable');
+}
 const read = file => fs.readFileSync(path.join(root, file), 'utf8').replace(/^\uFEFF/, '');
 const checks = [];
 function check(name, action) {
@@ -108,6 +118,26 @@ check('Sprint 05 authorization and evidence boundary', () => {
  }
  return 'source preserved; human display confirmation remains separate from native submission and installed identity';
 });
+check('Sprint 06 authorization and completion evidence', () => {
+ const digest = crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'docs/sprint06.original.md'))).digest('hex');
+ assert(digest === '34806e4fc5332e2bb89adc54df1a417e64e6397e1dc5ca994167f5d96f061ee0', 'Sprint 06 original changed');
+ const items = JSON.parse(read('docs/backlog.json')).items.filter(i => i.sprint === 6);
+ if (items.some(i => i.status === 'concluido')) {
+   const proof = JSON.parse(read('docs/evidence/sprint06/acceptance.json'));
+   assert(proof.result === 'APROVADA' && proof.human_final_approval === true, 'Sprint 06 completion requires final human acceptance');
+   for (const name of ['critical_tests','google_auth','google_apis','integrity','native_notifications','persistent_history','background_monitoring','thirty_real_spreadsheets','production_installer','windows11_installation','clean_windows_runtime','documentation']) {
+     assert(proof.criteria?.[name]?.passed === true, `Missing final criterion: ${name}`);
+     const evidence = proof.criteria[name].evidence;
+     assert(Array.isArray(evidence) && evidence.length > 0, `Missing evidence: ${name}`);
+     for (const file of evidence) {
+       const absolute = path.resolve(root,file);
+       assert(absolute.startsWith(root + path.sep) && fs.existsSync(absolute), `Invalid criterion evidence: ${name}`);
+     }
+   }
+   assert(proof.agent_approved_real_baseline === false && proof.google_file_writes === false, 'Read-only/human approval boundary violated');
+ }
+ return 'Prompt 06 preserved; completion requires explicit evidence and human acceptance, never mocks alone';
+});
 check('raw prototype archive', () => {
   const manifest = JSON.parse(read('docs/evidence/repository/prototype-manifest.json'));
   for (const entry of manifest.files) {
@@ -204,7 +234,7 @@ check('completion evidence matches sprint status', () => {
   return 'Completed items require evidence; Sprint 06 also requires real load and installed homologation';
 });
 const success = checks.every(item => item.ok);
-const reportPath = path.join(root,'docs/evidence/sprint06/repository-verification.json');
+const reportPath = path.join(evidenceDirectory,'repository-verification.json');
 fs.mkdirSync(path.dirname(reportPath), { recursive:true });
 fs.writeFileSync(reportPath, JSON.stringify({ success, scope:'Sprint 06 repository/documentation only; no product or remote tests implied', checks },null,2)+'\n');
 process.exitCode = success ? 0 : 1;

@@ -86,3 +86,9 @@ Aceite é técnico e não constitui homologação de toda a planilha real. A bas
 | Privacidade/limites | Sem Google writes, baseline real aprovada pelo agente ou identidade/conteúdo real nos novos relatórios; migrações e evidências anteriores preservadas |
 
 O [relatório](sprint-05-report.md) e a [matriz de 20 cenários](evidence/sprint05/scenario-matrix.json) distinguem fonte, fixtures, Windows real e confirmação humana. Os quatro cadastros reais continuam pendentes e não foram forçados a ficar elegíveis. Clique físico no menu/toast, identidade final instalada, autostart no login e carga Google de 30 arquivos não foram homologados. O teste corrigido de toast teve interrupção antes de finalizar seu JSON; não se afirma saída limpa ou coleta completa de callbacks nessa execução específica. As provas de saída limpa sem toast permanecem separadas. Sprint 06 exige novo prompt.
+
+## Sprint 06 — critérios preservados
+
+O Prompt 06 autoriza SM-026–SM-028. A evidência desta etapa deve comprovar os 12 critérios originais, sem reduzir o aceite ao que o ambiente consegue simular: testes críticos; autenticação Google autorizada; APIs; classificação; notificações/histórico; segundo plano; estabilidade de30 arquivos; segurança sem falhas críticas conhecidas sem tratamento; instalador produção; instalação Windows11; documentação; homologação humana final solicitada.
+
+Versão1.0.0 do candidato local e build verde não são aprovação da V1.0. Campanha sintética prova somente os caminhos efetivamente executados. Sem Windows limpo/30 recursos autorizados, critérios essenciais continuam sem prova e a classificação é BLOQUEADA. A meta24h não é satisfeita por avanço de relógio. Novos alertas/autostart e aprovação de referência real continuam ações explícitas do usuário. Não publicar ou distribuir a terceiros.

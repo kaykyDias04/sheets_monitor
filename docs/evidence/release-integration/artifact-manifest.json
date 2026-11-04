@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "status": "LOCAL_CANDIDATE_NOT_READY_FOR_FUNCTIONAL_RELEASE",
+  "installer_path": "src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/Sheets Monitor_1.0.0_x64-setup.exe",
+  "bytes": 4948787,
+  "sha256": "764906AA7B96EA47459009DE825F433BB544DA81627AF8EFB62C8F5894312C98",
+  "signature_status": "NotSigned",
+  "binary_sha256": "D4188D749A92864CBAE58C8D8469194A7653948463DF73C538B6FC2302FE7917",
+  "target": "x86_64-pc-windows-msvc",
+  "command": "npm run tauri -- build --target x86_64-pc-windows-msvc --bundles nsis",
+  "build_exit_code": 0,
+  "oauth_client_embedded": false,
+  "google_project_verified": null,
+  "installed_or_launched_this_execution": false,
+  "published": false,
+  "historical_preview_unchanged": true,
+  "oauth_audience": "internal_user_reported",
+  "google_public_verification_required_for_internal": false
+}

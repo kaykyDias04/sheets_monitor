@@ -1,0 +1,37 @@
+   Compiling vswhom-sys v0.1.3
+   Compiling ring v0.17.14
+   Compiling tree-sitter v0.25.10
+   Compiling libsqlite3-sys v0.35.0
+   Compiling tree-sitter-javascript v0.25.0
+   Compiling vswhom v0.1.0
+   Compiling embed-resource v3.0.12
+   Compiling tauri-winres v0.3.7
+   Compiling tauri-build v2.7.4
+   Compiling rustls v0.23.46
+   Compiling tauri v2.12.5
+   Compiling sheets-monitor v1.0.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)
+   Compiling rustls-webpki v0.103.16
+   Compiling rusqlite v0.37.0
+error: failed to run custom build command for `sheets-monitor v1.0.0 (C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri)`
+
+Caused by:
+  process didn't exit successfully: `C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\debug\build\sheets-monitor-6f1672044b49899d\build-script-build` (exit code: 1)
+  --- stdout
+  cargo:rerun-if-env-changed=SHEETS_MONITOR_OAUTH_CLIENT_ID
+  cargo:rerun-if-env-changed=SHEETS_MONITOR_OAUTH_DESKTOP_SECRET
+  cargo:rerun-if-changed=../dist
+  cargo:rerun-if-env-changed=TAURI_CONFIG
+  cargo:rustc-check-cfg=cfg(desktop)
+  cargo:rustc-cfg=desktop
+  cargo:rustc-check-cfg=cfg(mobile)
+  cargo:rerun-if-changed=C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\tauri.conf.json
+  cargo:rustc-env=TAURI_ANDROID_PACKAGE_NAME_APP_NAME=desktop
+  cargo:rustc-env=TAURI_ANDROID_PACKAGE_NAME_PREFIX=com_sheetsmonitor
+  cargo:rustc-check-cfg=cfg(dev)
+  cargo:rustc-cfg=dev
+  cargo:PERMISSION_FILES_PATH=C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\target\x86_64-pc-windows-msvc\debug\build\sheets-monitor-377efd6caf230a2a\out\app-manifest\__app__-permission-files
+  cargo:rerun-if-changed=C:\Users\kayky\Desktop\Repositorios\Monitoramento-bases-painéis\src-tauri\capabilities
+  cargo:rerun-if-env-changed=REMOVE_UNUSED_COMMANDS
+  cargo:rustc-env=TAURI_ENV_TARGET_TRIPLE=x86_64-pc-windows-msvc
+  resource path `resources\THIRD-PARTY-NOTICES.txt` doesn't exist
+warning: build failed, waiting for other jobs to finish...

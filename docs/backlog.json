@@ -1,7 +1,7 @@
 {
   "source": "docs/specification-v1.0.original.md",
   "source_version": "1.0",
-  "authorization": "Sprint 06 autorizada pelo Prompt 06.1 em 03/11/2026, exclusivamente SM-026 a SM-028. Retomada incremental; homologacao real e instalada exige evidencias. Sem release ou distribuicao externa automatica.",
+  "authorization": "Sprint 06 e integração/release solicitados em 03/11/2026; SM-026 a SM-028. Publicação autorizada pelo usuário, condicionada à comprovação dos critérios de homologação e OAuth. Google somente leitura e baselines humanas.",
   "statuses": [
     "planejado",
     "em_andamento",

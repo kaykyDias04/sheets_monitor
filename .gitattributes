@@ -30,3 +30,6 @@ docs/evidence/sprint06/*.log -text -whitespace
 docs/sprint06.1.original.md -text -whitespace
 # Verbatim third-party license/copyright texts must retain original whitespace.
 distribution/** -text -whitespace
+docs/evidence/context-transfer/** -text -whitespace
+docs/evidence/release-integration/*.log -text -whitespace
+docs/evidence/release-integration/rust/*.log -text -whitespace

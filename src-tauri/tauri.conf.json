@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Sheets Monitor",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "identifier": "com.sheetsmonitor.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -35,17 +35,27 @@
     ],
     "licenseFile": "../LICENSE",
     "resources": {
+      "../LICENSE": "LICENSE.txt",
       "../distribution/THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.txt",
       "../distribution/rust-notices/": "rust-notices/",
       "../docs/installation.md": "INSTALLATION.md"
     },
     "windows": {
+      "allowDowngrades": false,
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
       "nsis": {
         "installMode": "currentUser",
-        "languages": ["PortugueseBR", "English"]
+        "languages": [
+          "PortugueseBR",
+          "English"
+        ]
       }
     },
     "shortDescription": "Monitoramento contínuo de integridade",
-    "category": "Productivity"
+    "category": "Productivity",
+    "license": "MIT"
   }
 }

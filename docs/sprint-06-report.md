@@ -31,3 +31,10 @@ Instalado por usuário em `%LOCALAPPDATA%\Programs\Sheets Monitor`. Processo per
 Pré-release publicada: https://github.com/kaykyDias04/sheets_monitor/releases/tag/v0.1.0-sprint06-preview . Instalador e SHA256SUMS.txt enviados, com digests retornados pelo GitHub conferidos. Registro em `docs/evidence/sprint06/github-release.json`. Tag aponta para `f19f1ad`, fonte do pacote. Não é aprovação da V1.0: OAuth ausente, carga Google real, persistência após reinício, desinstalação e homologação Windows completa continuam pendentes. Nenhuma baseline aprovada, autostart ativado ou arquivo Google alterado.
 
 Próxima ação: disponibilizar a configuração OAuth da aplicação por caminho local seguro e concluir a homologação pendente. Preservar o pacote instalado; não reinstalar nem reconstruir sem necessidade.
+
+
+## Atualização vigente — integração e pedido de release, 03/11/2026
+
+O usuário autorizou integrar `codex/sprint-06-homologation` e publicar um release instalável com OAuth Google verificado. Esta autorização substitui as restrições históricas de publicação acima, sem aprovar automaticamente a homologação nem comprovar verificação Google. O remoto `ba3e33d` foi mesclado preservando o histórico local `2664ed9` e o trabalho anteriormente não commitado; cópias integrais permanecem em stash local.
+
+O candidato usa versão 1.0.0 conforme o escopo original; a pré-release histórica 0.1.0 permanece intacta. Não há configuração OAuth no ambiente Process/User/Machine nesta execução, e não foi fornecida evidência da verificação do projeto Google. Build sem cliente incorporado não deve ser publicado como release funcional. Carga Google real, Windows limpo e homologação humana permanecem pendentes. Evidências novas em `docs/evidence/release-integration/`.

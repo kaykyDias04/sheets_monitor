@@ -144,6 +144,24 @@ Quatro cadastros reais pendentes e zero proteções elegíveis foram preservados
 
 Em 03/11/2026 o usuário autorizou criar e publicar o repositório `https://github.com/kaykyDias04/sheets_monitor.git`, enviando `main` e todas as branches `codex/` por push normal, sem force-push. Antes do envio: verificador do repositório, typecheck, lint e Vitest reexecutados; evidências históricas da Sprint 05 não foram regravadas. Estado das sprints inalterado; aguardar Prompt 06.
 
+## Fotografia atual para transferência de conversa — 03/11/2026
+
+Este registro prevalece sobre os estados e limitações históricos acima quando eles divergirem. checkout inspecionado: branch `main`, `HEAD` e `origin/main` em `b2c68ce0791aa8acdcc860f433dd2ed6a61849da`; remoto `origin` aponta a `https://github.com/kaykyDias04/sheets_monitor.git`. `git status --short --branch` estava limpo antes desta tarefa. As branches `codex/` permanecem preservadas/publicadas. Não foi inferido resultado de CI hospedado.
+
+As Sprints 01–05 e SM-001–SM-025 estão registradas como concluídas conforme seus escopos e evidências (incluindo as adições SM-021A/SM-021B). A Sprint 05 está tecnicamente concluída; os detalhes, limites e erros já corrigidos estão em [relatório da Sprint 05](sprint-05-report.md) e [gate final](evidence/sprint05/gate3.md). SM-026, SM-027 e SM-028 continuam planejados; a próxima etapa permitida é aguardar e executar apenas o Prompt 06, depois de recebido. Não implementar nada da Sprint 06 por inferência.
+
+Esta tarefa de continuidade executou novas verificações; resultados e logs estão em [`docs/evidence/context-transfer/`](evidence/context-transfer/README.md), distintos das evidências finais históricas da Sprint 05. Passaram lint, Prettier check, typecheck, build Vite, 50 testes React, 257 testes unitários Rust, duas integrações Rust, rustfmt check, Clippy, build Tauri MSVC e verificador do repositório. Um teste Rust de cofre continuou `ignored` como previsto. A primeira execução do verificador coincidiu com a criação do documento NEXT_STEPS e observou um link ainda não presente; a repetição após estabilizar os documentos passou. O verificador escreve por padrão no JSON histórico da Sprint 05; o original foi restaurado após a execução, e o log da repetição foi mantido em `context-transfer/`.
+
+Para iniciar uma nova conversa, leia primeiro [instruções](../AGENTS.md), [próximos passos](NEXT_STEPS.md), [arquitetura](architecture.md), este arquivo, [relatório Sprint 05](sprint-05-report.md), [backlog](backlog.json), [riscos](risks.md), [decisões](adr/README.md) e [contribuição](../CONTRIBUTING.md). Os nomes pedidos `docs/PROGRESS.md` e `docs/ARCHITECTURE.md` resolvem para estes arquivos rastreados como `docs/progress.md` e `docs/architecture.md`; evite entradas Git que diferem apenas por capitalização.
+
+## Sprint 06 — execução autorizada
+
+Prompt recebido em03/11/2026 e preservado em `sprint06.original.md`. Branch `codex/sprint-06-homologation`, base `b2c68ce`. Alterações documentais da transferência anterior foram preservadas, sem atribuí-las à sprint. Auditoria inicial/gate1 e baseline em `evidence/sprint06/`; commit `2664ed9`.
+
+Baseline atual:257 unitários Rust e2 integrações passaram,1cofre ignored; fmt/Clippy/lint/Prettier/typecheck/build frontend passaram. React paralelo49/50 com um timeout5s; repetição sem alterar testes/timeouts, um worker:50/50 em83.98s. Falha e sucesso preservados em logs separados. Campanha integrada e empacotamento em andamento; não inferir conclusão.
+
+Usuário confirmou ausência de Windows separado e30 recursos reais aprovados. Executar campanha sintética local, mantendo carga Google/24h/execução limpa e OAuth do candidato como pendências até prova. Nenhuma baseline real pelo agente, escrita Google, toast ou autostart nesta sprint. Não publicar/distribuir a terceiros. O próximo checkpoint é homologação humana da V1.0, sem Sprint07 automática.
+
 ## Atualização autorizada — instalação e pré-release
 
 O usuário autorizou expressamente instalar o pacote e publicar a release no GitHub nesta conversa. Essa autorização substitui a recusa de instalação anterior e a restrição anterior de publicação para este pacote técnico.
@@ -153,3 +171,17 @@ Instalado por usuário em `%LOCALAPPDATA%\Programs\Sheets Monitor`. Processo per
 Pré-release publicada: https://github.com/kaykyDias04/sheets_monitor/releases/tag/v0.1.0-sprint06-preview . Instalador e SHA256SUMS.txt enviados, com digests retornados pelo GitHub conferidos. Registro em `docs/evidence/sprint06/github-release.json`. Tag aponta para `f19f1ad`, fonte do pacote. Não é aprovação da V1.0: OAuth ausente, carga Google real, persistência após reinício, desinstalação e homologação Windows completa continuam pendentes. Nenhuma baseline aprovada, autostart ativado ou arquivo Google alterado.
 
 Próxima ação: disponibilizar a configuração OAuth da aplicação por caminho local seguro e concluir a homologação pendente. Preservar o pacote instalado; não reinstalar nem reconstruir sem necessidade.
+
+
+## Atualização vigente — integração e pedido de release, 03/11/2026
+
+O usuário autorizou integrar `codex/sprint-06-homologation` e publicar um release instalável com OAuth Google verificado. Esta autorização substitui as restrições históricas de publicação acima, sem aprovar automaticamente a homologação nem comprovar verificação Google. O remoto `ba3e33d` foi mesclado preservando o histórico local `2664ed9` e o trabalho anteriormente não commitado; cópias integrais permanecem em stash local.
+
+O candidato usa versão 1.0.0 conforme o escopo original; a pré-release histórica 0.1.0 permanece intacta. Não há configuração OAuth no ambiente Process/User/Machine nesta execução, e não foi fornecida evidência da verificação do projeto Google. Build sem cliente incorporado não deve ser publicado como release funcional. Carga Google real, Windows limpo e homologação humana permanecem pendentes. Evidências novas em `docs/evidence/release-integration/`.
+
+Compilação atual concluída: candidato NSIS Windows x64 1.0.0, sem cliente OAuth incorporado e sem assinatura. Artefato/hashes e testes em [relatório da integração](evidence/release-integration/report.md). A geração do instalador não conclui homologação nem autoriza afirmar OAuth verificado. Publicação funcional continua pendente da configuração/projeto Google e das provas reais. Não houve instalação/abertura deste novo candidato no perfil real.
+
+
+### Atualização — audiência OAuth interna
+
+O usuário informou que o console Google dispensa verificação porque o projeto está configurado com tipo de usuário Interno. Nesse cenário, não exigir aprovação pública como pré-condição: o OAuth limita-se aos membros da organização Google Cloud/Workspace do projeto e às políticas administrativas correspondentes. Fonte: https://support.google.com/cloud/answer/15549945#user-type-internal . A informação é relato do usuário; o nome/ID do projeto e o JSON Desktop ainda não foram fornecidos. O bloqueio atual é obter a configuração Desktop autorizada e comprovar login do candidato com conta interna elegível, além das homologações já pendentes. Não alterar a audiência para Externo nem ampliar escopos automaticamente. A futura release deve informar que o login é restrito à organização.
