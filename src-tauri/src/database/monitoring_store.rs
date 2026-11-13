@@ -309,6 +309,8 @@ fn insert_operational(
     Ok(())
 }
 
+// Only rule-bound integrity updates belong in alerts; operational diagnostics remain visible.
+const NOTICE_RELEVANT: &str = "(source='operational' OR EXISTS(SELECT 1 FROM integrity_events e WHERE e.event_id=notification_outbox.integrity_event_id AND e.account_id=notification_outbox.account_id AND json_extract(e.event_json,'$.category')='integrity' AND length(trim(COALESCE(json_extract(e.event_json,'$.rule_id'),'')))>0))";
 const NOTICE_SELECT: &str = "SELECT id,COALESCE(integrity_event_id,operational_event_id),source,spreadsheet_id,spreadsheet_name,sheet_id,severity,diagnosis,detected_at,state,attempt_count,last_attempt_ms,submitted_ms,group_id,COALESCE((SELECT json_extract(j.value,'$.title') FROM registered_spreadsheets r,json_each(r.tabs_json) j WHERE r.account_id=notification_outbox.account_id AND r.spreadsheet_id=notification_outbox.spreadsheet_id AND json_extract(j.value,'$.sheet_id')=notification_outbox.sheet_id LIMIT 1),(SELECT json_extract(j.value,'$.title') FROM integrity_events e JOIN integrity_scopes s ON s.id=e.scope_id AND s.account_id=e.account_id JOIN baseline_versions b ON b.id=s.active_baseline_id AND b.account_id=e.account_id JOIN structural_snapshots ss ON ss.id=b.snapshot_id AND ss.account_id=e.account_id,json_each(ss.snapshot_json,'$.sheets') j WHERE e.account_id=notification_outbox.account_id AND e.event_id=notification_outbox.integrity_event_id AND json_extract(j.value,'$.sheet_id')=notification_outbox.sheet_id LIMIT 1)),COALESCE((SELECT json_extract(e.event_json,'$.kind') FROM integrity_events e WHERE e.account_id=notification_outbox.account_id AND e.event_id=notification_outbox.integrity_event_id LIMIT 1),(SELECT m.kind FROM monitoring_operational_events m WHERE m.account_id=notification_outbox.account_id AND m.id=notification_outbox.operational_event_id LIMIT 1)),(SELECT m.code FROM monitoring_operational_events m WHERE m.account_id=notification_outbox.account_id AND m.id=notification_outbox.operational_event_id LIMIT 1) FROM notification_outbox";
 fn notice(r: &rusqlite::Row<'_>) -> rusqlite::Result<NotificationRecord> {
     let source: String = r.get(2)?;
@@ -343,6 +345,7 @@ fn notice(r: &rusqlite::Row<'_>) -> rusqlite::Result<NotificationRecord> {
         event_kind,
         event_type_label,
         diagnosis,
+        diagnostic_code: operational_code.unwrap_or(raw_diagnosis),
         detected_at,
         formatted_detected_at,
         state: r.get(9)?,
@@ -380,12 +383,12 @@ impl Database {
         let total = self
             .connection
             .query_row(
-                "SELECT count(*) FROM notification_outbox WHERE account_id=?1",
+                &format!("SELECT count(*) FROM notification_outbox WHERE account_id=?1 AND {NOTICE_RELEVANT}"),
                 [&aid],
                 |r| r.get(0),
             )
             .map_err(sql)?;
-        let mut stmt=self.connection.prepare(&format!("{NOTICE_SELECT} WHERE account_id=?1 ORDER BY created_ms DESC,id DESC LIMIT ?2 OFFSET ?3")).map_err(sql)?;
+        let mut stmt=self.connection.prepare(&format!("{NOTICE_SELECT} WHERE account_id=?1 AND {NOTICE_RELEVANT} ORDER BY created_ms DESC,id DESC LIMIT ?2 OFFSET ?3")).map_err(sql)?;
         let items = stmt
             .query_map(params![aid, limit, offset], notice)
             .map_err(sql)?
@@ -406,7 +409,7 @@ impl Database {
         let aid = account(&self.connection, subject)?;
         self.connection
             .query_row(
-                &format!("{NOTICE_SELECT} WHERE account_id=?1 AND id=?2"),
+                &format!("{NOTICE_SELECT} WHERE account_id=?1 AND id=?2 AND {NOTICE_RELEVANT}"),
                 params![aid, id],
                 notice,
             )
@@ -495,7 +498,7 @@ impl Database {
         // Dispatch in progress at interruption is ambiguous; keep its immutable attempt.
         tx.execute("UPDATE notification_attempts SET outcome='ambiguous',completed_ms=?2 WHERE outcome='dispatching' AND notification_id IN(SELECT id FROM notification_outbox WHERE account_id=?1 AND state='dispatching' AND (lease_owner!=?3 OR lease_until_ms<=?2))",params![aid,now_ms,owner]).map_err(sql)?;
         tx.execute("UPDATE notification_outbox SET state='retry',lease_owner=NULL,lease_until_ms=NULL WHERE account_id=?1 AND state='dispatching' AND (lease_owner!=?2 OR lease_until_ms<=?3)",params![aid,owner,now_ms]).map_err(sql)?;
-        let id:Option<String>=tx.query_row("SELECT id FROM notification_outbox WHERE account_id=?1 AND state IN('pending','retry') AND next_attempt_ms<=?2 AND expires_ms>?2 ORDER BY created_ms,id LIMIT 1",params![aid,now_ms],|r|r.get(0)).optional().map_err(sql)?;
+        let id:Option<String>=tx.query_row(&format!("SELECT id FROM notification_outbox WHERE account_id=?1 AND {NOTICE_RELEVANT} AND state IN('pending','retry') AND next_attempt_ms<=?2 AND expires_ms>?2 ORDER BY created_ms,id LIMIT 1"),params![aid,now_ms],|r|r.get(0)).optional().map_err(sql)?;
         let Some(id) = id else {
             tx.commit().map_err(sql)?;
             return Ok(None);
@@ -622,7 +625,7 @@ impl Database {
         let aid = account(&tx, subject)?;
         expire(&tx, &aid, now_ms)?;
         let count = if enabled(&tx, &aid)? {
-            tx.execute("UPDATE notification_outbox SET state='retry',next_attempt_ms=?2 WHERE account_id=?1 AND state='permission_blocked' AND expires_ms>?2",params![aid,now_ms]).map_err(sql)?
+            tx.execute(&format!("UPDATE notification_outbox SET state='retry',next_attempt_ms=?2 WHERE account_id=?1 AND {NOTICE_RELEVANT} AND state='permission_blocked' AND expires_ms>?2"),params![aid,now_ms]).map_err(sql)?
         } else {
             0
         };

@@ -10,9 +10,9 @@ A aplicação pode propor regras, mas o usuário deve revisar e salvar. Capture 
 
 ## Operar
 
-Na visão geral, Iniciar monitoramento ativa o serviço Rust para arquivos elegíveis. O intervalo inicial é60s, configurável até300s, com no máximo três verificações globais e uma por arquivo. Ações manuais compartilham a fila. Uma condição de capacidade insuficiente deve ser investigada; não representa garantia de frequência cumprida em toda rede/tamanho de planilha.
+Na visão geral, Iniciar monitoramento ativa o serviço Rust para arquivos elegíveis. O intervalo inicial é 60s, configurável entre 60 e 600s, com no máximo três verificações globais e uma por arquivo. Ações manuais compartilham a fila. O próximo prazo considera a conclusão, sem sobrepor nem reproduzir ciclos perdidos. Uma condição de capacidade insuficiente deve ser investigada; não representa garantia de frequência cumprida em toda rede/tamanho de planilha.
 
-Online significa obrigações aprovadas satisfeitas no escopo observado. Offline indica violação crítica comprovada. Indeterminado registra falta de prova, falha de rede/permissão/API ou ambiguidade; não é convertido em Offline por conveniência. Verificando indica trabalho em andamento. Mudanças permitidas de conteúdo geram histórico sem necessariamente danificar integridade.
+Online significa obrigações aprovadas satisfeitas no escopo observado. Offline indica violação crítica comprovada. Indeterminado registra falta de prova, falha de rede/permissão/API ou ambiguidade; não é convertido em Offline por conveniência. Verificando indica trabalho em andamento. A linha do tempo e seus exports mostram somente atualizações de regras; edições livres não são alertas de proteção. Diagnósticos de consulta permanecem em Monitoramento.
 
 Pause um arquivo para suspender sua verificação ou pause o monitoramento geral. Editar/remover cadastro são operações locais; não excluem planilhas Google. Histórico padrão é90dias, ajustável conforme a proteção; retenção preserva referências e estado necessário à deduplicação.
 
@@ -22,4 +22,19 @@ Fechar com X oculta para bandeja quando disponível. Sem bandeja utilizável, a 
 
 O histórico mantém eventos e estado das tentativas de alerta. Submissão nativa registrada significa chamada aceita, sem provar exibição ou leitura. Windows/Não incomodar podem bloquear. Preferência desligada suprime eventos sem backfill ao ativar; reenvio de bloqueados é ação explícita e respeita retenção. Não há promessa de exatamente uma exibição após crash.
 
-O produto somente lê Sheets, Drive e Apps Script, sem executar scripts. Login, revogação, aprovação de referência e alertas reais não são substituídos por fixtures.
+O produto somente lê planilhas e Apps Script, sem executar scripts. Com sincronização opcional habilitada, grava apenas configurações na pasta privada do app no Drive. Login, revogação, aprovação de referência e alertas reais não são substituídos por fixtures.
+
+## Exportar atualizações
+
+Em Atividades, selecione período, planilha, aba e tipo de evento e use Exportar logs. CSV UTF-8 com BOM é compatível com Excel; JSON continua disponível. O export aplica todos os filtros ao conjunto completo, não apenas à página atual, em ordem cronológica. Datas da interface abrangem o dia local inteiro, convertido para UTC na consulta; nenhuma correspondência cria arquivo vazio. CSV neutraliza células que poderiam ser interpretadas como fórmulas. Não há dependência adicional para XLSX.
+
+Falhas de autenticação, rede, permissão, sincronização e cota trazem causa, impacto e solução. Aguarde o prazo de cota antes de repetir consultas; aumentar o intervalo pode reduzir pressão, mas não corrige permissões. Nenhuma mensagem autoriza correção automática ou garante entrega visual do Windows.
+
+
+## Recuperar configurações em outro computador
+
+Em Configurações, marque Sincronizar configurações entre dispositivos e salve/autorize no navegador. Repita no outro computador com a mesma conta Google e aplicação OAuth. Um perfil vazio recupera cadastros, abas, regras e referências aprovadas automaticamente; preferências locais de inicialização não são transferidas. Sem rede, os dados locais permanecem disponíveis e serão reconciliados após a recuperação.
+
+Se houver configurações divergentes, escolha explicitamente manter a local ou usar uma versão remota. Nada é substituído automaticamente nesse caso; cópias e referências anteriores ficam preservadas no SQLite. Se outra alteração ocorrer antes da decisão, atualize o conflito e decida novamente. A nuvem mantém commits imutáveis; atingir o limite de listagem interrompe a sincronização com erro, sem truncar dados. Após restauração, a primeira leitura estabelece uma nova observação local e confirma o acesso aos recursos; referências restauradas não concedem permissões Google.
+
+Para consultar editores do arquivo, habilite Auditoria Workspace e autorize com uma conta com privilégio de auditoria. No diagnóstico de um evento, use Consultar auditoria Workspace. Esses editores não são presumidos responsáveis pela diferença detectada. A ausência de registros pode indicar atraso, retenção, permissão ou identidade indisponível.

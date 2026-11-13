@@ -6,7 +6,7 @@ A **Sprint 05 está concluída tecnicamente**: monitoramento contínuo Rust, not
 
 O fluxo diário usa a conta Google conectada e dados do backend. O cadastro admite até 30 arquivos, incluindo pausados; a descoberta não limita a lista a 30. Cada proteção exige abas, regras e uma baseline correspondente aprovada pelo usuário. Nenhuma operação altera arquivos Google ou executa Apps Script.
 
-Inicie o monitoramento na visão geral. O serviço verifica arquivos elegíveis a cada 60–300 segundos, com até três verificações concorrentes, mesmo com a janela oculta. Fechar oculta para a bandeja quando disponível; use **Sair** para encerrar. Autostart é opt-in por usuário Windows e permanece desligado até uma ação explícita. Notificações também ficam desligadas por padrão.
+Inicie o monitoramento na visão geral. O serviço verifica arquivos elegíveis a cada 60–600 segundos, com até três verificações concorrentes, mesmo com a janela oculta. Fechar oculta para a bandeja quando disponível; use **Sair** para encerrar. Autostart é opt-in por usuário Windows e permanece desligado até uma ação explícita. Notificações também ficam desligadas por padrão.
 
 O mantenedor provisiona o cliente OAuth Desktop da aplicacao antes da distribuicao; o usuario comum apenas entra com Google. O modo avancado serve ao desenvolvimento autorizado. Sem provisionamento, o aplicativo informa essa pendencia, sem fabricar integracao ou exigir credenciais Cloud no fluxo diario. Publicacao Google e homologacao local sao coisas distintas.
 

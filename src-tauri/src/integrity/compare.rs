@@ -229,6 +229,9 @@ pub fn evaluate(
                     ));
                 }
             }
+            if !rule.allow_record_deletion && region.complete {
+                check_record_deletion(id, rule, expected, region, &mut findings);
+            }
             check_formulas(
                 FormulaRegionContext {
                     sheet_id: id,
@@ -931,6 +934,58 @@ fn header_differences(
         ));
     }
 }
+fn check_record_deletion(
+    sheet: u32,
+    rule: &RegionRule,
+    before: &RegionSnapshot,
+    after: &RegionSnapshot,
+    findings: &mut Vec<Finding>,
+) {
+    let keyed = rule.key_column.is_some() && unique_keys(&before.rows) && unique_keys(&after.rows);
+    let missing = if keyed {
+        let keys: BTreeSet<_> = after
+            .rows
+            .iter()
+            .filter_map(|row| row.key_hash.as_ref())
+            .collect();
+        before
+            .rows
+            .iter()
+            .filter(|row| row.key_hash.as_ref().is_some_and(|key| !keys.contains(key)))
+            .count()
+    } else {
+        before.rows.len().saturating_sub(after.rows.len())
+    };
+    let uncertain = !keyed
+        && missing == 0
+        && !before
+            .rows
+            .iter()
+            .map(|row| &row.fingerprint)
+            .eq(after.rows.iter().map(|row| &row.fingerprint));
+    if missing > 0 || uncertain {
+        findings.push(finding(
+            Some(sheet),
+            &rule.id,
+            "record_deletion",
+            if uncertain {
+                "record_deletion_unproven"
+            } else {
+                "protected_record_removed"
+            },
+            rule.critical,
+            if uncertain {
+                FindingOutcome::Inconclusive
+            } else {
+                FindingOutcome::Violation
+            },
+            Some(before.rows.len().to_string()),
+            Some(after.rows.len().to_string()),
+            None,
+        ));
+    }
+}
+
 fn row_differences(
     sheet: u32,
     rule: &RegionRule,

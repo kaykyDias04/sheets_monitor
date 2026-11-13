@@ -54,3 +54,11 @@ A descoberta Drive consulta nomes e identificadores de arquivos em páginas limi
 Cadastro e histórico são segregados por conta autenticada, sem aceitar identidade da conta como argumento confiável do frontend. Mutações fixam geração de sessão e revisão do registro; baselines fixam fingerprint e versão esperada; verificações fixam revisão no commit da avaliação. Respostas tardias são descartadas na interface. A remoção local nunca executa exclusão Drive.
 
 O cliente OAuth Desktop opcionalmente provisionado no build é da aplicação. Nenhum valor real entra no repositório. Um segredo incorporado em cliente público não é confidencial; PKCE continua obrigatório. Cofre indisponível não impede a abertura da interface, que informa o erro. Configurações existentes não são substituídas pelo provisionamento.
+
+## Nuvem e auditoria opcionais
+
+As leituras de planilhas/scripts permanecem sem escrita. A exceção explícita é o armazenamento de configurações na pasta privada do app no Drive, com escopo opt-in `drive.appdata`. Não existe endpoint IPC para escolher URL, pasta ou conteúdo arbitrário de upload. O consentimento PKCE completo é solicitado no navegador; alterar uma preferência não fabrica uma concessão.
+
+O payload é uma lista permitida de campos: cadastro, seleção, escopo, preferências portáveis e snapshots de referências humanas aprovadas. Pode conter nomes, cabeçalhos e fórmulas protegidas; hashes não são criptografia. Usa TLS e o controle de acesso Google da appDataFolder, não criptografia ponta a ponta. Tokens, client secret, cofre, logs e flags de inicialização não entram no payload. Para recuperar em outro computador, use a mesma conta e a mesma aplicação OAuth; ao revogar o opt-in, nenhuma versão remota é apagada.
+
+Auditoria usa `admin.reports.audit.readonly` separadamente, com consentimento e privilégio Workspace apropriados. Identidades omitidas/ambíguas permanecem não identificadas; edição do arquivo não é atribuída a uma diferença de célula/aba. Dados de auditoria ficam transitórios na UI e não entram na sincronização ou evidência pública.

@@ -376,13 +376,13 @@ fn network_is_indeterminate_backoff_and_recovery_is_distinct() {
     assert!(service.shutdown(Duration::from_secs(5)));
 }
 #[test]
-fn interval_change_to_300_is_persisted_from_completion_and_restart_replans_once() {
+fn interval_change_to_600_is_persisted_from_completion_and_restart_replans_once() {
     let (_dir, service, clock, executor) = fixture(2, 2);
     service.tick().unwrap();
     until(|| service.status().active == 0);
     let mut db = Database::open(&service.runtime.database_path).unwrap();
     let mut prefs = db.management_preferences("fixture_account").unwrap();
-    prefs.interval_seconds = 300;
+    prefs.interval_seconds = 600;
     db.save_management_preferences("fixture_account", &prefs)
         .unwrap();
     clock.0.fetch_add(1_000, Ordering::SeqCst);
@@ -394,19 +394,19 @@ fn interval_change_to_300_is_persisted_from_completion_and_restart_replans_once(
         .into_iter()
         .find(|r| r.spreadsheet_id == "file_0")
         .unwrap();
-    assert_eq!(first.next_run_ms, clock.now_ms() + 300_000);
+    assert_eq!(first.next_run_ms, clock.now_ms() + 600_000);
     let previous = executor.started.load(Ordering::SeqCst);
     service.tick().unwrap();
     assert_eq!(executor.started.load(Ordering::SeqCst), previous);
     service.state.lock().unwrap().last_tick = 0;
-    clock.0.fetch_add(600_000, Ordering::SeqCst);
+    clock.0.fetch_add(1_200_000, Ordering::SeqCst);
     service.tick().unwrap();
     until(|| service.status().active == 0);
     let rows = db.monitoring_schedules("fixture_account").unwrap();
     assert!(rows.iter().all(|r| r.next_run_ms >= clock.now_ms()));
     assert!(rows
         .iter()
-        .any(|r| r.next_run_ms == clock.now_ms() + 150_000));
+        .any(|r| r.next_run_ms == clock.now_ms() + 300_000));
     assert!(service.shutdown(Duration::from_secs(5)));
 }
 #[test]

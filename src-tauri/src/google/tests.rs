@@ -195,7 +195,16 @@ fn errors_are_closed_and_only_safe_transients_retry() {
         (401, ApiError::Unauthorized, 1),
         (403, ApiError::Forbidden, 1),
         (404, ApiError::NotFound, 1),
-        (429, ApiError::RateLimited, 3),
+        (
+            429,
+            ApiError::Quota {
+                api: "Sheets API".into(),
+                operation: "spreadsheets.get".into(),
+                reason: "RESOURCE_EXHAUSTED".into(),
+                limit: None,
+            },
+            3,
+        ),
         (503, ApiError::Server { status: 503 }, 3),
     ] {
         let a = api((0..attempts)
@@ -263,5 +272,24 @@ fn malformed_json_oversize_redirect_and_expired_deadline_fail() {
             Instant::now() - Duration::from_secs(1)
         ),
         Err(ApiError::Timeout)
+    );
+}
+
+#[test]
+fn exhausted_quota_stops_remaining_batches_and_preserves_safe_diagnosis() {
+    let body = json!({"error":{"status":"RESOURCE_EXHAUSTED","message":"PRIVATE_PROJECT_SECRET",
+        "details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo",
+            "metadata":{"quota_limit":"ReadRequestsPerMinutePerUser","consumer":"PRIVATE_PROJECT"}}]}});
+    let a = api((0..3).map(|_| response(403, body.clone())).collect());
+    let error = a.sheet_metadata("sheet_1").unwrap_err();
+    assert_eq!(error.kind(), "rate_limited");
+    assert!(error.to_string().contains("Sheets API / spreadsheets.get"));
+    assert!(error.to_string().contains("ReadRequestsPerMinutePerUser"));
+    assert!(!error.to_string().contains("PRIVATE"));
+    assert!(a.sheet_metadata("sheet_1").is_err());
+    assert_eq!(a.transport.urls.borrow().len(), 3);
+    assert_eq!(
+        *a.transport.waits.borrow(),
+        [Duration::from_secs(1), Duration::from_secs(2)]
     );
 }

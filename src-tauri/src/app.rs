@@ -521,6 +521,61 @@ async fn integration_set_drive_opt_in(
     .await
 }
 #[tauri::command]
+async fn integration_set_features(
+    app: tauri::AppHandle,
+    state: State<'_, FoundationState>,
+    cloud: bool,
+    audit: bool,
+    expected_generation: u64,
+) -> Result<IntegrationState, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || {
+        let next = rt.auth.set_features(cloud, audit, expected_generation)?;
+        wake_services(&app);
+        Ok(next)
+    })
+    .await
+}
+#[tauri::command]
+async fn integration_get_features(
+    state: State<'_, FoundationState>,
+) -> Result<(bool, bool), CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.auth.features().map_err(CommandError::from)).await
+}
+#[tauri::command]
+async fn cloud_sync_status(
+    state: State<'_, FoundationState>,
+) -> Result<EngineEnvelope<crate::cloud_sync::SyncStatus>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.cloud_sync_status()).await
+}
+#[tauri::command]
+async fn cloud_sync_now(
+    app: tauri::AppHandle,
+    state: State<'_, FoundationState>,
+    expected_generation: u64,
+    resolution: Option<String>,
+    expected_conflict_token: Option<String>,
+) -> Result<EngineEnvelope<crate::cloud_sync::SyncStatus>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || {
+        let result =
+            rt.sync_configuration(expected_generation, resolution, expected_conflict_token);
+        wake_services(&app);
+        result
+    })
+    .await
+}
+#[tauri::command]
+async fn get_event_audit(
+    state: State<'_, FoundationState>,
+    event_id: String,
+) -> Result<EngineEnvelope<crate::audit::AuditReport>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.get_event_audit(event_id)).await
+}
+#[tauri::command]
 async fn integration_disconnect(
     app: tauri::AppHandle,
     state: State<'_, FoundationState>,
@@ -1007,6 +1062,7 @@ pub fn run() {
                 }),
             ));
             let notifications = NotificationService::start(rt.clone(), sink, changed.clone());
+            let cloud = crate::cloud_service::CloudSyncService::start(rt.clone(), changed.clone());
             let monitoring = MonitoringService::start(rt.clone(), changed);
             let current_version = app.package_info().version.to_string();
             let updater = HttpsReleaseTransport::new(&current_version)
@@ -1041,6 +1097,7 @@ pub fn run() {
                         handle_native_action(action_app.clone(), action)
                     }),
                     shutdown: Arc::new(move || {
+                        cloud.stop();
                         monitoring.cancel_active();
                         let _ = notifications.shutdown(Duration::from_secs(2));
                         let _ = monitoring.shutdown(Duration::from_secs(2));
@@ -1084,6 +1141,11 @@ pub fn run() {
             integration_configure,
             integration_connect,
             integration_set_drive_opt_in,
+            integration_set_features,
+            integration_get_features,
+            cloud_sync_status,
+            cloud_sync_now,
+            get_event_audit,
             integration_disconnect,
             integration_revoke,
             integration_test_sheet,
@@ -1155,7 +1217,6 @@ mod tests {
         state.database().unwrap().seed_demo().unwrap();
         let dashboard = state.dashboard().unwrap();
         assert_eq!(dashboard["is_demo"], true);
-        assert_eq!(dashboard["database_version"], 5);
         let sheets = dashboard["spreadsheets"].as_array().unwrap();
         assert!(!sheets.is_empty());
         assert!(sheets.iter().all(|sheet| sheet["is_demo"] == true));

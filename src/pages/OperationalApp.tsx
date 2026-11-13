@@ -49,6 +49,7 @@ import { SpreadsheetDetails } from "./SpreadsheetDetails";
 import { ActivitiesPanel } from "./ActivitiesPanel";
 import { AccountCard, PreferenceForm } from "./OperationalSettings";
 import { MonitoringWorkspace } from "./MonitoringWorkspace";
+import { CloudSyncPanel } from "./CloudSyncPanel";
 
 type Route = "overview" | "sheets" | "details" | "activities" | "settings";
 const routes = [
@@ -1363,6 +1364,7 @@ export function OperationalApp() {
               {route === "settings" && (
                 <div className="op-stack">
                   <AccountCard {...accountActions} />
+                  <CloudSyncPanel onChanged={() => void refresh()} />
                   {preferences && (
                     <PreferenceForm
                       key={JSON.stringify(preferences)}

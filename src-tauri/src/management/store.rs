@@ -379,7 +379,7 @@ impl Database {
         subject: &str,
         p: &Preferences,
     ) -> Result<Preferences> {
-        if !(60..=300).contains(&p.interval_seconds)
+        if !(60..=600).contains(&p.interval_seconds)
             || !(1..=3650).contains(&p.history_days)
             || !matches!(p.theme.as_str(), "system" | "light" | "dark")
             || p.start_with_windows
@@ -434,27 +434,7 @@ FROM integrity_events e
 JOIN integrity_reports p ON p.check_id=e.check_id AND p.account_id=e.account_id
 JOIN integrity_scopes s ON s.id=e.scope_id AND s.account_id=e.account_id
 JOIN registered_spreadsheets r ON r.account_id=e.account_id AND r.spreadsheet_id=s.spreadsheet_id
-WHERE e.account_id=?1
-UNION ALL
-SELECT m.id AS event_id,'operational' AS source,m.spreadsheet_id AS spreadsheet_id,r.name AS spreadsheet_name,NULL AS sheet_id,NULL AS sheet_title,
-strftime('%Y-%m-%dT%H:%M:%fZ', m.detected_ms / 1000.0, 'unixepoch') AS detected_at,
-julianday(strftime('%Y-%m-%dT%H:%M:%fZ', m.detected_ms / 1000.0, 'unixepoch')) AS detected_jd,
-m.kind AS kind,'operational' AS category,
-CASE WHEN m.kind='recovered' THEN 'info' ELSE 'warning' END AS severity,
-m.code AS diagnosis,NULL AS rule_id,
-CASE WHEN m.kind='recovered' THEN 'online' ELSE 'indeterminate' END AS status,
-r.removed AS removed,
-CASE WHEN m.kind='recovered' THEN 'resolution' ELSE 'failure' END AS event_type,
-CASE
-  WHEN m.kind='recovered' THEN 'resolved'
-  WHEN EXISTS(SELECT 1 FROM monitoring_operational_events m2 WHERE m2.account_id=m.account_id AND m2.spreadsheet_id=m.spreadsheet_id AND m2.kind='recovered' AND m2.detected_ms>m.detected_ms) THEN 'resolved'
-  WHEN COALESCE((SELECT ms.operational_code FROM monitoring_schedules ms WHERE ms.account_id=m.account_id AND ms.spreadsheet_id=m.spreadsheet_id),'') != '' THEN 'active'
-  ELSE 'resolved'
-END AS issue_status,
-NULL AS event_json
-FROM monitoring_operational_events m
-JOIN registered_spreadsheets r ON r.account_id=m.account_id AND r.spreadsheet_id=m.spreadsheet_id
-WHERE m.account_id=?1
+WHERE e.account_id=?1 AND json_extract(e.event_json,'$.category')='integrity' AND length(trim(COALESCE(json_extract(e.event_json,'$.rule_id'),'')))>0
 )";
 
 const UNIFIED_EVENTS_WHERE: &str = " FROM unified u WHERE (?2 IS NULL OR u.spreadsheet_id=?2) AND (?3 IS NULL OR u.sheet_id=?3) AND (?4 IS NULL OR u.detected_jd>=julianday(?4)) AND (?5 IS NULL OR u.detected_jd<=julianday(?5)) AND (?6 IS NULL OR u.kind=?6) AND (?7 IS NULL OR u.severity=?7) AND (?8 IS NULL OR u.status=?8) AND (?9 IS NULL OR u.category=?9) AND (NOT ?10 OR u.category='script' OR u.kind LIKE '%script%' OR COALESCE(u.rule_id,'') LIKE 'script%') AND (?11='' OR instr(lower(u.spreadsheet_name||' '||COALESCE(u.sheet_title,'')||' '||u.diagnosis||' '||COALESCE(u.rule_id,'')),lower(?11))>0) AND (?12 IS NULL OR u.event_type=?12) AND (?13 IS NULL OR u.issue_status=?13)";

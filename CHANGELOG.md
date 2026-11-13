@@ -1,5 +1,15 @@
 # Changelog
 
+## Não publicado
+
+- Intervalo operacional e legado ampliado para 60–600 segundos, preservando a fila e exclusão por arquivo.
+- Histórico/export CSV e JSON limitados a regras protegidas; filtros combinados e export completo preservados.
+- Falhas de consulta com causa, impacto e solução; diagnósticos operacionais separados das atualizações de proteção.
+- Regra de proibição de exclusão passa a detectar registros sem depender da presença de fórmula.
+- Contexto de auditoria separado de autoria, com fallback “Responsável não identificado”.
+- Diagnóstico de cotas identifica API, operação e limite informado pelo Google; tentativas limitadas respeitam espera exponencial e `Retry-After`.
+- Sincronização opcional de cadastros, abas, regras e referências na pasta privada do aplicativo no Drive, com cache e recuperação local; tokens e credenciais permanecem no dispositivo.
+
 ## 1.0.0 — candidato local em homologação,03/11/2026
 
 Sem release pública ou distribuição a terceiros. Sprints01–05 preservadas: OAuth PKCE/cofre, leitores Google somente leitura, motor determinístico/baselines humanas, gestão/histórico, serviço Rust/outbox/bandeja e autostart opt-in.

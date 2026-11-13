@@ -1,4 +1,7 @@
-use super::{AuthCode, AuthError, AuthResult, DRIVE_SCOPE, SCRIPT_SCOPE, SHEETS_SCOPE};
+use super::{
+    AuthCode, AuthError, AuthResult, AUDIT_SCOPE, CLOUD_SCOPE, DRIVE_SCOPE, SCRIPT_SCOPE,
+    SHEETS_SCOPE,
+};
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 use rand::{rngs::OsRng, RngCore};
 use sha2::{Digest, Sha256};
@@ -11,7 +14,7 @@ use std::{
 use url::Url;
 use zeroize::Zeroizing;
 
-pub(super) fn scopes(drive: bool) -> Vec<String> {
+pub(super) fn scopes(drive: bool, cloud: bool, audit: bool) -> Vec<String> {
     let mut scopes = vec![
         "openid".into(),
         "email".into(),
@@ -21,6 +24,12 @@ pub(super) fn scopes(drive: bool) -> Vec<String> {
     ];
     if drive {
         scopes.push(DRIVE_SCOPE.into());
+    }
+    if cloud {
+        scopes.push(CLOUD_SCOPE.into());
+    }
+    if audit {
+        scopes.push(AUDIT_SCOPE.into());
     }
     scopes
 }
@@ -49,7 +58,11 @@ pub(super) struct PendingAuthorization {
     deadline: Instant,
 }
 impl PendingAuthorization {
-    pub fn new(client_id: &str, drive: bool, timeout: Duration) -> AuthResult<Self> {
+    pub fn new(
+        client_id: &str,
+        requested_scopes: &[String],
+        timeout: Duration,
+    ) -> AuthResult<Self> {
         let listener = TcpListener::bind("127.0.0.1:0")
             .map_err(|_| AuthError::new(AuthCode::CallbackInvalid))?;
         listener
@@ -68,7 +81,7 @@ impl PendingAuthorization {
             .append_pair("client_id", client_id)
             .append_pair("redirect_uri", &redirect_uri)
             .append_pair("response_type", "code")
-            .append_pair("scope", &scopes(drive).join(" "))
+            .append_pair("scope", &requested_scopes.join(" "))
             .append_pair("state", &state)
             .append_pair("code_challenge", &challenge(&verifier))
             .append_pair("code_challenge_method", "S256")
@@ -247,7 +260,7 @@ mod tests {
         assert_eq!(random_urlsafe().len(), 43);
         let pending = PendingAuthorization::new(
             "fixture.apps.googleusercontent.com",
-            false,
+            &scopes(false, false, false),
             Duration::from_secs(2),
         )
         .unwrap();
@@ -256,8 +269,8 @@ mod tests {
         assert_eq!(query["code_challenge_method"], "S256");
         assert!(!query.contains_key("include_granted_scopes"));
         assert!(!query["scope"].contains("drive"));
-        assert!(scopes(true).contains(&DRIVE_SCOPE.to_string()));
-        assert!(!scopes(true)
+        assert!(scopes(true, false, false).contains(&DRIVE_SCOPE.to_string()));
+        assert!(!scopes(true, false, false)
             .iter()
             .any(|s| s.ends_with("drive.file") || s.ends_with("drive.readonly")));
         assert!(pending.listener.local_addr().unwrap().ip().is_loopback());
@@ -300,14 +313,14 @@ mod tests {
     fn loopback_is_single_use_times_out_and_can_be_cancelled_without_browser() {
         let pending = PendingAuthorization::new(
             "fixture.apps.googleusercontent.com",
-            false,
+            &scopes(false, false, false),
             Duration::from_millis(5),
         )
         .unwrap();
         assert_eq!(pending.wait(|| false).unwrap_err().code, AuthCode::Timeout);
         let pending = PendingAuthorization::new(
             "fixture.apps.googleusercontent.com",
-            false,
+            &scopes(false, false, false),
             Duration::from_secs(5),
         )
         .unwrap();

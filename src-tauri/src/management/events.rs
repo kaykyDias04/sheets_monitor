@@ -175,6 +175,17 @@ fn split_count(code: &str) -> (&str, u32) {
 
 pub fn diagnosis_pt_br(code: &str, kind: Option<&str>) -> String {
     let trimmed = code.trim();
+    if let Some(detail) = trimmed.strip_prefix("rate_limited|") {
+        let detail: String = detail
+            .chars()
+            .filter(|ch| !ch.is_control())
+            .take(512)
+            .collect();
+        return format!(
+            "{} Detalhes: {detail}",
+            diagnosis_pt_br("rate_limited", kind)
+        );
+    }
     if trimmed.is_empty() {
         return match infer_kind(kind, "") {
             "recovered" => {
@@ -260,6 +271,8 @@ pub fn diagnosis_pt_br(code: &str, kind: Option<&str>) -> String {
         "protected_formula_removed_or_replaced" => {
             "Fórmula protegida foi removida ou substituída por valor fixo.".into()
         }
+        "protected_record_removed" => "Um registro da referência foi removido, contrariando a regra de preservação de registros.".into(),
+        "record_deletion_unproven" => "Não foi possível comprovar a preservação dos registros sem uma chave única estável.".into(),
         "protected_formula_changed" => "Expressão de fórmula protegida foi alterada.".into(),
         "formula_sheet_reference_missing" => "Fórmula protegida referencia aba inexistente.".into(),
         "formula_equivalence_unproven" => {
@@ -269,21 +282,14 @@ pub fn diagnosis_pt_br(code: &str, kind: Option<&str>) -> String {
             "Metadados estruturais da planilha não puderam ser lidos.".into()
         }
         "capture_incomplete" => "Leitura parcial impediu concluir toda a verificação.".into(),
-        "network" | "network_failed" => "Falha de conexão ao consultar o Google.".into(),
-        "timeout" => "Tempo limite excedido ao consultar o Google.".into(),
-        "rate_limited" | "quota_exceeded" => {
-            "Limite temporário de requisições da API Google atingido.".into()
-        }
-        "unauthorized" | "reconnect_required" => {
-            "Sessão Google expirada ou desconectada; reconecte a conta.".into()
-        }
-        "forbidden" | "permission_denied" | "insufficient_scope" => {
-            "Permissão insuficiente para ler a planilha ou script.".into()
-        }
-        "not_found" => "Arquivo não encontrado ou acesso revogado no Google.".into(),
-        "server_error" | "service_unavailable" => {
-            "Serviço do Google temporariamente indisponível.".into()
-        }
+        "network" | "network_failed" => "Causa: falha de conexão com o Google. Impacto: estado atual não confirmado. Solução: confira a internet e aguarde a próxima tentativa.".into(),
+        "timeout" => "Causa: consulta Google excedeu o tempo limite. Impacto: verificação não concluída. Solução: confira a conexão e aguarde a próxima tentativa.".into(),
+        "rate_limited" | "quota_exceeded" => "Causa: limite temporário de consultas Google atingido. Impacto: leituras adiadas, sem confirmação do estado atual. Solução: aguarde o prazo de nova tentativa e evite consultas manuais repetidas.".into(),
+        "auth_required" | "authentication_required" | "token_expired" | "invalid_grant" | "unauthorized" | "reconnect_required" => "Causa: conta Google desconectada ou autorização expirada. Impacto: leitura suspensa, sem confirmação do estado atual. Solução: conecte ou reautorize a conta em Configurações.".into(),
+        "forbidden" | "permission_denied" | "insufficient_scope" => "Causa: permissão de leitura insuficiente. Impacto: recurso não verificado; não comprova violação estrutural. Solução: confira o compartilhamento e reautorize as permissões da conta.".into(),
+        "not_found" => "Causa: arquivo não encontrado ou acesso revogado. Impacto: recurso não verificado. Solução: confira o link e o compartilhamento com a conta conectada.".into(),
+        "server" | "server_error" | "service_unavailable" => "Causa: serviço Google temporariamente indisponível. Impacto: verificação não concluída. Solução: aguarde a próxima tentativa.".into(),
+        "configuration_conflict" | "monitoring_conflict" | "sync_conflict" | "sync_failed" => "Causa: sincronização não confirmou a atualização. Impacto: dados locais podem estar desatualizados. Solução: atualize os dados e revise a versão atual antes de repetir a operação.".into(),
         "script_not_observed" => "Projeto Apps Script protegido não pôde ser lido.".into(),
         "script_analysis_incomplete" | "script_analysis_partial" => {
             "Análise estática do projeto Apps Script ficou parcial.".into()
@@ -456,6 +462,28 @@ pub fn write_csv_row(writer: &mut impl Write, cells: &[&str]) -> io::Result<()> 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn operational_errors_explain_cause_impact_and_solution() {
+        for code in [
+            "auth_required",
+            "network",
+            "timeout",
+            "forbidden",
+            "sync_failed",
+            "quota_exceeded",
+        ] {
+            let text = diagnosis_pt_br(code, None);
+            for label in ["Causa:", "Impacto:", "Solução:"] {
+                assert!(text.contains(label), "{code}: {text}");
+            }
+        }
+        let detail = diagnosis_pt_br(
+            "rate_limited|Sheets API / spreadsheets.get: cota por minuto",
+            None,
+        );
+        assert!(detail.contains("Impacto:"));
+        assert!(detail.contains("Sheets API / spreadsheets.get: cota por minuto"));
+    }
 
     #[test]
     fn formats_rfc3339_into_local_dd_mm_yyyy_hh_mm_ss() {

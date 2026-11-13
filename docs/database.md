@@ -44,7 +44,7 @@ Há exemplos nas onze tabelas para comprovar criação/leitura. A conta fictíci
 
 ## Preferências
 
-- Intervalo padrão: 60 segundos; valores persistíveis entre 60 e 300 segundos.
+- Intervalo padrão: 60 segundos; valores persistíveis entre 60 e 600 segundos.
 - Histórico padrão: 90 dias, fixo nesta sprint. Não há job de exclusão nem promessa de retenção aplicada automaticamente.
 - Inicialização com Windows: `false`. Tentar salvar `true` é recusado porque a funcionalidade pertence a uma sprint futura.
 
@@ -86,3 +86,11 @@ Conta/arquivo/escopo são chaves das operações. Baseline e snapshot são imut�
 Duas tabelas novas, registered_spreadsheets e management_preferences, totalizam 24 tabelas de produto. O cadastro usa chave composta conta/arquivo, seleção e escopo JSON validados, revisão monotônica e remoção lógica. Triggers limitam a 30 cadastros presentes em todas as contas locais, contando pausados. Uma atualização do trigger de capacidade de captura deixa de contar cadastros removidos; imagens/baselines existentes permanecem intactas. Não altera SQL das migrações 0001–0003.
 
 Aprovação e commit de avaliação verificam escopo/seleção e revisão atuais na mesma transação. A remoção com exclusão de atividades limpa eventos, relatórios, incidentes e observações, preservando baselines imutáveis; a remoção preservando histórico mantém a consulta de atividades do cadastro arquivado. Operações são sempre segregadas por conta.
+
+## Intervalo operacional atual
+
+O contrato atual aceita somente segundos inteiros entre 60 e 600 nos clientes TypeScript, na validação Rust, nas preferências operacionais e na política do scheduler. A migração aditiva 0006 amplia o CHECK de app_settings preservando os valores existentes e os checksums anteriores. A preferência operacional é por conta; salvar não aprova referências nem inicia o serviço. O serviço ativo replaneja sem sobreposição por arquivo, com até três verificações globais.
+
+## Migração 0007 — versões de referência entre dispositivos
+
+`baseline_versions.sync_version` preserva a versão de origem de uma referência recebida. `version` continua sendo o ordinal local único por escopo; referências com UUIDs distintos e o mesmo ordinal de origem recebem ordinais locais diferentes, sem alterar referências já aprovadas. A sincronização usa a versão de origem nos payloads e preserva os UUIDs.

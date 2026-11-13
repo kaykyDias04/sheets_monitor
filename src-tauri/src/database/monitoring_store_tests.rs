@@ -312,13 +312,19 @@ fn integrity_event_outbox_is_atomic_and_deduplicated() {
     assert!(!events.is_empty());
     assert_eq!(
         d.notification_history(SUBJECT, 0, 10).unwrap().total,
-        events.len() as u64
+        events
+            .iter()
+            .filter(|event| event.rule_id.is_some())
+            .count() as u64
     );
     let repeated = integrity_event(&mut d, &b, "check2", NOW + 60_000).unwrap();
     assert!(repeated.is_empty());
     assert_eq!(
         d.notification_history(SUBJECT, 0, 10).unwrap().total,
-        events.len() as u64
+        events
+            .iter()
+            .filter(|event| event.rule_id.is_some())
+            .count() as u64
     );
     let n = d
         .notification_history(SUBJECT, 0, 10)
@@ -335,6 +341,71 @@ fn integrity_event_outbox_is_atomic_and_deduplicated() {
         .find(|notice| notice.sheet_id == Some(7))
         .expect("fixture event identifies its sheet");
     assert_eq!(sheet_notice.sheet_title.as_deref(), Some("Data"));
+}
+#[test]
+fn free_content_is_hidden_and_never_claimed_including_legacy_pending_alerts() {
+    let (mut d, c, b) = fixture();
+    preference(&mut d, true);
+    integrity_event(&mut d, &b, "rule_and_content", NOW).unwrap();
+    let mut snapshot = fixtures::snapshot();
+    snapshot.id = "free_content_snapshot".into();
+    snapshot.sheets[0].title = "Changed fixture title".into();
+    snapshot.sheets[0].regions[0].rows[0] = fixtures::row(1, "record_a", 123);
+    d.save_structural_snapshot(&snapshot).unwrap();
+    let observation = d
+        .content_observation(SUBJECT, &snapshot.spreadsheet_id, &snapshot.scope_hash)
+        .unwrap();
+    let mut report = evaluate(
+        &b,
+        observation.snapshot.as_ref(),
+        &snapshot,
+        "free_content_check",
+    )
+    .unwrap();
+    report.observation_revision = observation.revision;
+    report.previous_snapshot_id = d
+        .previous_structural_snapshot(SUBJECT, &snapshot.spreadsheet_id, &snapshot.scope_hash)
+        .unwrap()
+        .map(|snapshot| snapshot.id);
+    report.detected_at = chrono::DateTime::from_timestamp_millis(NOW + 1)
+        .unwrap()
+        .to_rfc3339();
+    let events = d.persist_integrity_report(&snapshot, &report).unwrap();
+    let free = events.iter().find(|event| event.rule_id.is_none()).unwrap();
+    d.connection.execute(
+        "INSERT OR IGNORE INTO notification_outbox(id,account_id,spreadsheet_id,integrity_event_id,source,spreadsheet_name,severity,diagnosis,detected_at,created_ms,expires_ms,state,next_attempt_ms,group_id)
+         SELECT 'legacy-free',account_id,spreadsheet_id,?1,'integrity',spreadsheet_name,'info','value_changed',detected_at,created_ms,expires_ms,'pending',next_attempt_ms,'legacy-free' FROM notification_outbox WHERE source='integrity' LIMIT 1",
+        [&free.event_id],
+    ).unwrap();
+    let page = d.notification_history(SUBJECT, 0, 10).unwrap();
+    assert_eq!(page.total, 1);
+    assert!(d
+        .notification_by_id(SUBJECT, &format!("integrity:{}", free.event_id))
+        .unwrap()
+        .is_none());
+    assert!(d
+        .notification_by_id(SUBJECT, "legacy-free")
+        .unwrap()
+        .is_none());
+    let attempt = d
+        .claim_notification(SUBJECT, "worker", NOW + 1000)
+        .unwrap()
+        .unwrap();
+    assert_ne!(attempt.record.event_id, free.event_id);
+    assert!(d
+        .claim_notification(SUBJECT, "worker", NOW + 1001)
+        .unwrap()
+        .is_none());
+    failure(&mut d, &c, "network", NOW + 2000);
+    assert_eq!(d.notification_history(SUBJECT, 0, 10).unwrap().total, 2);
+    assert_eq!(
+        d.claim_notification(SUBJECT, "worker", NOW + 3000)
+            .unwrap()
+            .unwrap()
+            .record
+            .source,
+        "operational"
+    );
 }
 #[test]
 fn outbox_failure_rolls_back_integrity_event_transaction() {
@@ -990,4 +1061,19 @@ fn native_failure_expiry_is_terminal_before_or_after_submit_ack() {
             )
             .unwrap());
     }
+}
+
+#[test]
+fn notification_preserves_machine_code_alongside_localized_diagnosis() {
+    let (mut d, c, _) = fixture();
+    failure(&mut d, &c, "network", NOW);
+    let record = d
+        .notification_history(SUBJECT, 0, 10)
+        .unwrap()
+        .items
+        .remove(0);
+    assert_eq!(record.diagnostic_code, "network");
+    assert!(record.diagnosis.contains("Causa:"));
+    assert!(record.diagnosis.contains("Impacto:"));
+    assert!(record.diagnosis.contains("Solução:"));
 }

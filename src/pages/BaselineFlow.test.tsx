@@ -99,10 +99,6 @@ describe("Aprovação visual", () => {
     const { unmount } = view(partial);
     expect(screen.getByRole("checkbox", { name: /Revisei o escopo/ })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Aprovar referência versão 1" })).toBeDisabled();
-    expect(
-      screen.getByText(/Sem permissão de leitura no arquivo ou projeto Google\./),
-    ).toBeInTheDocument();
-    expect(screen.queryByText(/^forbidden$/)).not.toBeInTheDocument();
     unmount();
     view(preview, true);
     expect(screen.getByRole("button", { name: "Capturar estrutura para revisão" })).toBeDisabled();

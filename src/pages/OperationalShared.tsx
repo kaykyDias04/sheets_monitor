@@ -1,3 +1,5 @@
+import { errorGuidance } from "@/services/google";
+import { AuditDetails } from "./AuditDetails";
 import { FileSpreadsheet, ShieldCheck, CircleAlert, CircleHelp, Pause, Clock3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -157,6 +159,9 @@ const connectivityNames: Record<string, string> = {
 };
 
 const diagnoses: Record<string, string> = {
+  protected_record_removed: "Um registro da referência foi removido contra a regra de preservação.",
+  record_deletion_unproven:
+    "Não foi possível comprovar a preservação dos registros sem uma chave única estável.",
   metadata_not_observed: "Os metadados da planilha não puderam ser consultados no momento.",
   capture_incomplete: "A captura não conseguiu ler todas as regiões ou abas exigidas pelas regras.",
   monitored_sheet_missing: "Uma aba protegida não foi encontrada na planilha.",
@@ -236,7 +241,13 @@ const pluralDiagnoses: Record<string, (count: number) => string> = {
   script_code_changed: (n) => `${n} trechos do projeto Apps Script mudaram.`,
 };
 
-export function diagnosticText(code: string) {
+export function diagnosticText(code: string): string {
+  if (code.startsWith("rate_limited|")) {
+    return `${diagnosticText("rate_limited")} Detalhes: ${code.slice("rate_limited|".length, 512)}`;
+  }
+  const guidance = errorGuidance(code);
+  if (guidance)
+    return `${guidance.label}. Impacto: ${guidance.impact} Solução: ${guidance.solution}`;
   const countMatch = /^([a-z0-9_]+):count=(\d+)$/.exec(code);
   if (countMatch) {
     const [, base, rawCount] = countMatch;
@@ -433,6 +444,8 @@ export function EventDiagnostic({
                 </dd>
               </div>
             </dl>
+            <p>Responsável não identificado</p>
+            <AuditDetails event={event} />
             <p className="op-hint">
               A detecção registra quando o aplicativo observou a diferença. A autoria da alteração
               não é determinada.

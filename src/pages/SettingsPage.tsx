@@ -62,7 +62,7 @@ export function SettingsPage({
 
                 min={60}
 
-                max={300}
+                max={600}
 
                 step={1}
 
@@ -79,8 +79,8 @@ export function SettingsPage({
             </div>
 
             <p className="field-hint">
-              De 60 a 300 segundos. Padrão: 60. A coleta periódica será implementada em uma sprint
-              futura.
+              De 60 a 600 segundos. Padrão: 60. O serviço nativo executa a coleta contínua sem
+              sobreposição na mesma planilha.
             </p>
 
             <label htmlFor="retention" className="field-label">

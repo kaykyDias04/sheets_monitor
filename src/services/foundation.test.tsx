@@ -13,11 +13,11 @@ describe("contrato da fundação", () => {
   it("rejeita preferências fora dos limites antes de invocar o backend", async () => {
     await expect(
       saveSettings({ interval_seconds: 59, history_days: 90, start_with_windows: false }),
-    ).rejects.toThrow("60 e 300");
+    ).rejects.toThrow("60 e 600");
 
     await expect(
-      saveSettings({ interval_seconds: 301, history_days: 90, start_with_windows: false }),
-    ).rejects.toThrow("60 e 300");
+      saveSettings({ interval_seconds: 601, history_days: 90, start_with_windows: false }),
+    ).rejects.toThrow("60 e 600");
 
     await expect(
       saveSettings({ interval_seconds: 60, history_days: 90, start_with_windows: true }),

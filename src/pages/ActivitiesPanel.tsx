@@ -57,8 +57,9 @@ export function ActivitiesPanel({
           <div>
             <CardTitle>Linha do tempo</CardTitle>
             <CardDescription>
-              Eventos persistidos e paginados no banco local. A data indica a detecção; a autoria
-              não é inferida.
+              Atualizações vinculadas às regras de proteção, persistidas e paginadas no banco local.
+              A data indica a detecção; a autoria não é inferida. Falhas de consulta ficam em
+              Monitoramento.
             </CardDescription>
           </div>
           {onExport && (
@@ -224,10 +225,6 @@ export function ActivitiesPanel({
             >
               <option value="">Todas</option>
               <option value="integrity">Integridade e regras</option>
-              <option value="content">Conteúdo</option>
-              <option value="structure">Estrutura</option>
-              <option value="script">Apps Script</option>
-              <option value="operational">Operacional</option>
             </select>
           </label>
           <label className="op-field">
@@ -241,12 +238,6 @@ export function ActivitiesPanel({
               <option value="analysis_inconclusive">Análise inconclusiva</option>
               <option value="recovered">Recuperação</option>
               <option value="analysis_concluded">Análise concluída</option>
-              <option value="value_changed">Valor alterado</option>
-              <option value="record_added">Registro adicionado</option>
-              <option value="record_removed">Registro removido</option>
-              <option value="record_order_changed">Ordem de registros</option>
-              <option value="header_changed">Cabeçalho alterado</option>
-              <option value="script_code_changed">Código de script alterado</option>
             </select>
           </label>
           <div className="op-activity-actions">
@@ -301,8 +292,9 @@ export function ActivitiesPanel({
           <p className="op-empty">Aplique os filtros para consultar as atividades.</p>
         )}
         <p className="op-hint">
-          Mudanças de conteúdo podem ser permitidas e continuar Online. Violações de regras críticas
-          podem resultar em Offline. Consulte o diagnóstico e o estado da verificação.
+          Somente violações, inconclusões e recuperações de regras aparecem aqui. Edições livres de
+          conteúdo não são atualizações de proteção. Consulte Monitoramento para falhas
+          operacionais.
         </p>
       </CardContent>
     </Card>

@@ -50,7 +50,7 @@ fn api_issue(s: &mut StructuralSnapshot, sheet: Option<u32>, code: ApiError) {
         ApiError::Network | ApiError::Timeout => Connectivity::NetworkFailed,
         _ => Connectivity::Partial,
     };
-    issue(s, sheet, None, true, code.kind());
+    issue(s, sheet, None, true, &code.diagnostic_code());
 }
 fn region_critical(s: &StructuralSnapshot, sheet_id: u32, region_id: &str) -> bool {
     s.scope
@@ -282,7 +282,7 @@ pub fn capture_with<T: ReadTransport>(
                 for (id, r, _, _) in batch {
                     unavailable.insert((*id, r.clone()));
                 }
-                request_issue(&mut snapshot, batch, e.kind());
+                request_issue(&mut snapshot, batch, &e.diagnostic_code());
             }
         }
     }
@@ -386,13 +386,13 @@ pub fn capture_with<T: ReadTransport>(
                 }
             }
             Err(e) => {
-                let code = e.kind();
+                let code = e.diagnostic_code();
                 issue(
                     &mut snapshot,
                     None,
                     Some(rule.script_id),
                     rule.critical,
-                    code,
+                    &code,
                 );
                 snapshot.connectivity = Connectivity::Partial;
             }

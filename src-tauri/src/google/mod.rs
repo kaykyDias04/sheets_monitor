@@ -11,7 +11,7 @@ use std::{
     collections::BTreeSet,
     time::{Duration, Instant},
 };
-pub(crate) use transport::parse_retry_after;
+pub(crate) use transport::{parse_retry_after, rate_limited};
 pub use transport::{ApiError, HttpReply, HttpsTransport, ReadTransport, MAX_RESPONSE_BYTES};
 use url::Url;
 use zeroize::Zeroize;
@@ -81,6 +81,7 @@ pub fn parse_spreadsheet_id(input: &str) -> Result<String, ApiError> {
 pub struct GoogleApi<T: ReadTransport = HttpsTransport> {
     transport: T,
     authorization: HeaderValue,
+    quota: std::sync::Mutex<Option<ApiError>>,
 }
 impl GoogleApi<HttpsTransport> {
     pub fn new(access_token: String) -> Result<Self, ApiError> {
@@ -99,10 +100,25 @@ impl<T: ReadTransport> GoogleApi<T> {
         Ok(Self {
             transport,
             authorization,
+            quota: std::sync::Mutex::new(None),
         })
     }
-    fn read<D: DeserializeOwned>(&self, url: Url, deadline: Instant) -> Result<D, ApiError> {
-        let bytes = transport::get_bounded(&self.transport, &url, &self.authorization, deadline)?;
+    pub(crate) fn read<D: DeserializeOwned>(
+        &self,
+        url: Url,
+        deadline: Instant,
+    ) -> Result<D, ApiError> {
+        if let Some(error) = self.quota.lock().map_err(|_| ApiError::Cancelled)?.as_ref() {
+            return Err(error.clone());
+        }
+        let bytes = transport::get_bounded(&self.transport, &url, &self.authorization, deadline)
+            .inspect_err(|error| {
+                if error.kind() == "rate_limited" {
+                    if let Ok(mut quota) = self.quota.lock() {
+                        *quota = Some(error.clone());
+                    }
+                }
+            })?;
         serde_json::from_slice(&bytes).map_err(|_| ApiError::InvalidResponse)
     }
     pub fn sheet_metadata(&self, input: &str) -> Result<SpreadsheetMetadata, ApiError> {

@@ -22,9 +22,9 @@ export async function saveSettings(settings: AppSettings): Promise<void> {
   if (
     !Number.isInteger(settings.interval_seconds) ||
     settings.interval_seconds < 60 ||
-    settings.interval_seconds > 300
+    settings.interval_seconds > 600
   )
-    throw new Error("O intervalo deve ser um número inteiro entre 60 e 300 segundos.");
+    throw new Error("O intervalo deve ser um número inteiro entre 60 e 600 segundos.");
   if (settings.history_days !== 90 || settings.start_with_windows)
     throw new Error(
       "Nesta sprint, mantenha histórico de 90 dias e inicialização automática desativada.",

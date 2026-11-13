@@ -20,7 +20,15 @@ pub enum ApiError {
     Forbidden,
     NotFound,
     RateLimited,
-    Server { status: u16 },
+    Quota {
+        api: String,
+        operation: String,
+        reason: String,
+        limit: Option<String>,
+    },
+    Server {
+        status: u16,
+    },
     Network,
     Timeout,
     InvalidResponse,
@@ -29,13 +37,20 @@ pub enum ApiError {
     Cancelled,
 }
 impl ApiError {
+    pub(crate) fn diagnostic_code(&self) -> String {
+        if matches!(self, Self::Quota { .. }) {
+            format!("rate_limited|{self}")
+        } else {
+            self.kind().into()
+        }
+    }
     pub fn kind(&self) -> &'static str {
         match self {
             Self::BadRequest => "bad_request",
             Self::Unauthorized => "unauthorized",
             Self::Forbidden => "forbidden",
             Self::NotFound => "not_found",
-            Self::RateLimited => "rate_limited",
+            Self::RateLimited | Self::Quota { .. } => "rate_limited",
             Self::Server { .. } => "server",
             Self::Network => "network",
             Self::Timeout => "timeout",
@@ -48,6 +63,15 @@ impl ApiError {
 }
 impl std::fmt::Display for ApiError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if let Self::Quota {
+            api,
+            operation,
+            reason,
+            limit,
+        } = self
+        {
+            return write!(f, "{api} / {operation}: cota Google atingida ({reason}; limite: {}). A verificação está incompleta; recuperação com espera exponencial e Retry-After, quando informado. Aumente o intervalo ou revise as cotas no Google Cloud.", limit.as_deref().unwrap_or("não informado pela API"));
+        }
         f.write_str(match self {
             Self::BadRequest => "Google recusou o intervalo ou parâmetro da consulta (400).",
             Self::Unauthorized => "A sessão não foi autorizada (401); reconecte a conta.",
@@ -56,6 +80,7 @@ impl std::fmt::Display for ApiError {
             }
             Self::NotFound => "Recurso inexistente, removido ou sem acesso (404).",
             Self::RateLimited => "Limite de consultas atingido; tente novamente mais tarde.",
+            Self::Quota { .. } => unreachable!(),
             Self::Server { .. } => "O serviço Google está temporariamente indisponível.",
             Self::Network => "Falha de rede; nenhum resultado de sucesso foi produzido.",
             Self::Timeout => "A consulta excedeu o prazo. Tente um intervalo menor.",
@@ -193,6 +218,10 @@ pub(super) fn validate_api_url(url: &Url) -> Result<(), ApiError> {
         (Some("sheets.googleapis.com"), ["v4", "spreadsheets", id, "values:batchGet"]) => *id,
         (Some("www.googleapis.com"), ["drive", "v3", "files", id]) => *id,
         (Some("www.googleapis.com"), ["drive", "v3", "files"]) => return Ok(()),
+        (
+            Some("admin.googleapis.com"),
+            ["admin", "reports", "v1", "activity", "users", "all", "applications", "drive"],
+        ) => return Ok(()),
         (Some("script.googleapis.com"), ["v1", "projects", id]) => *id,
         (Some("script.googleapis.com"), ["v1", "projects", id, "content"]) => *id,
         _ => return Err(ApiError::InvalidInput),
@@ -226,10 +255,10 @@ pub(super) fn get_bounded<T: ReadTransport>(
                 let error = match reply.status {
                     400 => ApiError::BadRequest,
                     401 => ApiError::Unauthorized,
-                    403 if rate_limited(&reply.body) => ApiError::RateLimited,
+                    403 if rate_limited(&reply.body) => quota_error(url, &reply.body),
                     403 => ApiError::Forbidden,
                     404 => ApiError::NotFound,
-                    429 => ApiError::RateLimited,
+                    429 => quota_error(url, &reply.body),
                     500..=599 => ApiError::Server {
                         status: reply.status,
                     },
@@ -241,7 +270,11 @@ pub(super) fn get_bounded<T: ReadTransport>(
         };
         let retry = matches!(
             result,
-            ApiError::RateLimited | ApiError::Server { .. } | ApiError::Network | ApiError::Timeout
+            ApiError::RateLimited
+                | ApiError::Quota { .. }
+                | ApiError::Server { .. }
+                | ApiError::Network
+                | ApiError::Timeout
         );
         if let Some(delay) = retry_after {
             crate::monitoring::work::defer_retry(delay);
@@ -251,10 +284,14 @@ pub(super) fn get_bounded<T: ReadTransport>(
             }
         }
         if !retry || attempt + 1 == MAX_ATTEMPTS {
+            if result.kind() == "rate_limited" {
+                crate::monitoring::work::defer_retry(
+                    retry_after.unwrap_or(Duration::from_secs(60)),
+                );
+            }
             return Err(result);
         }
-        let delay =
-            retry_after.unwrap_or(Duration::from_millis(250 * (1 << attempt)) + transport.jitter());
+        let delay = retry_after.unwrap_or(Duration::from_secs(1 << attempt) + transport.jitter());
         if Instant::now()
             .checked_add(delay)
             .is_none_or(|end| end >= deadline)
@@ -265,23 +302,90 @@ pub(super) fn get_bounded<T: ReadTransport>(
     }
     Err(ApiError::Timeout)
 }
-fn rate_limited(body: &[u8]) -> bool {
-    serde_json::from_slice::<serde_json::Value>(body)
-        .ok()
-        .and_then(|v| v.get("error")?.get("errors")?.as_array().cloned())
-        .is_some_and(|errors| {
-            errors.iter().any(|e| {
-                matches!(
-                    e.get("reason").and_then(serde_json::Value::as_str),
-                    Some(
-                        "rateLimitExceeded"
-                            | "userRateLimitExceeded"
-                            | "dailyLimitExceeded"
-                            | "quotaExceeded"
+pub(crate) fn rate_limited(body: &[u8]) -> bool {
+    let Ok(value) = serde_json::from_slice::<serde_json::Value>(body) else {
+        return false;
+    };
+    value.pointer("/error/status").and_then(|v| v.as_str()) == Some("RESOURCE_EXHAUSTED")
+        || value
+            .pointer("/error/errors")
+            .and_then(|v| v.as_array())
+            .is_some_and(|errors| {
+                errors.iter().any(|e| {
+                    matches!(
+                        e.get("reason").and_then(|v| v.as_str()),
+                        Some(
+                            "rateLimitExceeded"
+                                | "userRateLimitExceeded"
+                                | "dailyLimitExceeded"
+                                | "quotaExceeded"
+                        )
                     )
-                )
+                })
             })
+        || value
+            .pointer("/error/details")
+            .and_then(|v| v.as_array())
+            .is_some_and(|details| {
+                details.iter().any(|e| {
+                    e.get("@type")
+                        .and_then(|v| v.as_str())
+                        .is_some_and(|s| s.ends_with("QuotaFailure"))
+                })
+            })
+}
+
+fn quota_error(url: &Url, body: &[u8]) -> ApiError {
+    let (api, operation) = match url.host_str() {
+        Some("sheets.googleapis.com") if url.path().ends_with("values:batchGet") => {
+            ("Sheets API", "spreadsheets.values.batchGet")
+        }
+        Some("sheets.googleapis.com") => ("Sheets API", "spreadsheets.get"),
+        Some("script.googleapis.com") if url.path().ends_with("/content") => {
+            ("Apps Script API", "projects.getContent")
+        }
+        Some("script.googleapis.com") => ("Apps Script API", "projects.get"),
+        Some("admin.googleapis.com") => ("Admin SDK Reports API", "activities.list"),
+        _ if url.path().ends_with("/files") => ("Drive API", "files.list"),
+        _ => ("Drive API", "files.get"),
+    };
+    let value = serde_json::from_slice::<serde_json::Value>(body).unwrap_or_default();
+    let safe = |s: &str| {
+        s.len() <= 160
+            && s.bytes()
+                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'-' | b'/' | b'.' | b' '))
+    };
+    let reason = value
+        .pointer("/error/errors/0/reason")
+        .and_then(|v| v.as_str())
+        .filter(|s| {
+            matches!(
+                *s,
+                "rateLimitExceeded"
+                    | "userRateLimitExceeded"
+                    | "dailyLimitExceeded"
+                    | "quotaExceeded"
+            )
         })
+        .unwrap_or("RESOURCE_EXHAUSTED")
+        .to_owned();
+    let limit = value
+        .pointer("/error/details")
+        .and_then(|v| v.as_array())
+        .and_then(|details| {
+            details.iter().find_map(|d| {
+                d.pointer("/metadata/quota_limit")
+                    .and_then(|v| v.as_str())
+                    .filter(|s| safe(s))
+                    .map(str::to_owned)
+            })
+        });
+    ApiError::Quota {
+        api: api.into(),
+        operation: operation.into(),
+        reason,
+        limit,
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -363,7 +467,7 @@ mod tests {
                 )
             },
         );
-        assert_eq!(result, Err(ApiError::RateLimited));
+        assert!(matches!(result, Err(ApiError::Quota { .. })));
         assert_eq!(hint, Some(3_600_000));
         assert_eq!(transport.0.get(), 1);
         assert_eq!(

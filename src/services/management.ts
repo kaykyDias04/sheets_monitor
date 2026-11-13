@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { desktop } from "./platform";
-import { extractErrorCode, logErrorDiagnostic } from "./google";
+import { errorGuidance, extractErrorCode, logErrorDiagnostic } from "./google";
 import { engineError } from "./integrity";
 import type {
   EngineEnvelope,
@@ -73,8 +73,15 @@ export const scripts = (spreadsheet_id: string) =>
   command<ScriptSummary[]>("list_associated_scripts", { spreadsheet_id });
 export const check = (input: Mutation) => command<number>("monitoring_check_file", input);
 export const getPreferences = () => command<Preferences>("get_management_preferences");
-export const savePreferences = (preferences: Preferences, expected_generation: number) =>
-  command<Preferences>("save_management_preferences", { preferences, expected_generation });
+export const savePreferences = (preferences: Preferences, expected_generation: number) => {
+  if (
+    !Number.isInteger(preferences.interval_seconds) ||
+    preferences.interval_seconds < 60 ||
+    preferences.interval_seconds > 600
+  )
+    return Promise.reject({ code: "invalid_preferences" });
+  return command<Preferences>("save_management_preferences", { preferences, expected_generation });
+};
 export const openSpreadsheet = (spreadsheet_id: string) =>
   command<void>("open_spreadsheet", { spreadsheet_id });
 export const setDriveOptIn = (enabled: boolean): Promise<IntegrationState> => {
@@ -104,7 +111,7 @@ const messages: Record<string, string> = {
   invalid_history_choice:
     "Selecione se deseja preservar ou excluir o histórico local de atividades antes de confirmar a remoção.",
   invalid_preferences:
-    "Os valores de preferências são inválidos. Informe um intervalo entre 60 e 300 segundos e retenção entre 1 e 3.650 dias.",
+    "Os valores de preferências são inválidos. Informe um intervalo entre 60 e 600 segundos e retenção entre 1 e 3.650 dias.",
   invalid_filter:
     "Os filtros informados são inválidos. Verifique o período de datas selecionado e tente aplicar os filtros novamente.",
   invalid_page:
@@ -162,7 +169,10 @@ export function managementError(error: unknown, context?: string) {
   }
   if (code && Object.hasOwn(messages, code)) {
     logErrorDiagnostic(error, context);
-    return messages[code];
+    const guidance = errorGuidance(error);
+    return guidance
+      ? `${messages[code]} Impacto: ${guidance.impact} Solução: ${guidance.solution}`
+      : messages[code];
   }
   return engineError(error, context);
 }

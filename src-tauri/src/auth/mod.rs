@@ -15,6 +15,8 @@ use serde::{Deserialize, Serialize};
 pub const SHEETS_SCOPE: &str = "https://www.googleapis.com/auth/spreadsheets.readonly";
 pub const SCRIPT_SCOPE: &str = "https://www.googleapis.com/auth/script.projects.readonly";
 pub const DRIVE_SCOPE: &str = "https://www.googleapis.com/auth/drive.metadata.readonly";
+pub const CLOUD_SCOPE: &str = "https://www.googleapis.com/auth/drive.appdata";
+pub const AUDIT_SCOPE: &str = "https://www.googleapis.com/auth/admin.reports.audit.readonly";
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]

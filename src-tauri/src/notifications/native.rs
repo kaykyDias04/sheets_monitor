@@ -134,6 +134,7 @@ mod tests {
             event_kind: Some("violation".into()),
             event_type_label: String::new(),
             diagnosis: "protected_header_changed_or_column_missing".into(),
+            diagnostic_code: "protected_header_changed_or_column_missing".into(),
             detected_at: "2026-11-02T12:00:00Z".into(),
             formatted_detected_at: String::new(),
             state: "pending".into(),
@@ -171,7 +172,13 @@ mod tests {
         let (off_title, off_body) = payload(&offline);
         assert_eq!(off_title, "Sheets Monitor — Monitoramento indisponível");
         assert!(!off_body.contains("Aba:"));
-        assert!(off_body.contains("Falha de conexão ao consultar o Google."));
+        assert!(off_body.contains("Planilha: SyntheticTest"));
+        assert!(off_body.contains("Horário: 02/11/2026 "));
+        assert!(off_body.contains("Causa:"));
+        assert!(off_body.contains("Impacto:"));
+        assert!(off_body.contains("Solução:"));
+        assert!(!off_body.contains("network_failed"));
+        assert!(off_body.chars().count() < 500);
 
         let mut online = offline;
         online.severity = "info".into();

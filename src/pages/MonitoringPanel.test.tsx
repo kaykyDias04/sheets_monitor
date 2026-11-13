@@ -56,6 +56,53 @@ describe("continuous monitoring controls", () => {
   });
 });
 describe("notification event journal", () => {
+  it("distingue visualmente causas operacionais com impacto e solução", () => {
+    const causes = [
+      ["auth_required", "auth", "Autenticação"],
+      ["network", "connectivity", "Rede e disponibilidade"],
+      ["forbidden", "permission", "Permissão"],
+      ["sync_failed", "sync", "Sincronização"],
+      [
+        "rate_limited|Sheets API / spreadsheets.get: cota temporária",
+        "quota",
+        "Limite de consultas Google",
+      ],
+    ];
+    const items: NotificationRecord[] = causes.map(([diagnostic_code], index) => ({
+      id: `notice-${index}`,
+      event_id: `event-${index}`,
+      source: "operational",
+      spreadsheet_id: "fixture_file",
+      spreadsheet_name: "Synthetic sheet",
+      sheet_id: null,
+      sheet_title: null,
+      severity: "warning",
+      diagnostic_code,
+      diagnosis: `Causa: consulta interrompida. Impacto: verificação incompleta. Solução: aguarde a recuperação. ${diagnostic_code.startsWith("rate_limited|") ? diagnostic_code.split("|")[1] : ""}`,
+      detected_at: "2026-11-02T12:00:00Z",
+      state: "retry",
+      attempt_count: 1,
+      last_attempt_ms: 1,
+      submitted_ms: null,
+      group_id: `group-${index}`,
+    }));
+    render(
+      <NotificationHistory
+        page={{ items, total: 5, offset: 0, limit: 25 }}
+        disabled={false}
+        onPage={vi.fn()}
+        onOpen={vi.fn()}
+      />,
+    );
+    for (const [, category, label] of causes) {
+      expect(screen.getByText(label).closest("li")).toHaveAttribute(
+        "data-error-category",
+        category,
+      );
+    }
+    expect(screen.getAllByText(/Impacto:.*Solução:/)).toHaveLength(5);
+    expect(screen.getByText(/Sheets API \/ spreadsheets.get: cota temporária/)).toBeInTheDocument();
+  });
   it("keeps distinct events in the same group and never claims display or reading", async () => {
     const base: NotificationRecord = {
       id: "notice-a",
@@ -67,6 +114,7 @@ describe("notification event journal", () => {
       sheet_title: "Data",
       severity: "info",
       diagnosis: "Conteúdo alterado",
+      diagnostic_code: "value_changed",
       detected_at: "2026-11-02T12:00:00Z",
       state: "dispatch_submitted",
       attempt_count: 1,

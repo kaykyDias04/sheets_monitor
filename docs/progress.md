@@ -199,3 +199,17 @@ CI da fonte b0ef2c6 concluído com sucesso, incluindo todos os passos Windows. E
 Usuário confirmou “Login e leitura funcionaram” no novo instalador. Evidência humana específica registrada em `docs/evidence/release-oauth/human-confirmation.json`; não equivale à homologação completa. Publicada a pré-release autorizada [v1.0.0](https://github.com/kaykyDias04/sheets_monitor/releases/tag/v1.0.0), com OAuth interno,NSIS,checksums e manifesto. Tag anotada aponta para b0ef2c6,fonte com CI Windows completo aprovado. Digests dos três assets conferidos na API GitHub.
 
 Sprint06 permanece pendente de homologação integral,sem afirmação stable/100%. Carga Google real/24h,Windows limpo e demais critérios reais documentados continuam pendentes; não iniciar expansão automaticamente. O download público do binário não amplia a audiência do OAuth,restrita à organização. Relatório de publicação e limpeza em `docs/evidence/release-oauth/`.
+
+## Melhorias de monitoramento — 13/11/2026
+
+Pedido autorizado: exportação filtrada, autoria conservadora com auditoria opcional, intervalo até 600s, erros e cotas contextualizados, sincronização por conta Google e atividades restritas às regras. O trabalho anterior da branch `codex/monitor-improvements` foi preservado.
+
+A sincronização usa commits imutáveis na pasta privada do aplicativo no Drive, backup local e decisão explícita de conflitos vinculada ao estado exibido. Migração aditiva 0007 preserva a versão de origem das referências e permite ordinais locais distintos sem reescrever UUIDs/histórico. A restauração descarta observações anteriores e não fabrica consultas ou permissões Google.
+
+Validação local: Vitest completo com 103 testes aprovados; Rust MSVC com 298 unitários e duas integrações aprovados, mais um teste de cofre ignorado. Após a correção do DTO, passaram dez testes React focais e uma regressão Rust adicional. Typecheck, ESLint, Prettier, Rustfmt, Clippy, verificador do repositório, build frontend e build Windows `custom-protocol` aprovados. O executável foi recompilado após o build final do cliente para incorporar os assets atuais. Logs locais em `%TEMP%/sheets-monitor-validation-current`.
+
+A primeira validação encontrou uma contagem legada fixa de comandos IPC no verificador e uma inicialização de fixture rejeitada pelo Clippy. A asserção de contagem incidental foi removida, sem substituí-la por outra contagem fixa; a fixture passou a inicializar os campos diretamente. Os dois checks passaram após essas correções. A revisão independente encontrou perda da categoria visual ao classificar mensagens traduzidas; o DTO agora preserva `diagnostic_code`, comprovado nas regressões Rust e React.
+
+A prévia web real abriu Configurações e Atividades sem exceções JavaScript observadas. Um cenário temporário com os componentes reais e dados sintéticos comprovou as cinco categorias visuais, filtros de exportação, status desabilitado para modificações e limite do campo (600 aceito, 601 rejeitado); cenário removido, sem executar exportação ou persistência real.
+
+Pendências externas: homologar sincronização Google entre dispositivos e auditoria administrativa com consentimento/permissões apropriados; identificar o incidente original de cota, não disponível nas evidências locais. Nenhuma escrita produtiva, baseline, toast ou autostart foi executada nesta retomada. CSV e JSON disponíveis; XLSX não implementado.

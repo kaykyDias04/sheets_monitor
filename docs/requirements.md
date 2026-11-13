@@ -40,7 +40,7 @@ Alterar valor ou inserir/excluir linha comum gera evento e mantém Online quando
 |---|---|
 | Sistema/distribuição | Windows 11 x64; Tauri 2; instalador `.exe` ou `.msi` em SM-028 |
 | Capacidade | Até 30 arquivos cadastrados simultaneamente |
-| Intervalo | Inicial 60 segundos; configurável de 60 a 300 |
+| Intervalo | Inicial 60 segundos; configurável de 60 a 600 |
 | Paralelismo | Até 3 verificações |
 | Histórico | Padrão de 90 dias |
 | Baseline | Versionado; aprovação humana explícita |

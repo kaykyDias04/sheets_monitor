@@ -47,6 +47,7 @@ impl From<ApiError> for CommandError {
                 ApiError::Network
                     | ApiError::Timeout
                     | ApiError::RateLimited
+                    | ApiError::Quota { .. }
                     | ApiError::Server { .. }
             ),
         }

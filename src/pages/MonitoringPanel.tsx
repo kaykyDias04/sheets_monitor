@@ -1,3 +1,4 @@
+import { errorGuidance } from "@/services/google";
 import { Activity, Pause, Play, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -184,31 +185,35 @@ export function NotificationHistory({
           <p className="op-hint">Nenhuma notificação registrada nesta conta.</p>
         ) : (
           <ul className="op-notification-list">
-            {page.items.map((item) => (
-              <li key={item.id}>
-                <div>
-                  <strong>
-                    {item.spreadsheet_name}
-                    {item.sheet_title ? ` · ${item.sheet_title}` : ""}
-                  </strong>
-                  <p>{diagnosticText(item.diagnosis)}</p>
-                  <small>
-                    {item.event_type_label ? `${item.event_type_label} · ` : ""}
-                    {item.formatted_detected_at || formatLocalDateTime(item.detected_at)} ·{" "}
-                    {notificationStates[item.state] ?? "Estado de envio indisponível"} ·{" "}
-                    {item.attempt_count} tentativas
-                  </small>
-                </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={disabled}
-                  onClick={() => onOpen(item)}
-                >
-                  Abrir evento
-                </Button>
-              </li>
-            ))}
+            {page.items.map((item) => {
+              const guidance = errorGuidance(item.diagnostic_code);
+              return (
+                <li key={item.id} data-error-category={guidance?.category}>
+                  <div>
+                    <strong>
+                      {item.spreadsheet_name}
+                      {item.sheet_title ? ` · ${item.sheet_title}` : ""}
+                    </strong>
+                    {guidance && <strong className="op-error-category">{guidance.label}</strong>}
+                    <p>{diagnosticText(item.diagnosis)}</p>
+                    <small>
+                      {item.event_type_label ? `${item.event_type_label} · ` : ""}
+                      {item.formatted_detected_at || formatLocalDateTime(item.detected_at)} ·{" "}
+                      {notificationStates[item.state] ?? "Estado de envio indisponível"} ·{" "}
+                      {item.attempt_count} tentativas
+                    </small>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={disabled}
+                    onClick={() => onOpen(item)}
+                  >
+                    Abrir evento
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
         )}
         {page && page.total > page.limit && (

@@ -58,7 +58,7 @@ de demonstração são implementados no módulo `database`. Reiniciar o aplicati
 preserva as configurações sem duplicar os exemplos. Não existe comando para
 apagar o diretório de dados do usuário.
 
-O intervalo de 60–300 segundos e a retenção padrão de 90 dias são configurações
+O intervalo de 60–600 segundos e a retenção padrão de 90 dias são configurações
 preparatórias. Nenhuma consulta periódica ou limpeza de histórico acontece nesta
 sprint. O campo `start_with_windows` fica desativado: a tentativa de ativá-lo é
 recusada, e nenhum mecanismo de inicialização automática é registrado.

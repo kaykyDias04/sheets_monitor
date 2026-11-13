@@ -605,7 +605,7 @@
       "subtasks": [
         {
           "id": "SM-022.01",
-          "title": "Intervalo 60–300s, até três coletas e aviso de frequência inviável",
+          "title": "Intervalo 60–600s, até três coletas e aviso de frequência inviável",
           "status": "concluido"
         }
       ]

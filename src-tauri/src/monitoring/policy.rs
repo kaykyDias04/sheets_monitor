@@ -13,7 +13,7 @@ impl MonitoringClock for SystemMonitoringClock {
     }
 }
 pub fn interval_ms(seconds: u32) -> i64 {
-    i64::from(seconds.clamp(60, 300)) * 1000
+    i64::from(seconds.clamp(60, 600)) * 1000
 }
 /// Sorted eligible files are spread across one interval; missed ticks are never replayed.
 pub fn stagger_ms(now: i64, index: usize, count: usize, interval: i64) -> i64 {
@@ -36,7 +36,8 @@ mod tests {
         assert_eq!(interval_ms(60), 60_000);
         assert_eq!(interval_ms(300), 300_000);
         assert_eq!(interval_ms(0), 60_000);
-        assert_eq!(interval_ms(500), 300_000);
+        assert_eq!(interval_ms(600), 600_000);
+        assert_eq!(interval_ms(601), 600_000);
         assert_eq!(stagger_ms(10_000, 2, 4, 60_000), 40_000);
     }
     #[test]

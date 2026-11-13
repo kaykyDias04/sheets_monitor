@@ -28,6 +28,7 @@ export interface NotificationRecord {
   sheet_title: string | null;
   severity: string;
   diagnosis: string;
+  diagnostic_code: string;
   detected_at: string;
   state: string;
   attempt_count: number;
