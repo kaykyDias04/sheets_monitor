@@ -82,7 +82,7 @@ export interface EventFilter {
   offset?: number;
   limit?: number;
 }
-export type ExportFormat = "csv" | "json";
+export type ExportFormat = "csv" | "json" | "xlsx";
 export interface ExportEventsInput {
   filter: EventFilter;
   format: ExportFormat;

@@ -72,6 +72,7 @@ export function ActivitiesPanel({
               >
                 <option value="csv">CSV (UTF-8 / Excel)</option>
                 <option value="json">JSON estruturado</option>
+                <option value="xlsx">XLSX (Excel)</option>
               </select>
               <Button
                 type="button"

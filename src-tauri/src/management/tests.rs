@@ -879,7 +879,7 @@ fn thirty_file_capacity_does_not_limit_selecting_all_thirty_one_tabs() {
     );
 }
 #[test]
-fn exports_filtered_logs_as_csv_and_json_without_secrets_and_handles_empty_results() {
+fn exports_filtered_logs_as_csv_json_and_xlsx_without_secrets_and_handles_empty_results() {
     let mut d = db();
     let (_, baseline) = approved(&mut d);
     let save_at = |d: &mut Database,
@@ -1071,4 +1071,151 @@ fn exports_filtered_logs_as_csv_and_json_without_secrets_and_handles_empty_resul
             .unwrap();
     assert_eq!(json_val["total"], 1);
     assert_eq!(json_val["items"][0]["event_type"], "Resolução");
+
+    // Inspect the real OOXML archive, not just the filename or exported count.
+    use std::io::Read;
+    let literal_name = "=ação 😀\nhttps://example.invalid/?a=1&b=2";
+    d.connection
+        .execute(
+            "UPDATE registered_spreadsheets SET name=?1 WHERE spreadsheet_id='fixture_sheet'",
+            [literal_name],
+        )
+        .unwrap();
+    let xlsx_filter = EventFilter {
+        spreadsheet_id: Some("fixture_sheet".into()),
+        sheet_id: Some(7),
+        from: Some("2026-11-01T00:00:00Z".into()),
+        to: Some("2026-11-03T00:00:00Z".into()),
+        query: "ação".into(),
+        limit: 1,
+        offset: 99,
+        ..Default::default()
+    };
+    let xlsx_dir = tempfile::tempdir().unwrap();
+    let exported = d
+        .export_operational_events("fixture_account", &xlsx_filter, "xlsx", xlsx_dir.path())
+        .unwrap();
+    assert_eq!(exported.exported_count, 2);
+    let mut archive =
+        zip::ZipArchive::new(std::fs::File::open(exported.file_path.unwrap()).unwrap()).unwrap();
+    let mut content_types = String::new();
+    archive
+        .by_name("[Content_Types].xml")
+        .unwrap()
+        .read_to_string(&mut content_types)
+        .unwrap();
+    assert!(content_types
+        .contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"));
+    let mut xml = String::new();
+    archive
+        .by_name("xl/worksheets/sheet1.xml")
+        .unwrap()
+        .read_to_string(&mut xml)
+        .unwrap();
+    for (column, header) in [
+        ("A", "Data/Hora"),
+        ("B", "Planilha"),
+        ("C", "Aba"),
+        ("D", "Tipo"),
+        ("E", "Status"),
+        ("F", "Severidade"),
+        ("G", "Categoria"),
+        ("H", "Descrição"),
+        ("I", "Localização"),
+        ("J", "Estado da Planilha"),
+    ] {
+        assert!(xml.contains(&format!(
+            "<c r=\"{column}1\" t=\"inlineStr\"><is><t>{header}</t></is></c>"
+        )));
+    }
+    let escaped_literal = "=ação 😀\nhttps://example.invalid/?a=1&amp;b=2";
+    for row in [2, 3] {
+        assert!(xml.contains(&format!(
+            "<c r=\"B{row}\" t=\"inlineStr\"><is><t>{escaped_literal}</t></is></c>"
+        )));
+    }
+    assert!(xml.contains("<c r=\"D2\" t=\"inlineStr\"><is><t>Falha</t></is></c>"));
+    assert!(xml.contains("<c r=\"D3\" t=\"inlineStr\"><is><t>Resolução</t></is></c>"));
+    assert!(xml.find("01/11/2026").unwrap() < xml.find("02/11/2026").unwrap());
+    assert!(!xml.contains("<f>"));
+    assert!(!xml.contains("<hyperlink"));
+    assert!(!xml.contains("fixture_account"));
+    assert!(!xml.contains("access_token"));
+    drop(archive);
+
+    for excluded in [
+        EventFilter {
+            sheet_id: Some(99),
+            ..xlsx_filter.clone()
+        },
+        EventFilter {
+            spreadsheet_id: Some("other_sheet".into()),
+            ..xlsx_filter.clone()
+        },
+        EventFilter {
+            from: Some("2026-11-03T00:00:00Z".into()),
+            ..xlsx_filter.clone()
+        },
+        EventFilter {
+            query: "absent".into(),
+            ..xlsx_filter.clone()
+        },
+        EventFilter {
+            event_type: Some("modification".into()),
+            ..xlsx_filter.clone()
+        },
+    ] {
+        let empty_dir = tempfile::tempdir().unwrap();
+        let empty = d
+            .export_operational_events("fixture_account", &excluded, "xlsx", empty_dir.path())
+            .unwrap();
+        assert!(empty.file_path.is_none());
+        assert!(std::fs::read_dir(empty_dir.path())
+            .unwrap()
+            .next()
+            .is_none());
+    }
+
+    let failed_dir = tempfile::tempdir().unwrap();
+    let sentinel = failed_dir.path().join("existing.xlsx");
+    std::fs::write(&sentinel, b"preserve existing data").unwrap();
+    let path_error = d
+        .export_operational_events("fixture_account", &xlsx_filter, "xlsx", &sentinel)
+        .unwrap_err();
+    assert_eq!(path_error.code, "export_io_error");
+    assert_eq!(std::fs::read(&sentinel).unwrap(), b"preserve existing data");
+    d.connection
+        .execute(
+            "UPDATE registered_spreadsheets SET name=?1 WHERE spreadsheet_id='fixture_sheet'",
+            ["😀".repeat(16_384)],
+        )
+        .unwrap();
+    let limit_error = d
+        .export_operational_events(
+            "fixture_account",
+            &EventFilter {
+                query: String::new(),
+                ..xlsx_filter
+            },
+            "xlsx",
+            failed_dir.path(),
+        )
+        .unwrap_err();
+    assert_eq!(limit_error.code, "export_xlsx_limit");
+    assert!(limit_error.message.contains("linha 2, coluna 2"));
+    assert!(limit_error.message.contains("CSV/JSON"));
+    assert_eq!(std::fs::read_dir(failed_dir.path()).unwrap().count(), 1);
+    assert_eq!(std::fs::read(&sentinel).unwrap(), b"preserve existing data");
+    assert_eq!(
+        d.operational_events(
+            "fixture_account",
+            &EventFilter {
+                limit: 10,
+                ..Default::default()
+            }
+        )
+        .unwrap()
+        .total,
+        2
+    );
 }

@@ -146,9 +146,11 @@ const messages: Record<string, string> = {
   startup_verification_failed:
     "O Windows não confirmou a gravação da inicialização automática com segurança. Tente novamente.",
   invalid_format:
-    "Formato de exportação inválido. Selecione CSV (Excel) ou JSON antes de exportar.",
+    "Formato de exportação inválido. Selecione CSV, JSON ou XLSX (Excel) antes de exportar.",
   export_io_error:
     "Não foi possível gravar o arquivo de exportação na pasta local. Verifique o espaço disponível e as permissões do usuário.",
+  export_xlsx_limit:
+    "A exportação excede os limites do XLSX: 1.048.575 registros mais o cabeçalho ou 32.767 unidades UTF-16 por célula. Restrinja os filtros ou exporte em CSV/JSON. Nenhum arquivo XLSX foi publicado.",
   manual_update_required:
     "Esta execução utiliza um binário portátil ou instalação administrativa. Baixe o instalador oficial na página da release para atualizar.",
   update_not_staged:

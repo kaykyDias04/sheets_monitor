@@ -745,7 +745,7 @@ describe("Sprint 04 · operação sem demonstração", () => {
     });
   });
 
-  it("exporta logs filtrados em CSV e JSON e informa quando não há registros", async () => {
+  it("exporta logs filtrados em CSV, JSON e XLSX e informa quando não há registros", async () => {
     rows.push(fixtureRow());
     const user = await load();
     await go(user, "Atividades");
@@ -768,6 +768,23 @@ describe("Sprint 04 · operação sem demonstração", () => {
       },
     });
     expect(await screen.findByText(/4 registro\(s\) exportado\(s\) em CSV/)).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByLabelText("Formato de exportação"), "xlsx");
+    await user.click(screen.getByRole("button", { name: "Exportar logs" }));
+    await settled();
+    expect(call).toHaveBeenCalledWith("export_change_events", {
+      input: {
+        format: "xlsx",
+        filter: expect.objectContaining({
+          spreadsheet_id: "fixture-file",
+          sheet_id: 17,
+          event_type: "failure",
+          issue_status: "active",
+          offset: 0,
+        }),
+      },
+    });
+    expect(await screen.findByText(/4 registro\(s\) exportado\(s\) em XLSX/)).toBeInTheDocument();
 
     // Modificação desabilita Status quando não aplicável e exporta JSON
     await user.selectOptions(screen.getByLabelText("Tipo"), "modification");

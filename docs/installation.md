@@ -30,3 +30,5 @@ npm run tauri -- build --target x86_64-pc-windows-msvc --bundles nsis
 ```
 
 O comando de avisos deve terminar sem lacunas antes de distribuir. A saída padrão esperada fica em `src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/`; confirmar o caminho real e o hash no manifesto. Não publicar releases nem distribuir a terceiros sem autorização específica.
+
+O inventário de licenças desta geração fica em `distribution/dependency-licenses.json`. Regenerar avisos não sobrescreve os inventários históricos em `docs/evidence/sprint06/`.

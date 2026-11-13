@@ -23,3 +23,7 @@ Sprint 04 não adicionou dependências de produto. O inventário revisado da Spr
 ## Dependências da Sprint 05
 
 O [inventário adicional](evidence/sprint05/dependency-licenses.json) registra metadados dos manifests resolvidos para Tauri, notificações, instância única e acesso HKCU. Cargo.lock fixa as versões usadas. Esse registro não constitui auditoria jurídica nem homologação de distribuição; os avisos transitivos e o artefato instalado continuam sujeitos à Sprint 06. O exemplo `native-probe` é opt-in e não integra o build padrão do produto.
+
+## Exportação XLSX
+
+`rust_xlsxwriter` 0.102.0 (MIT OR Apache-2.0, Rust mínimo 1.88) implementa OOXML/ZIP sem reimplementar o formato no aplicativo. Somente `constant_memory` é habilitado para manter o uso de memória limitado; `zip` 9.5.1 é declarado também como dependência de testes para inspecionar os arquivos exportados. As versões transitivas estão fixadas no Cargo.lock. Os avisos atuais acompanham `distribution/THIRD-PARTY-NOTICES.txt`; o inventário regenerado fica em `distribution/dependency-licenses.json`, preservando evidências históricas de sprints.

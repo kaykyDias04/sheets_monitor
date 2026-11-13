@@ -137,6 +137,10 @@ impl PendingAuthorization {
 }
 
 fn read_request(stream: &mut TcpStream, deadline: Instant) -> AuthResult<Zeroizing<String>> {
+    // Windows inherits the listener's nonblocking mode; read timeouts require blocking I/O.
+    stream
+        .set_nonblocking(false)
+        .map_err(|_| AuthError::new(AuthCode::CallbackInvalid))?;
     let mut data = Zeroizing::new(Vec::new());
     let mut buffer = [0u8; 1024];
     while data.len() < 8192 {
@@ -340,8 +344,10 @@ mod tests {
             }
         });
         let (mut stream, _) = listener.accept().unwrap();
+        stream.set_nonblocking(true).unwrap();
         let start = Instant::now();
         assert!(read_request(&mut stream, start + Duration::from_millis(40)).is_err());
+        assert!(start.elapsed() >= Duration::from_millis(20));
         assert!(start.elapsed() < Duration::from_millis(500));
         drop(stream);
         sender.join().unwrap();

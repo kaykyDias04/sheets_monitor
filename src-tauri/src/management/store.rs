@@ -720,10 +720,10 @@ impl Database {
         destination_dir: &Path,
     ) -> Result<ExportEventsResult> {
         let normalized_format = format.trim().to_ascii_lowercase();
-        if !matches!(normalized_format.as_str(), "csv" | "json") {
+        if !matches!(normalized_format.as_str(), "csv" | "json" | "xlsx") {
             return Err(error(
                 "invalid_format",
-                "Formato de exportação inválido. Escolha CSV ou JSON.",
+                "Formato de exportação inválido. Escolha CSV, JSON ou XLSX.",
             ));
         }
         validate_event_filter(f, false)?;
@@ -758,6 +758,9 @@ impl Database {
                 format: normalized_format,
             });
         }
+        if normalized_format == "xlsx" {
+            xlsx::validate_total(total)?;
+        }
         fs::create_dir_all(destination_dir).map_err(|_| {
             error(
                 "export_io_error",
@@ -777,7 +780,7 @@ impl Database {
             ))
             .map_err(sql)?;
         let mut exported_count = 0u64;
-        let write_result = (|| -> Result<()> {
+        let mut write_export = || -> Result<()> {
             let file = File::create(&temp_path).map_err(|_| {
                 error(
                     "export_io_error",
@@ -785,27 +788,29 @@ impl Database {
                 )
             })?;
             let mut writer = BufWriter::new(file);
+            let headers = [
+                "Data/Hora",
+                "Planilha",
+                "Aba",
+                "Tipo",
+                "Status",
+                "Severidade",
+                "Categoria",
+                "Descrição",
+                "Localização",
+                "Estado da Planilha",
+            ];
+            let mut xlsx = if normalized_format == "xlsx" {
+                Some(xlsx::XlsxExport::new(&headers)?)
+            } else {
+                None
+            };
             if normalized_format == "csv" {
                 writer
                     .write_all("\u{FEFF}".as_bytes())
                     .map_err(|_| CommandError::local())?;
-                events::write_csv_row(
-                    &mut writer,
-                    &[
-                        "Data/Hora",
-                        "Planilha",
-                        "Aba",
-                        "Tipo",
-                        "Status",
-                        "Severidade",
-                        "Categoria",
-                        "Descrição",
-                        "Localização",
-                        "Estado da Planilha",
-                    ],
-                )
-                .map_err(|_| CommandError::local())?;
-            } else {
+                events::write_csv_row(&mut writer, &headers).map_err(|_| CommandError::local())?;
+            } else if normalized_format == "json" {
                 let header = serde_json::json!({
                     "schema_version": 1,
                     "exported_at": now_local.format("%d/%m/%Y %H:%M:%S").to_string(),
@@ -845,23 +850,23 @@ impl Database {
                 let cat_label = category_pt_br(&activity.event.category);
                 let loc_label = format_location_pt_br(activity.event.location.as_deref());
                 let sheet_status = spreadsheet_status_pt_br(&activity.status);
-                if normalized_format == "csv" {
-                    events::write_csv_row(
-                        &mut writer,
-                        &[
-                            &activity.formatted_detected_at,
-                            &activity.spreadsheet_name,
-                            tab,
-                            kind_label,
-                            status_label,
-                            sev_label,
-                            cat_label,
-                            &activity.description,
-                            &loc_label,
-                            sheet_status,
-                        ],
-                    )
-                    .map_err(|_| CommandError::local())?;
+                let cells = [
+                    activity.formatted_detected_at.as_str(),
+                    activity.spreadsheet_name.as_str(),
+                    tab,
+                    kind_label,
+                    status_label,
+                    sev_label,
+                    cat_label,
+                    activity.description.as_str(),
+                    loc_label.as_str(),
+                    sheet_status,
+                ];
+                if let Some(xlsx) = xlsx.as_mut() {
+                    xlsx.write_row(&cells)?;
+                } else if normalized_format == "csv" {
+                    events::write_csv_row(&mut writer, &cells)
+                        .map_err(|_| CommandError::local())?;
                 } else {
                     if exported_count > 0 {
                         writer.write_all(b",").map_err(|_| CommandError::local())?;
@@ -889,9 +894,24 @@ impl Database {
                     .write_all(b"]}\n")
                     .map_err(|_| CommandError::local())?;
             }
+            if let Some(xlsx) = xlsx.as_mut() {
+                xlsx.finish(&mut writer)?;
+            }
             writer.flush().map_err(|_| CommandError::local())?;
             Ok(())
-        })();
+        };
+        let write_result = if normalized_format == "xlsx" {
+            // The streaming writer panics on temporary-storage write failures.
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(write_export))
+                .unwrap_or_else(|_| {
+                    Err(error(
+                        "export_io_error",
+                        "Não foi possível gravar o XLSX. Verifique o espaço e as permissões das pastas de destino e temporária.",
+                    ))
+                })
+        } else {
+            write_export()
+        };
         if let Err(err) = write_result {
             let _ = fs::remove_file(&temp_path);
             return Err(err);

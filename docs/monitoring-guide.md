@@ -26,7 +26,7 @@ O produto somente lê planilhas e Apps Script, sem executar scripts. Com sincron
 
 ## Exportar atualizações
 
-Em Atividades, selecione período, planilha, aba e tipo de evento e use Exportar logs. CSV UTF-8 com BOM é compatível com Excel; JSON continua disponível. O export aplica todos os filtros ao conjunto completo, não apenas à página atual, em ordem cronológica. Datas da interface abrangem o dia local inteiro, convertido para UTC na consulta; nenhuma correspondência cria arquivo vazio. CSV neutraliza células que poderiam ser interpretadas como fórmulas. Não há dependência adicional para XLSX.
+Em Atividades, selecione período, planilha, aba e tipo de evento e use Exportar logs. CSV UTF-8 com BOM, XLSX nativo e JSON estão disponíveis. O export aplica todos os filtros ao conjunto completo, não apenas à página atual, em ordem cronológica. Datas da interface abrangem o dia local inteiro, convertido para UTC na consulta; nenhuma correspondência cria arquivo vazio. CSV neutraliza células que poderiam ser interpretadas como fórmulas; XLSX grava texto literal, inclusive conteúdo iniciado por `=` ou URLs. O XLSX admite até 1.048.575 registros mais o cabeçalho e 32.767 unidades UTF-16 por célula; ao exceder esses limites, a exportação é recusada sem truncar dados. Restrinja os filtros ou use CSV/JSON. A escrita XLSX usa armazenamento temporário e exige espaço e permissão nas pastas temporária e de destino.
 
 Falhas de autenticação, rede, permissão, sincronização e cota trazem causa, impacto e solução. Aguarde o prazo de cota antes de repetir consultas; aumentar o intervalo pode reduzir pressão, mas não corrige permissões. Nenhuma mensagem autoriza correção automática ou garante entrega visual do Windows.
 

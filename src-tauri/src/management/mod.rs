@@ -2,4 +2,5 @@
 pub mod events;
 mod models;
 mod runtime;
+pub(crate) mod xlsx;
 pub use models::*;
