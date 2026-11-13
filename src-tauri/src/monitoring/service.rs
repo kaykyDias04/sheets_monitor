@@ -570,6 +570,7 @@ impl MonitoringService {
     }
 }
 fn operational_code(code: &str) -> Option<&str> {
+    let code = code.split_once('|').map_or(code, |(kind, _)| kind);
     match code {
         "network"
         | "timeout"

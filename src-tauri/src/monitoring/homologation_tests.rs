@@ -478,7 +478,15 @@ fn sprint06_progressive_5_15_30_integrated_load() {
         campaign.assert_status(IntegrityStatus::Online);
         assert_eq!(campaign.events(), count);
         campaign.drain_notifications();
-        assert_eq!(campaign.sink.0.lock().unwrap().len(), count);
+        assert_eq!(campaign.sink.0.lock().unwrap().len(), 0);
+        assert_eq!(
+            campaign
+                .db()
+                .notification_history(SUBJECT, 0, 100)
+                .unwrap()
+                .total,
+            0
+        );
         let max_notification_ms = campaign
             .sink
             .0
@@ -486,12 +494,11 @@ fn sprint06_progressive_5_15_30_integrated_load() {
             .unwrap()
             .iter()
             .map(|(_, submitted)| submitted - change_at)
-            .max()
-            .unwrap();
+            .max();
         let repeated_ms = campaign.run_cycle(1);
         assert_eq!(campaign.events(), count);
         campaign.drain_notifications();
-        assert_eq!(campaign.sink.0.lock().unwrap().len(), count);
+        assert_eq!(campaign.sink.0.lock().unwrap().len(), 0);
         assert_eq!(campaign.executor.maximum.load(Ordering::SeqCst), 3);
         let before_restart = campaign
             .db()
@@ -560,6 +567,26 @@ fn sprint06_critical_mutations_recover_and_repeat_without_spam() {
         campaign.run_cycle(0);
         assert_eq!(campaign.events(), recovered);
         campaign.drain_notifications();
+        let notification_count = campaign
+            .db()
+            .notification_history(SUBJECT, 0, 100)
+            .unwrap()
+            .total;
+        if expected == IntegrityStatus::Online {
+            assert_eq!(
+                notification_count, 0,
+                "free modifications are not protection alerts"
+            );
+        } else {
+            assert!(
+                notification_count > 0,
+                "rule failures and recoveries remain deliverable"
+            );
+        }
+        assert_eq!(
+            campaign.sink.0.lock().unwrap().len() as u64,
+            notification_count
+        );
     }
 }
 

@@ -24,7 +24,10 @@ const mocks = vi.hoisted(() => ({
   off: vi.fn(),
 }));
 vi.mock("@/services/platform", () => ({ desktop: true }));
-vi.mock("@/services/google", () => ({ getIntegrationState: mocks.state }));
+vi.mock("@/services/google", async (original) => ({
+  ...(await original<Record<string, unknown>>()),
+  getIntegrationState: mocks.state,
+}));
 vi.mock("@/services/monitoring", () => ({
   getMonitoringStatus: mocks.status,
   checkNow: mocks.checkNow,
@@ -74,6 +77,7 @@ const notification: NotificationRecord = {
   sheet_title: null,
   severity: "warning",
   diagnosis: "Synthetic connection failure",
+  diagnostic_code: "network",
   detected_at: "2026-11-02T12:00:00Z",
   state: "dispatch_submitted",
   attempt_count: 1,

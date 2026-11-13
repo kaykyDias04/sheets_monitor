@@ -106,7 +106,7 @@ fn reply(refresh: Option<&str>) -> TokenResponse {
         token_type: "Bearer".into(),
         expires_in: 3600,
         refresh_token: refresh.map(str::to_owned),
-        scope: Some(scopes(false).join(" ")),
+        scope: Some(scopes(false, false, false).join(" ")),
     }
 }
 fn configured() -> (Arc<Vault>, Arc<Mock>, AuthManager) {
@@ -419,4 +419,35 @@ fn clean_machine_provisioning_backfills_missing_secret_and_keeps_public_config_o
         String::from_utf8_lossy(vault2.bytes.lock().unwrap().as_ref().unwrap())
             .contains("synthetic-secret")
     );
+}
+
+#[test]
+fn optional_cloud_and_audit_scopes_require_choice_and_preserve_generation_guards() {
+    let (vault, mock, manager) = configured();
+    let initial = manager.state().unwrap();
+    assert_eq!(manager.features().unwrap(), (false, false));
+    let chosen = manager
+        .set_features(true, false, initial.generation)
+        .unwrap();
+    assert!(chosen.generation > initial.generation);
+    assert!(!chosen
+        .auth
+        .granted_scopes
+        .iter()
+        .any(|s| s == super::super::CLOUD_SCOPE));
+    assert_eq!(
+        manager
+            .set_features(false, true, initial.generation)
+            .unwrap_err()
+            .code,
+        AuthCode::OperationSuperseded
+    );
+    let recovered = AuthManager::new(vault, mock);
+    assert_eq!(recovered.features().unwrap(), (true, false));
+    assert!(scopes(false, true, false)
+        .iter()
+        .any(|s| s == super::super::CLOUD_SCOPE));
+    assert!(!scopes(false, true, false)
+        .iter()
+        .any(|s| s == super::super::AUDIT_SCOPE));
 }

@@ -23,7 +23,7 @@ Comandos e resultados ficam em [progresso](progress.md), [desktop](desktop.md), 
 - Sprint 02: login autorizado, sessão no cofre e leituras reais Sheets/Drive/Apps Script. Fixtures cobrem falhas, sem substituir consentimento.
 - Sprint 03: baseline aprovado/versionado, colunas/abas, fórmulas críticas, referências estáticas e quatro estados. Mudança permitida continua Online; cada diferença observada gera evento.
 - Sprint 04: cadastro/edit/remove/pause, limite 30, seleção de abas, dashboard e histórico coletados.
-- Sprint 05: polling 60–300s, até três avaliações, recuperação de rede/quota, notificações sem perda e operação minimizada/bandeja.
+- Sprint 05: polling 60–600s, até três avaliações, recuperação de rede/quota, notificações sem perda e operação minimizada/bandeja.
 - Sprint 06: cenários integrados, carga de 30 arquivos com métricas, instalador/desinstalação Windows x64 e avisos de licenças/privacidade.
 
 Cada gate futuro exige autorização e evidência própria. Aprovação de baseline, consentimento e homologação final pertencem ao usuário; não serão inferidos por tempo decorrido ou por sucesso de mock.

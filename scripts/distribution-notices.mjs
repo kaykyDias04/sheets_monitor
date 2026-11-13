@@ -45,7 +45,7 @@ const missing = inventory.filter(pkg => !pkg.complete || !pkg.license);
 fs.mkdirSync(path.join(root, "distribution"), { recursive: true });
 fs.writeFileSync(path.join(root, "distribution/THIRD-PARTY-NOTICES.txt"),
   "Sheets Monitor — third-party notices\nConservative inventory of resolved Rust packages and production npm packages.\nEach component retains its own license. Toolchains and WebView2 are not bundled here.\nRust standard-library notices are in rust-notices/COPYRIGHT-library.html and the accompanying licenses directory.\n" + sections.join(""));
-fs.writeFileSync(path.join(root, "docs/evidence/sprint06/distribution-licenses.json"), JSON.stringify({
+fs.writeFileSync(path.join(root, "distribution/dependency-licenses.json"), JSON.stringify({
   scope: "Resolved Rust graph (including build/dev) and production npm; not proof of final binary composition",
   package_count: inventory.length, unresolved_count: missing.length, inventory,
 }, null, 2) + "\n");

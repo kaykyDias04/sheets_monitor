@@ -2874,6 +2874,18 @@ button.op-file-link:hover strong {
   padding: 1rem 0;
   border-bottom: 1px solid var(--border);
 }
+.op-notification-list li[data-error-category] {
+  border-left: 3px solid var(--destructive);
+  padding-left: 0.75rem;
+}
+.op-notification-list li[data-error-category="quota"],
+.op-notification-list li[data-error-category="sync"] {
+  border-left-color: var(--primary);
+}
+.op-error-category {
+  display: block;
+  margin-top: 0.4rem;
+}
 .op-notification-list p {
   margin: 0.3rem 0;
   overflow-wrap: anywhere;

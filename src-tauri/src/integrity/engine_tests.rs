@@ -55,7 +55,7 @@ fn deleted_key_with_per_record_formula_respects_deletion_policy() {
     assert_eq!(report(&current).status, IntegrityStatus::Online);
 }
 #[test]
-fn deleted_formula_record_disallowed_is_inconclusive_not_fabricated_missing() {
+fn deleted_formula_record_disallowed_is_offline_without_fabricated_missing_formula() {
     let mut b = baseline();
     b.snapshot.scope.sheets[0].regions[0].allow_record_deletion = false;
     rehash(&mut b.snapshot);
@@ -63,8 +63,38 @@ fn deleted_formula_record_disallowed_is_inconclusive_not_fabricated_missing() {
     current.sheets[0].regions[0].rows.remove(0);
     current.sheets[0].regions[0].formulas.remove(0);
     let r = evaluate(&b, None, &current, "check").unwrap();
-    assert_eq!(r.status, IntegrityStatus::Indeterminate);
+    assert_eq!(r.status, IntegrityStatus::Offline);
+    assert!(has(&r, "protected_record_removed"));
     assert!(has(&r, "formula_anchor_ambiguous"));
+}
+#[test]
+fn deletion_rule_protects_records_without_formulas_and_persists_until_restored() {
+    let mut b = baseline();
+    b.snapshot.scope.sheets[0].regions[0].formulas.clear();
+    b.snapshot.scope.sheets[0].regions[0].allow_record_deletion = false;
+    b.snapshot.sheets[0].regions[0].formulas.clear();
+    rehash(&mut b.snapshot);
+    let mut current = b.snapshot.clone();
+    current.sheets[0].regions[0].rows.pop();
+    let r = evaluate(&b, None, &current, "deleted").unwrap();
+    assert_eq!(r.status, IntegrityStatus::Offline);
+    assert!(r
+        .findings
+        .iter()
+        .any(|f| f.code == "protected_record_removed" && f.rule_id == "records"));
+    let repeated = evaluate(&b, Some(&current), &current, "repeated").unwrap();
+    assert!(has(&repeated, "protected_record_removed"));
+    assert_eq!(
+        evaluate(&b, Some(&current), &b.snapshot, "restored")
+            .unwrap()
+            .status,
+        IntegrityStatus::Online
+    );
+    current.sheets[0].regions[0].complete = false;
+    assert!(!has(
+        &evaluate(&b, None, &current, "partial").unwrap(),
+        "protected_record_removed"
+    ));
 }
 #[test]
 fn common_value_edit_generates_cell_difference_without_offline() {
@@ -647,4 +677,32 @@ fn failed_optional_script_does_not_override_verified_critical_sheets() {
         );
         assert!(report.findings.iter().any(|f| f.code == "forbidden"));
     }
+}
+
+#[test]
+fn deletion_rule_without_stable_keys_does_not_invent_a_removed_identity() {
+    let mut b = baseline();
+    let rule = &mut b.snapshot.scope.sheets[0].regions[0];
+    rule.allow_record_deletion = false;
+    rule.key_column = None;
+    rule.formulas.clear();
+    b.snapshot.sheets[0].regions[0].formulas.clear();
+    for row in &mut b.snapshot.sheets[0].regions[0].rows {
+        row.key_hash = None;
+    }
+    rehash(&mut b.snapshot);
+    let mut current = b.snapshot.clone();
+    let changed = &mut current.sheets[0].regions[0].rows[0];
+    changed
+        .cell_hashes
+        .insert("amount".into(), fingerprint(&999));
+    changed.fingerprint = fingerprint(&changed.cell_hashes);
+    let report = evaluate(&b, None, &current, "ambiguous").unwrap();
+    assert_eq!(report.status, IntegrityStatus::Indeterminate);
+    assert!(has(&report, "record_deletion_unproven"));
+    assert!(!has(&report, "protected_record_removed"));
+    current.sheets[0].regions[0].rows.pop();
+    let report = evaluate(&b, None, &current, "fewer_records").unwrap();
+    assert_eq!(report.status, IntegrityStatus::Offline);
+    assert!(has(&report, "protected_record_removed"));
 }

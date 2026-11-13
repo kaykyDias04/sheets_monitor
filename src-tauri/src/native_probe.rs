@@ -386,6 +386,7 @@ fn exercise(
             severity: "info".into(),
             event_kind: Some("recovered".into()),
             event_type_label: "Monitoramento restabelecido".into(),
+            diagnostic_code: "synthetic_test".into(),
             diagnosis:
                 "TESTE autorizado de notificação nativa. Nenhuma alteração Google foi realizada."
                     .into(),

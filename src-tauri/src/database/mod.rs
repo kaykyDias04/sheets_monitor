@@ -1,6 +1,8 @@
 //! Local persistence. Demonstration fixtures and authorized integration metadata
 //! have separate tables. Cell values/source/tokens are not stored; approved
 //! structural snapshots retain protected formulas needed for deterministic checks.
+mod audit_store;
+mod cloud_sync_store;
 mod integration;
 mod integrity_store;
 #[path = "../management/store.rs"]
@@ -32,8 +34,8 @@ impl Default for AppSettings {
 
 impl AppSettings {
     pub fn validate(&self) -> Result<(), String> {
-        if !(60..=300).contains(&self.interval_seconds) {
-            return Err("interval_seconds_must_be_between_60_and_300".into());
+        if !(60..=600).contains(&self.interval_seconds) {
+            return Err("interval_seconds_must_be_between_60_and_600".into());
         }
         if self.history_days != 90 {
             return Err("history_days_fixed_at_90_in_sprint_01".into());
@@ -398,7 +400,7 @@ mod tests {
     fn defaults_bounds_and_unavailable_startup_are_enforced() {
         let mut database = Database::memory().unwrap();
         assert_eq!(database.settings().unwrap(), AppSettings::default());
-        for interval_seconds in [60, 120, 300] {
+        for interval_seconds in [60, 120, 300, 600] {
             let settings = AppSettings {
                 interval_seconds,
                 ..Default::default()
@@ -406,7 +408,7 @@ mod tests {
             database.save_settings(&settings).unwrap();
             assert_eq!(database.settings().unwrap(), settings);
         }
-        for interval_seconds in [0, 59, 301, u32::MAX] {
+        for interval_seconds in [0, 59, 601, u32::MAX] {
             assert!(database
                 .save_settings(&AppSettings {
                     interval_seconds,

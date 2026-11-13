@@ -34,6 +34,16 @@ const MIGRATIONS: &[Migration] = &[
         name: "0005_continuous_monitoring",
         sql: include_str!("../../migrations/0005_continuous_monitoring.sql"),
     },
+    Migration {
+        version: 6,
+        name: "0006_cloud_sync",
+        sql: include_str!("../../migrations/0006_cloud_sync.sql"),
+    },
+    Migration {
+        version: 7,
+        name: "0007_cloud_baseline_ordinals",
+        sql: include_str!("../../migrations/0007_cloud_baseline_ordinals.sql"),
+    },
 ];
 
 pub(super) fn apply(connection: &mut Connection) -> Result<(), String> {
@@ -296,6 +306,39 @@ mod tests {
     }
 
     #[test]
+    fn upgrade_preserves_existing_settings_and_allows_ten_minutes() {
+        let mut connection = Connection::open_in_memory().unwrap();
+        apply_list(&mut connection, &MIGRATIONS[..5]).unwrap();
+        connection
+            .execute(
+                "UPDATE app_settings SET interval_seconds=180,demo_seeded=1 WHERE id=1",
+                [],
+            )
+            .unwrap();
+        apply(&mut connection).unwrap();
+        let settings: (u32, bool) = connection
+            .query_row(
+                "SELECT interval_seconds,demo_seeded FROM app_settings WHERE id=1",
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!(settings, (180, true));
+        connection
+            .execute(
+                "UPDATE app_settings SET interval_seconds=600 WHERE id=1",
+                [],
+            )
+            .unwrap();
+        assert!(connection
+            .execute(
+                "UPDATE app_settings SET interval_seconds=601 WHERE id=1",
+                []
+            )
+            .is_err());
+    }
+
+    #[test]
     fn future_version_and_ledger_are_rejected() {
         let mut connection = Connection::open_in_memory().unwrap();
         connection.pragma_update(None, "user_version", 99).unwrap();
@@ -307,7 +350,7 @@ mod tests {
         apply(&mut connection).unwrap();
         connection
             .execute(
-                "INSERT INTO _schema_migrations VALUES(6,'future','unknown','demo')",
+                "INSERT INTO _schema_migrations VALUES(8,'future','unknown','demo')",
                 [],
             )
             .unwrap();

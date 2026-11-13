@@ -1,5 +1,8 @@
 //! Local desktop foundation and authorized, read-only Google integration.
+pub mod audit;
 pub mod auth;
+pub mod cloud_service;
+pub mod cloud_sync;
 pub mod database;
 pub mod google;
 pub mod integration;

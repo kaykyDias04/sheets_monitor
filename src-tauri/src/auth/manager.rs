@@ -65,6 +65,10 @@ struct StoredConfig {
     client_id: String,
     client_secret: Option<String>,
     drive_metadata_opt_in: bool,
+    #[serde(default)]
+    cloud_opt_in: bool,
+    #[serde(default)]
+    audit_opt_in: bool,
 }
 impl Drop for StoredConfig {
     fn drop(&mut self) {
@@ -285,6 +289,8 @@ impl AuthManager {
             client_id,
             client_secret: secret,
             drive_metadata_opt_in: input.drive_metadata_opt_in,
+            cloud_opt_in: false,
+            audit_opt_in: false,
         };
         validate_config(&config)?;
         let stored = StoredState {
@@ -312,6 +318,8 @@ impl AuthManager {
             client_id: input.client_id.trim().to_owned(),
             client_secret: input.client_secret.take().filter(|s| !s.is_empty()),
             drive_metadata_opt_in: input.drive_metadata_opt_in,
+            cloud_opt_in: false,
+            audit_opt_in: false,
         };
         validate_config(&candidate)?;
         let _gate = self
@@ -380,6 +388,47 @@ impl AuthManager {
         memory.generation = memory.generation.wrapping_add(1);
         Ok(Self::status(&memory))
     }
+    /// Explicit UI choice; never manufactures a grant or changes the account.
+    pub fn set_features(
+        &self,
+        cloud: bool,
+        audit: bool,
+        expected_generation: u64,
+    ) -> AuthResult<IntegrationState> {
+        let _gate = self
+            .auth_gate
+            .try_lock()
+            .map_err(|_| AuthError::new(AuthCode::AuthBusy))?;
+        let mut memory = self.memory()?;
+        if let Some(error) = &memory.load_error {
+            return Err(error.clone());
+        }
+        if memory.generation != expected_generation {
+            return Err(AuthError::new(AuthCode::OperationSuperseded));
+        }
+        let mut stored = memory.stored.clone();
+        let config = stored
+            .config
+            .as_mut()
+            .ok_or_else(|| AuthError::new(AuthCode::Unconfigured))?;
+        if config.cloud_opt_in == cloud && config.audit_opt_in == audit {
+            return Ok(Self::status(&memory));
+        }
+        config.cloud_opt_in = cloud;
+        config.audit_opt_in = audit;
+        self.save(&stored)?;
+        memory.stored = stored;
+        memory.generation = memory.generation.wrapping_add(1);
+        Ok(Self::status(&memory))
+    }
+    pub fn features(&self) -> AuthResult<(bool, bool)> {
+        let memory = self.memory()?;
+        Ok(memory
+            .stored
+            .config
+            .as_ref()
+            .map_or((false, false), |c| (c.cloud_opt_in, c.audit_opt_in)))
+    }
     pub fn connect(&self) -> AuthResult<IntegrationState> {
         self.connect_with_timeout(Duration::from_secs(180))
     }
@@ -399,8 +448,12 @@ impl AuthManager {
                 memory.generation,
             )
         };
-        let pending =
-            PendingAuthorization::new(&config.client_id, config.drive_metadata_opt_in, timeout)?;
+        let requested_scopes = scopes(
+            config.drive_metadata_opt_in,
+            config.cloud_opt_in,
+            config.audit_opt_in,
+        );
+        let pending = PendingAuthorization::new(&config.client_id, &requested_scopes, timeout)?;
         self.transport.open_browser(&pending.url)?;
         let (code, redirect_uri, verifier) =
             pending.wait(|| self.memory().map_or(true, |m| m.generation != generation))?;
@@ -414,8 +467,7 @@ impl AuthManager {
             },
         };
         let reply = self.transport.token(&request)?;
-        let (access, refresh, granted) =
-            validate_tokens(reply, None, &scopes(config.drive_metadata_opt_in))?;
+        let (access, refresh, granted) = validate_tokens(reply, None, &requested_scopes)?;
         if !granted.iter().any(|s| s == "openid") {
             return Err(AuthError::new(AuthCode::InsufficientScope));
         }
@@ -661,7 +713,7 @@ fn validate_tokens(
     {
         return Err(AuthError::new(AuthCode::InvalidResponse));
     }
-    let permitted = scopes(true);
+    let permitted = scopes(true, true, true);
     let granted = if let Some(scope) = &reply.scope {
         scope
             .split_whitespace()

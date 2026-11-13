@@ -55,3 +55,19 @@ Comandos novos: discover_spreadsheets, list_registered_spreadsheets, register_sp
 Ao todo são 43 comandos registrados, incluindo os anteriores. Descoberta retorna DiscoveryPage com next_page_token e incomplete_search; limite de página até 100, padrão 50, separado da capacidade de cadastro. Atividades e versões usam Page<T> com offset/limit/total. Comparação de versões é local e limitada a 200 diferenças, com truncated explícito. Regras propostas não são salvas automaticamente.
 
 A remoção exige confirmed e history preserve/delete_activity; a segunda opção exclui atividades e preserva baselines. Preview/approval operacionais fixam revisão do cadastro, fingerprint e versão. Não equivalem aos comandos avançados, que não oferecem cadastro/seleção operacional; a persistência compartilhada também impede usar uma configuração antiga de um cadastro modificado.
+
+## Sincronização e auditoria opcionais
+
+| Comando | Argumentos top-level | Resultado |
+|---|---|---|
+| integration_get_features | nenhum | flags cloud/auditoria, sem conceder permissões |
+| integration_set_features | cloud, audit, expectedGeneration | IntegrationState; CAS de geração dentro do cofre |
+| cloud_sync_status | nenhum | EngineEnvelope com estado local, mensagem, conflitos, conflict_token e última sincronização; sem rede |
+| cloud_sync_now | expectedGeneration, resolution, expectedConflictToken | EngineEnvelope; resolution nula, keep_local ou remote:hash; decisões exigem o token do conflito exibido |
+| get_event_audit | eventId | EngineEnvelope com responsável não identificado e registros contextuais do Workspace |
+
+O backend deriva a conta, arquivo e janela de auditoria dos dados autenticados. Restauração da nuvem não cria aprovação nova: importa referências aprovadas validadas e preserva versões locais imutáveis. Configuração local alterada durante rede impede o commit por hash/CAS. Limites explícitos: 8MiB por commit/resposta, 64MiB de downloads novos por ciclo, 2048 commits e 32 páginas de listagem; lista incompleta nunca é aplicada.
+
+`conflict_token` vincula conta, configuração local, base e conjunto completo de heads remotos. Uma resolução obsoleta é recusada antes de enviar um merge ou restaurar dados; a interface deve reler o conflito. O serviço automático não resolve divergências.
+
+`NotificationRecord` mantém `diagnostic_code` separado de `diagnosis`: o código estável determina a categoria visual; a mensagem localizada apresenta causa, impacto e solução. Não classificar erros pela tradução exibida.

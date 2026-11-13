@@ -69,6 +69,7 @@ pub struct NotificationRecord {
     #[serde(default)]
     pub event_type_label: String,
     pub diagnosis: String,
+    pub diagnostic_code: String,
     pub detected_at: String,
     #[serde(default)]
     pub formatted_detected_at: String,

@@ -46,6 +46,7 @@ open = "5"
 zeroize = { version = "1", features = ["derive"] }
 tree-sitter = "0.25"
 tree-sitter-javascript = "0.25.0"
+rust_xlsxwriter = { version = "=0.102.0", default-features = false, features = ["constant_memory"] }
 tauri = { version = "2", features = ["tray-icon"], optional = true }
 tauri-plugin-single-instance = { version = "=2.5.5", optional = true }
 
@@ -55,4 +56,5 @@ windows = { version = "0.62.2", optional = true, features = ["Data_Xml_Dom", "Fo
 
 [dev-dependencies]
 tempfile = "3"
+zip = { version = "=9.5.1", default-features = false, features = ["deflate-flate2"] }
 

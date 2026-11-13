@@ -144,7 +144,7 @@ Os 28 IDs originais permanecem preservados. As adicoes ficam separadas em backlo
 
 ### SM-022 — subtarefas
 
-- **SM-022.01** — Intervalo 60–300s, até três coletas e aviso de frequência inviável (concluido).
+- **SM-022.01** — Intervalo 60–600s, até três coletas e aviso de frequência inviável (concluido).
 
 ### SM-023 — subtarefas
 

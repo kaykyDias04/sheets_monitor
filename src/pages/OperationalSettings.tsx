@@ -188,7 +188,7 @@ export function PreferenceForm({
                 <Input
                   type="number"
                   min={60}
-                  max={300}
+                  max={600}
                   required
                   value={preferences.interval_seconds}
                   onChange={(e) =>
