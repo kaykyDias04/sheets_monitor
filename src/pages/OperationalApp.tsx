@@ -794,7 +794,7 @@ export function OperationalApp() {
         </nav>
         <div className="sidebar-foot">
           <div className="version">
-            <span>v1.0.5</span>
+            <span>v1.0.6</span>
             <span>WINDOWS 11</span>
           </div>
         </div>

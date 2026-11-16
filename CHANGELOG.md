@@ -1,16 +1,16 @@
 # Changelog
 
-## Não publicado
+## 1.0.6 — 16/11/2026
 
 - Intervalo operacional e legado ampliado para 60–600 segundos, preservando a fila e exclusão por arquivo.
 - Histórico/export CSV e JSON limitados a regras protegidas; filtros combinados e export completo preservados.
-- Exportação XLSX real com os mesmos filtros e ordenação, escrita de texto literal, memória limitada e recusa contextual dos limites do Excel sem truncar dados.
+- Exportação XLSX real com os mesmos filtros e ordenação, escrita de texto literal, memória limitada e recusa contextual dos limites do Excel sem truncar dados (validada no aplicativo instalado Windows).
 - Falhas de consulta com causa, impacto e solução; diagnósticos operacionais separados das atualizações de proteção.
-- Callback OAuth no Windows normaliza o socket aceito para leitura bloqueante com deadline, evitando timeouts intermitentes sem alterar PKCE, estado ou limites.
+- Callback OAuth no Windows normaliza o socket aceito para leitura bloqueante com deadline, evitando timeouts intermitentes sem alterar PKCE, estado ou limites (validado no aplicativo instalado com consentimento real no Windows).
 - Regra de proibição de exclusão passa a detectar registros sem depender da presença de fórmula.
 - Contexto de auditoria separado de autoria, com fallback “Responsável não identificado”.
 - Diagnóstico de cotas identifica API, operação e limite informado pelo Google; tentativas limitadas respeitam espera exponencial e `Retry-After`.
-- Sincronização opcional de cadastros, abas, regras e referências na pasta privada do aplicativo no Drive, com cache e recuperação local; tokens e credenciais permanecem no dispositivo.
+- Sincronização opcional de cadastros, abas, regras e referências na pasta privada `appDataFolder` do Drive, com cache e recuperação local (homologada entre dois ambientes independentes com a mesma conta Google, incluindo detecção/resolução explícita de conflito com backup verificável e ausência de credenciais nos commits); tokens e credenciais permanecem no dispositivo.
 
 ## 1.0.0 — candidato local em homologação,03/11/2026
 
