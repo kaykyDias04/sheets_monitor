@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7 — 18/11/2026
+
+- Exportação e importação em JSON das planilhas monitoradas e suas regras de proteção (`MonitorScope`), com validação de formato, capacidade e correspondência de abas, sem aprovação automática de referências.
+- Limpeza do cache de configuração (`tabs_json`, `selected_sheet_ids_json`, `scope_json`, `scope_hash`, agendamento e ponteiros ativos) ao remover e readicionar uma planilha.
+- Filtro estrito de atualizações e notificações de integridade para exibir apenas eventos vinculados às regras de comportamento das planilhas (excluindo `capture`, `metadata`, `connectivity` e `analysis_inconclusive`).
+
 ## 1.0.6 — 16/11/2026
 
 - Intervalo operacional e legado ampliado para 60–600 segundos, preservando a fila e exclusão por arquivo.
