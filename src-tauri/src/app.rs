@@ -913,6 +913,30 @@ async fn export_change_events(
 }
 
 #[tauri::command]
+async fn export_spreadsheets_config(
+    app: tauri::AppHandle,
+    state: State<'_, FoundationState>,
+) -> Result<EngineEnvelope<crate::management::ExportSpreadsheetsConfigResult>, CommandError> {
+    let rt = runtime(&state)?;
+    let destination = app
+        .path()
+        .download_dir()
+        .or_else(|_| app.path().document_dir())
+        .or_else(|_| app.path().app_data_dir().map(|d| d.join("exports")))
+        .map_err(|_| CommandError::local())?;
+    blocking(move || rt.export_spreadsheets_config(&destination)).await
+}
+
+#[tauri::command]
+async fn import_spreadsheets_config(
+    state: State<'_, FoundationState>,
+    input: crate::management::ImportSpreadsheetsConfigInput,
+) -> Result<EngineEnvelope<crate::management::ImportSpreadsheetsConfigResult>, CommandError> {
+    let rt = runtime(&state)?;
+    blocking(move || rt.import_spreadsheets_config(input)).await
+}
+
+#[tauri::command]
 fn updater_get_status(state: State<'_, FoundationState>) -> Result<UpdaterStatus, CommandError> {
     let updater = state.updater.as_ref().ok_or_else(CommandError::local)?;
     Ok(updater.status())
@@ -1168,6 +1192,8 @@ pub fn run() {
             get_spreadsheet_diagnostics,
             list_change_events,
             export_change_events,
+            export_spreadsheets_config,
+            import_spreadsheets_config,
             updater_get_status,
             updater_check,
             updater_dismiss,

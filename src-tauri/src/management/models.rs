@@ -234,3 +234,37 @@ pub struct BaselineComparison {
     pub differences: Vec<BaselineDifference>,
     pub truncated: bool,
 }
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct ExportedSpreadsheetConfig {
+    pub spreadsheet_id: String,
+    pub name: String,
+    pub paused: bool,
+    pub tabs: Vec<SheetMetadata>,
+    pub selected_sheet_ids: Vec<u32>,
+    pub scope: Option<MonitorScope>,
+}
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct SpreadsheetsConfigBundle {
+    pub format_version: u32,
+    pub exported_at: String,
+    pub spreadsheets: Vec<ExportedSpreadsheetConfig>,
+}
+#[derive(Debug, Serialize)]
+pub struct ExportSpreadsheetsConfigResult {
+    pub exported_count: usize,
+    pub file_path: Option<String>,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ImportSpreadsheetsConfigInput {
+    pub expected_generation: u64,
+    pub content: String,
+}
+#[derive(Debug, Serialize)]
+pub struct ImportSpreadsheetsConfigResult {
+    pub created_count: usize,
+    pub updated_count: usize,
+    pub total_count: usize,
+}

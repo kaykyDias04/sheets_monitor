@@ -513,12 +513,12 @@ fn activity_erasure_retains_approved_baseline_and_clears_report_pointers() {
         .is_none());
     d.register_operational_spreadsheet("fixture_account", &metadata("fixture_sheet"))
         .unwrap();
-    assert_eq!(
-        d.registered_spreadsheet("fixture_account", "fixture_sheet")
-            .unwrap()
-            .status,
-        "not_checked"
-    );
+    let readded = d
+        .registered_spreadsheet("fixture_account", "fixture_sheet")
+        .unwrap();
+    assert_eq!(readded.status, "configuration_pending");
+    assert!(readded.selected_sheet_ids.is_empty());
+    assert!(readded.scope.is_none());
 }
 #[test]
 fn scripts_require_authorized_association_and_preferences_are_validated() {
@@ -1217,5 +1217,122 @@ fn exports_filtered_logs_as_csv_json_and_xlsx_without_secrets_and_handles_empty_
         .unwrap()
         .total,
         2
+    );
+}
+#[test]
+fn remove_spreadsheet_clears_cached_configuration_on_readd() {
+    let mut d = db();
+    let (row, _baseline) = approved(&mut d);
+    assert!(!row.selected_sheet_ids.is_empty());
+    assert!(row.scope.is_some());
+    d.remove_registered_spreadsheet(
+        "fixture_account",
+        &RemoveInput {
+            spreadsheet_id: row.spreadsheet_id.clone(),
+            expected_generation: 3,
+            expected_revision: row.revision,
+            confirmed: true,
+            history: "preserve".into(),
+        },
+    )
+    .unwrap();
+    let readded = d
+        .register_operational_spreadsheet("fixture_account", &metadata("fixture_sheet"))
+        .unwrap();
+    assert!(readded.selected_sheet_ids.is_empty());
+    assert!(readded.scope.is_none());
+    assert!(readded.scope_hash.is_none());
+    assert!(readded.baseline_version.is_none());
+    assert_eq!(readded.status, "configuration_pending");
+}
+#[test]
+fn operational_events_exclude_capture_metadata_and_connectivity_updates() {
+    let mut d = db();
+    let (_row, baseline) = approved(&mut d);
+    let mut snap = fixtures::snapshot();
+    snap.id = "capture_and_rule_snap".into();
+    snap.coverage.metadata_complete = false;
+    snap.sheets[0].regions[0].headers[1].header = "AlteredHeader".into();
+    save_report(&mut d, &baseline, &snap, "capture_and_rule_check");
+    let page = d
+        .operational_events(
+            "fixture_account",
+            &EventFilter {
+                limit: 20,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    assert!(!page.items.is_empty());
+    assert!(page.items.iter().all(|item| !matches!(
+        item.event.rule_id.as_deref(),
+        Some("capture" | "metadata" | "connectivity")
+    )));
+    assert!(page
+        .items
+        .iter()
+        .all(|item| item.event.kind != "analysis_inconclusive"));
+}
+#[test]
+fn export_and_import_spreadsheets_config_roundtrip_and_validation() {
+    let mut d = db();
+    let (row, _baseline) = approved(&mut d);
+    let dir = tempfile::tempdir().unwrap();
+    let exported = d
+        .export_spreadsheets_config("fixture_account", dir.path())
+        .unwrap();
+    assert_eq!(exported.exported_count, 1);
+    let file_path = exported.file_path.expect("export file path");
+    let content = std::fs::read_to_string(&file_path).unwrap();
+
+    d.remove_registered_spreadsheet(
+        "fixture_account",
+        &RemoveInput {
+            spreadsheet_id: row.spreadsheet_id.clone(),
+            expected_generation: 3,
+            expected_revision: row.revision,
+            confirmed: true,
+            history: "delete_activity".into(),
+        },
+    )
+    .unwrap();
+    assert!(d.registered_spreadsheets("fixture_account").unwrap().is_empty());
+
+    let imported = d
+        .import_spreadsheets_config("fixture_account", &content)
+        .unwrap();
+    assert_eq!(imported.created_count, 1);
+    assert_eq!(imported.updated_count, 0);
+    assert_eq!(imported.total_count, 1);
+
+    let restored = d
+        .registered_spreadsheet("fixture_account", &row.spreadsheet_id)
+        .unwrap();
+    assert_eq!(restored.name, row.name);
+    assert_eq!(restored.selected_sheet_ids, row.selected_sheet_ids);
+    assert_eq!(restored.scope, row.scope);
+    assert!(restored.baseline_version.is_none());
+    assert_eq!(restored.status, "configuration_pending");
+
+    let updated = d
+        .import_spreadsheets_config("fixture_account", &content)
+        .unwrap();
+    assert_eq!(updated.created_count, 0);
+    assert_eq!(updated.updated_count, 1);
+
+    assert_eq!(
+        d.import_spreadsheets_config("fixture_account", "not-json")
+            .unwrap_err()
+            .code,
+        "invalid_import_file"
+    );
+    assert_eq!(
+        d.import_spreadsheets_config(
+            "fixture_account",
+            r#"{"format_version":1,"exported_at":"2026-11-17T00:00:00Z","spreadsheets":[]}"#
+        )
+        .unwrap_err()
+        .code,
+        "import_empty"
     );
 }

@@ -183,7 +183,8 @@ impl Database {
         }
         let tabs = encode(&metadata.sheets)?;
         if exists == Some(true) {
-            tx.execute("UPDATE registered_spreadsheets SET removed=0,paused=0,name=?3,tabs_json=?4,authorization='available',access_error=NULL,revision=revision+1,tabs_refreshed_at=strftime('%Y-%m-%dT%H:%M:%fZ','now'),updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,metadata.spreadsheet_id,metadata.title,tabs]).map_err(sql)?;
+            tx.execute("UPDATE registered_spreadsheets SET removed=0,paused=0,name=?3,tabs_json=?4,selected_sheet_ids_json='[]',scope_json=NULL,scope_hash=NULL,authorization='available',access_error=NULL,revision=revision+1,tabs_refreshed_at=strftime('%Y-%m-%dT%H:%M:%fZ','now'),updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,metadata.spreadsheet_id,metadata.title,tabs]).map_err(sql)?;
+            tx.execute("UPDATE integrity_scopes SET active_baseline_id=NULL,latest_report_id=NULL,previous_snapshot_id=NULL,observation_revision=observation_revision+1 WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,metadata.spreadsheet_id]).map_err(sql)?;
         } else {
             tx.execute("INSERT INTO registered_spreadsheets(account_id,spreadsheet_id,name,tabs_json,tabs_refreshed_at,created_at,updated_at) VALUES(?1,?2,?3,?4,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'))",params![aid,metadata.spreadsheet_id,metadata.title,tabs]).map_err(sql)?;
         }
@@ -355,7 +356,8 @@ impl Database {
                 tx.execute(&format!("DELETE FROM {table} WHERE scope_id IN(SELECT id FROM integrity_scopes WHERE account_id=?1 AND spreadsheet_id=?2)"),params![aid,id]).map_err(sql)?;
             }
         }
-        tx.execute("UPDATE registered_spreadsheets SET removed=1,paused=1,revision=revision+1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,id]).map_err(sql)?;
+        tx.execute("DELETE FROM monitoring_schedules WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,id]).map_err(sql)?;
+        tx.execute("UPDATE registered_spreadsheets SET removed=1,paused=1,scope_json=NULL,scope_hash=NULL,selected_sheet_ids_json='[]',tabs_json='[]',access_error=NULL,tabs_refreshed_at=NULL,revision=revision+1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",params![aid,id]).map_err(sql)?;
         tx.commit().map_err(sql)?;
         Ok(())
     }
@@ -434,7 +436,7 @@ FROM integrity_events e
 JOIN integrity_reports p ON p.check_id=e.check_id AND p.account_id=e.account_id
 JOIN integrity_scopes s ON s.id=e.scope_id AND s.account_id=e.account_id
 JOIN registered_spreadsheets r ON r.account_id=e.account_id AND r.spreadsheet_id=s.spreadsheet_id
-WHERE e.account_id=?1 AND json_extract(e.event_json,'$.category')='integrity' AND length(trim(COALESCE(json_extract(e.event_json,'$.rule_id'),'')))>0
+WHERE e.account_id=?1 AND json_extract(e.event_json,'$.category')='integrity' AND length(trim(COALESCE(json_extract(e.event_json,'$.rule_id'),'')))>0 AND COALESCE(json_extract(e.event_json,'$.rule_id'),'') NOT IN ('capture','metadata','connectivity') AND COALESCE(json_extract(e.event_json,'$.kind'),'')!='analysis_inconclusive'
 )";
 
 const UNIFIED_EVENTS_WHERE: &str = " FROM unified u WHERE (?2 IS NULL OR u.spreadsheet_id=?2) AND (?3 IS NULL OR u.sheet_id=?3) AND (?4 IS NULL OR u.detected_jd>=julianday(?4)) AND (?5 IS NULL OR u.detected_jd<=julianday(?5)) AND (?6 IS NULL OR u.kind=?6) AND (?7 IS NULL OR u.severity=?7) AND (?8 IS NULL OR u.status=?8) AND (?9 IS NULL OR u.category=?9) AND (NOT ?10 OR u.category='script' OR u.kind LIKE '%script%' OR COALESCE(u.rule_id,'') LIKE 'script%') AND (?11='' OR instr(lower(u.spreadsheet_name||' '||COALESCE(u.sheet_title,'')||' '||u.diagnosis||' '||COALESCE(u.rule_id,'')),lower(?11))>0) AND (?12 IS NULL OR u.event_type=?12) AND (?13 IS NULL OR u.issue_status=?13)";
@@ -1088,6 +1090,248 @@ impl Database {
             spreadsheets,
         };
         Ok(summary)
+    }
+    pub fn export_spreadsheets_config(
+        &self,
+        subject: &str,
+        destination: &Path,
+    ) -> Result<ExportSpreadsheetsConfigResult> {
+        let rows = self.registered_spreadsheets(subject)?;
+        let exported_count = rows.len();
+        if exported_count == 0 {
+            return Ok(ExportSpreadsheetsConfigResult {
+                exported_count: 0,
+                file_path: None,
+            });
+        }
+        let bundle = SpreadsheetsConfigBundle {
+            format_version: 1,
+            exported_at: chrono::Utc::now().to_rfc3339(),
+            spreadsheets: rows
+                .into_iter()
+                .map(|row| ExportedSpreadsheetConfig {
+                    spreadsheet_id: row.spreadsheet_id,
+                    name: row.name,
+                    paused: row.paused,
+                    tabs: row.tabs,
+                    selected_sheet_ids: row.selected_sheet_ids,
+                    scope: row.scope,
+                })
+                .collect(),
+        };
+        fs::create_dir_all(destination).map_err(|_| {
+            error(
+                "export_io_error",
+                "Não foi possível preparar a pasta de exportação.",
+            )
+        })?;
+        let timestamp = chrono::Local::now().format("%Y%m%d-%H%M%S");
+        let base_name = format!("sheets-monitor-config-{timestamp}");
+        let mut final_path = destination.join(format!("{base_name}.json"));
+        let mut suffix = 1u32;
+        while final_path.exists() {
+            final_path = destination.join(format!("{base_name}-{suffix}.json"));
+            suffix = suffix.saturating_add(1);
+        }
+        let temp_path = destination.join(format!(".{base_name}.{}.tmp", uuid::Uuid::new_v4()));
+        let payload = serde_json::to_vec_pretty(&bundle).map_err(|_| CommandError::local())?;
+        if fs::write(&temp_path, &payload).is_err() {
+            let _ = fs::remove_file(&temp_path);
+            return Err(error(
+                "export_io_error",
+                "Não foi possível gravar o arquivo de configuração.",
+            ));
+        }
+        fs::rename(&temp_path, &final_path).map_err(|_| {
+            let _ = fs::remove_file(&temp_path);
+            error(
+                "export_io_error",
+                "Não foi possível finalizar o arquivo de exportação.",
+            )
+        })?;
+        Ok(ExportSpreadsheetsConfigResult {
+            exported_count,
+            file_path: Some(final_path.to_string_lossy().into_owned()),
+        })
+    }
+    pub fn import_spreadsheets_config(
+        &mut self,
+        subject: &str,
+        content: &str,
+    ) -> Result<ImportSpreadsheetsConfigResult> {
+        let bundle: SpreadsheetsConfigBundle = serde_json::from_str(content).map_err(|_| {
+            error(
+                "invalid_import_file",
+                "O arquivo selecionado não é um JSON de configuração válido do Sheets Monitor.",
+            )
+        })?;
+        if bundle.format_version != 1 {
+            return Err(error(
+                "invalid_import_file",
+                "Versão de arquivo de configuração não suportada.",
+            ));
+        }
+        if bundle.spreadsheets.is_empty() {
+            return Err(error(
+                "import_empty",
+                "O arquivo selecionado não contém planilhas para importar.",
+            ));
+        }
+        if bundle.spreadsheets.len() > 30 {
+            return Err(error(
+                "capacity_limit",
+                "O limite operacional é de até 30 planilhas por conta.",
+            ));
+        }
+        let mut seen_ids = BTreeSet::new();
+        for item in &bundle.spreadsheets {
+            validate_google_id(&item.spreadsheet_id)?;
+            if !seen_ids.insert(item.spreadsheet_id.clone()) {
+                return Err(error(
+                    "duplicate_import_id",
+                    "O arquivo contém planilhas duplicadas.",
+                ));
+            }
+            if item.name.trim().is_empty()
+                || item.name.len() > 4096
+                || item.tabs.len() > crate::integrity::MAX_MONITORED_TABS
+            {
+                return Err(error(
+                    "invalid_import_file",
+                    "Metadados de planilha inválidos no arquivo importado.",
+                ));
+            }
+            let selected_set: BTreeSet<_> = item.selected_sheet_ids.iter().copied().collect();
+            if selected_set.len() != item.selected_sheet_ids.len()
+                || selected_set.len() > crate::integrity::MAX_MONITORED_TABS
+            {
+                return Err(error(
+                    "invalid_tabs",
+                    "Abas selecionadas inválidas no arquivo importado.",
+                ));
+            }
+            if !item.tabs.is_empty()
+                && selected_set.iter().any(|id| {
+                    !item.tabs.iter().any(|s| {
+                        s.sheet_id == *id && s.sheet_type.as_deref().is_none_or(|k| k == "GRID")
+                    })
+                })
+            {
+                return Err(error(
+                    "invalid_tabs",
+                    "As abas selecionadas no arquivo não correspondem às abas de grade da planilha.",
+                ));
+            }
+            if item.tabs.is_empty() && !item.selected_sheet_ids.is_empty() {
+                return Err(error(
+                    "invalid_tabs",
+                    "As abas selecionadas exigem metadados das abas da planilha.",
+                ));
+            }
+            if let Some(scope) = &item.scope {
+                scope.validate()?;
+                let scope_sheets: BTreeSet<_> = scope.sheets.iter().map(|s| s.sheet_id).collect();
+                if scope_sheets != selected_set {
+                    return Err(error(
+                        "tabs_scope_mismatch",
+                        "As regras importadas devem corresponder às abas selecionadas.",
+                    ));
+                }
+            }
+        }
+        let tx = self
+            .connection
+            .transaction_with_behavior(TransactionBehavior::Immediate)
+            .map_err(sql)?;
+        let aid = account(&tx, subject)?;
+        let active_count: usize = tx
+            .query_row(
+                "SELECT count(*) FROM registered_spreadsheets WHERE account_id=?1 AND removed=0",
+                [&aid],
+                |r| r.get(0),
+            )
+            .map_err(sql)?;
+        let mut new_additions = 0usize;
+        for item in &bundle.spreadsheets {
+            let exists_active: Option<bool> = tx
+                .query_row(
+                    "SELECT removed FROM registered_spreadsheets WHERE account_id=?1 AND spreadsheet_id=?2",
+                    params![aid, item.spreadsheet_id],
+                    |r| r.get(0),
+                )
+                .optional()
+                .map_err(sql)?;
+            if exists_active != Some(false) {
+                new_additions += 1;
+            }
+        }
+        if active_count + new_additions > 30 {
+            return Err(error(
+                "capacity_limit",
+                "A importação ultrapassaria o limite operacional de 30 planilhas por conta.",
+            ));
+        }
+        let mut created_count = 0usize;
+        let mut updated_count = 0usize;
+        for item in &bundle.spreadsheets {
+            let existing: Option<bool> = tx
+                .query_row(
+                    "SELECT removed FROM registered_spreadsheets WHERE account_id=?1 AND spreadsheet_id=?2",
+                    params![aid, item.spreadsheet_id],
+                    |r| r.get(0),
+                )
+                .optional()
+                .map_err(sql)?;
+            let tabs_json = encode(&item.tabs)?;
+            let selected_json = encode(&item.selected_sheet_ids)?;
+            let scope_json = item.scope.as_ref().map(encode).transpose()?;
+            let scope_hash = item.scope.as_ref().map(fingerprint);
+            match existing {
+                Some(false) => {
+                    if item.tabs.is_empty() {
+                        tx.execute(
+                            "UPDATE registered_spreadsheets SET name=?3,paused=?4,selected_sheet_ids_json=?5,scope_json=?6,scope_hash=?7,revision=revision+1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",
+                            params![aid, item.spreadsheet_id, item.name, item.paused, selected_json, scope_json, scope_hash],
+                        )
+                        .map_err(sql)?;
+                    } else {
+                        tx.execute(
+                            "UPDATE registered_spreadsheets SET name=?3,paused=?4,tabs_json=?5,selected_sheet_ids_json=?6,scope_json=?7,scope_hash=?8,revision=revision+1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",
+                            params![aid, item.spreadsheet_id, item.name, item.paused, tabs_json, selected_json, scope_json, scope_hash],
+                        )
+                        .map_err(sql)?;
+                    }
+                    updated_count += 1;
+                }
+                Some(true) => {
+                    tx.execute(
+                        "UPDATE registered_spreadsheets SET removed=0,paused=?3,name=?4,tabs_json=?5,selected_sheet_ids_json=?6,scope_json=?7,scope_hash=?8,authorization='available',access_error=NULL,revision=revision+1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE account_id=?1 AND spreadsheet_id=?2",
+                        params![aid, item.spreadsheet_id, item.paused, item.name, tabs_json, selected_json, scope_json, scope_hash],
+                    )
+                    .map_err(sql)?;
+                    tx.execute(
+                        "UPDATE integrity_scopes SET active_baseline_id=NULL,latest_report_id=NULL,previous_snapshot_id=NULL,observation_revision=observation_revision+1 WHERE account_id=?1 AND spreadsheet_id=?2",
+                        params![aid, item.spreadsheet_id],
+                    )
+                    .map_err(sql)?;
+                    created_count += 1;
+                }
+                None => {
+                    tx.execute(
+                        "INSERT INTO registered_spreadsheets(account_id,spreadsheet_id,name,paused,tabs_json,selected_sheet_ids_json,scope_json,scope_hash,authorization,created_at,updated_at) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,'available',strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'))",
+                        params![aid, item.spreadsheet_id, item.name, item.paused, tabs_json, selected_json, scope_json, scope_hash],
+                    )
+                    .map_err(sql)?;
+                    created_count += 1;
+                }
+            }
+        }
+        tx.commit().map_err(sql)?;
+        Ok(ImportSpreadsheetsConfigResult {
+            created_count,
+            updated_count,
+            total_count: created_count + updated_count,
+        })
     }
 }
 #[cfg(test)]

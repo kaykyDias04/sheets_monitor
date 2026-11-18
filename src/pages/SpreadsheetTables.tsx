@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowRight,
+  Download,
   FileSpreadsheet,
   Search,
   Plus,
+  Upload,
   Users,
   FolderOpen,
   Link2,
@@ -28,15 +30,20 @@ export function RegisteredTable({
   rows,
   onOpen,
   onDiscover,
+  onExportConfig,
+  onImportConfig,
   disabled = false,
 }: {
   rows: RegisteredSpreadsheet[];
   onOpen: (row: RegisteredSpreadsheet) => void;
   onDiscover: () => void;
+  onExportConfig?: () => void;
+  onImportConfig?: (content: string) => void;
   disabled?: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const importInputRef = useRef<HTMLInputElement>(null);
   const visible = rows.filter(
     (row) =>
       `${row.name} ${row.account_email ?? ""}`
@@ -56,10 +63,55 @@ export function RegisteredTable({
               Gerencie e acompanhe o monitoramento das planilhas selecionadas nesta conta.
             </CardDescription>
           </div>
-          <Button onClick={onDiscover} disabled={disabled}>
-            <Plus />
-            Adicionar planilhas
-          </Button>
+          <div className="op-actions">
+            {onExportConfig && (
+              <Button
+                variant="outline"
+                onClick={onExportConfig}
+                disabled={disabled || rows.length === 0}
+              >
+                <Download size={15} />
+                Exportar configuração
+              </Button>
+            )}
+            {onImportConfig && (
+              <>
+                <input
+                  ref={importInputRef}
+                  type="file"
+                  accept=".json,application/json"
+                  aria-label="Importar arquivo de configuração"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (!file) return;
+                    if (typeof file.text === "function") {
+                      void file.text().then((content) => onImportConfig(content));
+                    } else {
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        if (typeof reader.result === "string") onImportConfig(reader.result);
+                      };
+                      reader.readAsText(file);
+                    }
+                  }}
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => importInputRef.current?.click()}
+                  disabled={disabled}
+                >
+                  <Upload size={15} />
+                  Importar configuração
+                </Button>
+              </>
+            )}
+            <Button onClick={onDiscover} disabled={disabled}>
+              <Plus />
+              Adicionar planilhas
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

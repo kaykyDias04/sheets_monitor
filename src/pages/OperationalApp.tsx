@@ -1016,7 +1016,7 @@ export function OperationalApp() {
                       <CardHeader>
                         <CardTitle>Últimas alterações</CardTitle>
                         <CardDescription>
-                          Todas as diferenças observadas ficam registradas.
+                          Atualizações relacionadas às regras de comportamento das planilhas.
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -1050,6 +1050,46 @@ export function OperationalApp() {
                     rows={rows}
                     onOpen={(row) => void loadDetail(row.spreadsheet_id)}
                     onDiscover={openAddFlow}
+                    onExportConfig={() =>
+                      void run(
+                        "Exportando planilhas e regras",
+                        async () => {
+                          const env = await api.exportSpreadsheetsConfig();
+                          const result = env.data;
+                          if (result.exported_count === 0) {
+                            setNotice("Nenhuma planilha cadastrada para exportar.");
+                          } else {
+                            setNotice(
+                              `${result.exported_count} planilha(s) e suas regras exportadas para ${result.file_path ?? "pasta local"}.`,
+                            );
+                          }
+                          return env;
+                        },
+                        undefined,
+                        "exportar a configuração das planilhas",
+                      )
+                    }
+                    onImportConfig={(content) => {
+                      const generation = current.current?.generation;
+                      if (generation === undefined) return;
+                      void run(
+                        "Importando planilhas e regras",
+                        async () => {
+                          const env = await api.importSpreadsheetsConfig({
+                            expected_generation: generation,
+                            content,
+                          });
+                          await refresh();
+                          const res = env.data;
+                          setNotice(
+                            `Configuração importada: ${res.created_count} adicionada(s), ${res.updated_count} atualizada(s). Aprove uma referência em cada planilha para retomar o monitoramento.`,
+                          );
+                          return env;
+                        },
+                        undefined,
+                        "importar a configuração das planilhas",
+                      );
+                    }}
                   />
                   <AddSpreadsheetsDialog
                     open={addOpen}
@@ -1274,6 +1314,8 @@ export function OperationalApp() {
                             selectedIdRef.current = null;
                             setDetail(null);
                             setPreview(null);
+                            setVersions([]);
+                            setComparison(null);
                             setRoute("sheets");
                             await refresh();
                             setNotice(

@@ -404,6 +404,20 @@ impl IntegrationRuntime {
             db.save_management_preferences(s, &input.preferences)
         })
     }
+    pub fn export_spreadsheets_config(
+        &self,
+        destination: &std::path::Path,
+    ) -> Result<EngineEnvelope<ExportSpreadsheetsConfigResult>, CommandError> {
+        self.management_local(None, |db, s| db.export_spreadsheets_config(s, destination))
+    }
+    pub fn import_spreadsheets_config(
+        &self,
+        input: ImportSpreadsheetsConfigInput,
+    ) -> Result<EngineEnvelope<ImportSpreadsheetsConfigResult>, CommandError> {
+        self.management_local(Some(input.expected_generation), |db, s| {
+            db.import_spreadsheets_config(s, &input.content)
+        })
+    }
 }
 fn diff_json(
     path: &str,

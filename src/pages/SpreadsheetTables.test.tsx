@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { DiscoveryPanel, RegisteredTable } from "./SpreadsheetTables";
 import type { DiscoveryPage, DiscoveryQuery } from "@/types/discovery";
@@ -81,5 +81,29 @@ describe("Descoberta e cadastro visual", () => {
     expect(screen.getByText("Seu monitoramento começa aqui")).toBeInTheDocument();
     expect(screen.getByText(/Nenhum arquivo será cadastrado automaticamente/)).toBeInTheDocument();
     expect(screen.queryByText("Online")).not.toBeInTheDocument();
+  });
+  it("dispara exportação e importação de configuração de planilhas e regras", async () => {
+    const user = userEvent.setup();
+    const onExportConfig = vi.fn();
+    const onImportConfig = vi.fn();
+    render(
+      <RegisteredTable
+        rows={[]}
+        onOpen={() => undefined}
+        onDiscover={() => undefined}
+        onExportConfig={onExportConfig}
+        onImportConfig={onImportConfig}
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Exportar configuração" })).toBeDisabled();
+    const input = screen.getByLabelText("Importar arquivo de configuração");
+    const file = new File(
+      [JSON.stringify({ format_version: 1, exported_at: "2026-11-17T00:00:00Z", spreadsheets: [] })],
+      "config.json",
+      { type: "application/json" },
+    );
+    await user.upload(input, file);
+    await waitFor(() => expect(onImportConfig).toHaveBeenCalledOnce());
+    expect(onImportConfig.mock.calls[0][0]).toContain('"format_version":1');
   });
 });

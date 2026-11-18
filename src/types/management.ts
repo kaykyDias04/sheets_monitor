@@ -149,3 +149,16 @@ export interface BaselineComparison {
   differences: BaselineDifference[];
   truncated: boolean;
 }
+export interface ExportSpreadsheetsConfigResult {
+  exported_count: number;
+  file_path: string | null;
+}
+export interface ImportSpreadsheetsConfigInput {
+  expected_generation: number;
+  content: string;
+}
+export interface ImportSpreadsheetsConfigResult {
+  created_count: number;
+  updated_count: number;
+  total_count: number;
+}

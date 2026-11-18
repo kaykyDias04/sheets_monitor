@@ -17,6 +17,9 @@ import type {
   EventFilter,
   ExportEventsInput,
   ExportEventsResult,
+  ExportSpreadsheetsConfigResult,
+  ImportSpreadsheetsConfigInput,
+  ImportSpreadsheetsConfigResult,
   Mutation,
   OperationalPreview,
   Page,
@@ -69,6 +72,10 @@ export const diagnostics = (spreadsheet_id: string) =>
 export const events = (input: EventFilter) => command<Page<Activity>>("list_change_events", input);
 export const exportEvents = (input: ExportEventsInput) =>
   command<ExportEventsResult>("export_change_events", input);
+export const exportSpreadsheetsConfig = () =>
+  command<ExportSpreadsheetsConfigResult>("export_spreadsheets_config");
+export const importSpreadsheetsConfig = (input: ImportSpreadsheetsConfigInput) =>
+  command<ImportSpreadsheetsConfigResult>("import_spreadsheets_config", input);
 export const scripts = (spreadsheet_id: string) =>
   command<ScriptSummary[]>("list_associated_scripts", { spreadsheet_id });
 export const check = (input: Mutation) => command<number>("monitoring_check_file", input);
@@ -161,6 +168,10 @@ const messages: Record<string, string> = {
   integrity_mismatch:
     "A verificação de integridade (SHA-256) do instalador falhou. Execute uma nova verificação de atualizações.",
   invalid_version: "A versão informada para adiamento é inválida.",
+  invalid_import_file:
+    "O arquivo selecionado não é uma configuração válida exportada pelo Sheets Monitor.",
+  import_empty: "O arquivo selecionado não contém planilhas para importar.",
+  duplicate_import_id: "O arquivo selecionado contém planilhas duplicadas.",
 };
 
 export function managementError(error: unknown, context?: string) {
